@@ -1,0 +1,10 @@
+# Flutter/Dart generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.g.dart
+
+# Override root gitignore — include lib/ for Flutter source
+!lib/
