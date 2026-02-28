@@ -62,7 +62,7 @@ class Bird {
 }
 
 // ─── Bird Database ────────────────────────────────────────────────────────────
-// 393 species across 4 rarity tiers, drawn from every continent.
+// 379 species across 4 rarity tiers, drawn from every continent.
 // Images: Wikimedia Commons. Audio: Xeno-Canto direct MP3 links.
 
 final List<Bird> birds = [
@@ -248,7 +248,7 @@ final List<Bird> birds = [
   Bird(
     name: 'Ruby-throated Hummingbird',
     scientificName: 'Archilochus colubris',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Ruby-throated_Hummingbird_%284).jpg/800px-Ruby-throated_Hummingbird_%284%29.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Ruby-throated_Hummingbird_%284%29.jpg/800px-Ruby-throated_Hummingbird_%284%29.jpg',
     audioUrl: '',
     lore: 'Its heart beats 1,200 times per minute in flight, and it can fly backwards and upside-down — the only bird able to sustain hovering.',
     habitat: 'Gardens, woodland edges, meadows',
@@ -338,7 +338,7 @@ final List<Bird> birds = [
   Bird(
     name: 'Painted Bunting',
     scientificName: 'Passerina ciris',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Painted_bunting_(Passerina_ciris).jpg/800px-Painted_bunting_%28Passerina_ciris%29.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Painted_bunting_%28Passerina_ciris%29.jpg/800px-Painted_bunting_%28Passerina_ciris%29.jpg',
     audioUrl: '',
     lore: 'Often called the most beautiful bird in North America — the male is a living kaleidoscope of red, blue, and green.',
     habitat: 'Thickets, woodland edges, brushy areas',
@@ -450,7 +450,7 @@ final List<Bird> birds = [
   Bird(
     name: 'Superb Lyrebird',
     scientificName: 'Menura novaehollandiae',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Albert_lyrebird.jpg/800px-Albert_lyrebird.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Superb_Lyrebird_%28Menura_novaehollandiae%29_%2830571971863%29.jpg/800px-Superb_Lyrebird_%28Menura_novaehollandiae%29_%2830571971863%29.jpg',
     audioUrl: '',
     lore: 'Considered the world\'s greatest mimic — it perfectly replicates chainsaws, camera shutters, car alarms, and any bird call it hears.',
     habitat: 'Wet forests, fern gullies of Australia',
@@ -962,7 +962,7 @@ final List<Bird> birds = [
   Bird(
     name: 'Magnificent Frigatebird',
     scientificName: 'Fregata magnificens',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Great_Frigatebird_%28Fregata_minor%29.jpg/800px-Great_Frigatebird_%28Fregata_minor%29.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Fregata_magnificens.JPG/800px-Fregata_magnificens.JPG',
     audioUrl: '',
     lore: 'Has the largest wingspan-to-bodyweight ratio of any bird. It cannot land on water as its feathers are not waterproof — it sleeps on the wing.',
     habitat: 'Tropical and subtropical coasts',
@@ -1002,28 +1002,6 @@ final List<Bird> birds = [
     conservationStatus: 'Least Concern',
     rarity: 'rare',
     baseXp: 165,
-  ),
-  Bird(
-    name: 'Common Kingfisher',
-    scientificName: 'Alcedo atthis',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Common_kingfisher_alcedo_atthis.jpg/800px-Common_kingfisher_alcedo_atthis.jpg',
-    audioUrl: '',
-    lore: 'Engineers of Japan\'s Shinkansen studied the kingfisher beak to design the bullet train\'s nose — reducing noise and energy use by 30%.',
-    habitat: 'Clear rivers, streams, ponds, coasts',
-    conservationStatus: 'Least Concern',
-    rarity: 'rare',
-    baseXp: 155,
-  ),
-  Bird(
-    name: 'Bohemian Waxwing',
-    scientificName: 'Bombycilla garrulus',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Bombycilla_garrulus1.jpg/800px-Bombycilla_garrulus1.jpg',
-    audioUrl: '',
-    lore: 'During irruption years, thousands descend on towns stripping berry trees bare overnight — their arrival is like a living blizzard of wings.',
-    habitat: 'Boreal forests; parks and gardens in winter',
-    conservationStatus: 'Least Concern',
-    rarity: 'rare',
-    baseXp: 160,
   ),
 
   // ── Additional Legendary species ──────────────────────────────────────────
@@ -1074,7 +1052,7 @@ final List<Bird> birds = [
   Bird(
     name: 'Wilson\'s Bird-of-Paradise',
     scientificName: 'Cicinnurus respublica',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Cicinnurus_respublica_-_Red_Bird-of-paradise.jpg/800px-Cicinnurus_respublica_-_Red_Bird-of-paradise.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Paradisaeidae_-_Cicinnurus_respublica.JPG/800px-Paradisaeidae_-_Cicinnurus_respublica.JPG',
     audioUrl: '',
     lore: 'The male has a bright blue bald head — which actually glows ultraviolet — and curling tail wires. Its dance floor is swept spotlessly clean.',
     habitat: 'Hill forest of two small Indonesian islands only',
@@ -1428,7 +1406,7 @@ final List<Bird> birds = [
   Bird(
     name: 'Willie Wagtail',
     scientificName: 'Rhipidura leucophrys',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Willie_wagtail_Nov_2008.jpg/800px-Willie_wagtail_Nov_22008.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Willie_wagtail_Nov_2008.jpg/800px-Willie_wagtail_Nov_2008.jpg',
     audioUrl: '',
     lore: 'Considered a bad omen by some Aboriginal Australians who believe it eavesdrops on conversations — its bold approach to humans supports the legend.',
     habitat: 'Open woodland, grassland, parks, farmland',
@@ -1787,17 +1765,6 @@ final List<Bird> birds = [
     conservationStatus: 'Least Concern',
     rarity: 'common',
     baseXp: 38,
-  ),
-  Bird(
-    name: 'Common Starling',
-    scientificName: 'Sturnus vulgaris',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Sturnus_vulgaris_1_%28Marek_Szczepanek%29.jpg/800px-Sturnus_vulgaris_1_%28Marek_Szczepanek%29.jpg',
-    audioUrl: '',
-    lore: 'Murmurations of millions of starlings create fluid aerial sculptures in the sky — a coordinated dance that confuses and overwhelms aerial predators.',
-    habitat: 'Farmland, woodland, parks, urban areas',
-    conservationStatus: 'Least Concern',
-    rarity: 'common',
-    baseXp: 30,
   ),
   Bird(
     name: 'Black-billed Magpie',
@@ -2194,17 +2161,6 @@ final List<Bird> birds = [
     conservationStatus: 'Least Concern',
     rarity: 'common',
     baseXp: 32,
-  ),
-  Bird(
-    name: 'Nuthatch',
-    scientificName: 'Sitta europaea',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Sitta_europaea_wildlife_2.jpg/800px-Sitta_europaea_wildlife_2.jpg',
-    audioUrl: '',
-    lore: 'Plasters mud around its nest hole entrance to reduce the opening to a perfect fit — a habit so ingrained it still does it even when the hole is already the right size.',
-    habitat: 'Mature deciduous woodland, parks, gardens',
-    conservationStatus: 'Least Concern',
-    rarity: 'common',
-    baseXp: 35,
   ),
   Bird(
     name: 'Wren',
@@ -3199,17 +3155,6 @@ final List<Bird> birds = [
     baseXp: 83,
   ),
   Bird(
-    name: 'Fairy-wren',
-    scientificName: 'Malurus cyaneus',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Malurus_cyaneus_male.jpg/800px-Malurus_cyaneus_male.jpg',
-    audioUrl: '',
-    lore: 'Females teach their eggs a unique "password" call before hatching — chicks must repeat it to receive food, preventing cuckoo chicks from cheating.',
-    habitat: 'Coastal heath, gardens, scrubland',
-    conservationStatus: 'Least Concern',
-    rarity: 'uncommon',
-    baseXp: 88,
-  ),
-  Bird(
     name: 'Snowy Egret',
     scientificName: 'Egretta thula',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Egretta_thula_at_Las_Gallinas.jpg/800px-Egretta_thula_at_Las_Gallinas.jpg',
@@ -3496,7 +3441,7 @@ final List<Bird> birds = [
     baseXp: 90,
   ),
   Bird(
-    name: 'Wryneck',
+    name: 'Eurasian Wryneck',
     scientificName: 'Jynx torquilla',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Jynx_torquilla_-Eurasian_Wryneck.jpg/800px-Jynx_torquilla_-Eurasian_Wryneck.jpg',
     audioUrl: '',
@@ -3584,17 +3529,6 @@ final List<Bird> birds = [
     baseXp: 105,
   ),
   Bird(
-    name: 'European Nightjar',
-    scientificName: 'Caprimulgus europaeus',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Common_Nightjar_Caprimulgus_europaeus.jpg/800px-Common_Nightjar_Caprimulgus_europaeus.jpg',
-    audioUrl: '',
-    lore: 'Catches moths in flight using its enormous gape and special bristles around the mouth — and its plumage is so bark-like that it roosts lying along branches.',
-    habitat: 'Heathland, open woodland, forest edges',
-    conservationStatus: 'Least Concern',
-    rarity: 'uncommon',
-    baseXp: 88,
-  ),
-  Bird(
     name: 'Temminck\'s Tragopan',
     scientificName: 'Tragopan temminckii',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Temminck%27s_Tragopan_%28Tragopan_temminckii%29_male.jpg/800px-Temminck%27s_Tragopan_%28Tragopan_temminckii%29_male.jpg',
@@ -3626,17 +3560,6 @@ final List<Bird> birds = [
     conservationStatus: 'Least Concern',
     rarity: 'uncommon',
     baseXp: 110,
-  ),
-  Bird(
-    name: 'New Zealand Kingfisher',
-    scientificName: 'Todiramphus sanctus',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Todiramphus_sanctus_-New_Zealand_-_three-8.jpg/800px-Todiramphus_sanctus_-New_Zealand_-_three-8.jpg',
-    audioUrl: '',
-    lore: 'Unlike most kingfishers it rarely dives for fish — instead it perches and drops onto lizards, earthworms, and large insects on the forest floor.',
-    habitat: 'Forest, open woodland, coastal scrub',
-    conservationStatus: 'Least Concern',
-    rarity: 'uncommon',
-    baseXp: 85,
   ),
   Bird(
     name: 'Pied Avocet',
@@ -3727,17 +3650,6 @@ final List<Bird> birds = [
     baseXp: 80,
   ),
   Bird(
-    name: 'Eurasian Wryneck',
-    scientificName: 'Jynx torquilla',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Jynx_torquilla_-_Eurasian_wryneck.jpg/800px-Jynx_torquilla_-_Eurasian_wryneck.jpg',
-    audioUrl: '',
-    lore: 'Can rotate its head almost 180 degrees and hisses like a snake when cornered — once believed to be a witch\'s familiar in European folklore.',
-    habitat: 'Open woodland, orchards, and forest edges',
-    conservationStatus: 'Least Concern',
-    rarity: 'uncommon',
-    baseXp: 95,
-  ),
-  Bird(
     name: 'Black-winged Stilt',
     scientificName: 'Himantopus himantopus',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Himantopus_himantopus_-_Black-winged_stilt.jpg/800px-Himantopus_himantopus_-_Black-winged_stilt.jpg',
@@ -3817,17 +3729,6 @@ final List<Bird> birds = [
     baseXp: 200,
   ),
   Bird(
-    name: 'Snail Kite',
-    scientificName: 'Rostrhamus sociabilis',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Rostrhamus_sociabilis_-Florida%2C_USA-8.jpg/800px-Rostrhamus_sociabilis_-Florida%2C_USA-8.jpg',
-    audioUrl: '',
-    lore: 'The Snail Kite\'s entire diet consists of freshwater apple snails, and its bill is so specifically curved it can extract the snail without breaking the shell.',
-    habitat: 'Freshwater marshes, lake margins, sawgrass prairies',
-    conservationStatus: 'Least Concern',
-    rarity: 'rare',
-    baseXp: 195,
-  ),
-  Bird(
     name: 'Wood Stork',
     scientificName: 'Mycteria americana',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Wood_Stork_%28Mycteria_americana%29_RWD3.jpg/800px-Wood_Stork_%28Mycteria_americana%29_RWD3.jpg',
@@ -3861,17 +3762,6 @@ final List<Bird> birds = [
     baseXp: 165,
   ),
   Bird(
-    name: 'Blue-footed Booby',
-    scientificName: 'Sula nebouxii',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Blue_Footed_Booby.jpg/800px-Blue_Footed_Booby.jpg',
-    audioUrl: '',
-    lore: 'The Blue-footed Booby\'s vivid turquoise feet are an honest signal of fitness — females actively prefer males with the brightest feet as mates.',
-    habitat: 'Tropical Pacific coasts and offshore islands',
-    conservationStatus: 'Least Concern',
-    rarity: 'rare',
-    baseXp: 210,
-  ),
-  Bird(
     name: 'Red-billed Tropicbird',
     scientificName: 'Phaethon aethereus',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Red-billed_Tropicbird_Phaethon_aethereus.jpg/800px-Red-billed_Tropicbird_Phaethon_aethereus.jpg',
@@ -3903,17 +3793,6 @@ final List<Bird> birds = [
     conservationStatus: 'Least Concern',
     rarity: 'rare',
     baseXp: 170,
-  ),
-  Bird(
-    name: 'Razorbill',
-    scientificName: 'Alca torda',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Razorbill_Newfoundland.jpg/800px-Razorbill_Newfoundland.jpg',
-    audioUrl: '',
-    lore: 'The Razorbill is the closest living relative of the extinct Great Auk and, like that lost giant, is a consummate diver capable of descending over 120 metres below the surface.',
-    habitat: 'Cold North Atlantic ocean; breeds on rocky coastal cliffs',
-    conservationStatus: 'Least Concern',
-    rarity: 'rare',
-    baseXp: 180,
   ),
   Bird(
     name: 'Great Skua',
@@ -4013,17 +3892,6 @@ final List<Bird> birds = [
     conservationStatus: 'Least Concern',
     rarity: 'rare',
     baseXp: 185,
-  ),
-  Bird(
-    name: 'American Avocet',
-    scientificName: 'Recurvirostra americana',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/American_Avocet_%28Recurvirostra_americana%29.jpg/800px-American_Avocet_%28Recurvirostra_americana%29.jpg',
-    audioUrl: '',
-    lore: 'The American Avocet sweeps its upturned bill from side to side through shallow water with a scythe-like motion, detecting tiny crustaceans by touch at remarkable speed.',
-    habitat: 'Shallow alkaline lakes, prairie wetlands, coastal mudflats',
-    conservationStatus: 'Least Concern',
-    rarity: 'rare',
-    baseXp: 165,
   ),
   Bird(
     name: 'Long-billed Curlew',
@@ -4147,17 +4015,6 @@ final List<Bird> birds = [
     baseXp: 255,
   ),
   Bird(
-    name: 'Sunbittern',
-    scientificName: 'Eurypyga helias',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Sunbittern_%28Eurypyga_helias%29.jpg/800px-Sunbittern_%28Eurypyga_helias%29.jpg',
-    audioUrl: '',
-    lore: 'When threatened, the Sunbittern suddenly spreads its wings to reveal brilliant sun-eye patterns — a startling flash of colour that mimics a much larger predator\'s gaze and sends would-be attackers fleeing.',
-    habitat: 'Shaded streams and pools within tropical rainforests of Central and South America',
-    conservationStatus: 'Least Concern',
-    rarity: 'rare',
-    baseXp: 220,
-  ),
-  Bird(
     name: 'African Penguin',
     scientificName: 'Spheniscus demersus',
     imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/African_Penguin_%28Spheniscus_demersus%29_at_Boulders_Beach.jpg/800px-African_Penguin_%28Spheniscus_demersus%29_at_Boulders_Beach.jpg',
@@ -4167,17 +4024,6 @@ final List<Bird> birds = [
     conservationStatus: 'Endangered',
     rarity: 'rare',
     baseXp: 240,
-  ),
-  Bird(
-    name: 'Martial Eagle',
-    scientificName: 'Polemaetus bellicosus',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Martial_Eagle_%28Polemaetus_bellicosus%29.jpg/800px-Martial_Eagle_%28Polemaetus_bellicosus%29.jpg',
-    audioUrl: '',
-    lore: 'Africa\'s largest eagle, the Martial Eagle has eyesight so acute it can spot a monitor lizard from 6 km away while soaring at altitude, and is capable of knocking a grown man off his feet.',
-    habitat: 'Open woodland, thornbush, and savannah across sub-Saharan Africa',
-    conservationStatus: 'Vulnerable',
-    rarity: 'rare',
-    baseXp: 265,
   ),
   Bird(
     name: 'Bateleur Eagle',
@@ -4539,6 +4385,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Storage — FIX 3: Box<String> stores bird names, no adapter needed
   late Box<String> aviaryBox;
+  late Box stateBox;
   bool hiveReady = false;
 
   // Hardware
@@ -4550,6 +4397,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _tab = 1;
   String _guideSearch = '';
   String _guideRarityFilter = 'all';
+  final _guideSearchController = TextEditingController();
 
   @override
   void initState() {
@@ -4560,17 +4408,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    // FIX 6: dispose camera and player to avoid resource leaks
+    // FIX 6: dispose camera, player, and controllers to avoid resource leaks
     _cam?.dispose();
     _player.dispose();
+    _guideSearchController.dispose();
     super.dispose();
   }
 
   Future<void> _initHive() async {
     aviaryBox = await Hive.openBox<String>('aviary_v2');
+    stateBox = await Hive.openBox('player_state');
+    _restoreState();
     // FIX 7: mounted check after await
     if (!mounted) return;
     setState(() => hiveReady = true);
+  }
+
+  void _restoreState() {
+    level = stateBox.get('level', defaultValue: 1);
+    xp = stateBox.get('xp', defaultValue: 0);
+    streak = stateBox.get('streak', defaultValue: 1);
+    final saved = stateBox.get('achievements', defaultValue: <String>[]);
+    unlockedAchievements = Set<String>.from(List<String>.from(saved));
+  }
+
+  void _persistState() {
+    stateBox.put('level', level);
+    stateBox.put('xp', xp);
+    stateBox.put('streak', streak);
+    stateBox.put('achievements', unlockedAchievements.toList());
   }
 
   Future<void> _initCamera() async {
@@ -4589,7 +4455,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _takePhoto() async {
-    await Permission.camera.request();
+    final status = await Permission.camera.request();
+    if (status.isGranted && (_cam == null || !_camReady)) {
+      await _initCamera();
+    }
     if (_cam == null || !_camReady) return;
     try {
       final file = await _cam!.takePicture();
@@ -4725,11 +4594,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _addBird(Bird bird) {
+    if (!hiveReady) return;
     // FIX 2 & 3: audioUrl now exists; Box<String> stores name
     if (bird.audioUrl.isNotEmpty) {
       _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((_) {});
     }
 
+    bool didLevelUp = false;
     setState(() {
       // FIX 3: store bird name string, not Bird object
       aviaryBox.add(bird.name);
@@ -4739,11 +4610,13 @@ class _HomeScreenState extends State<HomeScreen> {
       while (xp >= xpForNextLevel(level)) {
         xp -= xpForNextLevel(level);
         level++;
-        _showLevelUp();
+        didLevelUp = true;
       }
-
-      _checkAchievements(bird);
     });
+
+    _persistState();
+    if (didLevelUp) _showLevelUp();
+    _checkAchievements(bird);
   }
 
   void _showLevelUp() {
@@ -4760,7 +4633,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _checkAchievements(Bird bird) {
-    final collected = aviaryBox.length;
+    final collected = aviaryBox.values.toSet().length;
     final newOnes = <String>[];
 
     void tryUnlock(String key) {
@@ -4779,6 +4652,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (level >= 5) tryUnlock('level_5');
     if (level >= 10) tryUnlock('level_10');
     if (level >= 20) tryUnlock('level_20');
+
+    if (newOnes.isNotEmpty) _persistState();
 
     for (final key in newOnes) {
       final a = _achievements[key]!;
@@ -5043,17 +4918,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    CachedNetworkImage(
-                      imageUrl: bird.imageUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (_, __) => Shimmer.fromColors(
-                        baseColor: _bgCard,
-                        highlightColor: const Color(0xFF2A3F2F),
-                        child: Container(color: _bgCard),
+                    if (bird.imageUrl.isNotEmpty)
+                      CachedNetworkImage(
+                        imageUrl: bird.imageUrl,
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) => Shimmer.fromColors(
+                          baseColor: _bgCard,
+                          highlightColor: const Color(0xFF2A3F2F),
+                          child: Container(color: _bgCard),
+                        ),
+                        errorWidget: (_, __, ___) =>
+                            const Icon(Icons.broken_image, color: Colors.white24),
+                      )
+                    else
+                      Container(
+                        color: _bgCard,
+                        child: const Center(child: Text('❓', style: TextStyle(fontSize: 48))),
                       ),
-                      errorWidget: (_, __, ___) =>
-                          const Icon(Icons.broken_image, color: Colors.white24),
-                    ),
                     Positioned(
                       bottom: 0, left: 0, right: 0,
                       child: Container(
@@ -5098,6 +4979,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
           child: TextField(
+            controller: _guideSearchController,
             onChanged: (v) => setState(() => _guideSearch = v),
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
