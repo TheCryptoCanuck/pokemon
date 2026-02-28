@@ -72,9 +72,11 @@ RUN echo "sdk.dir=$ANDROID_HOME" > android/local.properties && \
 # Regenerate missing scaffolding (gradlew, launcher icons, etc.)
 RUN flutter create --project-name aviquest --org com.example .
 
-# Restore our source files (flutter create overwrites lib/main.dart and test/)
+# Restore our source files (flutter create overwrites lib/main.dart, build.gradle, etc.)
 COPY aviquest/lib/ lib/
 COPY aviquest/pubspec.yaml .
+COPY aviquest/android/app/build.gradle android/app/build.gradle
+COPY aviquest/android/app/src/main/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
 
 # Resolve dependencies and build
 RUN flutter pub get
