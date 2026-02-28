@@ -397,12 +397,15 @@ class _HomeScreenState extends State<HomeScreen> {
             _detailRow(Icons.bolt, 'XP Value', '+${bird.xp} XP'),
             if (bird.audioUrl.isNotEmpty) ...[
               const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: () {
-                  _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((_) {});
-                },
-                icon: const Icon(Icons.volume_up),
-                label: const Text('Play Bird Call'),
+              Tooltip(
+                message: 'Listen to ${bird.name} call',
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((_) {});
+                  },
+                  icon: const Icon(Icons.volume_up),
+                  label: const Text('Play Bird Call'),
+                ),
               ),
             ],
             const SizedBox(height: 32),
@@ -457,54 +460,66 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(color: Colors.white54)).animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 24),
         if (_camReady && _cam != null)
-          ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: Container(
-              height: 300,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.amber.withOpacity(0.5), width: 2),
-                borderRadius: BorderRadius.circular(24),
+          Semantics(
+            label: 'Camera viewfinder. Point at a bird to identify it.',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Container(
+                height: 300,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.amber.withOpacity(0.5), width: 2),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: CameraPreview(_cam!),
               ),
-              child: CameraPreview(_cam!),
             ),
           ).animate().fadeIn(delay: 200.ms).scale()
         else
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-              color: bgCard,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white12),
-            ),
-            child: const Center(
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.camera_alt, size: 64, color: Colors.white24),
-                SizedBox(height: 8),
-                Text('Camera unavailable', style: TextStyle(color: Colors.white38)),
-              ]),
+          Semantics(
+            label: 'Camera is unavailable',
+            child: Container(
+              height: 300,
+              decoration: BoxDecoration(
+                color: bgCard,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: Colors.white12),
+              ),
+              child: const Center(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.camera_alt, size: 64, color: Colors.white24),
+                  SizedBox(height: 8),
+                  Text('Camera unavailable', style: TextStyle(color: Colors.white38)),
+                ]),
+              ),
             ),
           ),
         const SizedBox(height: 32),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton.icon(
-              onPressed: _takePhoto,
-              icon: const Icon(Icons.camera_alt, size: 28),
-              label: const Text('Identify by Photo'),
+            Tooltip(
+              message: 'Take a photo to identify a bird',
+              child: ElevatedButton.icon(
+                onPressed: _takePhoto,
+                icon: const Icon(Icons.camera_alt, size: 28),
+                label: const Text('Identify by Photo'),
+              ),
             ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3),
             const SizedBox(width: 16),
-            OutlinedButton.icon(
-              onPressed: () {
-                // Simulate audio identification (same random logic)
-                _simulateIdentify(File(''));
-              },
-              icon: const Icon(Icons.mic, color: Colors.amber),
-              label: const Text('By Call', style: TextStyle(color: Colors.amber)),
+            Tooltip(
+              message: 'Identify a bird by its call',
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  // Simulate audio identification (same random logic)
+                  _simulateIdentify(File(''));
+                },
+                icon: const Icon(Icons.mic, color: Colors.amber),
+                label: const Text('By Call', style: TextStyle(color: Colors.amber)),
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: Colors.amber),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
               ),
             ).animate().fadeIn(delay: 350.ms).slideY(begin: 0.3),
           ],
@@ -553,7 +568,10 @@ class _HomeScreenState extends State<HomeScreen> {
               (b) => b.name == birdName,
               orElse: () => unknownBird(birdName),
             );
-            return GestureDetector(
+            return Semantics(
+              label: '${bird.name}, ${bird.rarity} bird. Tap for details.',
+              button: true,
+              child: GestureDetector(
               onTap: () => _showBirdDetail(bird),
               child: Card(
                 color: bgCard,
@@ -605,6 +623,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ).animate().fadeIn().scale(begin: const Offset(0.9, 0.9)),
+            ),
             );
           },
         );
@@ -652,7 +671,10 @@ class _HomeScreenState extends State<HomeScreen> {
               final color = r == 'all' ? Colors.white70 : (rarityColors[r] ?? Colors.white70);
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: GestureDetector(
+                child: Semantics(
+                  label: '${r[0].toUpperCase()}${r.substring(1)} filter${selected ? ", selected" : ""}',
+                  button: true,
+                  child: GestureDetector(
                   onTap: () => setState(() => _guideRarityFilter = r),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -666,6 +688,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(color: selected ? color : Colors.white54,
                         fontWeight: selected ? FontWeight.bold : FontWeight.normal)),
                   ),
+                ),
                 ),
               );
             }).toList(),
@@ -833,7 +856,11 @@ class _HomeScreenState extends State<HomeScreen> {
             spacing: 8, runSpacing: 8,
             children: achievements.entries.map((e) {
               final unlocked = unlockedAchievements.contains(e.key);
-              return Tooltip(
+              return Semantics(
+                label: unlocked
+                    ? 'Achievement unlocked: ${e.value.$2}. ${e.value.$3}'
+                    : 'Locked achievement',
+                child: Tooltip(
                 message: unlocked ? e.value.$3 : '???',
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
@@ -850,6 +877,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
+              ),
               );
             }).toList(),
           ).animate().fadeIn(delay: 250.ms),
@@ -879,14 +907,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _statCard(String emoji, String value, String label) {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(color: bgCard, borderRadius: BorderRadius.circular(16)),
-        child: Column(children: [
-          Text(emoji, style: const TextStyle(fontSize: 28)),
-          Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.amber)),
-          Text(label, style: const TextStyle(color: Colors.white54, fontSize: 12)),
-        ]),
+      child: Semantics(
+        label: '$label: $value',
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          decoration: BoxDecoration(color: bgCard, borderRadius: BorderRadius.circular(16)),
+          child: Column(children: [
+            ExcludeSemantics(child: Text(emoji, style: const TextStyle(fontSize: 28))),
+            Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.amber)),
+            Text(label, style: const TextStyle(color: Colors.white54, fontSize: 12)),
+          ]),
+        ),
       ),
     );
   }
