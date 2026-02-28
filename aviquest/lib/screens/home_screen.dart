@@ -924,19 +924,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ─── Build ────────────────────────────────────────────────────────────────
 
+  Widget _activeTab() {
+    switch (_tab) {
+      case 0: return _buildMapTab();
+      case 1: return _buildIdentifyTab();
+      case 2: return _buildAviaryTab();
+      case 3: return _buildFieldGuideTab();
+      case 4: return _buildProfileTab();
+      default: return _buildIdentifyTab();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tabs = [
-      _buildMapTab(),
-      _buildIdentifyTab(),
-      _buildAviaryTab(),
-      _buildFieldGuideTab(),
-      _buildProfileTab(),
-    ];
-
     return Scaffold(
       body: SafeArea(
-        child: IndexedStack(index: _tab, children: tabs),
+        child: _activeTab(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _tab,
