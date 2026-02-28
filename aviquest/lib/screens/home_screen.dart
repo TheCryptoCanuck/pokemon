@@ -77,6 +77,25 @@ class _HomeScreenState extends State<HomeScreen> {
     streak = stateBox.get('streak', defaultValue: 1);
     final saved = stateBox.get('achievements', defaultValue: <String>[]);
     unlockedAchievements = Set<String>.from(List<String>.from(saved));
+    _updateStreak();
+  }
+
+  void _updateStreak() {
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    final lastDate = stateBox.get('lastActiveDate', defaultValue: '');
+    if (lastDate == today) return; // already counted today
+
+    if (lastDate.isNotEmpty) {
+      final last = DateTime.parse(lastDate);
+      final diff = DateTime.parse(today).difference(last).inDays;
+      if (diff == 1) {
+        streak++;
+      } else if (diff > 1) {
+        streak = 1; // streak broken
+      }
+    }
+    stateBox.put('lastActiveDate', today);
+    _persistState();
   }
 
   void _persistState() {
@@ -242,18 +261,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _addBird(Bird bird) {
     if (!hiveReady) return;
-    // FIX 2 & 3: audioUrl now exists; Box<String> stores name
+
+    // Check for duplicates — award reduced XP for re-sightings
+    final isDuplicate = aviaryBox.values.contains(bird.name);
+
     if (bird.audioUrl.isNotEmpty) {
       _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((_) {});
     }
 
     bool didLevelUp = false;
+    final earnedXp = isDuplicate ? (bird.xp * 0.25).round() : bird.xp;
     setState(() {
-      // FIX 3: store bird name string, not Bird object
       aviaryBox.add(bird.name);
-      xp += bird.xp;
+      xp += earnedXp;
 
-      // Level up loop
       while (xp >= xpForNextLevel(level)) {
         xp -= xpForNextLevel(level);
         level++;
@@ -262,8 +283,25 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     _persistState();
+
+    if (isDuplicate) {
+      HapticFeedback.lightImpact();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: bgCard,
+          duration: const Duration(seconds: 2),
+          content: Row(children: [
+            const Text('Re-sighting! ', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
+            Text('+$earnedXp XP (25%)', style: const TextStyle(color: Colors.amber)),
+          ]),
+        ),
+      );
+    } else {
+      HapticFeedback.mediumImpact();
+    }
+
     if (didLevelUp) _showLevelUp();
-    _checkAchievements(bird);
+    if (!isDuplicate) _checkAchievements(bird);
   }
 
   void _showLevelUp() {
@@ -340,13 +378,15 @@ class _HomeScreenState extends State<HomeScreen> {
           controller: ctrl,
           padding: const EdgeInsets.all(20),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Wider, more visible drag handle
             Center(
               child: Container(
-                width: 40, height: 4,
-                decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+                width: 48, height: 5,
+                margin: const EdgeInsets.only(bottom: 4),
+                decoration: BoxDecoration(color: Colors.white38, borderRadius: BorderRadius.circular(3)),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Center(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -397,16 +437,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _detailRow(Icons.bolt, 'XP Value', '+${bird.xp} XP'),
             if (bird.audioUrl.isNotEmpty) ...[
               const SizedBox(height: 16),
-              Tooltip(
-                message: 'Listen to ${bird.name} call',
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((_) {});
-                  },
-                  icon: const Icon(Icons.volume_up),
-                  label: const Text('Play Bird Call'),
-                ),
-              ),
+              _AudioCallButton(player: _player, bird: bird),
             ],
             const SizedBox(height: 32),
           ]),
@@ -555,7 +586,36 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        return GridView.builder(
+        final uniqueCount = box.values.toSet().length;
+        return Column(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Row(children: [
+            Text(
+              '$uniqueCount / ${birds.length} species discovered',
+              style: const TextStyle(color: Colors.white54, fontSize: 13),
+            ),
+            const Spacer(),
+            Text(
+              '${box.length} sightings',
+              style: const TextStyle(color: Colors.amber, fontSize: 13),
+            ),
+          ]),
+        ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: LinearProgressIndicator(
+              value: (uniqueCount / birds.length).clamp(0.0, 1.0),
+              minHeight: 4,
+              backgroundColor: bgCard,
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Expanded(child: GridView.builder(
           padding: const EdgeInsets.all(16),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2, childAspectRatio: 0.82, mainAxisSpacing: 12, crossAxisSpacing: 12,
@@ -626,12 +686,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             );
           },
-        );
+        )),
+        ]);
       },
     );
   }
 
   Widget _buildFieldGuideTab() {
+    final collectedNames = hiveReady ? aviaryBox.values.toSet() : <String>{};
     final filtered = birds.where((b) {
       final matchRarity = _guideRarityFilter == 'all' || b.rarity == _guideRarityFilter;
       final matchSearch = _guideSearch.isEmpty ||
@@ -652,6 +714,15 @@ class _HomeScreenState extends State<HomeScreen> {
               hintText: 'Search species...',
               hintStyle: const TextStyle(color: Colors.white38),
               prefixIcon: const Icon(Icons.search, color: Colors.white38),
+              suffixIcon: _guideSearch.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.white38),
+                      onPressed: () {
+                        _guideSearchController.clear();
+                        setState(() => _guideSearch = '');
+                      },
+                    )
+                  : null,
               filled: true,
               fillColor: bgCard,
               border: OutlineInputBorder(
@@ -694,13 +765,45 @@ class _HomeScreenState extends State<HomeScreen> {
             }).toList(),
           ),
         ),
-        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+          child: Row(
+            children: [
+              Text(
+                'Showing ${filtered.length} of ${birds.length} species',
+                style: const TextStyle(color: Colors.white38, fontSize: 12),
+              ),
+              const Spacer(),
+              Text(
+                '${collectedNames.length} collected',
+                style: const TextStyle(color: Colors.amber, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
         Expanded(
-          child: ListView.builder(
+          child: filtered.isEmpty
+              ? Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    const Icon(Icons.search_off, size: 48, color: Colors.white24),
+                    const SizedBox(height: 12),
+                    Text(
+                      _guideSearch.isNotEmpty
+                          ? 'No birds matching "$_guideSearch"'
+                          : 'No birds in this category',
+                      style: const TextStyle(color: Colors.white54, fontSize: 16),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text('Try a different search or filter',
+                      style: TextStyle(color: Colors.white38, fontSize: 13)),
+                  ]),
+                )
+              : ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: filtered.length,
             itemBuilder: (c, i) {
               final bird = filtered[i];
+              final isCollected = collectedNames.contains(bird.name);
               return Card(
                 color: bgCard,
                 margin: const EdgeInsets.only(bottom: 8),
@@ -714,16 +817,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(8),
                     child: SizedBox(
                       width: 60, height: 60,
-                      child: CachedNetworkImage(
-                        imageUrl: bird.imageUrl,
-                        fit: BoxFit.cover,
-                        placeholder: (_, __) => Shimmer.fromColors(
-                          baseColor: bgCard,
-                          highlightColor: const Color(0xFF2A3F2F),
-                          child: Container(color: bgCard),
-                        ),
-                        errorWidget: (_, __, ___) =>
-                            const Icon(Icons.broken_image, color: Colors.white24),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: bird.imageUrl,
+                            fit: BoxFit.cover,
+                            placeholder: (_, __) => Shimmer.fromColors(
+                              baseColor: bgCard,
+                              highlightColor: const Color(0xFF2A3F2F),
+                              child: Container(color: bgCard),
+                            ),
+                            errorWidget: (_, __, ___) =>
+                                const Icon(Icons.broken_image, color: Colors.white24),
+                          ),
+                          if (isCollected)
+                            Positioned(
+                              top: 2, right: 2,
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: const BoxDecoration(
+                                  color: Colors.amber,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.check, size: 12, color: Colors.black),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ),
@@ -954,6 +1074,49 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Field Guide'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Audio Call Button (stateful for playback indicator) ─────────────────────
+
+class _AudioCallButton extends StatefulWidget {
+  final AudioPlayer player;
+  final Bird bird;
+  const _AudioCallButton({required this.player, required this.bird});
+
+  @override
+  State<_AudioCallButton> createState() => _AudioCallButtonState();
+}
+
+class _AudioCallButtonState extends State<_AudioCallButton> {
+  bool _playing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.player.playerStateStream.listen((state) {
+      if (!mounted) return;
+      final isPlaying = state.playing;
+      if (isPlaying != _playing) setState(() => _playing = isPlaying);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: 'Listen to ${widget.bird.name} call',
+      child: ElevatedButton.icon(
+        onPressed: () {
+          if (_playing) {
+            widget.player.stop();
+          } else {
+            widget.player.setUrl(widget.bird.audioUrl).then((_) => widget.player.play()).catchError((_) {});
+          }
+        },
+        icon: Icon(_playing ? Icons.stop : Icons.volume_up),
+        label: Text(_playing ? 'Stop' : 'Play Bird Call'),
       ),
     );
   }
