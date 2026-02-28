@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  build-apk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: output
+    volumes:
+      - ./build-output:/output-host
+    entrypoint: >
+      sh -c "cp /output/aviquest-release.apk /output-host/aviquest-release.apk
+             && echo ''
+             && echo '=== APK built successfully ==='
+             && echo 'Output: build-output/aviquest-release.apk'
+             && ls -lh /output-host/aviquest-release.apk"
