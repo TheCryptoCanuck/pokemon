@@ -19,7 +19,13 @@ android {
 
     buildTypes {
         release {
+            // Use debug signing for now — replace with release keystore before production
             signingConfig signingConfigs.debug
+
+            // Enable R8 code shrinking and obfuscation
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

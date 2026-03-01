@@ -1,5 +1,6 @@
 import 'dart:io'; // FIX 1: dart:io for File
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -9,6 +10,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:aviquest/security/security_manager.dart';
+import 'package:aviquest/security/secure_storage_helper.dart';
+import 'package:aviquest/security/input_validator.dart';
+import 'package:aviquest/security/app_lifecycle_observer.dart';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -4480,7 +4485,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   // FIX 3: Box<String> — no type adapter needed (was Box<Bird> which crashed)
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  // Initialize security subsystems
+  await SecurityManager.instance.initialize();
+  await SecurityManager.instance.enforcePortraitOrientation();
+
+  if (kDebugMode) {
+    debugPrint('[Security] Debug mode active — some protections relaxed');
+  }
+
   runApp(const AviQuest());
 }
 
@@ -4547,6 +4560,9 @@ class _HomeScreenState extends State<HomeScreen> {
   CameraController? _cam;
   bool _camReady = false;
 
+  // Security — lifecycle observer for background/foreground transitions
+  late AppLifecycleSecurityObserver _lifecycleObserver;
+
   int _tab = 1;
   String _guideSearch = '';
   String _guideRarityFilter = 'all';
@@ -4556,18 +4572,34 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _initHive();
     _initCamera();
+
+    // Register lifecycle security observer
+    _lifecycleObserver = AppLifecycleSecurityObserver(
+      onSecurityPause: () {
+        // Pause audio when app goes to background
+        _player.pause();
+      },
+    );
+    WidgetsBinding.instance.addObserver(_lifecycleObserver);
+
+    // Show root detection warning after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SecurityManager.instance.showSecurityWarningIfNeeded(context);
+    });
   }
 
   @override
   void dispose() {
     // FIX 6: dispose camera and player to avoid resource leaks
+    WidgetsBinding.instance.removeObserver(_lifecycleObserver);
     _cam?.dispose();
     _player.dispose();
     super.dispose();
   }
 
   Future<void> _initHive() async {
-    aviaryBox = await Hive.openBox<String>('aviary_v2');
+    // Use encrypted Hive box for secure local storage
+    aviaryBox = await SecureStorageHelper.instance.openEncryptedBox('aviary_v2');
     // FIX 7: mounted check after await
     if (!mounted) return;
     setState(() => hiveReady = true);
@@ -4726,13 +4758,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _addBird(Bird bird) {
     // FIX 2 & 3: audioUrl now exists; Box<String> stores name
-    if (bird.audioUrl.isNotEmpty) {
+    // Validate audio URL before loading
+    if (bird.audioUrl.isNotEmpty && InputValidator.isValidMediaUrl(bird.audioUrl)) {
       _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((_) {});
     }
 
     setState(() {
-      // FIX 3: store bird name string, not Bird object
-      aviaryBox.add(bird.name);
+      // FIX 3: store sanitized bird name string, not Bird object
+      aviaryBox.add(InputValidator.sanitizeBirdName(bird.name));
       xp += bird.xp;
 
       // Level up loop
@@ -4873,7 +4906,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _detailRow(Icons.landscape, 'Habitat', bird.habitat),
             _detailRow(Icons.eco, 'Conservation', bird.conservationStatus),
             _detailRow(Icons.bolt, 'XP Value', '+${bird.xp} XP'),
-            if (bird.audioUrl.isNotEmpty) ...[
+            if (bird.audioUrl.isNotEmpty && InputValidator.isValidMediaUrl(bird.audioUrl)) ...[
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: () {
@@ -4905,6 +4938,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildNetworkImage(String url, double height) {
+    // Validate URL is HTTPS and from a trusted domain before loading
+    if (!InputValidator.isValidMediaUrl(url)) {
+      return Container(
+        height: height,
+        color: _bgCard,
+        child: const Center(child: Icon(Icons.broken_image, color: Colors.white24, size: 48)),
+      );
+    }
+
     return CachedNetworkImage(
       imageUrl: url,
       height: height,
@@ -5098,12 +5140,16 @@ class _HomeScreenState extends State<HomeScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
           child: TextField(
-            onChanged: (v) => setState(() => _guideSearch = v),
+            onChanged: (v) => setState(() {
+              _guideSearch = InputValidator.sanitizeSearchQuery(v);
+            }),
+            maxLength: InputValidator.maxSearchLength,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               hintText: 'Search species...',
               hintStyle: const TextStyle(color: Colors.white38),
               prefixIcon: const Icon(Icons.search, color: Colors.white38),
+              counterText: '', // hide the character counter
               filled: true,
               fillColor: _bgCard,
               border: OutlineInputBorder(
