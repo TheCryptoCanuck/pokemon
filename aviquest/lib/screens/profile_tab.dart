@@ -2,27 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../constants.dart';
 import '../helpers/game_helpers.dart';
+import '../services/player_service.dart';
 
 class ProfileTab extends StatelessWidget {
-  final int level;
-  final int xp;
-  final int streak;
+  final PlayerState playerState;
   final int collectedCount;
-  final Set<String> unlockedAchievements;
 
   const ProfileTab({
     super.key,
-    required this.level,
-    required this.xp,
-    required this.streak,
+    required this.playerState,
     required this.collectedCount,
-    required this.unlockedAchievements,
   });
 
   @override
   Widget build(BuildContext context) {
-    final nextLevelXp = xpForNextLevel(level);
-    final progress = xp / nextLevelXp;
+    final nextLevelXp = playerState.xpForNextLevel;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -39,10 +33,10 @@ class ProfileTab extends StatelessWidget {
             child: const Center(child: Text('🦅', style: TextStyle(fontSize: 48))),
           ).animate().fadeIn().scale(),
           const SizedBox(height: 16),
-          Text(levelTitle(level),
+          Text(playerState.title,
             style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.amber))
               .animate().fadeIn(delay: 100.ms),
-          Text('Level $level', style: const TextStyle(fontSize: 16, color: Colors.white54)),
+          Text('Level ${playerState.level}', style: const TextStyle(fontSize: 16, color: Colors.white54)),
           const SizedBox(height: 20),
           // XP Bar
           Column(
@@ -50,13 +44,13 @@ class ProfileTab extends StatelessWidget {
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 const Text('XP Progress', style: TextStyle(color: Colors.white70)),
-                Text('$xp / $nextLevelXp', style: const TextStyle(color: Colors.amber)),
+                Text('${playerState.xp} / $nextLevelXp', style: const TextStyle(color: Colors.amber)),
               ]),
               const SizedBox(height: 6),
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: LinearProgressIndicator(
-                  value: progress.clamp(0.0, 1.0),
+                  value: playerState.xpProgress,
                   minHeight: 12,
                   backgroundColor: bgCard,
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
@@ -68,11 +62,11 @@ class ProfileTab extends StatelessWidget {
           // Stats row
           Row(
             children: [
-              _statCard('🔥', '$streak', 'Day Streak'),
+              _statCard('🔥', '${playerState.streak}', 'Day Streak'),
               const SizedBox(width: 12),
               _statCard('🐦', '$collectedCount', 'Species'),
               const SizedBox(width: 12),
-              _statCard('🏆', '${unlockedAchievements.length}', 'Badges'),
+              _statCard('🏆', '${playerState.unlockedAchievements.length}', 'Badges'),
             ],
           ).animate().fadeIn(delay: 200.ms),
           const SizedBox(height: 24),
@@ -85,7 +79,7 @@ class ProfileTab extends StatelessWidget {
           Wrap(
             spacing: 8, runSpacing: 8,
             children: achievements.entries.map((e) {
-              final unlocked = unlockedAchievements.contains(e.key);
+              final unlocked = playerState.unlockedAchievements.contains(e.key);
               return Tooltip(
                 message: unlocked ? e.value.$3 : '???',
                 child: AnimatedContainer(

@@ -1,17 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'constants.dart';
-import 'data/bird_database.dart';
 import 'screens/home_screen.dart';
+import 'services/aviary_service.dart';
+import 'services/bird_service.dart';
+import 'services/player_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await loadBirds();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(const AviQuest());
+
+  // Initialise services
+  final birdSvc = BirdService();
+  await birdSvc.load();
+
+  final aviaryBox = await Hive.openBox<String>('aviary_v2');
+  final aviarySvc = AviaryService(aviaryBox);
+
+  final playerBox = await Hive.openBox('player_stats');
+  final playerNotifier = PlayerNotifier(playerBox);
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        birdServiceProvider.overrideWithValue(birdSvc),
+        aviaryServiceProvider.overrideWithValue(aviarySvc),
+        playerProvider.overrideWith((_) => playerNotifier),
+      ],
+      child: const AviQuest(),
+    ),
+  );
 }
 
 class AviQuest extends StatelessWidget {

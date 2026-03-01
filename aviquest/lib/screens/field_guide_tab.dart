@@ -1,33 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import '../constants.dart';
-import '../data/bird_database.dart';
 import '../models/bird.dart';
+import '../services/bird_service.dart';
 
-class FieldGuideTab extends StatefulWidget {
-  final void Function(Bird bird) onBirdTap;
+class FieldGuideTab extends ConsumerStatefulWidget {
+  final void Function(Bird bird)? onBirdTap;
 
-  const FieldGuideTab({super.key, required this.onBirdTap});
+  const FieldGuideTab({super.key, this.onBirdTap});
 
   @override
-  State<FieldGuideTab> createState() => _FieldGuideTabState();
+  ConsumerState<FieldGuideTab> createState() => _FieldGuideTabState();
 }
 
-class _FieldGuideTabState extends State<FieldGuideTab> {
+class _FieldGuideTabState extends ConsumerState<FieldGuideTab> {
   String _guideSearch = '';
-  Rarity? _guideRarityFilter; // null = all
+  Rarity? _guideRarityFilter;
 
   @override
   Widget build(BuildContext context) {
-    final filtered = birds.where((b) {
-      final matchRarity = _guideRarityFilter == null || b.rarity == _guideRarityFilter;
-      final matchSearch = _guideSearch.isEmpty ||
-          b.name.toLowerCase().contains(_guideSearch.toLowerCase()) ||
-          b.scientificName.toLowerCase().contains(_guideSearch.toLowerCase());
-      return matchRarity && matchSearch;
-    }).toList();
+    final birdSvc = ref.read(birdServiceProvider);
+    final filtered = birdSvc.filter(rarity: _guideRarityFilter, search: _guideSearch);
 
     return Column(
       children: [
@@ -117,7 +113,7 @@ class _FieldGuideTabState extends State<FieldGuideTab> {
                     ]),
                   ]),
                   trailing: const Icon(Icons.chevron_right, color: Colors.white24),
-                  onTap: () => widget.onBirdTap(bird),
+                  onTap: widget.onBirdTap != null ? () => widget.onBirdTap!(bird) : null,
                 ),
               ).animate().fadeIn(delay: Duration(milliseconds: i * 30));
             },

@@ -4,32 +4,28 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 import '../constants.dart';
-import '../data/bird_database.dart';
-import '../helpers/game_helpers.dart';
 import '../models/bird.dart';
+import '../services/bird_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AviaryTab extends StatelessWidget {
-  final Box<String>? aviaryBox;
-  final bool hiveReady;
+class AviaryTab extends ConsumerWidget {
+  final Box<String> aviaryBox;
   final VoidCallback onGoIdentify;
   final void Function(Bird bird) onBirdTap;
 
   const AviaryTab({
     super.key,
     required this.aviaryBox,
-    required this.hiveReady,
     required this.onGoIdentify,
     required this.onBirdTap,
   });
 
   @override
-  Widget build(BuildContext context) {
-    if (!hiveReady || aviaryBox == null) {
-      return const Center(child: CircularProgressIndicator(color: Colors.amber));
-    }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final birdSvc = ref.read(birdServiceProvider);
 
     return ValueListenableBuilder<Box<String>>(
-      valueListenable: aviaryBox!.listenable(),
+      valueListenable: aviaryBox.listenable(),
       builder: (context, box, _) {
         if (box.isEmpty) {
           return Center(
@@ -58,7 +54,7 @@ class AviaryTab extends StatelessWidget {
           itemBuilder: (c, i) {
             final birdName = box.getAt(i);
             if (birdName == null) return const SizedBox.shrink();
-            final bird = birdIndex[birdName] ?? unknownBird(birdName);
+            final bird = birdSvc.lookup(birdName) ?? birdSvc.unknownBird(birdName);
             return GestureDetector(
               onTap: () => onBirdTap(bird),
               child: Card(
