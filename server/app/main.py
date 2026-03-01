@@ -70,7 +70,14 @@ app = FastAPI(
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    return _error(400, "INVALID_REQUEST", str(exc), _request_id())
+    # Build a clean message from validation errors without leaking server paths.
+    details = exc.errors()
+    parts = []
+    for err in details:
+        loc = " -> ".join(str(l) for l in err.get("loc", []))
+        parts.append(f"{loc}: {err.get('msg', 'invalid')}")
+    message = "; ".join(parts) if parts else "Invalid request."
+    return _error(400, "INVALID_REQUEST", message, _request_id())
 
 
 @app.exception_handler(Exception)

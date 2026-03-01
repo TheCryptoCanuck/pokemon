@@ -1,9 +1,6 @@
 """Tests for the AviQuest inference API."""
 
-import os
-
 import pytest
-from httpx import ASGITransport, AsyncClient
 
 
 # ------------------------------------------------------------------
@@ -116,8 +113,6 @@ async def test_infer_audio_bad_content_type(client):
 
 @pytest.mark.asyncio
 async def test_infer_image_too_large(client):
-    # Temporarily lower limit for test speed.
-    original = os.environ.get("MAX_IMAGE_BYTES")
     from app import config
     old_max = config.MAX_IMAGE_BYTES
     config.MAX_IMAGE_BYTES = 100  # 100 bytes
@@ -218,3 +213,63 @@ async def test_infer_image_real_model_not_loaded(client):
         assert resp.json()["error"]["type"] == "INTERNAL_ERROR"
     finally:
         config.MODEL_MODE = old_mode
+
+
+# ------------------------------------------------------------------
+# Error: unauthorized on audio endpoint
+# ------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_infer_audio_unauthorized(client):
+    from app import config
+    old_key = config.API_KEY
+    config.API_KEY = "audio-secret"
+
+    try:
+        resp = await client.post(
+            "/infer/audio",
+            files={"file": ("bird.wav", b"\x00" * 44, "audio/wav")},
+        )
+        assert resp.status_code == 401
+        assert resp.json()["error"]["type"] == "UNAUTHORIZED"
+
+        resp = await client.post(
+            "/infer/audio",
+            files={"file": ("bird.wav", b"\x00" * 44, "audio/wav")},
+            headers={"X-API-Key": "audio-secret"},
+        )
+        assert resp.status_code == 200
+    finally:
+        config.API_KEY = old_key
+
+
+# ------------------------------------------------------------------
+# Error: real model not loaded on audio endpoint (500)
+# ------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_infer_audio_real_model_not_loaded(client):
+    from app import config
+    old_mode = config.MODEL_MODE
+    config.MODEL_MODE = "real"
+
+    try:
+        resp = await client.post(
+            "/infer/audio",
+            files={"file": ("bird.wav", b"\x00" * 44, "audio/wav")},
+        )
+        assert resp.status_code == 500
+        assert resp.json()["error"]["type"] == "INTERNAL_ERROR"
+    finally:
+        config.MODEL_MODE = old_mode
+
+
+# ------------------------------------------------------------------
+# Error: missing file on audio endpoint
+# ------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_infer_audio_missing_file(client):
+    resp = await client.post("/infer/audio")
+    assert resp.status_code == 400
+    assert resp.json()["error"]["type"] == "INVALID_REQUEST"
