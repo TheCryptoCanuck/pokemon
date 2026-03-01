@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:aviquest/main.dart';
+import '../helpers/bird_test_helpers.dart';
+
+void main() {
+  group('Bird model', () {
+    group('constructor', () {
+      test('creates a Bird with all required fields', () {
+        final bird = makeBird(
+          name: 'Bald Eagle',
+          scientificName: 'Haliaeetus leucocephalus',
+          rarity: 'rare',
+          baseXp: 300,
+        );
+
+        expect(bird.name, 'Bald Eagle');
+        expect(bird.scientificName, 'Haliaeetus leucocephalus');
+        expect(bird.rarity, 'rare');
+        expect(bird.baseXp, 300);
+      });
+
+      test('stores empty audioUrl when none provided', () {
+        final bird = makeBird(audioUrl: '');
+        expect(bird.audioUrl, isEmpty);
+      });
+
+      test('stores non-empty audioUrl', () {
+        final bird = makeBird(audioUrl: 'https://xeno-canto.org/test.mp3');
+        expect(bird.audioUrl, 'https://xeno-canto.org/test.mp3');
+      });
+    });
+
+    group('xp getter', () {
+      test('returns baseXp for common rarity', () {
+        final bird = makeBird(rarity: 'common', baseXp: 100);
+        expect(bird.xp, 100);
+      });
+
+      test('returns 1.5x baseXp for uncommon rarity', () {
+        final bird = makeBird(rarity: 'uncommon', baseXp: 100);
+        expect(bird.xp, 150);
+      });
+
+      test('returns 2x baseXp for rare rarity', () {
+        final bird = makeBird(rarity: 'rare', baseXp: 100);
+        expect(bird.xp, 200);
+      });
+
+      test('returns 5x baseXp for legendary rarity', () {
+        final bird = makeBird(rarity: 'legendary', baseXp: 100);
+        expect(bird.xp, 500);
+      });
+
+      test('returns baseXp for unknown rarity (default case)', () {
+        final bird = makeBird(rarity: 'unknown', baseXp: 100);
+        expect(bird.xp, 100);
+      });
+
+      test('rounds correctly for uncommon with odd baseXp', () {
+        // 75 * 1.5 = 112.5 → 113 (rounds up)
+        final bird = makeBird(rarity: 'uncommon', baseXp: 75);
+        expect(bird.xp, 113);
+      });
+
+      test('handles zero baseXp', () {
+        final bird = makeBird(rarity: 'legendary', baseXp: 0);
+        expect(bird.xp, 0);
+      });
+
+      test('handles large baseXp values', () {
+        final bird = makeBird(rarity: 'legendary', baseXp: 10000);
+        expect(bird.xp, 50000);
+      });
+    });
+
+    group('rarityColor getter', () {
+      test('returns white70 for common rarity', () {
+        expect(commonBird.rarityColor, Colors.white70);
+      });
+
+      test('returns green for uncommon rarity', () {
+        expect(uncommonBird.rarityColor, const Color(0xFF4CAF50));
+      });
+
+      test('returns blue for rare rarity', () {
+        expect(rareBird.rarityColor, const Color(0xFF2196F3));
+      });
+
+      test('returns amber for legendary rarity', () {
+        expect(legendaryBird.rarityColor, Colors.amber);
+      });
+
+      test('returns white70 as fallback for unrecognised rarity', () {
+        final bird = makeBird(rarity: 'mythical');
+        expect(bird.rarityColor, Colors.white70);
+      });
+
+      test('returns purple for unknown rarity', () {
+        final bird = makeBird(rarity: 'unknown');
+        expect(bird.rarityColor, const Color(0xFFCE93D8));
+      });
+    });
+  });
+}
