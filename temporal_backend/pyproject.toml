@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aviquest-temporal"
+version = "1.0.0"
+description = "Temporal workflow backend for AviQuest bird identification game"
+requires-python = ">=3.11"
+dependencies = [
+    "temporalio>=1.7.1,<2.0",
+    "pydantic>=2.5,<3.0",
+    "httpx>=0.27,<1.0",
+    "aiosqlite>=0.20,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0,<9.0",
+    "pytest-asyncio>=0.24,<1.0",
+    "pytest-cov>=5.0,<6.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = ["workflows*", "activities*", "models*", "config*"]
