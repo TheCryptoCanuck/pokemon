@@ -9,6 +9,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../constants.dart';
+import '../data/bird_database.dart';
 import '../helpers/game_helpers.dart';
 import '../models/bird.dart';
 import '../widgets/bird_detail_sheet.dart';
@@ -27,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Player stats
+  // Player stats — persisted in Hive 'player_stats' box
   int level = 1;
   int xp = 0;
   int streak = 1;
@@ -35,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Storage
   late Box<String> aviaryBox;
+  late Box playerStatsBox;
   bool hiveReady = false;
 
   // Hardware
@@ -61,8 +63,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _initHive() async {
     aviaryBox = await Hive.openBox<String>('aviary_v2');
+    playerStatsBox = await Hive.openBox('player_stats');
+    _loadPlayerStats();
     if (!mounted) return;
     setState(() => hiveReady = true);
+  }
+
+  void _loadPlayerStats() {
+    level = playerStatsBox.get('level', defaultValue: 1) as int;
+    xp = playerStatsBox.get('xp', defaultValue: 0) as int;
+    streak = playerStatsBox.get('streak', defaultValue: 1) as int;
+    final savedAchievements = playerStatsBox.get('achievements', defaultValue: <String>[]);
+    unlockedAchievements = Set<String>.from(savedAchievements as List);
+  }
+
+  void _savePlayerStats() {
+    playerStatsBox.put('level', level);
+    playerStatsBox.put('xp', xp);
+    playerStatsBox.put('streak', streak);
+    playerStatsBox.put('achievements', unlockedAchievements.toList());
   }
 
   Future<void> _initCamera() async {
@@ -113,16 +132,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showFoundDialog(Bird bird) {
+    final alreadyOwned = aviaryBox.values.contains(bird.name);
     showDialog(
       context: context,
       builder: (ctx) => BirdFoundDialog(
         bird: bird,
+        alreadyOwned: alreadyOwned,
         onAdd: () => _addBird(bird),
       ),
     );
   }
 
   void _addBird(Bird bird) {
+    // Prevent duplicates — only add if not already in aviary
+    if (aviaryBox.values.contains(bird.name)) return;
+
     if (bird.audioUrl.isNotEmpty) {
       _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((_) {});
     }
@@ -138,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       _checkAchievements(bird);
+      _savePlayerStats();
     });
   }
 
@@ -169,8 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (collected >= 5) tryUnlock('five_species');
     if (collected >= 10) tryUnlock('ten_species');
     if (collected >= 20) tryUnlock('twenty_species');
-    if (bird.rarity == 'rare' || bird.rarity == 'legendary') tryUnlock('rare_find');
-    if (bird.rarity == 'legendary') tryUnlock('legendary_find');
+    if (bird.rarity == Rarity.rare || bird.rarity == Rarity.legendary) tryUnlock('rare_find');
+    if (bird.rarity == Rarity.legendary) tryUnlock('legendary_find');
     if (level >= 5) tryUnlock('level_5');
     if (level >= 10) tryUnlock('level_10');
     if (level >= 20) tryUnlock('level_20');
@@ -212,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onIdentifyByCall: () => _simulateIdentify(File('')),
       ),
       AviaryTab(
-        aviaryBox: hiveReady ? aviaryBox : Hive.box<String>('aviary_v2'),
+        aviaryBox: hiveReady ? aviaryBox : null,
         hiveReady: hiveReady,
         onGoIdentify: () => setState(() => _tab = 1),
         onBirdTap: _showBirdDetail,

@@ -43,13 +43,13 @@ class BirdDetailSheet extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: bird.rarityColor.withOpacity(0.15),
+                color: bird.rarity.color.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: bird.rarityColor),
+                border: Border.all(color: bird.rarity.color),
               ),
               child: Text(
-                bird.rarity == 'unknown' ? 'NEW DISCOVERY' : bird.rarity.toUpperCase(),
-                style: TextStyle(color: bird.rarityColor, fontWeight: FontWeight.bold),
+                bird.rarity.label,
+                style: TextStyle(color: bird.rarity.color, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -60,20 +60,20 @@ class BirdDetailSheet extends StatelessWidget {
           Center(child: Text(bird.scientificName,
             style: const TextStyle(color: Colors.white54, fontStyle: FontStyle.italic))),
           const SizedBox(height: 16),
-          if (bird.rarity == 'unknown')
+          if (bird.rarity == Rarity.unknown)
             Container(
               height: 160,
               decoration: BoxDecoration(
-                color: bird.rarityColor.withOpacity(0.08),
+                color: bird.rarity.color.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: bird.rarityColor.withOpacity(0.4)),
+                border: Border.all(color: bird.rarity.color.withOpacity(0.4)),
               ),
               child: Center(
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                   const Text('❓', style: TextStyle(fontSize: 64)),
                   const SizedBox(height: 6),
                   Text('Photo not yet in database',
-                      style: TextStyle(color: bird.rarityColor)),
+                      style: TextStyle(color: bird.rarity.color)),
                 ]),
               ),
             )

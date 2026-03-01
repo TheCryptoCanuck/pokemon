@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'constants.dart';
+import 'data/bird_database.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await loadBirds();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const AviQuest());
 }

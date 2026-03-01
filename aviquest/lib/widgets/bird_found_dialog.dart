@@ -6,13 +6,19 @@ import 'network_bird_image.dart';
 
 class BirdFoundDialog extends StatelessWidget {
   final Bird bird;
+  final bool alreadyOwned;
   final VoidCallback onAdd;
 
-  const BirdFoundDialog({super.key, required this.bird, required this.onAdd});
+  const BirdFoundDialog({
+    super.key,
+    required this.bird,
+    this.alreadyOwned = false,
+    required this.onAdd,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isUnknown = bird.rarity == 'unknown';
+    final isUnknown = bird.rarity == Rarity.unknown;
     return Dialog(
       backgroundColor: bgCard,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -25,20 +31,20 @@ class BirdFoundDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: bird.rarityColor.withOpacity(0.2),
+                color: bird.rarity.color.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: bird.rarityColor),
+                border: Border.all(color: bird.rarity.color),
               ),
               child: Text(
-                isUnknown ? 'NEW DISCOVERY' : bird.rarity.toUpperCase(),
-                style: TextStyle(color: bird.rarityColor, fontWeight: FontWeight.bold, fontSize: 12),
+                bird.rarity.label,
+                style: TextStyle(color: bird.rarity.color, fontWeight: FontWeight.bold, fontSize: 12),
               ),
             ).animate().fadeIn().scale(),
             const SizedBox(height: 12),
             Text(
               isUnknown ? '🔭 ${bird.name}' : '✨ ${bird.name}',
               style: TextStyle(
-                color: isUnknown ? bird.rarityColor : Colors.amber,
+                color: isUnknown ? bird.rarity.color : Colors.amber,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
@@ -53,16 +59,16 @@ class BirdFoundDialog extends StatelessWidget {
               Container(
                 height: 140,
                 decoration: BoxDecoration(
-                  color: bird.rarityColor.withOpacity(0.08),
+                  color: bird.rarity.color.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: bird.rarityColor.withOpacity(0.4)),
+                  border: Border.all(color: bird.rarity.color.withOpacity(0.4)),
                 ),
                 child: Center(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Text('❓', style: TextStyle(fontSize: 56)),
+                    const Text('❓', style: TextStyle(fontSize: 56)),
                     const SizedBox(height: 6),
                     Text('Not in our database yet',
-                        style: TextStyle(color: bird.rarityColor, fontWeight: FontWeight.bold)),
+                        style: TextStyle(color: bird.rarity.color, fontWeight: FontWeight.bold)),
                   ]),
                 ),
               ).animate().fadeIn(delay: 200.ms)
@@ -81,6 +87,10 @@ class BirdFoundDialog extends StatelessWidget {
                 Text(' +${bird.xp} XP', style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
               ],
             ),
+            if (alreadyOwned) ...[
+              const SizedBox(height: 8),
+              const Text('Already in your aviary', style: TextStyle(color: Colors.white38, fontSize: 12)),
+            ],
             const SizedBox(height: 16),
             Row(
               children: [
@@ -88,19 +98,21 @@ class BirdFoundDialog extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(foregroundColor: Colors.white54),
-                    child: const Text('Skip'),
+                    child: Text(alreadyOwned ? 'OK' : 'Skip'),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      onAdd();
-                    },
-                    child: const Text('Add to Aviary'),
+                if (!alreadyOwned) ...[
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onAdd();
+                      },
+                      child: const Text('Add to Aviary'),
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ],

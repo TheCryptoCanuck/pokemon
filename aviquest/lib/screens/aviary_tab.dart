@@ -9,7 +9,7 @@ import '../helpers/game_helpers.dart';
 import '../models/bird.dart';
 
 class AviaryTab extends StatelessWidget {
-  final Box<String> aviaryBox;
+  final Box<String>? aviaryBox;
   final bool hiveReady;
   final VoidCallback onGoIdentify;
   final void Function(Bird bird) onBirdTap;
@@ -24,12 +24,12 @@ class AviaryTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!hiveReady) {
+    if (!hiveReady || aviaryBox == null) {
       return const Center(child: CircularProgressIndicator(color: Colors.amber));
     }
 
     return ValueListenableBuilder<Box<String>>(
-      valueListenable: aviaryBox.listenable(),
+      valueListenable: aviaryBox!.listenable(),
       builder: (context, box, _) {
         if (box.isEmpty) {
           return Center(
@@ -58,17 +58,14 @@ class AviaryTab extends StatelessWidget {
           itemBuilder: (c, i) {
             final birdName = box.getAt(i);
             if (birdName == null) return const SizedBox.shrink();
-            final bird = birds.firstWhere(
-              (b) => b.name == birdName,
-              orElse: () => unknownBird(birdName),
-            );
+            final bird = birdIndex[birdName] ?? unknownBird(birdName);
             return GestureDetector(
               onTap: () => onBirdTap(bird),
               child: Card(
                 color: bgCard,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: bird.rarityColor.withOpacity(0.6), width: 1.5),
+                  side: BorderSide(color: bird.rarity.color.withOpacity(0.6), width: 1.5),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: Stack(
@@ -100,8 +97,8 @@ class AviaryTab extends StatelessWidget {
                           Text(bird.name,
                             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
                             maxLines: 1, overflow: TextOverflow.ellipsis),
-                          Text(bird.rarity,
-                            style: TextStyle(color: bird.rarityColor, fontSize: 11)),
+                          Text(bird.rarity.name,
+                            style: TextStyle(color: bird.rarity.color, fontSize: 11)),
                         ]),
                       ),
                     ),

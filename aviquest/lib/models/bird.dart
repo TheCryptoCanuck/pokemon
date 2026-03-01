@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class Bird {
@@ -9,7 +8,7 @@ class Bird {
   final String lore;
   final String habitat;
   final String conservationStatus;
-  final String rarity; // 'common' | 'uncommon' | 'rare' | 'legendary'
+  final Rarity rarity;
   final int baseXp;
 
   const Bird({
@@ -24,13 +23,35 @@ class Bird {
     required this.baseXp,
   });
 
-  Color get rarityColor => rarityColors[rarity] ?? Colors.white70;
+  factory Bird.fromJson(Map<String, dynamic> json) => Bird(
+    name: json['name'] as String,
+    scientificName: json['scientificName'] as String,
+    imageUrl: json['imageUrl'] as String,
+    audioUrl: json['audioUrl'] as String,
+    lore: json['lore'] as String,
+    habitat: json['habitat'] as String,
+    conservationStatus: json['conservationStatus'] as String,
+    rarity: Rarity.values.byName(json['rarity'] as String),
+    baseXp: json['baseXp'] as int,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'scientificName': scientificName,
+    'imageUrl': imageUrl,
+    'audioUrl': audioUrl,
+    'lore': lore,
+    'habitat': habitat,
+    'conservationStatus': conservationStatus,
+    'rarity': rarity.name,
+    'baseXp': baseXp,
+  };
 
   int get xp {
     switch (rarity) {
-      case 'uncommon': return (baseXp * 1.5).round();
-      case 'rare': return baseXp * 2;
-      case 'legendary': return baseXp * 5;
+      case Rarity.uncommon: return (baseXp * 1.5).round();
+      case Rarity.rare: return baseXp * 2;
+      case Rarity.legendary: return baseXp * 5;
       default: return baseXp;
     }
   }
