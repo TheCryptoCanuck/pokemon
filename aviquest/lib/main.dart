@@ -10,6 +10,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'database/database.dart';
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const _bgDeep = Color(0xFF0A1F0F);
@@ -4480,6 +4482,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   // FIX 3: Box<String> — no type adapter needed (was Box<Bird> which crashed)
+
+  // Initialize SQLite database layer (migrations run automatically)
+  await DatabaseService.instance.initialize();
+
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const AviQuest());
 }
@@ -4541,6 +4547,12 @@ class _HomeScreenState extends State<HomeScreen> {
   late Box<String> aviaryBox;
   bool hiveReady = false;
 
+  // Database layer — SQLite repositories for structured data
+  final _birdRepo = BirdRepository();
+  final _aviaryRepo = AviaryRepository();
+  final _playerRepo = PlayerRepository();
+  final _dbAdmin = DbAdmin();
+
   // Hardware
   final _player = AudioPlayer();
   final _rng = Random();
@@ -4556,6 +4568,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _initHive();
     _initCamera();
+    _seedDatabase();
   }
 
   @override
@@ -4585,6 +4598,16 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() => _camReady = true);
     } catch (_) {
       // Camera unavailable — silently degrade
+    }
+  }
+
+  /// Seed the SQLite bird catalog from the in-memory birds list on first launch.
+  Future<void> _seedDatabase() async {
+    try {
+      final seeder = BirdSeeder(_birdRepo);
+      await seeder.seedFromBirds(birds);
+    } catch (e) {
+      debugPrint('[DB] Seeding error (non-fatal): $e');
     }
   }
 
@@ -4744,6 +4767,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
       _checkAchievements(bird);
     });
+
+    // Persist to SQLite (non-blocking, fire-and-forget)
+    _aviaryRepo.addSighting(birdName: bird.name).catchError((_) {});
+    _playerRepo.updateStats(level: level, xp: xp, streak: streak).catchError((_) {});
+    _playerRepo.incrementSightings().catchError((_) {});
   }
 
   void _showLevelUp() {
@@ -4779,6 +4807,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (level >= 5) tryUnlock('level_5');
     if (level >= 10) tryUnlock('level_10');
     if (level >= 20) tryUnlock('level_20');
+
+    // Persist new achievements to SQLite
+    for (final key in newOnes) {
+      _playerRepo.unlockAchievement(key).catchError((_) {});
+    }
 
     for (final key in newOnes) {
       final a = _achievements[key]!;
