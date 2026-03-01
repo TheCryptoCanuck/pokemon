@@ -1,0 +1,9 @@
+output "dashboard_name" {
+  description = "CloudWatch dashboard name"
+  value       = aws_cloudwatch_dashboard.main.dashboard_name
+}
+
+output "alarms_topic_arn" {
+  description = "SNS topic ARN for alarm notifications"
+  value       = aws_sns_topic.alarms.arn
+}
