@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -13,28 +13,23 @@ import '../helpers/game_helpers.dart';
 import '../models/bird.dart';
 import '../services/aviary_service.dart';
 import '../services/bird_service.dart';
+import '../services/identification_service.dart';
 import '../services/player_service.dart';
 import '../widgets/bird_detail_sheet.dart';
 import '../widgets/bird_found_dialog.dart';
-import 'aviary_tab.dart';
-import 'field_guide_tab.dart';
-import 'identify_tab.dart';
-import 'map_tab.dart';
-import 'profile_tab.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+class IdentifyScreen extends ConsumerStatefulWidget {
+  const IdentifyScreen({super.key});
 
   @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<IdentifyScreen> createState() => _IdentifyScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
   final _player = AudioPlayer();
   final _rng = Random();
   CameraController? _cam;
   bool _camReady = false;
-  int _tab = 1;
 
   @override
   void initState() {
@@ -66,13 +61,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     try {
       final file = await _cam!.takePicture();
       if (!mounted) return;
-      await _simulateIdentify(File(file.path));
+      await _identify(File(file.path));
     } catch (_) {}
   }
 
-  Future<void> _simulateIdentify(File _) async {
-    final birdSvc = ref.read(birdServiceProvider);
-    final matchedBird = birdSvc.weightedRandomBird(_rng);
+  Future<void> _identify(File imageFile) async {
+    final idService = ref.read(identificationServiceProvider);
 
     showDialog(
       context: context,
@@ -89,7 +83,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
 
-    await Future.delayed(const Duration(milliseconds: 1800));
+    final matchedBird = await idService.identify(imageFile);
     if (!mounted) return;
     Navigator.pop(context);
     _showFoundDialog(matchedBird);
@@ -110,7 +104,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _addBird(Bird bird) {
     final aviarySvc = ref.read(aviaryServiceProvider);
-    if (!aviarySvc.add(bird.name)) return; // duplicate
+    if (!aviarySvc.add(bird.name)) return;
 
     if (bird.audioUrl.isNotEmpty) {
       _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((_) {});
@@ -118,12 +112,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final playerNotifier = ref.read(playerProvider.notifier);
     final newAchievements = playerNotifier.addXpForBird(bird, aviarySvc.count);
-    final playerState = ref.read(playerProvider);
-
-    // Show level-up if level changed
-    if (playerState.level > 1) {
-      // We check fresh state after XP award
-    }
 
     for (final key in newAchievements) {
       final a = achievements[key]!;
@@ -147,53 +135,67 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  void _showBirdDetail(Bird bird) {
-    BirdDetailSheet.show(context, bird, _player);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final playerState = ref.watch(playerProvider);
-    final aviarySvc = ref.read(aviaryServiceProvider);
-
-    final tabs = [
-      const MapTab(),
-      IdentifyTab(
-        cam: _cam,
-        camReady: _camReady,
-        onTakePhoto: _takePhoto,
-        onIdentifyByCall: () => _simulateIdentify(File('')),
-      ),
-      AviaryTab(
-        aviaryBox: aviarySvc.box,
-        onGoIdentify: () => setState(() => _tab = 1),
-        onBirdTap: _showBirdDetail,
-      ),
-      FieldGuideTab(onBirdTap: _showBirdDetail),
-      ProfileTab(
-        playerState: playerState,
-        collectedCount: aviarySvc.count,
-      ),
-    ];
-
-    return Scaffold(
-      body: SafeArea(
-        child: IndexedStack(index: _tab, children: tabs),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _tab,
-        onTap: (i) {
-          HapticFeedback.selectionClick();
-          setState(() => _tab = i);
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: 'Identify'),
-          BottomNavigationBarItem(icon: Icon(Icons.collections), label: 'Aviary'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Field Guide'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text('AviQuest', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.amber))
+            .animate().fadeIn().slideY(begin: -0.3),
+        const Text('Point at a bird and identify it!',
+            style: TextStyle(color: Colors.white54)).animate().fadeIn(delay: 100.ms),
+        const SizedBox(height: 24),
+        if (_camReady && _cam != null)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: Container(
+              height: 300,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.amber.withOpacity(0.5), width: 2),
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: CameraPreview(_cam!),
+            ),
+          ).animate().fadeIn(delay: 200.ms).scale()
+        else
+          Container(
+            height: 300,
+            decoration: BoxDecoration(
+              color: bgCard,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.white12),
+            ),
+            child: const Center(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.camera_alt, size: 64, color: Colors.white24),
+                SizedBox(height: 8),
+                Text('Camera unavailable', style: TextStyle(color: Colors.white38)),
+              ]),
+            ),
+          ),
+        const SizedBox(height: 32),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(
+              onPressed: _takePhoto,
+              icon: const Icon(Icons.camera_alt, size: 28),
+              label: const Text('Identify by Photo'),
+            ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3),
+            const SizedBox(width: 16),
+            OutlinedButton.icon(
+              onPressed: () => _identify(File('')),
+              icon: const Icon(Icons.mic, color: Colors.amber),
+              label: const Text('By Call', style: TextStyle(color: Colors.amber)),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.amber),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+            ).animate().fadeIn(delay: 350.ms).slideY(begin: 0.3),
+          ],
+        ),
+      ],
     );
   }
 }

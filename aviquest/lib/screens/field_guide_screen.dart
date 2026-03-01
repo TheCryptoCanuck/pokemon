@@ -2,21 +2,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:shimmer/shimmer.dart';
 import '../constants.dart';
 import '../models/bird.dart';
 import '../services/bird_service.dart';
+import '../widgets/bird_detail_sheet.dart';
 
-class FieldGuideTab extends ConsumerStatefulWidget {
-  final void Function(Bird bird)? onBirdTap;
-
-  const FieldGuideTab({super.key, this.onBirdTap});
+class FieldGuideScreen extends ConsumerStatefulWidget {
+  const FieldGuideScreen({super.key});
 
   @override
-  ConsumerState<FieldGuideTab> createState() => _FieldGuideTabState();
+  ConsumerState<FieldGuideScreen> createState() => _FieldGuideScreenState();
 }
 
-class _FieldGuideTabState extends ConsumerState<FieldGuideTab> {
+class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
   String _guideSearch = '';
   Rarity? _guideRarityFilter;
 
@@ -113,7 +113,7 @@ class _FieldGuideTabState extends ConsumerState<FieldGuideTab> {
                     ]),
                   ]),
                   trailing: const Icon(Icons.chevron_right, color: Colors.white24),
-                  onTap: widget.onBirdTap != null ? () => widget.onBirdTap!(bird) : null,
+                  onTap: () => BirdDetailSheet.show(context, bird, AudioPlayer()),
                 ),
               ).animate().fadeIn(delay: Duration(milliseconds: i * 30));
             },

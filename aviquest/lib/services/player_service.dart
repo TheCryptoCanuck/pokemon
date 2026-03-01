@@ -1,8 +1,11 @@
 import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:logging/logging.dart';
 import '../constants.dart';
 import '../models/bird.dart';
+
+final _log = Logger('PlayerService');
 
 class PlayerState {
   final int level;
@@ -71,6 +74,7 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
 
   /// Awards XP for a bird and returns list of newly unlocked achievement keys.
   List<String> addXpForBird(Bird bird, int aviaryCount) {
+    final oldLevel = state.level;
     var newLevel = state.level;
     var newXp = state.xp + bird.xp;
 
@@ -105,6 +109,14 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
       unlockedAchievements: newAchievements,
     );
     _save();
+
+    if (newLevel > oldLevel) {
+      _log.info('Level up! $oldLevel → $newLevel');
+    }
+    if (unlocked.isNotEmpty) {
+      _log.info('Achievements unlocked: $unlocked');
+    }
+
     return unlocked;
   }
 }

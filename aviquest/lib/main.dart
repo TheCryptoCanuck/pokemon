@@ -4,13 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'constants.dart';
-import 'screens/home_screen.dart';
+import 'router.dart';
 import 'services/aviary_service.dart';
 import 'services/bird_service.dart';
+import 'services/log_service.dart';
 import 'services/player_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  LogService.init();
+
   await Hive.initFlutter();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
@@ -41,8 +44,9 @@ class AviQuest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'AviQuest',
+      routerConfig: router,
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: bgDeep,
         primaryColor: Colors.amber,
@@ -67,7 +71,6 @@ class AviQuest extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
         ),
       ),
-      home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants.dart';
 import '../helpers/game_helpers.dart';
+import '../services/aviary_service.dart';
 import '../services/player_service.dart';
 
-class ProfileTab extends StatelessWidget {
-  final PlayerState playerState;
-  final int collectedCount;
-
-  const ProfileTab({
-    super.key,
-    required this.playerState,
-    required this.collectedCount,
-  });
+class ProfileScreen extends ConsumerWidget {
+  const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playerState = ref.watch(playerProvider);
+    final aviarySvc = ref.read(aviaryServiceProvider);
     final nextLevelXp = playerState.xpForNextLevel;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          // Avatar ring
           Container(
             width: 100, height: 100,
             decoration: BoxDecoration(
@@ -38,7 +34,6 @@ class ProfileTab extends StatelessWidget {
               .animate().fadeIn(delay: 100.ms),
           Text('Level ${playerState.level}', style: const TextStyle(fontSize: 16, color: Colors.white54)),
           const SizedBox(height: 20),
-          // XP Bar
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -59,18 +54,16 @@ class ProfileTab extends StatelessWidget {
             ],
           ).animate().fadeIn(delay: 150.ms),
           const SizedBox(height: 20),
-          // Stats row
           Row(
             children: [
               _statCard('🔥', '${playerState.streak}', 'Day Streak'),
               const SizedBox(width: 12),
-              _statCard('🐦', '$collectedCount', 'Species'),
+              _statCard('🐦', '${aviarySvc.count}', 'Species'),
               const SizedBox(width: 12),
               _statCard('🏆', '${playerState.unlockedAchievements.length}', 'Badges'),
             ],
           ).animate().fadeIn(delay: 200.ms),
           const SizedBox(height: 24),
-          // Achievements
           const Align(
             alignment: Alignment.centerLeft,
             child: Text('Achievements', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
@@ -101,7 +94,6 @@ class ProfileTab extends StatelessWidget {
             }).toList(),
           ).animate().fadeIn(delay: 250.ms),
           const SizedBox(height: 24),
-          // Eco impact
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(

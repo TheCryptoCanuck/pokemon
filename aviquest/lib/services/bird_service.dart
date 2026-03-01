@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 import '../constants.dart';
 import '../models/bird.dart';
+
+final _log = Logger('BirdService');
 
 class BirdService {
   late final List<Bird> _birds;
@@ -13,12 +16,18 @@ class BirdService {
   Map<String, Bird> get index => _index;
 
   Future<void> load() async {
-    final jsonStr = await rootBundle.loadString('assets/birds.json');
-    final List<dynamic> jsonList = json.decode(jsonStr) as List<dynamic>;
-    _birds = jsonList
-        .map((e) => Bird.fromJson(e as Map<String, dynamic>))
-        .toList(growable: false);
-    _index = {for (final b in _birds) b.name: b};
+    try {
+      final jsonStr = await rootBundle.loadString('assets/birds.json');
+      final List<dynamic> jsonList = json.decode(jsonStr) as List<dynamic>;
+      _birds = jsonList
+          .map((e) => Bird.fromJson(e as Map<String, dynamic>))
+          .toList(growable: false);
+      _index = {for (final b in _birds) b.name: b};
+      _log.info('Loaded ${_birds.length} birds');
+    } catch (e, st) {
+      _log.severe('Failed to load birds.json', e, st);
+      rethrow;
+    }
   }
 
   Bird? lookup(String name) => _index[name];

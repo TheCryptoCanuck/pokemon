@@ -1,31 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:shimmer/shimmer.dart';
 import '../constants.dart';
 import '../models/bird.dart';
+import '../services/aviary_service.dart';
 import '../services/bird_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/bird_detail_sheet.dart';
 
-class AviaryTab extends ConsumerWidget {
-  final Box<String> aviaryBox;
-  final VoidCallback onGoIdentify;
-  final void Function(Bird bird) onBirdTap;
-
-  const AviaryTab({
-    super.key,
-    required this.aviaryBox,
-    required this.onGoIdentify,
-    required this.onBirdTap,
-  });
+class AviaryScreen extends ConsumerWidget {
+  const AviaryScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final aviarySvc = ref.read(aviaryServiceProvider);
     final birdSvc = ref.read(birdServiceProvider);
 
     return ValueListenableBuilder<Box<String>>(
-      valueListenable: aviaryBox.listenable(),
+      valueListenable: aviarySvc.box.listenable(),
       builder: (context, box, _) {
         if (box.isEmpty) {
           return Center(
@@ -38,7 +34,7 @@ class AviaryTab extends ConsumerWidget {
                   style: TextStyle(color: Colors.white38)),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: onGoIdentify,
+                onPressed: () => context.go('/identify'),
                 child: const Text('Go Identify'),
               ),
             ]),
@@ -56,7 +52,7 @@ class AviaryTab extends ConsumerWidget {
             if (birdName == null) return const SizedBox.shrink();
             final bird = birdSvc.lookup(birdName) ?? birdSvc.unknownBird(birdName);
             return GestureDetector(
-              onTap: () => onBirdTap(bird),
+              onTap: () => BirdDetailSheet.show(context, bird, AudioPlayer()),
               child: Card(
                 color: bgCard,
                 shape: RoundedRectangleBorder(
