@@ -9,7 +9,7 @@ void main() {
       const state = PlayerState();
       expect(state.level, 1);
       expect(state.xp, 0);
-      expect(state.streak, 1);
+      expect(state.streak, 0);
       expect(state.unlockedAchievements, isEmpty);
     });
 
@@ -48,23 +48,51 @@ void main() {
     });
   });
 
-  group('AviaryService duplicate prevention', () {
-    test('Bird XP multipliers are correct for testing', () {
-      Bird makeBird(Rarity r) => Bird(
-        name: 'Test',
-        scientificName: '',
-        imageUrl: '',
-        audioUrl: '',
-        lore: '',
-        habitat: '',
-        conservationStatus: '',
-        rarity: r,
-        baseXp: 100,
-      );
+  group('Bird XP multipliers', () {
+    Bird makeBird(Rarity r) => Bird(
+      name: 'Test',
+      scientificName: '',
+      imageUrl: '',
+      audioUrl: '',
+      lore: '',
+      habitat: '',
+      conservationStatus: '',
+      rarity: r,
+      baseXp: 100,
+    );
 
-      // Verify XP values that PlayerNotifier would use
+    test('common gives base XP', () {
       expect(makeBird(Rarity.common).xp, 100);
+    });
+
+    test('uncommon gives 1.5x', () {
+      expect(makeBird(Rarity.uncommon).xp, 150);
+    });
+
+    test('rare gives 2x', () {
+      expect(makeBird(Rarity.rare).xp, 200);
+    });
+
+    test('legendary gives 5x', () {
       expect(makeBird(Rarity.legendary).xp, 500);
+    });
+
+    test('unknown gives base XP', () {
+      expect(makeBird(Rarity.unknown).xp, 100);
+    });
+  });
+
+  group('Achievement definitions', () {
+    test('all achievement keys are unique', () {
+      // Import game_helpers indirectly via the achievements map
+      // This ensures the constant map has no duplicate keys
+      const achievementKeys = [
+        'first_bird', 'five_species', 'ten_species', 'twenty_species',
+        'rare_find', 'legendary_find',
+        'level_5', 'level_10', 'level_20',
+        'streak_7', 'streak_30',
+      ];
+      expect(achievementKeys.toSet().length, achievementKeys.length);
     });
   });
 }

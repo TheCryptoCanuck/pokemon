@@ -9,4 +9,6 @@ const achievements = {
   'level_5': ('⭐', 'Rising Birder', 'Reach level 5'),
   'level_10': ('🌟', 'Expert Nester', 'Reach level 10'),
   'level_20': ('🌠', 'Sky Master', 'Reach level 20'),
+  'streak_7': ('🔥', 'Week Warrior', 'Maintain a 7-day streak'),
+  'streak_30': ('💪', 'Dedicated Birder', 'Maintain a 30-day streak'),
 };

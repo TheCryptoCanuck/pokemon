@@ -16,7 +16,7 @@ class PlayerState {
   const PlayerState({
     this.level = 1,
     this.xp = 0,
-    this.streak = 1,
+    this.streak = 0,
     this.unlockedAchievements = const {},
   });
 
@@ -52,13 +52,14 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
 
   PlayerNotifier(this._box) : super(const PlayerState()) {
     _load();
+    _updateStreak();
   }
 
   void _load() {
     state = PlayerState(
       level: _box.get('level', defaultValue: 1) as int,
       xp: _box.get('xp', defaultValue: 0) as int,
-      streak: _box.get('streak', defaultValue: 1) as int,
+      streak: _box.get('streak', defaultValue: 0) as int,
       unlockedAchievements: Set<String>.from(
         _box.get('achievements', defaultValue: <String>[]) as List,
       ),
@@ -71,6 +72,42 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
     _box.put('streak', state.streak);
     _box.put('achievements', state.unlockedAchievements.toList());
   }
+
+  /// Check and update the daily streak on app open.
+  void _updateStreak() {
+    final now = DateTime.now();
+    final todayKey = _dateKey(now);
+    final lastActiveKey = _box.get('last_active_date', defaultValue: '') as String;
+
+    if (lastActiveKey == todayKey) {
+      // Already logged in today — no change
+      return;
+    }
+
+    final yesterdayKey = _dateKey(now.subtract(const Duration(days: 1)));
+
+    if (lastActiveKey == yesterdayKey) {
+      // Consecutive day — increment streak
+      final newStreak = state.streak + 1;
+      state = state.copyWith(streak: newStreak);
+      _log.info('Streak continued: $newStreak days');
+    } else if (lastActiveKey.isEmpty) {
+      // First ever session
+      state = state.copyWith(streak: 1);
+      _log.info('First session — streak started');
+    } else {
+      // Missed one or more days — reset to 1
+      _log.info('Streak reset (last active: $lastActiveKey, today: $todayKey)');
+      state = state.copyWith(streak: 1);
+    }
+
+    _box.put('last_active_date', todayKey);
+    _save();
+  }
+
+  /// Format a date as YYYY-MM-DD for reliable comparison.
+  String _dateKey(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   /// Awards XP for a bird and returns list of newly unlocked achievement keys.
   List<String> addXpForBird(Bird bird, int aviaryCount) {
@@ -93,15 +130,24 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
       }
     }
 
+    // Collection milestones
     if (aviaryCount >= 1) tryUnlock('first_bird');
     if (aviaryCount >= 5) tryUnlock('five_species');
     if (aviaryCount >= 10) tryUnlock('ten_species');
     if (aviaryCount >= 20) tryUnlock('twenty_species');
+
+    // Rarity achievements
     if (bird.rarity == Rarity.rare || bird.rarity == Rarity.legendary) tryUnlock('rare_find');
     if (bird.rarity == Rarity.legendary) tryUnlock('legendary_find');
+
+    // Level achievements
     if (newLevel >= 5) tryUnlock('level_5');
     if (newLevel >= 10) tryUnlock('level_10');
     if (newLevel >= 20) tryUnlock('level_20');
+
+    // Streak achievements
+    if (state.streak >= 7) tryUnlock('streak_7');
+    if (state.streak >= 30) tryUnlock('streak_30');
 
     state = state.copyWith(
       level: newLevel,
