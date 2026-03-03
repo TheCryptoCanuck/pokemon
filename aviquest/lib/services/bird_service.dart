@@ -12,6 +12,7 @@ class BirdService {
   late final List<Bird> _birds;
   late final Map<String, Bird> _index;
   late final Map<String, Bird> _sciIndex;
+  late final Map<String, Bird> _genusSpeciesIndex;
 
   List<Bird> get all => _birds;
   Map<String, Bird> get index => _index;
@@ -27,8 +28,15 @@ class BirdService {
       // Build scientific name index (lowercase for case-insensitive matching).
       // For duplicates, the first entry wins.
       _sciIndex = {};
+      _genusSpeciesIndex = {};
       for (final b in _birds) {
-        _sciIndex.putIfAbsent(b.scientificName.toLowerCase(), () => b);
+        final sciLower = b.scientificName.toLowerCase();
+        _sciIndex.putIfAbsent(sciLower, () => b);
+        // Also index by genus+species (first two words) for subspecies matching
+        final parts = sciLower.split(' ');
+        if (parts.length >= 2) {
+          _genusSpeciesIndex.putIfAbsent('${parts[0]} ${parts[1]}', () => b);
+        }
       }
       _log.info('Loaded ${_birds.length} birds (${_sciIndex.length} unique species)');
     } catch (e, st) {
@@ -40,8 +48,11 @@ class BirdService {
   Bird? lookup(String name) => _index[name];
 
   /// Lookup bird by scientific name (case-insensitive).
-  Bird? lookupByScientificName(String scientificName) =>
-      _sciIndex[scientificName.toLowerCase()];
+  /// Also checks genus+species prefix for subspecies matching.
+  Bird? lookupByScientificName(String scientificName) {
+    final lower = scientificName.toLowerCase();
+    return _sciIndex[lower] ?? _genusSpeciesIndex[lower];
+  }
 
   Bird unknownBird(String name) => Bird(
     name: name,

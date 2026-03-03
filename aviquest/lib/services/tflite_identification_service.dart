@@ -178,11 +178,16 @@ class TfliteIdentificationService implements IdentificationService {
 
   /// Match a model label to a Bird in our database.
   ///
-  /// Supports label formats:
-  ///   - "Poecile atricapillus" (scientific name only)
-  ///   - "Poecile atricapillus (Black-capped Chickadee)" (sci + common)
-  ///   - "Black-capped Chickadee" (common name only)
+  /// Tries multiple matching strategies:
+  ///   1. Exact scientific name
+  ///   2. "ScientificName (CommonName)" format
+  ///   3. Genus+species prefix (handles subspecies like "Anas platyrhynchos diazi")
+  ///   4. Common name
+  ///   5. Falls back to unknown bird entry
   Bird? _matchLabelToBird(String label) {
+    // Skip background/sentinel labels
+    if (label.isEmpty || label.startsWith('_')) return null;
+
     // Try parsing "ScientificName (CommonName)" format
     final parenMatch = RegExp(r'^(.+?)\s*\((.+?)\)$').firstMatch(label);
     if (parenMatch != null) {
@@ -193,9 +198,17 @@ class TfliteIdentificationService implements IdentificationService {
           _birdService.unknownBird(commonName);
     }
 
-    // Try as scientific name
+    // Try as exact scientific name
     final byScientific = _birdService.lookupByScientificName(label);
     if (byScientific != null) return byScientific;
+
+    // Try genus+species match (for subspecies like "Anas platyrhynchos diazi" → "Anas platyrhynchos")
+    final parts = label.split(' ');
+    if (parts.length > 2) {
+      final genusSpecies = '${parts[0]} ${parts[1]}';
+      final byGenusSpecies = _birdService.lookupByScientificName(genusSpecies);
+      if (byGenusSpecies != null) return byGenusSpecies;
+    }
 
     // Try as common name
     final byCommon = _birdService.lookup(label);
