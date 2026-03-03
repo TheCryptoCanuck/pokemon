@@ -1,0 +1,63 @@
+# AviQuest ML Monitoring Configuration
+
+monitoring:
+  enabled: true
+  metrics_port: 9090
+
+  # Data drift detection
+  drift:
+    enabled: true
+    reference_window_size: 1000
+    detection_window_size: 200
+    check_interval_seconds: 300
+
+    # Statistical tests for drift
+    tests:
+      - name: "ks_test"
+        threshold: 0.05
+      - name: "psi"
+        threshold: 0.2
+
+    # Features to monitor
+    features:
+      - "mean_pixel_intensity"
+      - "image_brightness"
+      - "image_contrast"
+      - "aspect_ratio"
+      - "prediction_entropy"
+
+  # Model performance monitoring
+  performance:
+    enabled: true
+    window_size: 500
+
+    # Alert thresholds
+    alerts:
+      accuracy_drop_threshold: 0.05
+      latency_p99_ms: 500
+      error_rate_threshold: 0.01
+      low_confidence_rate: 0.3
+
+  # Prediction monitoring
+  predictions:
+    log_distribution: true
+    track_confidence: true
+    track_class_distribution: true
+    sample_rate: 0.1  # Log 10% of predictions for analysis
+
+  # Resource monitoring
+  resources:
+    track_gpu_utilization: true
+    track_memory_usage: true
+    track_cpu_usage: true
+    alert_gpu_memory_threshold: 0.9
+    alert_cpu_threshold: 0.85
+
+alerting:
+  enabled: true
+  channels:
+    - type: "log"
+      level: "WARNING"
+    - type: "webhook"
+      url: "${ALERT_WEBHOOK_URL}"
+      enabled: false

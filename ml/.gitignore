@@ -1,0 +1,37 @@
+# Model artifacts
+models/
+*.pt
+*.pth
+*.onnx
+*.tflite
+
+# Data
+data/
+*.csv
+*.parquet
+
+# Outputs
+outputs/
+exports/
+model_registry/
+checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# MLflow / W&B
+mlruns/
+wandb/

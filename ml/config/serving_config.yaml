@@ -1,0 +1,60 @@
+# AviQuest Model Serving Configuration
+
+server:
+  host: "0.0.0.0"
+  port: 8080
+  workers: 4
+  timeout: 30
+  max_concurrent_requests: 100
+
+  # CORS settings
+  cors:
+    allow_origins: ["*"]
+    allow_methods: ["GET", "POST"]
+    allow_headers: ["*"]
+
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+    burst_size: 10
+
+inference:
+  # Model loading
+  model_path: "models/bird_classifier_v1.pt"
+  device: "auto"  # "cpu", "cuda", "mps", "auto"
+  compile_model: true  # Use torch.compile for PyTorch 2.x
+
+  # Batching
+  batch:
+    enabled: true
+    max_batch_size: 16
+    max_wait_ms: 50
+
+  # Caching
+  cache:
+    enabled: true
+    max_size: 1000
+    ttl_seconds: 3600
+
+  # Response
+  top_k_predictions: 5
+  confidence_threshold: 0.05
+  return_embeddings: false
+
+  # Preprocessing
+  preprocessing:
+    max_image_size_mb: 10
+    supported_formats: ["jpeg", "jpg", "png", "webp"]
+    resize_strategy: "center_crop"  # "center_crop", "resize", "pad"
+
+health:
+  liveness_path: "/health/live"
+  readiness_path: "/health/ready"
+  model_warmup_requests: 3
+
+logging:
+  level: "INFO"
+  format: "json"
+  include_request_id: true
+  log_predictions: false  # Set to true for debugging only
