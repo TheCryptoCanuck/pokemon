@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../services/analytics_service.dart';
 
-const _tabLabels = ['Map', 'Identify', 'Aviary', 'Field Guide', 'Me'];
+const _tabLabels = ['Log', 'Identify', 'Aviary', 'Field Guide', 'Me'];
 
 class HomeShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -30,7 +30,7 @@ class HomeShell extends ConsumerWidget {
           navigationShell.goBranch(i, initialLocation: i == navigationShell.currentIndex);
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Log'),
           BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: 'Identify'),
           BottomNavigationBarItem(icon: Icon(Icons.collections), label: 'Aviary'),
           BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Field Guide'),

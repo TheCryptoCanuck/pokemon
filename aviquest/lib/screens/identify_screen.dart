@@ -17,6 +17,7 @@ import '../services/bird_service.dart';
 import '../services/identification_service.dart';
 import '../services/daily_bird_service.dart';
 import '../services/player_service.dart';
+import '../services/sighting_service.dart';
 import '../widgets/bird_found_dialog.dart';
 import '../widgets/daily_bird_card.dart';
 import '../widgets/seasonal_event_banner.dart';
@@ -150,6 +151,15 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
       'alternative_count': results.length - 1,
     });
 
+    // Log sighting regardless of whether added to aviary
+    ref.read(sightingServiceProvider).log(Sighting(
+      birdName: top.bird.name,
+      timestamp: DateTime.now(),
+      confidence: top.confidence,
+      source: top.source,
+    ));
+    ref.read(playerProvider.notifier).recordSighting();
+
     _showFoundDialog(results);
   }
 
@@ -279,6 +289,26 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
                 const Text('Achievement Unlocked!', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
                 Text(a.$2, style: const TextStyle(color: Colors.white70)),
               ]),
+            ]),
+          ),
+        );
+      });
+    }
+
+    // Encounter milestone notification
+    final sightingSvc = ref.read(sightingServiceProvider);
+    final milestone = sightingSvc.encounterMilestoneText(bird.name);
+    if (milestone != null && mounted) {
+      Future.delayed(const Duration(milliseconds: 1200), () {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.deepPurple.withOpacity(0.9),
+            duration: const Duration(seconds: 3),
+            content: Row(children: [
+              const Text('🔄', style: TextStyle(fontSize: 22)),
+              const SizedBox(width: 12),
+              Expanded(child: Text(milestone, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500))),
             ]),
           ),
         );

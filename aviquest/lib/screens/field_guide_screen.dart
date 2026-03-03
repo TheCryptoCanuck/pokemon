@@ -103,7 +103,21 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
         ),
         const SizedBox(height: 8),
         Expanded(
-          child: ListView.builder(
+          child: filtered.isEmpty
+              ? Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    const Icon(Icons.search_off, size: 48, color: Colors.white24),
+                    const SizedBox(height: 12),
+                    Text(
+                      _guideSearch.isNotEmpty
+                          ? 'No birds matching "$_guideSearch"'
+                          : 'No ${_guideRarityFilter?.name ?? ''} birds found',
+                      style: const TextStyle(color: Colors.white38),
+                      textAlign: TextAlign.center,
+                    ),
+                  ]),
+                )
+              : ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: filtered.length,
             itemBuilder: (c, i) {

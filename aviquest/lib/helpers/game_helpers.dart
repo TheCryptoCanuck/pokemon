@@ -33,4 +33,10 @@ const achievements = {
   // ─── Conservation ───────────────────────────────────────────────────
   'endangered_spotter': ('🛡️', 'Guardian', 'Identify an endangered bird'),
   'conservation_hero': ('🌱', 'Conservation Hero', 'Collect 5 threatened species'),
+
+  // ─── Quiz ─────────────────────────────────────────────────────────
+  'first_quiz': ('📝', 'Quiz Taker', 'Complete your first quiz'),
+  'ten_quizzes': ('🎓', 'Scholar', 'Complete 10 quizzes'),
+  'perfect_quiz': ('💯', 'Perfect Score', 'Get 10/10 on a quiz'),
+  'five_perfect': ('🧠', 'Ornithology PhD', 'Get 5 perfect quiz scores'),
 };

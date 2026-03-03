@@ -63,8 +63,8 @@ class SeasonalEventService {
         description: 'Celebrate global bird migration! All identifications earn 3x XP today.',
         themeColor: Colors.teal,
         xpMultiplier: 3.0,
-        startDate: _nthWeekdayOfMonth(year, 5, DateTime.saturday, 2),
-        endDate: _nthWeekdayOfMonth(year, 5, DateTime.saturday, 2).add(const Duration(days: 1)),
+        startDate: nthWeekdayOfMonth(year, 5, DateTime.saturday, 2),
+        endDate: nthWeekdayOfMonth(year, 5, DateTime.saturday, 2).add(const Duration(days: 1)),
       ),
       // Summer Nesting Season (June-July)
       SeasonalEvent(
@@ -125,7 +125,7 @@ class SeasonalEventService {
   }
 
   /// Returns the nth occurrence of a weekday in a given month.
-  static DateTime _nthWeekdayOfMonth(int year, int month, int weekday, int n) {
+  static DateTime nthWeekdayOfMonth(int year, int month, int weekday, int n) {
     var date = DateTime(year, month, 1);
     int count = 0;
     while (count < n) {

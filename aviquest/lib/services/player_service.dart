@@ -12,12 +12,18 @@ class PlayerState {
   final int xp;
   final int streak;
   final Set<String> unlockedAchievements;
+  final int quizzesCompleted;
+  final int quizPerfectScores;
+  final int totalSightings;
 
   const PlayerState({
     this.level = 1,
     this.xp = 0,
     this.streak = 0,
     this.unlockedAchievements = const {},
+    this.quizzesCompleted = 0,
+    this.quizPerfectScores = 0,
+    this.totalSightings = 0,
   });
 
   PlayerState copyWith({
@@ -25,11 +31,17 @@ class PlayerState {
     int? xp,
     int? streak,
     Set<String>? unlockedAchievements,
+    int? quizzesCompleted,
+    int? quizPerfectScores,
+    int? totalSightings,
   }) => PlayerState(
     level: level ?? this.level,
     xp: xp ?? this.xp,
     streak: streak ?? this.streak,
     unlockedAchievements: unlockedAchievements ?? this.unlockedAchievements,
+    quizzesCompleted: quizzesCompleted ?? this.quizzesCompleted,
+    quizPerfectScores: quizPerfectScores ?? this.quizPerfectScores,
+    totalSightings: totalSightings ?? this.totalSightings,
   );
 
   String get title {
@@ -45,6 +57,14 @@ class PlayerState {
 
   int get xpForNextLevel => (1000 * pow(level, 1.4)).round();
   double get xpProgress => (xp / xpForNextLevel).clamp(0.0, 1.0);
+
+  /// Streak-based XP multiplier: +10% per streak day, capped at +100% (day 10).
+  double get streakXpMultiplier {
+    if (streak <= 2) return 1.0;
+    final bonus = (streak - 2).clamp(0, 10) * 0.10;
+    return 1.0 + bonus;
+  }
+
 }
 
 class PlayerNotifier extends StateNotifier<PlayerState> {
@@ -63,6 +83,9 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
       unlockedAchievements: Set<String>.from(
         _box.get('achievements', defaultValue: <String>[]) as List,
       ),
+      quizzesCompleted: _box.get('quizzes_completed', defaultValue: 0) as int,
+      quizPerfectScores: _box.get('quiz_perfect_scores', defaultValue: 0) as int,
+      totalSightings: _box.get('total_sightings', defaultValue: 0) as int,
     );
   }
 
@@ -71,6 +94,45 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
     _box.put('xp', state.xp);
     _box.put('streak', state.streak);
     _box.put('achievements', state.unlockedAchievements.toList());
+    _box.put('quizzes_completed', state.quizzesCompleted);
+    _box.put('quiz_perfect_scores', state.quizPerfectScores);
+    _box.put('total_sightings', state.totalSightings);
+  }
+
+  /// Record a completed quiz. Returns newly unlocked achievement keys.
+  List<String> recordQuiz(int score, int total) {
+    final isPerfect = score == total;
+    state = state.copyWith(
+      quizzesCompleted: state.quizzesCompleted + 1,
+      quizPerfectScores: isPerfect ? state.quizPerfectScores + 1 : null,
+    );
+
+    final newAchievements = Set<String>.from(state.unlockedAchievements);
+    final unlocked = <String>[];
+
+    void tryUnlock(String key) {
+      if (!newAchievements.contains(key)) {
+        newAchievements.add(key);
+        unlocked.add(key);
+      }
+    }
+
+    if (state.quizzesCompleted >= 1) tryUnlock('first_quiz');
+    if (state.quizzesCompleted >= 10) tryUnlock('ten_quizzes');
+    if (isPerfect) tryUnlock('perfect_quiz');
+    if (state.quizPerfectScores >= 5) tryUnlock('five_perfect');
+
+    if (unlocked.isNotEmpty) {
+      state = state.copyWith(unlockedAchievements: newAchievements);
+    }
+    _save();
+    return unlocked;
+  }
+
+  /// Increment total sightings counter.
+  void recordSighting() {
+    state = state.copyWith(totalSightings: state.totalSightings + 1);
+    _save();
   }
 
   /// Check and update the daily streak on app open.
@@ -122,7 +184,9 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
   }) {
     final oldLevel = state.level;
     var newLevel = state.level;
-    var newXp = state.xp + bird.xp;
+    // Apply streak XP multiplier
+    final effectiveXp = (bird.xp * state.streakXpMultiplier).round();
+    var newXp = state.xp + effectiveXp;
 
     while (newXp >= (1000 * pow(newLevel, 1.4)).round()) {
       newXp -= (1000 * pow(newLevel, 1.4)).round();

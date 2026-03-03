@@ -11,10 +11,12 @@ import 'security/security_manager.dart';
 import 'services/analytics_service.dart';
 import 'services/aviary_service.dart';
 import 'services/bird_service.dart';
+import 'services/bird_family_service.dart';
 import 'services/daily_bird_service.dart';
 import 'services/identification_service.dart';
 import 'services/log_service.dart';
 import 'services/player_service.dart';
+import 'services/sighting_service.dart';
 import 'services/tflite_identification_service.dart';
 
 final _log = Logger('Main');
@@ -93,6 +95,9 @@ Future<void> _startApp() async {
   final playerBox = await Hive.openBox('player_stats');
   final playerNotifier = PlayerNotifier(playerBox);
   final dailyBirdSvc = DailyBirdService(birdSvc, playerBox);
+  final birdFamilySvc = BirdFamilyService(birdSvc, aviarySvc);
+  final sightingSvc = SightingService();
+  await sightingSvc.init();
 
   // Track session start
   analytics.track('app_session_started', {
@@ -112,6 +117,8 @@ Future<void> _startApp() async {
         playerProvider.overrideWith((_) => playerNotifier),
         analyticsProvider.overrideWithValue(analytics),
         dailyBirdServiceProvider.overrideWithValue(dailyBirdSvc),
+        birdFamilyServiceProvider.overrideWithValue(birdFamilySvc),
+        sightingServiceProvider.overrideWithValue(sightingSvc),
       ],
       child: const AviQuest(),
     ),
