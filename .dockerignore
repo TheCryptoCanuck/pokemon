@@ -1,0 +1,14 @@
+.git/
+aviquest/build/
+aviquest/.dart_tool/
+aviquest/.flutter-plugins
+aviquest/.flutter-plugins-dependencies
+aviquest/.packages
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+build-output/
+aviquest/android/local.properties
+aviquest/android/.gradle/
