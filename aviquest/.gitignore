@@ -6,5 +6,8 @@
 build/
 *.g.dart
 
+# Large binary model files — download via scripts/download_model.sh
+assets/bird_model.tflite
+
 # Override root gitignore — include lib/ for Flutter source
 !lib/
