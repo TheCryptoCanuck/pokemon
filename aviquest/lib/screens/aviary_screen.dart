@@ -268,7 +268,7 @@ class _AviaryScreenState extends ConsumerState<AviaryScreen> {
                                 ),
                               ],
                             ),
-                          ).animate().fadeIn(delay: Duration(milliseconds: i * 40)).scale(begin: const Offset(0.9, 0.9)),
+                          ).animate().fadeIn(delay: Duration(milliseconds: (i * 40).clamp(0, 500))).scale(begin: const Offset(0.9, 0.9)),
                         );
                       },
                       childCount: birds.length,
@@ -364,7 +364,7 @@ class _AviaryScreenState extends ConsumerState<AviaryScreen> {
                   ],
                 ),
               ),
-            ).animate().fadeIn(delay: Duration(milliseconds: e.key * 60));
+            ).animate().fadeIn(delay: Duration(milliseconds: (e.key * 60).clamp(0, 600)));
           }),
         ],
       ),

@@ -11,6 +11,8 @@ class PlayerState {
   final int level;
   final int xp;
   final int streak;
+  final int bestStreak;
+  final int streakSavers;
   final Set<String> unlockedAchievements;
   final int quizzesCompleted;
   final int quizPerfectScores;
@@ -20,6 +22,8 @@ class PlayerState {
     this.level = 1,
     this.xp = 0,
     this.streak = 0,
+    this.bestStreak = 0,
+    this.streakSavers = 0,
     this.unlockedAchievements = const {},
     this.quizzesCompleted = 0,
     this.quizPerfectScores = 0,
@@ -30,6 +34,8 @@ class PlayerState {
     int? level,
     int? xp,
     int? streak,
+    int? bestStreak,
+    int? streakSavers,
     Set<String>? unlockedAchievements,
     int? quizzesCompleted,
     int? quizPerfectScores,
@@ -38,6 +44,8 @@ class PlayerState {
     level: level ?? this.level,
     xp: xp ?? this.xp,
     streak: streak ?? this.streak,
+    bestStreak: bestStreak ?? this.bestStreak,
+    streakSavers: streakSavers ?? this.streakSavers,
     unlockedAchievements: unlockedAchievements ?? this.unlockedAchievements,
     quizzesCompleted: quizzesCompleted ?? this.quizzesCompleted,
     quizPerfectScores: quizPerfectScores ?? this.quizPerfectScores,
@@ -80,6 +88,8 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
       level: _box.get('level', defaultValue: 1) as int,
       xp: _box.get('xp', defaultValue: 0) as int,
       streak: _box.get('streak', defaultValue: 0) as int,
+      bestStreak: _box.get('best_streak', defaultValue: 0) as int,
+      streakSavers: _box.get('streak_savers', defaultValue: 0) as int,
       unlockedAchievements: Set<String>.from(
         _box.get('achievements', defaultValue: <String>[]) as List,
       ),
@@ -93,6 +103,8 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
     _box.put('level', state.level);
     _box.put('xp', state.xp);
     _box.put('streak', state.streak);
+    _box.put('best_streak', state.bestStreak);
+    _box.put('streak_savers', state.streakSavers);
     _box.put('achievements', state.unlockedAchievements.toList());
     _box.put('quizzes_completed', state.quizzesCompleted);
     _box.put('quiz_perfect_scores', state.quizPerfectScores);
@@ -135,6 +147,9 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
     _save();
   }
 
+  /// Whether a streak saver was used on this app open.
+  bool streakSaverUsed = false;
+
   /// Check and update the daily streak on app open.
   void _updateStreak() {
     final now = DateTime.now();
@@ -147,24 +162,58 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
     }
 
     final yesterdayKey = _dateKey(now.subtract(const Duration(days: 1)));
+    final dayBeforeKey = _dateKey(now.subtract(const Duration(days: 2)));
 
     if (lastActiveKey == yesterdayKey) {
       // Consecutive day — increment streak
       final newStreak = state.streak + 1;
-      state = state.copyWith(streak: newStreak);
+      final newBest = newStreak > state.bestStreak ? newStreak : state.bestStreak;
+      state = state.copyWith(streak: newStreak, bestStreak: newBest);
       _log.info('Streak continued: $newStreak days');
+      _awardStreakMilestoneXp(newStreak);
     } else if (lastActiveKey.isEmpty) {
       // First ever session
-      state = state.copyWith(streak: 1);
+      state = state.copyWith(streak: 1, bestStreak: 1);
       _log.info('First session — streak started');
+    } else if (lastActiveKey == dayBeforeKey && state.streakSavers > 0) {
+      // Missed exactly one day — use streak saver
+      final newStreak = state.streak + 1;
+      final newBest = newStreak > state.bestStreak ? newStreak : state.bestStreak;
+      state = state.copyWith(
+        streak: newStreak,
+        bestStreak: newBest,
+        streakSavers: state.streakSavers - 1,
+      );
+      streakSaverUsed = true;
+      _log.info('Streak saved! Used 1 streak saver (${state.streakSavers} remaining)');
     } else {
       // Missed one or more days — reset to 1
       _log.info('Streak reset (last active: $lastActiveKey, today: $todayKey)');
       state = state.copyWith(streak: 1);
     }
 
+    // Award a streak saver every 7 consecutive days (max 3 banked)
+    if (state.streak > 0 && state.streak % 7 == 0 && state.streakSavers < 3) {
+      state = state.copyWith(streakSavers: state.streakSavers + 1);
+      _log.info('Streak saver earned! (${state.streakSavers} available)');
+    }
+
     _box.put('last_active_date', todayKey);
     _save();
+  }
+
+  /// Award bonus XP at streak milestones.
+  void _awardStreakMilestoneXp(int streak) {
+    int bonus = 0;
+    if (streak == 7) bonus = 100;
+    if (streak == 14) bonus = 250;
+    if (streak == 30) bonus = 500;
+    if (streak == 60) bonus = 1000;
+    if (bonus > 0) {
+      final newXp = state.xp + bonus;
+      state = state.copyWith(xp: newXp);
+      _log.info('Streak milestone $streak days: +$bonus XP');
+    }
   }
 
   /// Format a date as YYYY-MM-DD for reliable comparison.
@@ -176,16 +225,22 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
   /// [collectedBirds] is the full list of collected bird names (used for
   /// rarity-specific counting). [allBirds] is the full bird catalogue
   /// (used for "collect all" milestones).
+  ///
+  /// [seasonalMultiplier] is the current seasonal event XP multiplier (1.0 if
+  /// no event is active). [familyBonus] is the bird family mastery XP bonus
+  /// (1.0 if no mastery earned).
   List<String> addXpForBird(
     Bird bird,
     int aviaryCount, {
     List<Bird> collectedBirds = const [],
     List<Bird> allBirds = const [],
+    double seasonalMultiplier = 1.0,
+    double familyBonus = 1.0,
   }) {
     final oldLevel = state.level;
     var newLevel = state.level;
-    // Apply streak XP multiplier
-    final effectiveXp = (bird.xp * state.streakXpMultiplier).round();
+    // Apply all XP multipliers: streak + seasonal event + family mastery
+    final effectiveXp = (bird.xp * state.streakXpMultiplier * seasonalMultiplier * familyBonus).round();
     var newXp = state.xp + effectiveXp;
 
     while (newXp >= (1000 * pow(newLevel, 1.4)).round()) {

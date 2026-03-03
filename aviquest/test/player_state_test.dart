@@ -8,6 +8,8 @@ void main() {
       expect(state.level, 1);
       expect(state.xp, 0);
       expect(state.streak, 0);
+      expect(state.bestStreak, 0);
+      expect(state.streakSavers, 0);
       expect(state.unlockedAchievements, isEmpty);
       expect(state.quizzesCompleted, 0);
       expect(state.quizPerfectScores, 0);
@@ -19,16 +21,20 @@ void main() {
         level: 5,
         xp: 100,
         streak: 3,
+        bestStreak: 7,
+        streakSavers: 2,
         quizzesCompleted: 2,
         quizPerfectScores: 1,
         totalSightings: 10,
       );
       final updated = original.copyWith(level: 6);
       expect(updated.level, 6);
-      expect(updated.xp, 100); // unchanged
-      expect(updated.streak, 3); // unchanged
-      expect(updated.quizzesCompleted, 2); // unchanged
-      expect(updated.totalSightings, 10); // unchanged
+      expect(updated.xp, 100);
+      expect(updated.streak, 3);
+      expect(updated.bestStreak, 7);
+      expect(updated.streakSavers, 2);
+      expect(updated.quizzesCompleted, 2);
+      expect(updated.totalSightings, 10);
     });
 
     test('title progression is correct', () {
@@ -82,10 +88,19 @@ void main() {
     });
   });
 
-  group('Bird XP calculations', () {
-    test('common bird xp is baseXp', () {
-      // Using Bird model directly
-      expect(20, 20); // base case, Bird XP calc tested in bird_model_test
+  group('Best streak and streak savers', () {
+    test('bestStreak tracks via copyWith', () {
+      const state = PlayerState(streak: 5, bestStreak: 10);
+      expect(state.bestStreak, 10);
+      final updated = state.copyWith(bestStreak: 12);
+      expect(updated.bestStreak, 12);
+    });
+
+    test('streakSavers tracks via copyWith', () {
+      const state = PlayerState(streakSavers: 2);
+      expect(state.streakSavers, 2);
+      final updated = state.copyWith(streakSavers: 1);
+      expect(updated.streakSavers, 1);
     });
   });
 }

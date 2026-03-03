@@ -8,6 +8,7 @@ import '../helpers/game_helpers.dart';
 import '../models/bird.dart';
 import '../services/bird_service.dart';
 import '../services/player_service.dart';
+import '../services/seasonal_event_service.dart';
 import '../widgets/network_bird_image.dart';
 
 /// A quiz question with one correct answer and three distractors.
@@ -95,8 +96,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   void _nextQuestion() {
     if (_currentIndex + 1 >= _totalQuestions) {
       setState(() => _quizComplete = true);
-      // Award XP
-      final totalXp = _score * _xpPerCorrect;
+      // Award XP with seasonal multiplier and streak bonus
+      final seasonalMultiplier = ref.read(seasonalEventServiceProvider).currentXpMultiplier;
+      final baseXp = _score * _xpPerCorrect;
+      final totalXp = (baseXp * seasonalMultiplier).round();
       if (totalXp > 0) {
         final playerNotifier = ref.read(playerProvider.notifier);
         final dummyBird = Bird(
@@ -116,22 +119,21 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       final quizAchievements = ref.read(playerProvider.notifier).recordQuiz(_score, _totalQuestions);
       for (final key in quizAchievements) {
         final a = achievements[key];
-        if (a != null && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: const Color(0xFF1A2F1F),
-              duration: const Duration(seconds: 4),
-              content: Row(children: [
-                Text(a.$1, style: const TextStyle(fontSize: 24)),
-                const SizedBox(width: 12),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text('Achievement Unlocked!', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
-                  Text(a.$2, style: const TextStyle(color: Colors.white70)),
-                ]),
+        if (a == null || !mounted) continue;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: const Color(0xFF1A2F1F),
+            duration: const Duration(seconds: 4),
+            content: Row(children: [
+              Text(a.$1, style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: 12),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('Achievement Unlocked!', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                Text(a.$2, style: const TextStyle(color: Colors.white70)),
               ]),
-            ),
-          );
-        }
+            ]),
+          ),
+        );
       }
       return;
     }
@@ -303,7 +305,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   }
 
   Widget _buildResults() {
-    final totalXp = _score * _xpPerCorrect;
+    final seasonalMultiplier = ref.read(seasonalEventServiceProvider).currentXpMultiplier;
+    final totalXp = (_score * _xpPerCorrect * seasonalMultiplier).round();
     final percentage = (_score / _totalQuestions * 100).round();
     String grade;
     String emoji;

@@ -7,6 +7,7 @@ import '../services/aviary_service.dart';
 import '../services/bird_family_service.dart';
 import '../services/bird_service.dart';
 import '../services/player_service.dart';
+import '../services/seasonal_event_service.dart';
 import '../services/sighting_service.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -19,6 +20,7 @@ class ProfileScreen extends ConsumerWidget {
     final birdSvc = ref.read(birdServiceProvider);
     final familySvc = ref.read(birdFamilyServiceProvider);
     final sightingSvc = ref.read(sightingServiceProvider);
+    final seasonalSvc = ref.read(seasonalEventServiceProvider);
     final nextLevelXp = playerState.xpForNextLevel;
 
     return SingleChildScrollView(
@@ -86,42 +88,47 @@ class ProfileScreen extends ConsumerWidget {
               _statCard('🥇', '${familySvc.completedFamilies}', 'Families'),
             ],
           ).animate().fadeIn(delay: 250.ms),
+
+          // Best streak and streak savers
+          if (playerState.bestStreak > 1 || playerState.streakSavers > 0) ...[
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                if (playerState.bestStreak > 1)
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      decoration: BoxDecoration(color: bgCard, borderRadius: BorderRadius.circular(12)),
+                      child: Row(children: [
+                        const Text('🏅', style: TextStyle(fontSize: 18)),
+                        const SizedBox(width: 8),
+                        Text('Best: ${playerState.bestStreak} days',
+                            style: const TextStyle(color: Colors.white54, fontSize: 12)),
+                      ]),
+                    ),
+                  ),
+                if (playerState.bestStreak > 1 && playerState.streakSavers > 0)
+                  const SizedBox(width: 12),
+                if (playerState.streakSavers > 0)
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      decoration: BoxDecoration(color: bgCard, borderRadius: BorderRadius.circular(12)),
+                      child: Row(children: [
+                        const Text('🛡️', style: TextStyle(fontSize: 18)),
+                        const SizedBox(width: 8),
+                        Text('${playerState.streakSavers} streak saver${playerState.streakSavers > 1 ? 's' : ''}',
+                            style: const TextStyle(color: Colors.white54, fontSize: 12)),
+                      ]),
+                    ),
+                  ),
+              ],
+            ).animate().fadeIn(delay: 270.ms),
+          ],
           const SizedBox(height: 16),
 
-          // Streak XP multiplier
-          if (playerState.streakXpMultiplier > 1.0)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Colors.orange.withOpacity(0.15),
-                  Colors.red.withOpacity(0.08),
-                ]),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.orange.withOpacity(0.4)),
-              ),
-              child: Row(children: [
-                const Text('🔥', style: TextStyle(fontSize: 22)),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    const Text('Streak Bonus Active',
-                        style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 13)),
-                    Text('+${((playerState.streakXpMultiplier - 1) * 100).round()}% XP on all birds',
-                        style: const TextStyle(color: Colors.white54, fontSize: 11)),
-                  ]),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text('${playerState.streakXpMultiplier}x',
-                      style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
-                ),
-              ]),
-            ).animate().fadeIn(delay: 300.ms),
+          // Active XP Bonuses summary
+          ..._buildActiveBonuses(playerState, seasonalSvc),
 
           const SizedBox(height: 16),
 
@@ -171,6 +178,9 @@ class ProfileScreen extends ConsumerWidget {
 
           const SizedBox(height: 20),
 
+          // Next achievements to unlock
+          ..._buildNextAchievements(playerState, aviarySvc, birdSvc),
+
           // Achievements
           const Align(
             alignment: Alignment.centerLeft,
@@ -187,7 +197,7 @@ class ProfileScreen extends ConsumerWidget {
             children: achievements.entries.map((e) {
               final unlocked = playerState.unlockedAchievements.contains(e.key);
               return Tooltip(
-                message: unlocked ? '${e.value.$2}: ${e.value.$3}' : '???',
+                message: unlocked ? '${e.value.$2}: ${e.value.$3}' : e.value.$3,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   width: 60, height: 60,
@@ -232,6 +242,233 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
+  /// Build active XP bonus indicators (streak, seasonal event).
+  List<Widget> _buildActiveBonuses(PlayerState playerState, SeasonalEventService seasonalSvc) {
+    final widgets = <Widget>[];
+    final event = seasonalSvc.primaryEvent;
+
+    // Streak bonus
+    if (playerState.streakXpMultiplier > 1.0) {
+      widgets.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              Colors.orange.withOpacity(0.15),
+              Colors.red.withOpacity(0.08),
+            ]),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.orange.withOpacity(0.4)),
+          ),
+          child: Row(children: [
+            const Text('🔥', style: TextStyle(fontSize: 22)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('Streak Bonus Active',
+                    style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 13)),
+                Text('+${((playerState.streakXpMultiplier - 1) * 100).round()}% XP on all birds',
+                    style: const TextStyle(color: Colors.white54, fontSize: 11)),
+              ]),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text('${playerState.streakXpMultiplier}x',
+                  style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+            ),
+          ]),
+        ).animate().fadeIn(delay: 300.ms),
+      );
+      widgets.add(const SizedBox(height: 8));
+    }
+
+    // Seasonal event bonus
+    if (event != null) {
+      widgets.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              event.themeColor.withOpacity(0.15),
+              event.themeColor.withOpacity(0.05),
+            ]),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: event.themeColor.withOpacity(0.5)),
+          ),
+          child: Row(children: [
+            Text(event.emoji, style: const TextStyle(fontSize: 22)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(event.name,
+                    style: TextStyle(color: event.themeColor, fontWeight: FontWeight.bold, fontSize: 13)),
+                Text('${event.daysRemaining} days remaining',
+                    style: const TextStyle(color: Colors.white54, fontSize: 11)),
+              ]),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: event.themeColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text('${event.xpMultiplier}x XP',
+                  style: TextStyle(color: event.themeColor, fontWeight: FontWeight.bold)),
+            ),
+          ]),
+        ).animate().fadeIn(delay: 320.ms),
+      );
+      widgets.add(const SizedBox(height: 8));
+    }
+
+    return widgets;
+  }
+
+  /// Build "next achievements" section showing closest unlockable achievements.
+  List<Widget> _buildNextAchievements(PlayerState playerState, AviaryService aviarySvc, BirdService birdSvc) {
+    final unlocked = playerState.unlockedAchievements;
+    final hints = <_AchievementHint>[];
+
+    // Collection milestones
+    final count = aviarySvc.count;
+    final milestones = [
+      (5, 'five_species'), (10, 'ten_species'), (20, 'twenty_species'),
+      (50, 'fifty_species'), (100, 'hundred_species'), (200, 'two_hundred_species'),
+    ];
+    for (final (target, key) in milestones) {
+      if (!unlocked.contains(key) && count > 0) {
+        final remaining = target - count;
+        if (remaining > 0 && remaining <= target) {
+          hints.add(_AchievementHint(
+            key: key,
+            progress: count / target,
+            hint: '$remaining more species to go',
+          ));
+        }
+        break; // Only show next milestone
+      }
+    }
+
+    // Rarity collection progress
+    final collectedBirds = aviarySvc.all
+        .map((name) => birdSvc.lookup(name))
+        .whereType<Bird>()
+        .toList();
+    final rareCount = collectedBirds.where((b) => b.rarity == Rarity.rare).length;
+    if (!unlocked.contains('five_rare') && rareCount > 0) {
+      hints.add(_AchievementHint(
+        key: 'five_rare',
+        progress: rareCount / 5,
+        hint: '${5 - rareCount} more rare birds needed',
+      ));
+    }
+    final legendaryCount = collectedBirds.where((b) => b.rarity == Rarity.legendary).length;
+    if (!unlocked.contains('five_legendary') && legendaryCount > 0) {
+      hints.add(_AchievementHint(
+        key: 'five_legendary',
+        progress: legendaryCount / 5,
+        hint: '${5 - legendaryCount} more legendary birds needed',
+      ));
+    }
+
+    // Streak milestones
+    final streak = playerState.streak;
+    final streakMilestones = [(3, 'streak_3'), (7, 'streak_7'), (30, 'streak_30')];
+    for (final (target, key) in streakMilestones) {
+      if (!unlocked.contains(key) && streak > 0) {
+        hints.add(_AchievementHint(
+          key: key,
+          progress: streak / target,
+          hint: '${target - streak} more days for streak',
+        ));
+        break;
+      }
+    }
+
+    // Quiz milestones
+    final quizzes = playerState.quizzesCompleted;
+    if (!unlocked.contains('ten_quizzes') && quizzes > 0 && quizzes < 10) {
+      hints.add(_AchievementHint(
+        key: 'ten_quizzes',
+        progress: quizzes / 10,
+        hint: '${10 - quizzes} more quizzes to complete',
+      ));
+    }
+
+    if (hints.isEmpty) return [];
+
+    // Sort by progress descending (closest to completion first)
+    hints.sort((a, b) => b.progress.compareTo(a.progress));
+    final displayHints = hints.take(3).toList();
+
+    return [
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: bgCard,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.amber.withOpacity(0.2)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(children: [
+              Text('🎯', style: TextStyle(fontSize: 18)),
+              SizedBox(width: 8),
+              Text('Next Achievements',
+                  style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 14)),
+            ]),
+            const SizedBox(height: 12),
+            ...displayHints.map((hint) {
+              final achievement = achievements[hint.key];
+              if (achievement == null) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(children: [
+                  Text(achievement.$1, style: const TextStyle(fontSize: 20)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(achievement.$2,
+                          style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 3),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(3),
+                        child: LinearProgressIndicator(
+                          value: hint.progress.clamp(0.0, 1.0),
+                          minHeight: 4,
+                          backgroundColor: Colors.white.withOpacity(0.05),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            hint.progress >= 0.75 ? Colors.amber : Colors.white38,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(hint.hint,
+                          style: const TextStyle(color: Colors.white38, fontSize: 10)),
+                    ]),
+                  ),
+                  const SizedBox(width: 8),
+                  Text('${(hint.progress * 100).round()}%',
+                      style: TextStyle(
+                        color: hint.progress >= 0.75 ? Colors.amber : Colors.white38,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      )),
+                ]),
+              );
+            }),
+          ],
+        ),
+      ).animate().fadeIn(delay: 370.ms),
+      const SizedBox(height: 20),
+    ];
+  }
+
   Widget _statCard(String emoji, String value, String label) {
     return Expanded(
       child: Container(
@@ -263,4 +500,12 @@ class ProfileScreen extends ConsumerWidget {
       Text(rarity.name, style: const TextStyle(color: Colors.white38, fontSize: 9)),
     ]);
   }
+}
+
+class _AchievementHint {
+  final String key;
+  final double progress;
+  final String hint;
+
+  const _AchievementHint({required this.key, required this.progress, required this.hint});
 }

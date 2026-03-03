@@ -15,11 +15,14 @@ import '../services/analytics_service.dart';
 import '../services/aviary_service.dart';
 import '../services/bird_service.dart';
 import '../services/identification_service.dart';
+import '../services/bird_family_service.dart';
 import '../services/daily_bird_service.dart';
 import '../services/player_service.dart';
+import '../services/seasonal_event_service.dart';
 import '../services/sighting_service.dart';
 import '../widgets/bird_found_dialog.dart';
 import '../widgets/daily_bird_card.dart';
+import '../widgets/level_up_dialog.dart';
 import '../widgets/seasonal_event_banner.dart';
 
 final _log = Logger('IdentifyScreen');
@@ -259,19 +262,38 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
 
     final playerNotifier = ref.read(playerProvider.notifier);
     final birdSvc = ref.read(birdServiceProvider);
+    final familySvc = ref.read(birdFamilyServiceProvider);
+    final seasonalSvc = ref.read(seasonalEventServiceProvider);
     final collectedBirds = aviarySvc.all
         .map((name) => birdSvc.lookup(name))
         .whereType<Bird>()
         .toList();
+
+    // Compute XP multipliers from seasonal events and family mastery
+    final seasonalMultiplier = seasonalSvc.currentXpMultiplier;
+    final birdFamily = familySvc.familyOf(bird);
+    final familyBonus = birdFamily != null
+        ? (familySvc.progressFor(birdFamily.id)?.xpBonus ?? 1.0)
+        : 1.0;
+
+    final oldLevel = ref.read(playerProvider).level;
     final newAchievements = playerNotifier.addXpForBird(
       bird,
       aviarySvc.count,
       collectedBirds: collectedBirds,
       allBirds: birdSvc.all,
+      seasonalMultiplier: seasonalMultiplier,
+      familyBonus: familyBonus,
     );
 
+    // Show level-up celebration if player leveled up
+    if (mounted) {
+      LevelUpDialog.showIfLeveledUp(context, oldLevel, ref.read(playerProvider));
+    }
+
     for (final key in newAchievements) {
-      final a = achievements[key]!;
+      final a = achievements[key];
+      if (a == null) continue;
       ref.read(analyticsProvider).track('achievement_unlocked', {
         'achievement_key': key,
         'achievement_name': a.$2,
