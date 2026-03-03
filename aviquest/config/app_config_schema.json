@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aviquest.app/schemas/app-config.json",
+  "title": "AviQuest Application Configuration",
+  "description": "JSON Schema for validating AviQuest configuration files. Covers app settings, game balance, theme, and bird data structure.",
+  "type": "object",
+  "properties": {
+    "environment": {
+      "type": "string",
+      "enum": ["development", "staging", "production"],
+      "default": "development",
+      "description": "Deployment environment. Controls debug features and safety guards."
+    },
+    "hiveBoxName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(_v\\d+)?$",
+      "default": "aviary_v2",
+      "description": "Hive local database box name for persisting the aviary collection."
+    },
+    "debug": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable debug features. Must be false in production."
+    },
+    "showDebugBanner": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show the Flutter debug banner. Must be false in production."
+    },
+    "mockIdentification": {
+      "type": "boolean",
+      "default": true,
+      "description": "Use simulated bird identification instead of real ML model."
+    },
+    "game": {
+      "$ref": "#/$defs/gameConfig"
+    },
+    "theme": {
+      "$ref": "#/$defs/themeConfig"
+    }
+  },
+  "required": ["environment"],
+  "additionalProperties": false,
+  "if": {
+    "properties": {
+      "environment": { "const": "production" }
+    }
+  },
+  "then": {
+    "properties": {
+      "debug": { "const": false },
+      "showDebugBanner": { "const": false },
+      "mockIdentification": { "const": false }
+    }
+  },
+  "$defs": {
+    "gameConfig": {
+      "type": "object",
+      "title": "Game Balance Configuration",
+      "properties": {
+        "xpBaseMultiplier": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 10000,
+          "default": 1000,
+          "description": "Base multiplier for XP-to-next-level formula."
+        },
+        "xpExponent": {
+          "type": "number",
+          "minimum": 1.0,
+          "maximum": 3.0,
+          "default": 1.4,
+          "description": "Exponent for the leveling curve: baseMultiplier * level^exponent."
+        },
+        "levelTierBoundaries": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 1,
+          "default": [3, 6, 10, 15, 20, 30, 40],
+          "description": "Strictly ascending level thresholds for title tiers."
+        },
+        "levelTierNames": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2,
+          "default": [
+            "Fledgling", "Nestling", "Sparrow", "Warbler",
+            "Songweaver", "Falconer", "Eagle Scout", "Master Birder"
+          ],
+          "description": "Display names for each level tier. Must have exactly one more entry than levelTierBoundaries."
+        },
+        "rarityWeights": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "default": [0.60, 0.85, 0.97],
+          "description": "Cumulative probability thresholds: [commonCeil, uncommonCeil, rareCeil]. Values above rareCeil yield legendary."
+        }
+      },
+      "additionalProperties": false
+    },
+    "themeConfig": {
+      "type": "object",
+      "title": "Theme Configuration",
+      "properties": {
+        "bgDeep": {
+          "$ref": "#/$defs/colorValue",
+          "description": "Deep background color for scaffolds."
+        },
+        "bgCard": {
+          "$ref": "#/$defs/colorValue",
+          "description": "Card and surface background color."
+        },
+        "bgNav": {
+          "$ref": "#/$defs/colorValue",
+          "description": "Bottom navigation bar background color."
+        },
+        "primaryColor": {
+          "$ref": "#/$defs/colorValue",
+          "description": "Primary accent color (amber by default)."
+        },
+        "secondaryColor": {
+          "$ref": "#/$defs/colorValue",
+          "description": "Secondary accent color (green by default)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "colorValue": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295,
+      "description": "ARGB color value as a 32-bit unsigned integer (e.g., 0xFF0A1F0F)."
+    },
+    "bird": {
+      "type": "object",
+      "title": "Bird Entry",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Common English name of the bird species."
+        },
+        "scientificName": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Z][a-z]+ [a-z]+( [a-z]+)?$",
+          "description": "Binomial nomenclature (Genus species)."
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to a representative image."
+        },
+        "audioUrl": {
+          "type": "string",
+          "description": "URL to a bird call audio file. Empty string if unavailable."
+        },
+        "lore": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Fun fact or description shown to the player."
+        },
+        "habitat": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Comma-separated habitat types."
+        },
+        "conservationStatus": {
+          "type": "string",
+          "enum": [
+            "Least Concern",
+            "Near Threatened",
+            "Vulnerable",
+            "Endangered",
+            "Critically Endangered",
+            "Extinct in the Wild",
+            "Extinct",
+            "Data Deficient",
+            "Not Evaluated",
+            "Unknown"
+          ],
+          "description": "IUCN Red List conservation status."
+        },
+        "rarity": {
+          "type": "string",
+          "enum": ["common", "uncommon", "rare", "legendary"],
+          "description": "Game rarity tier affecting XP and spawn rates."
+        },
+        "baseXp": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Base experience points awarded for identification."
+        }
+      },
+      "required": [
+        "name",
+        "scientificName",
+        "lore",
+        "habitat",
+        "conservationStatus",
+        "rarity",
+        "baseXp"
+      ],
+      "additionalProperties": false
+    },
+    "achievement": {
+      "type": "object",
+      "title": "Achievement Definition",
+      "patternProperties": {
+        "^[a-z][a-z0-9_]*$": {
+          "type": "object",
+          "properties": {
+            "emoji": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Display emoji for the achievement badge."
+            },
+            "title": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 50,
+              "description": "Achievement title shown to the player."
+            },
+            "description": {
+              "type": "string",
+              "minLength": 5,
+              "description": "How to unlock this achievement."
+            }
+          },
+          "required": ["emoji", "title", "description"]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

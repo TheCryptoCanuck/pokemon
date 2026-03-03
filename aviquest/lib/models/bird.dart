@@ -1,12 +1,4 @@
-import 'package:flutter/material.dart';
-
-const rarityColors = {
-  'common': Colors.white70,
-  'uncommon': Color(0xFF4CAF50),
-  'rare': Color(0xFF2196F3),
-  'legendary': Colors.amber,
-  'unknown': Color(0xFFCE93D8),
-};
+import '../constants.dart';
 
 class Bird {
   final String name;
@@ -16,7 +8,7 @@ class Bird {
   final String lore;
   final String habitat;
   final String conservationStatus;
-  final String rarity;
+  final Rarity rarity;
   final int baseXp;
 
   const Bird({
@@ -31,46 +23,36 @@ class Bird {
     required this.baseXp,
   });
 
-  factory Bird.fromJson(Map<String, dynamic> json) {
-    return Bird(
-      name: json['name'] as String,
-      scientificName: json['scientificName'] as String,
-      imageUrl: json['imageUrl'] as String,
-      audioUrl: json['audioUrl'] as String,
-      lore: json['lore'] as String,
-      habitat: json['habitat'] as String,
-      conservationStatus: json['conservationStatus'] as String,
-      rarity: json['rarity'] as String,
-      baseXp: json['baseXp'] as int,
-    );
-  }
+  factory Bird.fromJson(Map<String, dynamic> json) => Bird(
+    name: json['name'] as String,
+    scientificName: json['scientificName'] as String,
+    imageUrl: json['imageUrl'] as String,
+    audioUrl: json['audioUrl'] as String,
+    lore: json['lore'] as String,
+    habitat: json['habitat'] as String,
+    conservationStatus: json['conservationStatus'] as String,
+    rarity: Rarity.values.byName(json['rarity'] as String),
+    baseXp: json['baseXp'] as int,
+  );
 
-  Color get rarityColor => rarityColors[rarity] ?? Colors.white70;
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'scientificName': scientificName,
+    'imageUrl': imageUrl,
+    'audioUrl': audioUrl,
+    'lore': lore,
+    'habitat': habitat,
+    'conservationStatus': conservationStatus,
+    'rarity': rarity.name,
+    'baseXp': baseXp,
+  };
 
   int get xp {
     switch (rarity) {
-      case 'uncommon':
-        return (baseXp * 1.5).round();
-      case 'rare':
-        return baseXp * 2;
-      case 'legendary':
-        return baseXp * 5;
-      default:
-        return baseXp;
+      case Rarity.uncommon: return (baseXp * 1.5).round();
+      case Rarity.rare: return baseXp * 2;
+      case Rarity.legendary: return baseXp * 5;
+      default: return baseXp;
     }
   }
 }
-
-Bird unknownBird(String name) => Bird(
-      name: name,
-      scientificName: 'Species not yet in database',
-      imageUrl: '',
-      audioUrl: '',
-      lore:
-          'You found something we\'ve never seen before! This species isn\'t in our database yet. '
-          'Your discovery has been logged and will help us grow AviQuest.',
-      habitat: 'Unknown',
-      conservationStatus: 'Unknown',
-      rarity: 'unknown',
-      baseXp: 100,
-    );

@@ -1,12 +1,20 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
-.env
-*.db
 .venv/
 venv/
 *.egg-info/
-dist/
 build/
 .pytest_cache/
 .mypy_cache/
+
+# Node.js
+node_modules/
+*.zip
+
+# Shared
+.env
+.env.*
+*.db
+dist/

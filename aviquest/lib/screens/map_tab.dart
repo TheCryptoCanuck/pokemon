@@ -10,24 +10,15 @@ class MapTab extends StatelessWidget {
     return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         const Icon(Icons.map, size: 80, color: Colors.white24)
-            .animate()
-            .fadeIn()
-            .scale(),
+            .animate().fadeIn().scale(),
         const SizedBox(height: 16),
-        const Text('Interactive Map',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amber))
-            .animate()
-            .fadeIn(delay: 100.ms),
+        const Text('Interactive Map', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.amber))
+            .animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 8),
-        const Text(
-                'Hotspot mapping & community sightings\ncoming soon!',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white54))
-            .animate()
-            .fadeIn(delay: 200.ms),
+        const Text('Hotspot mapping & community sightings\ncoming soon!',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white54))
+            .animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 24),
         Container(
           padding: const EdgeInsets.all(16),
@@ -38,8 +29,7 @@ class MapTab extends StatelessWidget {
           child: const Row(mainAxisSize: MainAxisSize.min, children: [
             Icon(Icons.people, color: Colors.amber),
             SizedBox(width: 8),
-            Text('1,247 sightings logged today 🌍',
-                style: TextStyle(color: Colors.white70)),
+            Text('1,247 sightings logged today 🌍', style: TextStyle(color: Colors.white70)),
           ]),
         ).animate().fadeIn(delay: 300.ms),
       ]),

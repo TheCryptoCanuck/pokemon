@@ -1,18 +1,61 @@
+import 'dart:io'; // FIX 1: dart:io for File
+import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:aviquest/security/security_manager.dart';
+import 'package:aviquest/security/secure_storage_helper.dart';
+import 'package:aviquest/security/input_validator.dart';
+import 'package:aviquest/security/app_lifecycle_observer.dart';
+
 import 'constants.dart';
-import 'screens/home_screen.dart';
+import 'database/database.dart';
+import 'router.dart';
+import 'services/aviary_service.dart';
 import 'services/bird_service.dart';
+import 'services/log_service.dart';
 import 'services/player_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  LogService.init();
+
   await Hive.initFlutter();
-  await PlayerService.init();
-  await BirdService.load();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(const AviQuest());
+
+  // Initialize database
+  await DatabaseService.instance.initialize();
+
+  // Initialize security subsystems
+  await SecurityManager.instance.initialize();
+  await SecurityManager.instance.enforcePortraitOrientation();
+
+  if (kDebugMode) {
+    debugPrint('[Security] Debug mode active — some protections relaxed');
+  }
+
+  // Initialise services
+  final birdSvc = BirdService();
+  await birdSvc.load();
+
+  final aviaryBox = await Hive.openBox<String>('aviary_v2');
+  final aviarySvc = AviaryService(aviaryBox);
+
+  final playerBox = await Hive.openBox('player_stats');
+  final playerNotifier = PlayerNotifier(playerBox);
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        birdServiceProvider.overrideWithValue(birdSvc),
+        aviaryServiceProvider.overrideWithValue(aviarySvc),
+        playerProvider.overrideWith((_) => playerNotifier),
+      ],
+      child: const AviQuest(),
+    ),
+  );
 }
 
 class AviQuest extends StatelessWidget {
@@ -20,8 +63,9 @@ class AviQuest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'AviQuest',
+      routerConfig: router,
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: bgDeep,
         primaryColor: Colors.amber,
@@ -48,7 +92,6 @@ class AviQuest extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
         ),
       ),
-      home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

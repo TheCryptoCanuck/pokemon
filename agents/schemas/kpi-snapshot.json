@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "KPI Snapshot",
+  "description": "Schema for Master Orchestrator v3 KPI tracking snapshots",
+  "type": "object",
+  "required": ["timestamp", "state", "kpis", "capital", "health"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of this snapshot"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "DISCOVERY",
+        "MVP_BUILD",
+        "HARDENING",
+        "LAUNCH",
+        "GROWTH_OPTIMIZATION",
+        "SCALE",
+        "INCIDENT",
+        "RUNWAY_CRITICAL",
+        "PIVOT"
+      ],
+      "description": "Current operating state of the company"
+    },
+    "kpis": {
+      "type": "object",
+      "required": ["north_star"],
+      "properties": {
+        "north_star": {
+          "type": "object",
+          "required": ["name", "value"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of the North Star metric"
+            },
+            "value": {
+              "type": "number",
+              "description": "Current value"
+            },
+            "target": {
+              "type": "number",
+              "description": "Target value"
+            },
+            "unit": {
+              "type": "string",
+              "description": "Unit of measurement"
+            }
+          }
+        },
+        "activation_rate": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "number", "minimum": 0, "maximum": 100 },
+            "target": { "type": "number", "minimum": 0, "maximum": 100 },
+            "status": { "type": "string", "enum": ["GREEN", "YELLOW", "RED"] }
+          }
+        },
+        "retention": {
+          "type": "object",
+          "properties": {
+            "day_1": {
+              "type": "object",
+              "properties": {
+                "value": { "type": "number", "minimum": 0, "maximum": 100 },
+                "target": { "type": "number", "minimum": 0, "maximum": 100 },
+                "status": { "type": "string", "enum": ["GREEN", "YELLOW", "RED"] }
+              }
+            },
+            "day_7": {
+              "type": "object",
+              "properties": {
+                "value": { "type": "number", "minimum": 0, "maximum": 100 },
+                "target": { "type": "number", "minimum": 0, "maximum": 100 },
+                "status": { "type": "string", "enum": ["GREEN", "YELLOW", "RED"] }
+              }
+            },
+            "day_30": {
+              "type": "object",
+              "properties": {
+                "value": { "type": "number", "minimum": 0, "maximum": 100 },
+                "target": { "type": "number", "minimum": 0, "maximum": 100 },
+                "status": { "type": "string", "enum": ["GREEN", "YELLOW", "RED"] }
+              }
+            }
+          }
+        },
+        "cac": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "number", "minimum": 0 },
+            "target": { "type": "number", "minimum": 0 },
+            "currency": { "type": "string", "default": "USD" },
+            "status": { "type": "string", "enum": ["GREEN", "YELLOW", "RED"] }
+          }
+        },
+        "ltv": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "number", "minimum": 0 },
+            "target": { "type": "number", "minimum": 0 },
+            "currency": { "type": "string", "default": "USD" },
+            "status": { "type": "string", "enum": ["GREEN", "YELLOW", "RED"] }
+          }
+        },
+        "deployment_frequency": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "number", "minimum": 0 },
+            "unit": { "type": "string", "default": "per_week" },
+            "target": { "type": "number", "minimum": 0 },
+            "status": { "type": "string", "enum": ["GREEN", "YELLOW", "RED"] }
+          }
+        },
+        "incident_rate": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "number", "minimum": 0 },
+            "unit": { "type": "string", "default": "per_week" },
+            "target": { "type": "number", "minimum": 0 },
+            "status": { "type": "string", "enum": ["GREEN", "YELLOW", "RED"] }
+          }
+        }
+      }
+    },
+    "capital": {
+      "type": "object",
+      "required": ["burn_rate", "runway_months"],
+      "properties": {
+        "burn_rate": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Monthly burn rate in USD"
+        },
+        "runway_months": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Months of runway remaining"
+        },
+        "cash_on_hand": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Current cash balance in USD"
+        },
+        "mrr": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Monthly Recurring Revenue in USD"
+        },
+        "optimization_target": {
+          "type": "string",
+          "enum": ["learning", "retention", "revenue", "survival"],
+          "description": "Derived from runway length"
+        }
+      }
+    },
+    "health": {
+      "type": "string",
+      "enum": ["GREEN", "YELLOW", "RED"],
+      "description": "Overall system health"
+    },
+    "primary_constraint": {
+      "type": "string",
+      "description": "Single biggest blocker to progress"
+    },
+    "dominant_risk": {
+      "type": "string",
+      "description": "Most dangerous risk currently active"
+    }
+  }
+}
