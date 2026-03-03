@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants.dart';
 import '../helpers/game_helpers.dart';
+import '../helpers/ui_helpers.dart';
 import '../models/bird.dart';
 import '../services/bird_service.dart';
 import '../services/player_service.dart';
@@ -120,20 +121,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       for (final key in quizAchievements) {
         final a = achievements[key];
         if (a == null || !mounted) continue;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: const Color(0xFF1A2F1F),
-            duration: const Duration(seconds: 4),
-            content: Row(children: [
-              Text(a.$1, style: const TextStyle(fontSize: 24)),
-              const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('Achievement Unlocked!', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
-                Text(a.$2, style: const TextStyle(color: Colors.white70)),
-              ]),
-            ]),
-          ),
-        );
+        showAchievementSnackBar(context, a);
       }
       return;
     }

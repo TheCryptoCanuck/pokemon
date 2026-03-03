@@ -83,10 +83,7 @@ class _AviaryScreenState extends ConsumerState<AviaryScreen> {
         }
 
         // Rarity counts for header
-        final allBirds = box.values
-            .map((name) => birdSvc.lookup(name))
-            .whereType<Bird>()
-            .toList();
+        final allBirds = aviarySvc.collectedBirds;
         final rarityCounts = <Rarity, int>{};
         for (final b in allBirds) {
           rarityCounts[b.rarity] = (rarityCounts[b.rarity] ?? 0) + 1;

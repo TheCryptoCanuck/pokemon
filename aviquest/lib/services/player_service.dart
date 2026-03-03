@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 import '../constants.dart';
+import '../helpers/date_helpers.dart';
 import '../models/bird.dart';
 
 final _log = Logger('PlayerService');
@@ -217,8 +218,7 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
   }
 
   /// Format a date as YYYY-MM-DD for reliable comparison.
-  String _dateKey(DateTime d) =>
-      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+  String _dateKey(DateTime d) => formatDateKey(d);
 
   /// Awards XP for a bird and returns list of newly unlocked achievement keys.
   ///

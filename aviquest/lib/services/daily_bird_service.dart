@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../helpers/date_helpers.dart';
 import '../models/bird.dart';
 import 'bird_service.dart';
 
@@ -15,10 +16,7 @@ class DailyBirdService {
   DailyBirdService(this._birdService, this._playerBox);
 
   /// Today's date key (e.g. "2026-03-03").
-  String get _todayKey {
-    final now = DateTime.now();
-    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-  }
+  String get _todayKey => formatDateKey(DateTime.now());
 
   /// Get today's featured bird. Deterministic: same bird for all users on a
   /// given day, rotating through the full catalogue over ~385 days.

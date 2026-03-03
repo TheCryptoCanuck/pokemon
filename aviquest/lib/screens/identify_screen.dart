@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../constants.dart';
 import '../helpers/game_helpers.dart';
+import '../helpers/ui_helpers.dart';
 import '../models/bird.dart';
 import '../services/analytics_service.dart';
 import '../services/aviary_service.dart';
@@ -264,10 +265,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
     final birdSvc = ref.read(birdServiceProvider);
     final familySvc = ref.read(birdFamilyServiceProvider);
     final seasonalSvc = ref.read(seasonalEventServiceProvider);
-    final collectedBirds = aviarySvc.all
-        .map((name) => birdSvc.lookup(name))
-        .whereType<Bird>()
-        .toList();
+    final collectedBirds = aviarySvc.collectedBirds;
 
     // Compute XP multipliers from seasonal events and family mastery
     final seasonalMultiplier = seasonalSvc.currentXpMultiplier;
@@ -300,20 +298,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
       });
       Future.delayed(const Duration(milliseconds: 500), () {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: const Color(0xFF1A2F1F),
-            duration: const Duration(seconds: 4),
-            content: Row(children: [
-              Text(a.$1, style: const TextStyle(fontSize: 24)),
-              const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('Achievement Unlocked!', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
-                Text(a.$2, style: const TextStyle(color: Colors.white70)),
-              ]),
-            ]),
-          ),
-        );
+        showAchievementSnackBar(context, a);
       });
     }
 
@@ -340,7 +325,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final idService = ref.watch(identificationServiceProvider);
+    final idService = ref.read(identificationServiceProvider);
     return SingleChildScrollView(
       child: Column(
       mainAxisAlignment: MainAxisAlignment.center,

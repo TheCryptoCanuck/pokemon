@@ -355,10 +355,7 @@ class ProfileScreen extends ConsumerWidget {
     }
 
     // Rarity collection progress
-    final collectedBirds = aviarySvc.all
-        .map((name) => birdSvc.lookup(name))
-        .whereType<Bird>()
-        .toList();
+    final collectedBirds = aviarySvc.collectedBirds;
     final rareCount = collectedBirds.where((b) => b.rarity == Rarity.rare).length;
     if (!unlocked.contains('five_rare') && rareCount > 0) {
       hints.add(_AchievementHint(
@@ -485,9 +482,8 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _rarityCount(Rarity rarity, AviaryService aviarySvc, BirdService birdSvc) {
-    final collected = aviarySvc.all
-        .map((name) => birdSvc.lookup(name))
-        .where((b) => b != null && b.rarity == rarity)
+    final collected = aviarySvc.collectedBirds
+        .where((b) => b.rarity == rarity)
         .length;
     final total = birdSvc.all.where((b) => b.rarity == rarity).length;
     return Column(children: [

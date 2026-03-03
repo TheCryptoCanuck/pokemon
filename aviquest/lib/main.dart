@@ -95,6 +95,7 @@ Future<void> _startApp() async {
   final playerBox = await Hive.openBox('player_stats');
   final playerNotifier = PlayerNotifier(playerBox);
   final dailyBirdSvc = DailyBirdService(birdSvc, playerBox);
+  aviarySvc.setBirdService(birdSvc);
   final birdFamilySvc = BirdFamilyService(birdSvc, aviarySvc);
   final sightingSvc = SightingService();
   await sightingSvc.init();
