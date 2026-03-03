@@ -9,8 +9,10 @@ import 'router.dart';
 import 'security/security_manager.dart';
 import 'services/aviary_service.dart';
 import 'services/bird_service.dart';
+import 'services/identification_service.dart';
 import 'services/log_service.dart';
 import 'services/player_service.dart';
+import 'services/tflite_identification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +31,19 @@ void main() async {
   final birdSvc = BirdService();
   await birdSvc.load();
 
+  // Try to load TFLite model; fall back to mock if unavailable
+  final tfliteSvc = TfliteIdentificationService(birdSvc);
+  final modelLoaded = await tfliteSvc.loadModel();
+  final IdentificationService idService = modelLoaded
+      ? tfliteSvc
+      : MockIdentificationService(birdSvc);
+
+  if (modelLoaded) {
+    debugPrint('[AviQuest] Bird classifier loaded — real identification active');
+  } else {
+    debugPrint('[AviQuest] No TFLite model found — using demo mode');
+  }
+
   final aviaryBox = await Hive.openBox<String>('aviary_v2');
   final aviarySvc = AviaryService(aviaryBox);
 
@@ -39,6 +54,7 @@ void main() async {
     ProviderScope(
       overrides: [
         birdServiceProvider.overrideWithValue(birdSvc),
+        identificationServiceProvider.overrideWithValue(idService),
         aviaryServiceProvider.overrideWithValue(aviarySvc),
         playerProvider.overrideWith((_) => playerNotifier),
       ],

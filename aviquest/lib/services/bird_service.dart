@@ -11,6 +11,7 @@ final _log = Logger('BirdService');
 class BirdService {
   late final List<Bird> _birds;
   late final Map<String, Bird> _index;
+  late final Map<String, Bird> _sciIndex;
 
   List<Bird> get all => _birds;
   Map<String, Bird> get index => _index;
@@ -23,7 +24,13 @@ class BirdService {
           .map((e) => Bird.fromJson(e as Map<String, dynamic>))
           .toList(growable: false);
       _index = {for (final b in _birds) b.name: b};
-      _log.info('Loaded ${_birds.length} birds');
+      // Build scientific name index (lowercase for case-insensitive matching).
+      // For duplicates, the first entry wins.
+      _sciIndex = {};
+      for (final b in _birds) {
+        _sciIndex.putIfAbsent(b.scientificName.toLowerCase(), () => b);
+      }
+      _log.info('Loaded ${_birds.length} birds (${_sciIndex.length} unique species)');
     } catch (e, st) {
       _log.severe('Failed to load birds.json', e, st);
       rethrow;
@@ -31,6 +38,10 @@ class BirdService {
   }
 
   Bird? lookup(String name) => _index[name];
+
+  /// Lookup bird by scientific name (case-insensitive).
+  Bird? lookupByScientificName(String scientificName) =>
+      _sciIndex[scientificName.toLowerCase()];
 
   Bird unknownBird(String name) => Bird(
     name: name,

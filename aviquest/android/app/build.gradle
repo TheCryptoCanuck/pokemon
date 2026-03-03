@@ -44,6 +44,11 @@ android {
         versionName flutterVersionName
     }
 
+    // Prevent compression of TFLite model files
+    aaptOptions {
+        noCompress 'tflite'
+    }
+
     buildTypes {
         release {
             // Use debug signing for now — replace with release keystore before production

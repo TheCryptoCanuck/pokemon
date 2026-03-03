@@ -6,15 +6,16 @@ import '../constants.dart';
 class NetworkBirdImage extends StatelessWidget {
   final String url;
   final double height;
+  final double? width;
 
-  const NetworkBirdImage({super.key, required this.url, required this.height});
+  const NetworkBirdImage({super.key, required this.url, required this.height, this.width});
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: url,
       height: height,
-      width: double.infinity,
+      width: width ?? double.infinity,
       fit: BoxFit.cover,
       placeholder: (_, __) => Shimmer.fromColors(
         baseColor: bgCard,

@@ -21,14 +21,19 @@ class IdentificationResult {
 }
 
 /// Abstraction for bird identification.
-/// In production, swap [MockIdentificationService] for a TFLite-backed impl.
 abstract class IdentificationService {
-  Future<Bird> identify(File imageFile);
-  Future<Bird> identifyByAudio(File audioFile);
+  /// Identify a bird from a photo. Returns top predictions ranked by confidence.
+  Future<List<IdentificationResult>> identify(File imageFile);
+
+  /// Identify a bird from an audio recording.
+  Future<List<IdentificationResult>> identifyByAudio(File audioFile);
+
+  /// Whether the service is using a real ML model vs mock.
+  bool get isModelLoaded;
 }
 
 /// Mock implementation using weighted random bird selection.
-/// Replace with TFLite or cloud ML inference when model is ready.
+/// Used as fallback when TFLite model is not available.
 class MockIdentificationService implements IdentificationService {
   final BirdService _birdService;
   final Random _rng;
@@ -37,22 +42,40 @@ class MockIdentificationService implements IdentificationService {
       : _rng = rng ?? Random();
 
   @override
-  Future<Bird> identify(File imageFile) async {
+  bool get isModelLoaded => false;
+
+  @override
+  Future<List<IdentificationResult>> identify(File imageFile) async {
     _log.info('Mock identify: ${imageFile.path}');
-    // Simulate processing delay
     await Future.delayed(const Duration(milliseconds: 1800));
-    return _birdService.weightedRandomBird(_rng);
+
+    // Generate 3 random predictions with decreasing fake confidence
+    final results = <IdentificationResult>[];
+    final seen = <String>{};
+    final confidences = [0.72, 0.18, 0.07];
+
+    for (var i = 0; i < 3; i++) {
+      Bird bird;
+      do {
+        bird = _birdService.weightedRandomBird(_rng);
+      } while (seen.contains(bird.name));
+      seen.add(bird.name);
+      results.add(IdentificationResult(
+        bird: bird,
+        confidence: confidences[i] + (_rng.nextDouble() * 0.1 - 0.05),
+        source: 'mock',
+      ));
+    }
+    return results;
   }
 
   @override
-  Future<Bird> identifyByAudio(File audioFile) async {
+  Future<List<IdentificationResult>> identifyByAudio(File audioFile) async {
     _log.info('Mock audio identify: ${audioFile.path}');
-    await Future.delayed(const Duration(milliseconds: 1800));
-    return _birdService.weightedRandomBird(_rng);
+    return identify(audioFile);
   }
 }
 
 final identificationServiceProvider = Provider<IdentificationService>((ref) {
-  final birdSvc = ref.read(birdServiceProvider);
-  return MockIdentificationService(birdSvc);
+  throw UnimplementedError('identificationServiceProvider must be overridden at startup');
 });

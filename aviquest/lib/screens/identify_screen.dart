@@ -71,30 +71,76 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: bgCard,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('🔬 Analysing...', style: TextStyle(color: Colors.amber)),
-        content: const Column(mainAxisSize: MainAxisSize.min, children: [
-          CircularProgressIndicator(color: Colors.amber),
-          SizedBox(height: 16),
-          Text('Processing photo...', style: TextStyle(color: Colors.white70)),
+        title: Text(
+          idService.isModelLoaded ? '🔬 Identifying...' : '🔬 Analysing...',
+          style: const TextStyle(color: Colors.amber),
+        ),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          const CircularProgressIndicator(color: Colors.amber),
+          const SizedBox(height: 16),
+          Text(
+            idService.isModelLoaded
+                ? 'Running bird classifier...'
+                : 'Processing photo...',
+            style: const TextStyle(color: Colors.white70),
+          ),
         ]),
       ),
     );
 
-    final matchedBird = await idService.identify(imageFile);
+    final results = await idService.identify(imageFile);
     if (!mounted) return;
-    Navigator.pop(context);
-    _showFoundDialog(matchedBird);
+    Navigator.pop(context); // dismiss loading dialog
+
+    if (results.isEmpty) {
+      _showNoResultDialog();
+      return;
+    }
+
+    _showFoundDialog(results);
   }
 
-  void _showFoundDialog(Bird bird) {
+  void _showNoResultDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: bgCard,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('No match found', style: TextStyle(color: Colors.amber)),
+        content: const Text(
+          'Could not identify a bird in this photo. Try getting a clearer shot with the bird centered in frame.',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Try Again'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showFoundDialog(List<IdentificationResult> results) {
+    final topResult = results.first;
+    final alternatives = results.length > 1 ? results.sublist(1) : <IdentificationResult>[];
     final aviarySvc = ref.read(aviaryServiceProvider);
-    final alreadyOwned = aviarySvc.contains(bird.name);
+    final alreadyOwned = aviarySvc.contains(topResult.bird.name);
+
     showDialog(
       context: context,
       builder: (ctx) => BirdFoundDialog(
-        bird: bird,
+        bird: topResult.bird,
+        confidence: topResult.confidence,
+        source: topResult.source,
+        alternatives: alternatives,
         alreadyOwned: alreadyOwned,
-        onAdd: () => _addBird(bird),
+        onAdd: () => _addBird(topResult.bird),
+        onSelectAlternative: (alt) {
+          Navigator.pop(ctx);
+          // Show the selected alternative as the main result
+          _showFoundDialog([alt, ...results.where((r) => r != alt)]);
+        },
       ),
     );
   }
@@ -134,6 +180,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final idService = ref.watch(identificationServiceProvider);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -141,6 +188,22 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
             .animate().fadeIn().slideY(begin: -0.3),
         const Text('Point at a bird and identify it!',
             style: TextStyle(color: Colors.white54)).animate().fadeIn(delay: 100.ms),
+        if (!idService.isModelLoaded)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.orange.withOpacity(0.4)),
+              ),
+              child: const Text(
+                'Demo mode — add bird_model.tflite for real ID',
+                style: TextStyle(color: Colors.orange, fontSize: 11),
+              ),
+            ),
+          ).animate().fadeIn(delay: 400.ms),
         const SizedBox(height: 24),
         if (_camReady && _cam != null)
           ClipRRect(

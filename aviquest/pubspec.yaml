@@ -23,6 +23,8 @@ dependencies:
   sqflite: ^2.3.0
   path_provider: ^2.1.1
   path: ^1.8.3
+  tflite_flutter: ^0.11.0
+  image: ^4.0.17
 
 dev_dependencies:
   flutter_test:
@@ -35,3 +37,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/birds.json
+    - assets/bird_labels.txt
+    - assets/bird_model.tflite
