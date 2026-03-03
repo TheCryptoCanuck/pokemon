@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants.dart';
 import '../helpers/game_helpers.dart';
+import '../models/bird.dart';
 import '../services/aviary_service.dart';
 import '../services/bird_family_service.dart';
 import '../services/bird_service.dart';

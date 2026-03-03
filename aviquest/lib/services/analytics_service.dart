@@ -14,13 +14,13 @@ class AnalyticsService {
   static const _boxName = 'analytics_events';
   static const maxEvents = 10000;
 
-  late Box<Map> _box;
+  late Box _box;
   int _sessionNumber = 0;
 
   int get sessionNumber => _sessionNumber;
 
   Future<void> init() async {
-    _box = await Hive.openBox<Map>(_boxName);
+    _box = await Hive.openBox(_boxName);
     _sessionNumber = _box.get('_meta_session_count', defaultValue: 0) as int;
     _sessionNumber++;
     await _box.put('_meta_session_count', _sessionNumber);
@@ -50,7 +50,7 @@ class AnalyticsService {
 
   /// Get all stored events (for debugging / export).
   List<Map> get events =>
-      _box.values.where((e) => e.containsKey('event')).toList();
+      _box.values.whereType<Map>().where((e) => e.containsKey('event')).toList();
 
   /// Number of stored events.
   int get eventCount => events.length;
