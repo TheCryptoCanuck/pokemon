@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../services/analytics_service.dart';
 
-class HomeShell extends StatelessWidget {
+const _tabLabels = ['Map', 'Identify', 'Aviary', 'Field Guide', 'Me'];
+
+class HomeShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   const HomeShell({super.key, required this.navigationShell});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SafeArea(child: navigationShell),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
         onTap: (i) {
           HapticFeedback.selectionClick();
+          final fromTab = _tabLabels[navigationShell.currentIndex];
+          final toTab = _tabLabels[i];
+          if (fromTab != toTab) {
+            ref.read(analyticsProvider).track('tab_navigated', {
+              'from_tab': fromTab,
+              'to_tab': toTab,
+            });
+          }
           navigationShell.goBranch(i, initialLocation: i == navigationShell.currentIndex);
         },
         items: const [

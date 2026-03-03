@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../constants.dart';
+import '../services/analytics_service.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
 
   const OnboardingScreen({super.key, required this.onComplete});
@@ -20,10 +22,10 @@ class OnboardingScreen extends StatefulWidget {
   }
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final _controller = PageController();
   int _currentPage = 0;
 
@@ -50,16 +52,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    // Use addPostFrameCallback so ref is accessible
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(analyticsProvider).track('onboarding_started');
+    });
+  }
+
   void _next() {
     if (_currentPage < _pages.length - 1) {
       _controller.nextPage(duration: 300.ms, curve: Curves.easeInOut);
     } else {
+      ref.read(analyticsProvider).track('onboarding_completed');
       OnboardingScreen.markComplete();
       widget.onComplete();
     }
   }
 
   void _skip() {
+    ref.read(analyticsProvider).track('onboarding_skipped', {
+      'skipped_at_page': _currentPage,
+    });
     OnboardingScreen.markComplete();
     widget.onComplete();
   }
@@ -85,7 +100,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: PageView.builder(
                 controller: _controller,
                 itemCount: _pages.length,
-                onPageChanged: (i) => setState(() => _currentPage = i),
+                onPageChanged: (i) {
+                  setState(() => _currentPage = i);
+                  ref.read(analyticsProvider).track('onboarding_page_viewed', {
+                    'page': i,
+                    'page_title': _pages[i].title,
+                  });
+                },
                 itemBuilder: (_, i) => _buildPage(_pages[i]),
               ),
             ),

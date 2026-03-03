@@ -1,12 +1,15 @@
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:logging/logging.dart';
 
 import 'constants.dart';
 import 'database/database.dart';
 import 'router.dart';
 import 'security/security_manager.dart';
+import 'services/analytics_service.dart';
 import 'services/aviary_service.dart';
 import 'services/bird_service.dart';
 import 'services/identification_service.dart';
@@ -14,10 +17,47 @@ import 'services/log_service.dart';
 import 'services/player_service.dart';
 import 'services/tflite_identification_service.dart';
 
+final _log = Logger('Main');
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   LogService.init();
 
+  // Global error handlers — catch unhandled exceptions so they are logged
+  // instead of silently crashing.
+  FlutterError.onError = (details) {
+    _log.severe('FlutterError: ${details.exceptionAsString()}', details.exception, details.stack);
+    FlutterError.presentError(details);
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    _log.severe('Unhandled platform error', error, stack);
+    return true; // prevent crash in release mode
+  };
+
+  try {
+    await _startApp();
+  } catch (e, st) {
+    _log.severe('Fatal startup error', e, st);
+    // Show a minimal error UI rather than a white/blank screen
+    runApp(MaterialApp(
+      home: Scaffold(
+        backgroundColor: const Color(0xFF0A1F0F),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Text(
+              'AviQuest failed to start.\n\nPlease restart the app.\n\n$e',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white70, fontSize: 16),
+            ),
+          ),
+        ),
+      ),
+    ));
+  }
+}
+
+Future<void> _startApp() async {
   await Hive.initFlutter();
   await DatabaseService.instance.initialize();
   await SecurityManager.instance.initialize();
@@ -26,6 +66,10 @@ void main() async {
   if (kDebugMode) {
     debugPrint('[Security] Debug mode active — some protections relaxed');
   }
+
+  // Analytics — local Hive event logger
+  final analytics = AnalyticsService();
+  await analytics.init();
 
   // Initialise services
   final birdSvc = BirdService();
@@ -50,6 +94,15 @@ void main() async {
   final playerBox = await Hive.openBox('player_stats');
   final playerNotifier = PlayerNotifier(playerBox);
 
+  // Track session start
+  analytics.track('app_session_started', {
+    'session_number': analytics.sessionNumber,
+    'streak': playerNotifier.state.streak,
+    'aviary_count': aviarySvc.count,
+    'level': playerNotifier.state.level,
+    'model_loaded': modelLoaded,
+  });
+
   runApp(
     ProviderScope(
       overrides: [
@@ -57,6 +110,7 @@ void main() async {
         identificationServiceProvider.overrideWithValue(idService),
         aviaryServiceProvider.overrideWithValue(aviarySvc),
         playerProvider.overrideWith((_) => playerNotifier),
+        analyticsProvider.overrideWithValue(analytics),
       ],
       child: const AviQuest(),
     ),

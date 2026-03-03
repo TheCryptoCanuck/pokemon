@@ -113,7 +113,7 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
                     ]),
                   ]),
                   trailing: const Icon(Icons.chevron_right, color: Colors.white24),
-                  onTap: () => BirdDetailSheet.show(context, bird, AudioPlayer()),
+                  onTap: () => BirdDetailSheet.show(context, bird, AudioPlayer(), source: 'guide'),
                 ),
               ).animate().fadeIn(delay: Duration(milliseconds: i * 30));
             },

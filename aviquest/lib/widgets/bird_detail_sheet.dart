@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:logging/logging.dart';
 import '../constants.dart';
 import '../models/bird.dart';
 import 'network_bird_image.dart';
+
+final _log = Logger('BirdDetailSheet');
 
 class BirdDetailSheet extends StatelessWidget {
   final Bird bird;
@@ -10,7 +13,8 @@ class BirdDetailSheet extends StatelessWidget {
 
   const BirdDetailSheet({super.key, required this.bird, required this.player});
 
-  static void show(BuildContext context, Bird bird, AudioPlayer player) {
+  static void show(BuildContext context, Bird bird, AudioPlayer player, {String source = 'unknown'}) {
+    _log.fine('Showing detail sheet for ${bird.name} (source: $source)');
     showModalBottomSheet(
       context: context,
       backgroundColor: bgCard,
@@ -19,7 +23,7 @@ class BirdDetailSheet extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => BirdDetailSheet(bird: bird, player: player),
-    );
+    ).whenComplete(() => player.dispose());
   }
 
   @override
@@ -91,7 +95,9 @@ class BirdDetailSheet extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: () {
-                player.setUrl(bird.audioUrl).then((_) => player.play()).catchError((_) {});
+                player.setUrl(bird.audioUrl).then((_) => player.play()).catchError((e) {
+                  _log.fine('Audio playback failed for ${bird.name}: $e');
+                });
               },
               icon: const Icon(Icons.volume_up),
               label: const Text('Play Bird Call'),

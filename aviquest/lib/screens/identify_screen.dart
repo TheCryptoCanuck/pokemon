@@ -5,16 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:logging/logging.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../constants.dart';
 import '../helpers/game_helpers.dart';
 import '../models/bird.dart';
+import '../services/analytics_service.dart';
 import '../services/aviary_service.dart';
 import '../services/bird_service.dart';
 import '../services/identification_service.dart';
 import '../services/player_service.dart';
 import '../widgets/bird_found_dialog.dart';
+
+final _log = Logger('IdentifyScreen');
 
 class IdentifyScreen extends ConsumerStatefulWidget {
   const IdentifyScreen({super.key});
@@ -27,6 +31,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
   final _player = AudioPlayer();
   CameraController? _cam;
   bool _camReady = false;
+  String? _cameraError;
 
   @override
   void initState() {
@@ -44,22 +49,57 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
   Future<void> _initCamera() async {
     try {
       final cameras = await availableCameras();
-      if (cameras.isEmpty) return;
+      if (cameras.isEmpty) {
+        setState(() => _cameraError = 'No camera found on this device');
+        return;
+      }
       _cam = CameraController(cameras[0], ResolutionPreset.high);
       await _cam!.initialize();
       if (!mounted) return;
       setState(() => _camReady = true);
-    } catch (_) {}
+    } catch (e) {
+      _log.warning('Camera init failed', e);
+      if (!mounted) return;
+      setState(() => _cameraError = 'Camera unavailable: ${_friendlyError(e)}');
+    }
+  }
+
+  String _friendlyError(Object e) {
+    final msg = e.toString();
+    if (msg.contains('permission') || msg.contains('Permission')) {
+      return 'Camera permission denied';
+    }
+    if (msg.contains('CameraAccessDenied')) {
+      return 'Camera access denied — check Settings';
+    }
+    return 'Could not start camera';
   }
 
   Future<void> _takePhoto() async {
-    await Permission.camera.request();
+    final status = await Permission.camera.request();
+    if (!status.isGranted) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Camera permission is required to identify birds')),
+      );
+      return;
+    }
     if (_cam == null || !_camReady) return;
     try {
       final file = await _cam!.takePicture();
       if (!mounted) return;
+      ref.read(analyticsProvider).track('identify_attempted', {
+        'method': 'photo',
+        'model_loaded': ref.read(identificationServiceProvider).isModelLoaded,
+      });
       await _identify(File(file.path));
-    } catch (_) {}
+    } catch (e) {
+      _log.warning('Photo capture failed', e);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not capture photo — please try again')),
+      );
+    }
   }
 
   Future<void> _identify(File imageFile) async {
@@ -93,9 +133,19 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
     Navigator.pop(context); // dismiss loading dialog
 
     if (results.isEmpty) {
+      ref.read(analyticsProvider).track('identify_failed', {'method': 'photo'});
       _showNoResultDialog();
       return;
     }
+
+    final top = results.first;
+    ref.read(analyticsProvider).track('identify_succeeded', {
+      'bird_name': top.bird.name,
+      'rarity': top.bird.rarity.name,
+      'confidence': top.confidence,
+      'source': top.source,
+      'alternative_count': results.length - 1,
+    });
 
     _showFoundDialog(results);
   }
@@ -137,8 +187,11 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
         alreadyOwned: alreadyOwned,
         onAdd: () => _addBird(topResult.bird),
         onSelectAlternative: (alt) {
+          ref.read(analyticsProvider).track('alternative_selected', {
+            'original_bird': topResult.bird.name,
+            'selected_bird': alt.bird.name,
+          });
           Navigator.pop(ctx);
-          // Show the selected alternative as the main result
           _showFoundDialog([alt, ...results.where((r) => r != alt)]);
         },
       ),
@@ -147,10 +200,26 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
 
   void _addBird(Bird bird) {
     final aviarySvc = ref.read(aviaryServiceProvider);
-    if (!aviarySvc.add(bird.name)) return;
+    if (!aviarySvc.add(bird.name)) {
+      ref.read(analyticsProvider).track('bird_skipped', {
+        'bird_name': bird.name,
+        'rarity': bird.rarity.name,
+        'already_owned': true,
+      });
+      return;
+    }
+
+    ref.read(analyticsProvider).track('bird_added_to_aviary', {
+      'bird_name': bird.name,
+      'rarity': bird.rarity.name,
+      'xp_earned': bird.xp,
+      'aviary_count': aviarySvc.count,
+    });
 
     if (bird.audioUrl.isNotEmpty) {
-      _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((_) {});
+      _player.setUrl(bird.audioUrl).then((_) => _player.play()).catchError((e) {
+        _log.fine('Audio playback failed for ${bird.name}: $e');
+      });
     }
 
     final playerNotifier = ref.read(playerProvider.notifier);
@@ -158,6 +227,10 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
 
     for (final key in newAchievements) {
       final a = achievements[key]!;
+      ref.read(analyticsProvider).track('achievement_unlocked', {
+        'achievement_key': key,
+        'achievement_name': a.$2,
+      });
       Future.delayed(const Duration(milliseconds: 500), () {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -225,11 +298,15 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: Colors.white12),
             ),
-            child: const Center(
+            child: Center(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.camera_alt, size: 64, color: Colors.white24),
-                SizedBox(height: 8),
-                Text('Camera unavailable', style: TextStyle(color: Colors.white38)),
+                const Icon(Icons.camera_alt, size: 64, color: Colors.white24),
+                const SizedBox(height: 8),
+                Text(
+                  _cameraError ?? 'Camera loading...',
+                  style: const TextStyle(color: Colors.white38),
+                  textAlign: TextAlign.center,
+                ),
               ]),
             ),
           ),
@@ -244,7 +321,15 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
             ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3),
             const SizedBox(width: 16),
             OutlinedButton.icon(
-              onPressed: () => _identify(File('')),
+              onPressed: () {
+                ref.read(analyticsProvider).track('identify_attempted', {
+                  'method': 'audio',
+                  'model_loaded': false,
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Audio identification coming soon!')),
+                );
+              },
               icon: const Icon(Icons.mic, color: Colors.amber),
               label: const Text('By Call', style: TextStyle(color: Colors.amber)),
               style: OutlinedButton.styleFrom(

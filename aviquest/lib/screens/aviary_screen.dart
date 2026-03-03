@@ -52,7 +52,7 @@ class AviaryScreen extends ConsumerWidget {
             if (birdName == null) return const SizedBox.shrink();
             final bird = birdSvc.lookup(birdName) ?? birdSvc.unknownBird(birdName);
             return GestureDetector(
-              onTap: () => BirdDetailSheet.show(context, bird, AudioPlayer()),
+              onTap: () => BirdDetailSheet.show(context, bird, AudioPlayer(), source: 'aviary'),
               child: Card(
                 color: bgCard,
                 shape: RoundedRectangleBorder(
