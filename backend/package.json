@@ -1,0 +1,17 @@
+{
+  "name": "aviquest-backend",
+  "version": "1.0.0",
+  "description": "AviQuest serverless backend API",
+  "private": true,
+  "scripts": {
+    "test": "node --test src/**/*.test.js",
+    "lint": "echo 'No linter configured'"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.500.0",
+    "@aws-sdk/lib-dynamodb": "^3.500.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
