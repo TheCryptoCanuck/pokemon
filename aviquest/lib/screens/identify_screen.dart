@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ import '../services/aviary_service.dart';
 import '../services/bird_service.dart';
 import '../services/identification_service.dart';
 import '../services/player_service.dart';
-import '../widgets/bird_detail_sheet.dart';
 import '../widgets/bird_found_dialog.dart';
 
 class IdentifyScreen extends ConsumerStatefulWidget {
@@ -27,7 +25,6 @@ class IdentifyScreen extends ConsumerStatefulWidget {
 
 class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
   final _player = AudioPlayer();
-  final _rng = Random();
   CameraController? _cam;
   bool _camReady = false;
 
