@@ -6,12 +6,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 
 import 'constants.dart';
-import 'database/database.dart';
 import 'router.dart';
 import 'security/security_manager.dart';
 import 'services/analytics_service.dart';
 import 'services/aviary_service.dart';
 import 'services/bird_service.dart';
+import 'services/daily_bird_service.dart';
 import 'services/identification_service.dart';
 import 'services/log_service.dart';
 import 'services/player_service.dart';
@@ -59,7 +59,6 @@ void main() async {
 
 Future<void> _startApp() async {
   await Hive.initFlutter();
-  await DatabaseService.instance.initialize();
   await SecurityManager.instance.initialize();
   await SecurityManager.instance.enforcePortraitOrientation();
 
@@ -93,6 +92,7 @@ Future<void> _startApp() async {
 
   final playerBox = await Hive.openBox('player_stats');
   final playerNotifier = PlayerNotifier(playerBox);
+  final dailyBirdSvc = DailyBirdService(birdSvc, playerBox);
 
   // Track session start
   analytics.track('app_session_started', {
@@ -111,6 +111,7 @@ Future<void> _startApp() async {
         aviaryServiceProvider.overrideWithValue(aviarySvc),
         playerProvider.overrideWith((_) => playerNotifier),
         analyticsProvider.overrideWithValue(analytics),
+        dailyBirdServiceProvider.overrideWithValue(dailyBirdSvc),
       ],
       child: const AviQuest(),
     ),

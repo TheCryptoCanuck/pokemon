@@ -110,7 +110,16 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   /// Awards XP for a bird and returns list of newly unlocked achievement keys.
-  List<String> addXpForBird(Bird bird, int aviaryCount) {
+  ///
+  /// [collectedBirds] is the full list of collected bird names (used for
+  /// rarity-specific counting). [allBirds] is the full bird catalogue
+  /// (used for "collect all" milestones).
+  List<String> addXpForBird(
+    Bird bird,
+    int aviaryCount, {
+    List<Bird> collectedBirds = const [],
+    List<Bird> allBirds = const [],
+  }) {
     final oldLevel = state.level;
     var newLevel = state.level;
     var newXp = state.xp + bird.xp;
@@ -130,22 +139,60 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
       }
     }
 
-    // Collection milestones
+    // ─── Collection milestones ─────────────────────────────────────────
     if (aviaryCount >= 1) tryUnlock('first_bird');
     if (aviaryCount >= 5) tryUnlock('five_species');
     if (aviaryCount >= 10) tryUnlock('ten_species');
     if (aviaryCount >= 20) tryUnlock('twenty_species');
+    if (aviaryCount >= 50) tryUnlock('fifty_species');
+    if (aviaryCount >= 100) tryUnlock('hundred_species');
+    if (aviaryCount >= 200) tryUnlock('two_hundred_species');
 
-    // Rarity achievements
-    if (bird.rarity == Rarity.rare || bird.rarity == Rarity.legendary) tryUnlock('rare_find');
+    // ─── Rarity-specific collection ────────────────────────────────────
+    if (bird.rarity == Rarity.rare || bird.rarity == Rarity.legendary) {
+      tryUnlock('rare_find');
+    }
     if (bird.rarity == Rarity.legendary) tryUnlock('legendary_find');
 
-    // Level achievements
+    if (collectedBirds.isNotEmpty) {
+      final rareCount = collectedBirds.where((b) => b.rarity == Rarity.rare).length;
+      final legendaryCount = collectedBirds.where((b) => b.rarity == Rarity.legendary).length;
+      if (rareCount >= 5) tryUnlock('five_rare');
+      if (legendaryCount >= 5) tryUnlock('five_legendary');
+
+      // "Collect all" milestones
+      if (allBirds.isNotEmpty) {
+        final totalCommon = allBirds.where((b) => b.rarity == Rarity.common).length;
+        final collectedCommon = collectedBirds.where((b) => b.rarity == Rarity.common).length;
+        if (collectedCommon >= totalCommon && totalCommon > 0) tryUnlock('all_common');
+
+        final totalUncommon = allBirds.where((b) => b.rarity == Rarity.uncommon).length;
+        final collectedUncommon = collectedBirds.where((b) => b.rarity == Rarity.uncommon).length;
+        if (collectedUncommon >= totalUncommon && totalUncommon > 0) tryUnlock('all_uncommon');
+      }
+
+      // Conservation achievements
+      final hasEndangered = collectedBirds.any((b) =>
+          b.conservationStatus == 'Endangered' ||
+          b.conservationStatus == 'Critically Endangered');
+      if (hasEndangered) tryUnlock('endangered_spotter');
+
+      final threatenedCount = collectedBirds.where((b) =>
+          b.conservationStatus == 'Vulnerable' ||
+          b.conservationStatus == 'Endangered' ||
+          b.conservationStatus == 'Critically Endangered' ||
+          b.conservationStatus == 'Near Threatened').length;
+      if (threatenedCount >= 5) tryUnlock('conservation_hero');
+    }
+
+    // ─── Level milestones ──────────────────────────────────────────────
     if (newLevel >= 5) tryUnlock('level_5');
     if (newLevel >= 10) tryUnlock('level_10');
     if (newLevel >= 20) tryUnlock('level_20');
+    if (newLevel >= 30) tryUnlock('level_30');
 
-    // Streak achievements
+    // ─── Streak milestones ─────────────────────────────────────────────
+    if (state.streak >= 3) tryUnlock('streak_3');
     if (state.streak >= 7) tryUnlock('streak_7');
     if (state.streak >= 30) tryUnlock('streak_30');
 

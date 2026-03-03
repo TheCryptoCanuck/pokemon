@@ -91,22 +91,85 @@ class BirdDetailSheet extends StatelessWidget {
           _detailRow(Icons.landscape, 'Habitat', bird.habitat),
           _detailRow(Icons.eco, 'Conservation', bird.conservationStatus),
           _detailRow(Icons.bolt, 'XP Value', '+${bird.xp} XP'),
-          if (bird.audioUrl.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () {
-                player.setUrl(bird.audioUrl).then((_) => player.play()).catchError((e) {
-                  _log.fine('Audio playback failed for ${bird.name}: $e');
-                });
-              },
-              icon: const Icon(Icons.volume_up),
-              label: const Text('Play Bird Call'),
-            ),
-          ],
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              if (bird.audioUrl.isNotEmpty)
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      player.setUrl(bird.audioUrl).then((_) => player.play()).catchError((e) {
+                        _log.fine('Audio playback failed for ${bird.name}: $e');
+                      });
+                    },
+                    icon: const Icon(Icons.volume_up),
+                    label: const Text('Play Call'),
+                  ),
+                ),
+              if (bird.audioUrl.isNotEmpty) const SizedBox(width: 12),
+              if (bird.rarity != Rarity.unknown)
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          backgroundColor: bgCard,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          title: const Row(children: [
+                            Text('💡', style: TextStyle(fontSize: 24)),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text('Did You Know?',
+                                style: TextStyle(color: Colors.amber, fontSize: 18)),
+                            ),
+                          ]),
+                          content: Text(
+                            _generateFunFact(bird),
+                            style: const TextStyle(color: Colors.white70, height: 1.5),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cool!', style: TextStyle(color: Colors.amber)),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.lightbulb_outline, color: Colors.amber, size: 18),
+                    label: const Text('Fun Fact', style: TextStyle(color: Colors.amber)),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.amber),
+                    ),
+                  ),
+                ),
+            ],
+          ),
           const SizedBox(height: 32),
         ]),
       ),
     );
+  }
+
+  String _generateFunFact(Bird bird) {
+    final facts = <String>[];
+    if (bird.conservationStatus == 'Critically Endangered') {
+      facts.add('The ${bird.name} is critically endangered. Fewer than ever remain in the wild. Every sighting matters for conservation efforts.');
+    } else if (bird.conservationStatus == 'Endangered') {
+      facts.add('The ${bird.name} is listed as endangered. Conservation programs around the world are working to protect this species.');
+    } else if (bird.conservationStatus == 'Vulnerable') {
+      facts.add('The ${bird.name} is considered vulnerable. Their population is declining, making each sighting increasingly valuable.');
+    }
+    if (bird.rarity == Rarity.legendary) {
+      facts.add('The ${bird.name} is one of the rarest birds you can find in AviQuest. Only 3% of encounters yield a legendary bird!');
+    }
+    if (bird.rarity == Rarity.rare) {
+      facts.add('The ${bird.name} appears in only 12% of encounters. Finding one takes patience and a keen eye.');
+    }
+    facts.add('The scientific name "${bird.scientificName}" helps scientists worldwide identify this exact species regardless of language barriers.');
+    facts.add('${bird.name} lives in ${bird.habitat.toLowerCase()}. Understanding habitats is key to successful birdwatching.');
+    return facts[bird.name.hashCode.abs() % facts.length];
   }
 
   Widget _detailRow(IconData icon, String label, String value) {

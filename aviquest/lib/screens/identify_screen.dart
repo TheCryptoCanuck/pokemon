@@ -15,8 +15,11 @@ import '../services/analytics_service.dart';
 import '../services/aviary_service.dart';
 import '../services/bird_service.dart';
 import '../services/identification_service.dart';
+import '../services/daily_bird_service.dart';
 import '../services/player_service.dart';
 import '../widgets/bird_found_dialog.dart';
+import '../widgets/daily_bird_card.dart';
+import '../widgets/seasonal_event_banner.dart';
 
 final _log = Logger('IdentifyScreen');
 
@@ -222,8 +225,40 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
       });
     }
 
+    // Check daily bird bonus
+    final dailySvc = ref.read(dailyBirdServiceProvider);
+    if (bird.name == dailySvc.todaysBird.name) {
+      final bonus = dailySvc.claimDailyBonus();
+      if (bonus > 0 && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.amber.withOpacity(0.9),
+            duration: const Duration(seconds: 3),
+            content: Row(children: [
+              const Text('⭐', style: TextStyle(fontSize: 24)),
+              const SizedBox(width: 12),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('Daily Bird Bonus!', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                Text('+$bonus bonus XP', style: const TextStyle(color: Colors.black87)),
+              ]),
+            ]),
+          ),
+        );
+      }
+    }
+
     final playerNotifier = ref.read(playerProvider.notifier);
-    final newAchievements = playerNotifier.addXpForBird(bird, aviarySvc.count);
+    final birdSvc = ref.read(birdServiceProvider);
+    final collectedBirds = aviarySvc.all
+        .map((name) => birdSvc.lookup(name))
+        .whereType<Bird>()
+        .toList();
+    final newAchievements = playerNotifier.addXpForBird(
+      bird,
+      aviarySvc.count,
+      collectedBirds: collectedBirds,
+      allBirds: birdSvc.all,
+    );
 
     for (final key in newAchievements) {
       final a = achievements[key]!;
@@ -254,9 +289,11 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
   @override
   Widget build(BuildContext context) {
     final idService = ref.watch(identificationServiceProvider);
-    return Column(
+    return SingleChildScrollView(
+      child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        const SizedBox(height: 16),
         const Text('AviQuest', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.amber))
             .animate().fadeIn().slideY(begin: -0.3),
         const Text('Point at a bird and identify it!',
@@ -277,7 +314,10 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
               ),
             ),
           ).animate().fadeIn(delay: 400.ms),
-        const SizedBox(height: 24),
+        const SizedBox(height: 12),
+        const SeasonalEventBanner(),
+        const DailyBirdCard(),
+        const SizedBox(height: 12),
         if (_camReady && _cam != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(24),
@@ -340,7 +380,9 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
             ).animate().fadeIn(delay: 350.ms).slideY(begin: 0.3),
           ],
         ),
+        const SizedBox(height: 16),
       ],
+      ),
     );
   }
 }

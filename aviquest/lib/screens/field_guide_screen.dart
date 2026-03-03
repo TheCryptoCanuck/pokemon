@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shimmer/shimmer.dart';
 import '../constants.dart';
@@ -27,8 +29,49 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
 
     return Column(
       children: [
+        // Quiz mode launcher
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: GestureDetector(
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              context.push('/quiz');
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  Colors.amber.withOpacity(0.15),
+                  Colors.green.withOpacity(0.08),
+                ]),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.amber.withOpacity(0.4)),
+              ),
+              child: Row(children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.quiz, color: Colors.amber, size: 20),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('Bird Quiz', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                    Text('Test your bird knowledge — earn bonus XP!',
+                      style: TextStyle(color: Colors.white54, fontSize: 12)),
+                  ]),
+                ),
+                const Icon(Icons.arrow_forward_ios, color: Colors.amber, size: 16),
+              ]),
+            ),
+          ).animate().fadeIn(),
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
           child: TextField(
             onChanged: (v) => setState(() => _guideSearch = v),
             style: const TextStyle(color: Colors.white),

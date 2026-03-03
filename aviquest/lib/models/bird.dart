@@ -23,17 +23,27 @@ class Bird {
     required this.baseXp,
   });
 
-  factory Bird.fromJson(Map<String, dynamic> json) => Bird(
-    name: json['name'] as String,
-    scientificName: json['scientificName'] as String,
-    imageUrl: json['imageUrl'] as String,
-    audioUrl: json['audioUrl'] as String,
-    lore: json['lore'] as String,
-    habitat: json['habitat'] as String,
-    conservationStatus: json['conservationStatus'] as String,
-    rarity: Rarity.values.byName(json['rarity'] as String),
-    baseXp: json['baseXp'] as int,
-  );
+  /// Defensive factory that tolerates missing or malformed fields.
+  factory Bird.fromJson(Map<String, dynamic> json) {
+    Rarity rarity;
+    try {
+      rarity = Rarity.values.byName(json['rarity'] as String? ?? 'common');
+    } catch (_) {
+      rarity = Rarity.common;
+    }
+
+    return Bird(
+      name: json['name'] as String? ?? 'Unknown Bird',
+      scientificName: json['scientificName'] as String? ?? '',
+      imageUrl: json['imageUrl'] as String? ?? '',
+      audioUrl: json['audioUrl'] as String? ?? '',
+      lore: json['lore'] as String? ?? 'No information available.',
+      habitat: json['habitat'] as String? ?? 'Unknown',
+      conservationStatus: json['conservationStatus'] as String? ?? 'Unknown',
+      rarity: rarity,
+      baseXp: (json['baseXp'] as num?)?.toInt() ?? 20,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'name': name,
