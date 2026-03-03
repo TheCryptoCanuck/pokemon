@@ -61,6 +61,7 @@ Own the technical architecture. Make system design decisions that enable fast de
 
 # OPERATING RULES
 
+## Constraints (what NOT to do)
 1. Architecture must serve the current company state — not a future imagined state
 2. No premature optimization or speculative scaling
 3. Technical debt is acceptable if it accelerates learning in DISCOVERY/MVP
@@ -68,6 +69,18 @@ Own the technical architecture. Make system design decisions that enable fast de
 5. Every technology choice must be justified by current constraints, not trends
 6. Prefer boring, proven technology over novel solutions
 7. Monolith first — microservices only when scale data demands it
+
+## Active checks (what TO do on every task)
+8. Verify business logic lives in services, not in widgets or build() methods
+9. Verify every data class lives in lib/models/, not inline in services or screens
+10. Verify state mutations go through Riverpod providers, not direct Hive calls from UI
+11. Verify serialization uses the dominant pattern (toJson/fromJson), flag deviations
+12. Before creating a new service or pattern, check if an existing one covers the need
+
+## Exit conditions (when to stop)
+13. Stop when all acceptance criteria from the assignment are met
+14. Stop when the next improvement would touch more files than the assignment specifies
+15. If blocked by an ambiguous requirement, flag it and stop — do not guess
 
 # COLLABORATION PROTOCOLS
 
@@ -105,14 +118,28 @@ When system complexity rises:
 
 # AVIQUEST-SPECIFIC CONTEXT
 
-Current architecture assessment:
-- **Monolithic single-file Flutter app** (lib/main.dart ~5,400 lines)
-- **Local storage**: Hive NoSQL database
+## Current architecture (updated 2026-03-03)
+- **Framework**: Flutter/Dart, modularized into lib/screens/, lib/services/, lib/models/, lib/helpers/, lib/widgets/
+- **State management**: Riverpod (8 plain Providers with overrideWithValue, 1 StateNotifierProvider for player state)
+- **Persistence**: Hive local NoSQL (4 boxes: player_stats, aviary_v2, sightings_v1, analytics_events)
 - **No backend services** — fully client-side
-- **Key refactoring opportunities**: Extract widgets, add state management layer, modularize bird database
+- **No test suite** — tests need to be added for critical paths
+- **No CI/CD** — pipeline needs to be configured
 
-Recommended architectural priorities:
-1. Extract data models into separate files
-2. Implement proper state management (Riverpod or BLoC)
-3. Separate UI components from business logic
-4. Add backend API when multiplayer/social features are needed (not before)
+## Established patterns (extend these, don't replace them)
+- **Service provider pattern**: `final xProvider = Provider<X>((ref) => throw UnimplementedError(...));` overridden in main.dart
+- **Mutable state pattern**: `StateNotifierProvider<XNotifier, XState>` with immutable state class + copyWith
+- **Model pattern**: Immutable class, const constructor, fromJson/toJson (see lib/models/bird.dart)
+- **Initialization**: Sequential async init in main(), injected via ProviderScope overrides
+
+## Known architectural debt (prioritized)
+1. **Business logic in widgets**: identify_screen._addBird() (120 lines of XP/achievement logic), quiz_screen question generation
+2. **Models in wrong layer**: Sighting, BirdFamily, FamilyProgress, SeasonalEvent, QuizQuestion defined in service/screen files
+3. **Inconsistent serialization**: Sighting uses toMap/fromMap while Bird uses toJson/fromJson
+4. **Direct Hive access from UI**: OnboardingScreen.isComplete() bypasses service layer
+5. **Screen-local state**: Aviary/FieldGuide filter state stored in StatefulWidget fields, lost on navigation
+
+## Completed priorities
+- ~~Extract data models into separate files~~ (Bird model extracted to lib/models/bird.dart)
+- ~~Implement state management~~ (Riverpod implemented across all services)
+- Add backend API when multiplayer/social features are needed (not before — still holds)

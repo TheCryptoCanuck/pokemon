@@ -19,6 +19,7 @@ This project is governed by **Master Orchestrator v3** — an autonomous KPI-dri
 | Build Engineer | `agents/build-engineer.md` | Implementation & CI/CD |
 | Reliability Lead | `agents/reliability-lead.md` | Stability & incident response |
 | Growth & Revenue Lead | `agents/growth-revenue-lead.md` | Acquisition & monetization |
+| Code Quality Guardian | `agents/code-quality-guardian.md` | Consistency & drift prevention |
 
 ### Key Principles
 
@@ -57,7 +58,15 @@ AviQuest-/
 │       ├── experiment-card.md
 │       └── incident-report.md
 ├── aviquest/                  ← Flutter application
-│   ├── lib/main.dart          ← Main application (monolithic)
+│   ├── lib/
+│   │   ├── main.dart          ← App entry point & provider initialization
+│   │   ├── constants.dart     ← Rarity enum, color constants, achievements map
+│   │   ├── router.dart        ← go_router with StatefulShellRoute (5 tabs)
+│   │   ├── models/            ← Data classes (Bird)
+│   │   ├── screens/           ← UI screens (identify, aviary, profile, quiz, etc.)
+│   │   ├── services/          ← Business logic (player, bird, aviary, sighting, etc.)
+│   │   ├── helpers/           ← Utility functions (game_helpers)
+│   │   └── widgets/           ← Shared widgets (bird_detail_sheet, bird_found_dialog, etc.)
 │   ├── pubspec.yaml           ← Dependencies
 │   └── android/               ← Android build config
 └── README.md                  ← Project README
@@ -65,7 +74,9 @@ AviQuest-/
 
 ## Development Guidelines
 
-- **Single-file app**: `aviquest/lib/main.dart` (~5,400 lines) — consider modularization
+- **Modularized app**: Split into screens/, services/, models/, helpers/, widgets/
+- **State management**: Riverpod (8 Provider + 1 StateNotifierProvider for player state)
+- **Persistence**: Hive NoSQL (4 boxes: player_stats, aviary_v2, sightings_v1, analytics_events)
 - **No test suite**: Tests need to be added for critical paths
 - **No CI/CD**: Pipeline needs to be configured
 - **No backend**: Fully client-side; backend only when KPIs justify social features
