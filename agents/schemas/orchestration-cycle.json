@@ -1,0 +1,209 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Orchestration Cycle Report",
+  "description": "Schema for Master Orchestrator v3 cycle output — mandatory format for every orchestration loop",
+  "type": "object",
+  "required": [
+    "cycle_id",
+    "timestamp",
+    "current_state",
+    "kpi_snapshot",
+    "capital_snapshot",
+    "primary_constraint",
+    "reallocation_decision",
+    "agent_assignments",
+    "scope_changes",
+    "next_review_trigger"
+  ],
+  "properties": {
+    "cycle_id": {
+      "type": "string",
+      "description": "Unique identifier for this orchestration cycle"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "current_state": {
+      "type": "string",
+      "enum": [
+        "DISCOVERY",
+        "MVP_BUILD",
+        "HARDENING",
+        "LAUNCH",
+        "GROWTH_OPTIMIZATION",
+        "SCALE",
+        "INCIDENT",
+        "RUNWAY_CRITICAL",
+        "PIVOT"
+      ]
+    },
+    "previous_state": {
+      "type": "string",
+      "enum": [
+        "DISCOVERY",
+        "MVP_BUILD",
+        "HARDENING",
+        "LAUNCH",
+        "GROWTH_OPTIMIZATION",
+        "SCALE",
+        "INCIDENT",
+        "RUNWAY_CRITICAL",
+        "PIVOT"
+      ],
+      "description": "State before this cycle (for tracking transitions)"
+    },
+    "kpi_snapshot": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "value", "status"],
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": ["number", "string"] },
+          "status": { "type": "string", "enum": ["GREEN", "YELLOW", "RED"] },
+          "trend": { "type": "string", "enum": ["improving", "stable", "degrading"] },
+          "target": { "type": ["number", "string"] }
+        }
+      }
+    },
+    "capital_snapshot": {
+      "type": "object",
+      "required": ["burn_rate", "runway_months", "optimization_target"],
+      "properties": {
+        "burn_rate": { "type": "number" },
+        "runway_months": { "type": "number" },
+        "cash_on_hand": { "type": "number" },
+        "mrr": { "type": "number" },
+        "optimization_target": {
+          "type": "string",
+          "enum": ["learning", "retention", "revenue", "survival"]
+        }
+      }
+    },
+    "primary_constraint": {
+      "type": "string",
+      "description": "Single biggest blocker to progress"
+    },
+    "dominant_risk": {
+      "type": "string",
+      "description": "Most dangerous active risk"
+    },
+    "reallocation_decision": {
+      "type": "object",
+      "required": ["trigger", "action"],
+      "properties": {
+        "trigger": {
+          "type": "string",
+          "description": "What KPI shift or event triggered reallocation"
+        },
+        "action": {
+          "type": "string",
+          "description": "What reallocation is being made"
+        },
+        "agents_reprioritized": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "agent": { "type": "string" },
+              "previous_priority": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+              "new_priority": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+              "reason": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "agent_assignments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["agent", "priority", "current_task"],
+        "properties": {
+          "agent": {
+            "type": "string",
+            "enum": [
+              "strategy-lead",
+              "product-execution",
+              "architecture-lead",
+              "build-engineer",
+              "reliability-lead",
+              "growth-revenue-lead"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          },
+          "current_task": { "type": "string" },
+          "deadline": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["blocked", "in_progress", "awaiting_input", "completed"]
+          }
+        }
+      }
+    },
+    "scope_changes": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "removed": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "deferred": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "experiments": {
+      "type": "object",
+      "properties": {
+        "product_experiment": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "status": { "type": "string", "enum": ["queued", "running", "completed", "killed"] },
+            "result": { "type": "string" }
+          }
+        },
+        "growth_experiment": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "status": { "type": "string", "enum": ["queued", "running", "completed", "killed"] },
+            "result": { "type": "string" }
+          }
+        },
+        "system_improvement": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "status": { "type": "string", "enum": ["queued", "running", "completed", "killed"] },
+            "result": { "type": "string" }
+          }
+        }
+      }
+    },
+    "next_review_trigger": {
+      "type": "object",
+      "required": ["type", "condition"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["time_based", "event_based", "kpi_based"]
+        },
+        "condition": {
+          "type": "string",
+          "description": "When the next review should occur"
+        }
+      }
+    }
+  }
+}
