@@ -12,6 +12,7 @@ import 'package:aviquest/security/security_manager.dart';
 import 'package:aviquest/security/secure_storage_helper.dart';
 import 'package:aviquest/security/input_validator.dart';
 import 'package:aviquest/security/app_lifecycle_observer.dart';
+import 'database/database.dart';
 
 
 void main() async {
@@ -19,6 +20,7 @@ void main() async {
   await Hive.initFlutter();
   await PlayerService.init();
   await BirdService.load();
+  await DatabaseService.instance.initialize();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   // Initialize security subsystems
