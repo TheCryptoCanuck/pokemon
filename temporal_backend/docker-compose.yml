@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  # Temporal server (dev mode — single-node with in-memory persistence)
+  temporal:
+    image: temporalio/auto-setup:latest
+    ports:
+      - "7233:7233"
+    environment:
+      - DB=sqlite
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+
+  # Temporal Web UI for debugging workflows
+  temporal-ui:
+    image: temporalio/ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    depends_on:
+      - temporal
+
+  # AviQuest Temporal worker
+  aviquest-worker:
+    build: .
+    environment:
+      - TEMPORAL_HOST=temporal:7233
+      - TEMPORAL_NAMESPACE=default
+      - TEMPORAL_TASK_QUEUE=aviquest-main
+      - TEMPORAL_MAX_ACTIVITIES=100
+    depends_on:
+      - temporal
+    restart: on-failure
+    deploy:
+      replicas: 2  # Run 2 workers for redundancy
