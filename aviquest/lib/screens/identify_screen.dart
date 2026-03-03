@@ -138,7 +138,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
 
     final results = await idService.identify(imageFile);
     if (!mounted) return;
-    Navigator.pop(context); // dismiss loading dialog
+    Navigator.of(context, rootNavigator: true).pop(); // dismiss loading dialog
 
     if (results.isEmpty) {
       ref.read(analyticsProvider).track('identify_failed', {'method': 'photo'});
