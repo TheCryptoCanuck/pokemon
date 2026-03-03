@@ -1,18 +1,12 @@
-import 'dart:io'; // FIX 1: dart:io for File
-import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:aviquest/security/security_manager.dart';
-import 'package:aviquest/security/secure_storage_helper.dart';
-import 'package:aviquest/security/input_validator.dart';
-import 'package:aviquest/security/app_lifecycle_observer.dart';
 
 import 'constants.dart';
 import 'database/database.dart';
 import 'router.dart';
+import 'security/security_manager.dart';
 import 'services/aviary_service.dart';
 import 'services/bird_service.dart';
 import 'services/log_service.dart';
@@ -23,12 +17,7 @@ void main() async {
   LogService.init();
 
   await Hive.initFlutter();
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
-  // Initialize database
   await DatabaseService.instance.initialize();
-
-  // Initialize security subsystems
   await SecurityManager.instance.initialize();
   await SecurityManager.instance.enforcePortraitOrientation();
 
