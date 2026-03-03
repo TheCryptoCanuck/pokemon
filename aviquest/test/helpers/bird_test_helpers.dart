@@ -1,4 +1,5 @@
-import 'package:aviquest/main.dart';
+import 'package:aviquest/models/bird.dart';
+import 'package:aviquest/constants.dart';
 
 /// Factory for creating test Bird instances with sensible defaults.
 Bird makeBird({
@@ -9,7 +10,7 @@ Bird makeBird({
   String lore = 'A test bird for unit testing.',
   String habitat = 'Test Lab',
   String conservationStatus = 'Least Concern',
-  String rarity = 'common',
+  Rarity rarity = Rarity.common,
   int baseXp = 100,
 }) {
   return Bird(
@@ -26,10 +27,10 @@ Bird makeBird({
 }
 
 /// Pre-built birds for common test scenarios.
-final commonBird = makeBird(rarity: 'common', baseXp: 50);
-final uncommonBird = makeBird(rarity: 'uncommon', baseXp: 100);
-final rareBird = makeBird(rarity: 'rare', baseXp: 200);
-final legendaryBird = makeBird(rarity: 'legendary', baseXp: 500);
+final commonBird = makeBird(rarity: Rarity.common, baseXp: 50);
+final uncommonBird = makeBird(rarity: Rarity.uncommon, baseXp: 100);
+final rareBird = makeBird(rarity: Rarity.rare, baseXp: 200);
+final legendaryBird = makeBird(rarity: Rarity.legendary, baseXp: 500);
 
 /// Valid rarity values recognised by the Bird model.
-const validRarities = ['common', 'uncommon', 'rare', 'legendary'];
+const validRarities = [Rarity.common, Rarity.uncommon, Rarity.rare, Rarity.legendary];
