@@ -8,6 +8,39 @@ interface RecognizedCard {
   confidence: "high" | "medium" | "low";
 }
 
+export interface RecognizeResult {
+  entries: CollectionEntry[];
+  warnings: string[];
+}
+
+function normalize(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function matchCard(name: string, allCards: Card[]): Card[] {
+  // Tier 1: Exact case-insensitive match
+  const exact = allCards.filter(
+    (c) => c.name.toLowerCase() === name.toLowerCase()
+  );
+  if (exact.length > 0) return exact;
+
+  // Tier 2: Normalized match (strip punctuation, spaces, etc.)
+  const norm = normalize(name);
+  const normalized = allCards.filter((c) => normalize(c.name) === norm);
+  if (normalized.length > 0) return normalized;
+
+  // Tier 3: Substring match (handles truncated or extended names)
+  if (norm.length >= 5) {
+    const substring = allCards.filter((c) => {
+      const cardNorm = normalize(c.name);
+      return cardNorm.includes(norm) || norm.includes(cardNorm);
+    });
+    if (substring.length > 0) return substring;
+  }
+
+  return [];
+}
+
 async function recognizeFrame(
   frame: ExtractedFrame,
   apiKey: string
@@ -79,25 +112,30 @@ export async function recognizeCards(
   apiKey: string,
   allCards: Card[],
   onProgress?: (current: number, total: number) => void
-): Promise<CollectionEntry[]> {
+): Promise<RecognizeResult> {
   const cardCounts = new Map<string, number>();
+  const errors: string[] = [];
+  let successCount = 0;
 
   // Process frames in batches of 3 for speed
   const batchSize = 3;
   for (let i = 0; i < frames.length; i += batchSize) {
     const batch = frames.slice(i, i + batchSize);
     const results = await Promise.all(
-      batch.map((frame) => recognizeFrame(frame, apiKey).catch(() => []))
+      batch.map((frame) =>
+        recognizeFrame(frame, apiKey).catch((err: Error) => {
+          errors.push(err.message);
+          return [] as RecognizedCard[];
+        })
+      )
     );
 
     for (const recognized of results) {
+      if (recognized.length > 0) successCount++;
       for (const card of recognized) {
         if (card.confidence === "low") continue;
 
-        const matches = allCards.filter(
-          (c) => c.name.toLowerCase() === card.name.toLowerCase()
-        );
-
+        const matches = matchCard(card.name, allCards);
         for (const match of matches) {
           const id = getCardId(match);
           cardCounts.set(id, (cardCounts.get(id) || 0) + 1);
@@ -108,12 +146,26 @@ export async function recognizeCards(
     onProgress?.(Math.min(i + batchSize, frames.length), frames.length);
   }
 
+  // If ALL frames errored, throw so the UI shows the error
+  if (successCount === 0 && errors.length > 0) {
+    throw new Error(`Card recognition failed: ${errors[0]}`);
+  }
+
+  const warnings: string[] = [];
+  if (errors.length > 0) {
+    warnings.push(
+      `${errors.length} of ${frames.length} frames failed to process`
+    );
+  }
+
   // Convert counts - cap at reasonable amounts (seeing a card in multiple frames
   // doesn't mean you own multiple copies, default to 1)
-  return Array.from(cardCounts.entries()).map(([cardId]) => ({
+  const entries = Array.from(cardCounts.entries()).map(([cardId]) => ({
     cardId,
     count: 1,
   }));
+
+  return { entries, warnings };
 }
 
 const API_KEY_STORAGE = "tcgp-anthropic-key";

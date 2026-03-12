@@ -21,6 +21,7 @@ export default function VideoImport({ allCards, onImport }: Props) {
   const [apiKey, setApiKey] = useState(getStoredApiKey());
   const [error, setError] = useState("");
   const [results, setResults] = useState<CollectionEntry[]>([]);
+  const [warnings, setWarnings] = useState<string[]>([]);
   const [frames, setFrames] = useState<ExtractedFrame[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -63,7 +64,8 @@ export default function VideoImport({ allCards, onImport }: Props) {
         (current, total) => setProgress(Math.round((current / total) * 100))
       );
 
-      setResults(recognized);
+      setResults(recognized.entries);
+      setWarnings(recognized.warnings);
       setStage("preview");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
@@ -167,31 +169,54 @@ export default function VideoImport({ allCards, onImport }: Props) {
       {/* Preview results */}
       {stage === "preview" && (
         <div>
-          <div className="bg-green-900/30 border border-green-700 rounded-lg p-4 mb-4">
-            <p className="text-green-400 font-semibold">
-              Found {results.length} unique cards!
-            </p>
-            <p className="text-green-300 text-sm mt-1">
-              Processed {frames.length} frames from your video.
-            </p>
-          </div>
+          {warnings.length > 0 && (
+            <div className="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 mb-4">
+              {warnings.map((w, i) => (
+                <p key={i} className="text-yellow-400 text-sm">{w}</p>
+              ))}
+            </div>
+          )}
+
+          {results.length > 0 ? (
+            <div className="bg-green-900/30 border border-green-700 rounded-lg p-4 mb-4">
+              <p className="text-green-400 font-semibold">
+                Found {results.length} unique cards!
+              </p>
+              <p className="text-green-300 text-sm mt-1">
+                Processed {frames.length} frames from your video.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 mb-4">
+              <p className="text-yellow-400 font-semibold">
+                No cards recognized
+              </p>
+              <p className="text-yellow-300 text-sm mt-1">
+                Make sure your video shows the TCGP collection screen with card
+                names visible. Try a slower scroll speed for better results.
+              </p>
+            </div>
+          )}
 
           <div className="flex gap-3">
-            <button
-              onClick={handleConfirm}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold"
-            >
-              Add to Collection
-            </button>
+            {results.length > 0 && (
+              <button
+                onClick={handleConfirm}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold"
+              >
+                Add to Collection
+              </button>
+            )}
             <button
               onClick={() => {
                 setStage("idle");
                 setResults([]);
+                setWarnings([]);
                 setFrames([]);
               }}
               className="bg-slate-600 hover:bg-slate-500 text-white px-6 py-2 rounded"
             >
-              Cancel
+              {results.length > 0 ? "Cancel" : "Try Again"}
             </button>
           </div>
         </div>
