@@ -41,6 +41,30 @@ function matchCard(name: string, allCards: Card[]): Card[] {
   return [];
 }
 
+function formatApiError(status: number, body: string): string {
+  // Try to extract a meaningful message from the Anthropic API error JSON
+  try {
+    const parsed = JSON.parse(body);
+    const msg = parsed?.error?.message;
+    if (msg) {
+      if (status === 401) return "Invalid API key. Please check your Anthropic API key and try again.";
+      if (msg.includes("credit balance is too low")) return "Your Anthropic API credit balance is too low. Please visit console.anthropic.com to add credits.";
+      if (msg.includes("rate limit")) return "Rate limit exceeded. Please wait a moment and try again.";
+      if (msg.includes("overloaded")) return "The Anthropic API is currently overloaded. Please try again in a few minutes.";
+      return msg;
+    }
+  } catch {
+    // Not valid JSON, fall through
+  }
+
+  // Fallback for non-JSON or unparseable responses
+  if (status === 401) return "Invalid API key. Please check your Anthropic API key and try again.";
+  if (status === 429) return "Rate limit exceeded. Please wait a moment and try again.";
+  if (status === 529) return "The Anthropic API is currently overloaded. Please try again in a few minutes.";
+  if (status >= 500) return "The Anthropic API is experiencing issues. Please try again later.";
+  return `Anthropic API error (${status}). Please try again or check your API key.`;
+}
+
 async function recognizeFrame(
   frame: ExtractedFrame,
   apiKey: string
@@ -91,7 +115,7 @@ Only include cards you can clearly identify. Use "high" confidence for clearly r
 
   if (!response.ok) {
     const err = await response.text();
-    throw new Error(`API error ${response.status}: ${err}`);
+    throw new Error(formatApiError(response.status, err));
   }
 
   const data = await response.json();
