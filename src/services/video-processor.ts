@@ -23,6 +23,7 @@ export async function extractFrames(
 
     const url = URL.createObjectURL(file);
     video.src = url;
+    video.load();
 
     video.onloadedmetadata = async () => {
       const duration = video.duration;
@@ -88,7 +89,7 @@ function isDuplicateFrame(
   const last = existing[existing.length - 1];
   const lenDiff = Math.abs(last.dataUrl.length - newFrame.dataUrl.length);
   const avgLen = (last.dataUrl.length + newFrame.dataUrl.length) / 2;
-  return lenDiff / avgLen < 0.02; // Less than 2% size difference suggests same content
+  return lenDiff / avgLen < 0.005; // Less than 0.5% size difference means near-identical frame
 }
 
 export function frameToBase64(frame: ExtractedFrame): string {
