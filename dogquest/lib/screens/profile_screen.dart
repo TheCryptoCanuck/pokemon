@@ -81,6 +81,11 @@ class ProfileScreen extends ConsumerWidget {
                 tooltip: 'Friends',
               ),
               IconButton(
+                icon: const Icon(Icons.search_rounded, color: Colors.amber, size: 22),
+                onPressed: () => context.push('/lost-dog'),
+                tooltip: 'Lost Dog Network',
+              ),
+              IconButton(
                 icon: const Icon(Icons.settings, color: Colors.white54, size: 22),
                 onPressed: () => context.push('/settings'),
                 tooltip: 'Settings',

@@ -23,6 +23,9 @@ import 'screens/settings_screen.dart';
 import 'screens/dog_feed_screen.dart';
 import 'screens/dogs_nearby_screen.dart';
 import 'screens/breed_community_screen.dart';
+import 'screens/lost_dog_hub_screen.dart';
+import 'screens/report_lost_screen.dart';
+import 'screens/scan_stray_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -120,6 +123,21 @@ final router = GoRouter(
       path: '/dogs-nearby',
       parentNavigatorKey: rootNavigatorKey,
       builder: (_, __) => const DogsNearbyScreen(),
+    ),
+    GoRoute(
+      path: '/lost-dog',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, __) => const LostDogHubScreen(),
+    ),
+    GoRoute(
+      path: '/lost-dog/report',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, __) => const ReportLostScreen(),
+    ),
+    GoRoute(
+      path: '/lost-dog/scan',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, __) => const ScanStrayScreen(),
     ),
     GoRoute(
       path: '/breed/:name',

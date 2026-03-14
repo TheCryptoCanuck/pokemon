@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 
+import '../models/lost_dog_report.dart';
 import 'dog_service.dart';
 import 'player_service.dart';
 import 'dog_mastery_service.dart';
@@ -194,14 +196,17 @@ class DemoService {
         _log.warning('Could not seed mastery data: $e');
       }
 
-      // ── 5. Seed daily challenge progress ──────────────────────
+      // ── 5. Seed lost dog reports for recognition network demo ──
+      _seedLostDogReports(playerBox, rng, now);
+
+      // ── 6. Seed daily challenge progress ──────────────────────
       // (Daily challenges auto-regenerate, so just marking some progress
       //  in the player stats is enough for a good demo impression.)
 
       _log.info('Demo data seeded: ${kennelBox.length} breeds, '
           '${sightingsBox.length} sightings');
 
-      // ── 6. Invalidate providers so UI refreshes ───────────────
+      // ── 7. Invalidate providers so UI refreshes ───────────────
       _refreshProviders(ref);
 
       return true;
@@ -209,6 +214,85 @@ class DemoService {
       _log.severe('Failed to seed demo data', e, st);
       return false;
     }
+  }
+
+  /// Seed demo lost dog reports for the Lost Dog Recognition Network.
+  ///
+  /// Creates 4 "lost" dogs from other users in the NYC area with
+  /// synthetic embeddings. When the demo user scans a matching breed,
+  /// the cosine similarity will produce a credible match.
+  static void _seedLostDogReports(Box playerBox, Random rng, DateTime now) {
+    // Synthetic 150-dim embeddings — each breed gets a spike at a
+    // different index so same-breed scans produce high similarity.
+    List<double> syntheticEmbedding(int spikeIdx) {
+      final emb = List<double>.filled(150, 0.005);
+      emb[spikeIdx] = 0.65 + rng.nextDouble() * 0.15;
+      // Add minor noise to a few neighboring indices for realism
+      for (int i = 1; i <= 3; i++) {
+        if (spikeIdx + i < 150) emb[spikeIdx + i] = 0.02 + rng.nextDouble() * 0.05;
+        if (spikeIdx - i >= 0) emb[spikeIdx - i] = 0.02 + rng.nextDouble() * 0.05;
+      }
+      return emb;
+    }
+
+    final demoLostDogs = <LostDogReport>[
+      LostDogReport(
+        id: 'demo-lost-001',
+        dogName: 'Buddy',
+        breed: 'Golden Retriever',
+        embedding: syntheticEmbedding(1), // Golden Retriever ~ index 1
+        lastSeenLat: 40.7736,
+        lastSeenLon: -73.9712,
+        lastSeenLocation: 'Central Park - Bethesda Fountain',
+        lostDate: now.subtract(const Duration(days: 3)),
+        createdAt: now.subtract(const Duration(days: 3)),
+        ownerContact: 'Sarah M. — (212) 555-0147',
+        notes: 'Red collar with bone-shaped tag. Very friendly, responds to "Buddy".',
+      ),
+      LostDogReport(
+        id: 'demo-lost-002',
+        dogName: 'Luna',
+        breed: 'French Bulldog',
+        embedding: syntheticEmbedding(3), // French Bulldog ~ index 3
+        lastSeenLat: 40.7484,
+        lastSeenLon: -73.9856,
+        lastSeenLocation: 'Madison Square Park',
+        lostDate: now.subtract(const Duration(days: 1)),
+        createdAt: now.subtract(const Duration(days: 1)),
+        ownerContact: 'Mike T. — (646) 555-0283',
+        notes: 'Brindle coloring, blue harness. Microchipped.',
+      ),
+      LostDogReport(
+        id: 'demo-lost-003',
+        dogName: 'Max',
+        breed: 'German Shepherd',
+        embedding: syntheticEmbedding(2), // German Shepherd ~ index 2
+        lastSeenLat: 40.7812,
+        lastSeenLon: -73.9665,
+        lastSeenLocation: 'Central Park - Reservoir',
+        lostDate: now.subtract(const Duration(days: 5)),
+        createdAt: now.subtract(const Duration(days: 5)),
+        ownerContact: 'Alex K. — (917) 555-0391',
+        notes: 'Black and tan, 3 years old. Wearing GPS collar (battery may be dead).',
+      ),
+      LostDogReport(
+        id: 'demo-lost-004',
+        dogName: 'Coco',
+        breed: 'Labrador Retriever',
+        embedding: syntheticEmbedding(0), // Labrador ~ index 0
+        lastSeenLat: 40.6602,
+        lastSeenLon: -73.9690,
+        lastSeenLocation: 'Prospect Park, Brooklyn',
+        lostDate: now.subtract(const Duration(days: 2)),
+        createdAt: now.subtract(const Duration(days: 2)),
+        ownerContact: 'Jennifer L. — (718) 555-0512',
+        notes: 'Chocolate lab, pink bandana. Loves treats — very food motivated.',
+      ),
+    ];
+
+    playerBox.put('lost_dog_reports',
+        jsonEncode(demoLostDogs.map((r) => r.toJson()).toList()));
+    _log.info('Seeded ${demoLostDogs.length} demo lost dog reports');
   }
 
   /// Total sightings across all demo breeds.

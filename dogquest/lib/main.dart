@@ -42,6 +42,8 @@ import 'services/dog_social_service.dart';
 import 'services/mystery_reward_service.dart';
 import 'services/smart_notification_service.dart';
 import 'services/tflite_identification_service.dart';
+import 'services/dog_embedding_service.dart';
+import 'services/lost_dog_service.dart';
 import 'widgets/streak_break_dialog.dart';
 
 final _log = Logger('Main');
@@ -447,6 +449,11 @@ Future<_InitResult> _initializeServices(
   final friendshipSvc = DogFriendshipService(playerBox, dogSvc);
   final dogSocialSvc = DogSocialService(socialBox);
 
+  // Lost Dog Recognition Network
+  final embeddingSvc = DogEmbeddingService();
+  await embeddingSvc.loadModel();
+  final lostDogSvc = LostDogService(playerBox, embeddingSvc, locationSvc);
+
   update('Syncing data...', 0.88);
   await Future.delayed(Duration.zero); // yield for animations
   final backendSync = BackendSyncService(
@@ -508,6 +515,8 @@ Future<_InitResult> _initializeServices(
       packServiceProvider.overrideWithValue(packSvc),
       dogFriendshipServiceProvider.overrideWithValue(friendshipSvc),
       dogSocialServiceProvider.overrideWithValue(dogSocialSvc),
+      dogEmbeddingServiceProvider.overrideWithValue(embeddingSvc),
+      lostDogServiceProvider.overrideWithValue(lostDogSvc),
     ],
     brokenStreakValue: playerNotifier.brokenStreakValue,
     streakSaverUsed: playerNotifier.streakSaverUsed,
