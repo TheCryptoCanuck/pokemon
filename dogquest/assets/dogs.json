@@ -1,0 +1,4410 @@
+[
+  {
+    "name": "Labrador Retriever",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=YellowLabradorLooking_new.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The world's most popular dog breed for over 30 years. Originally bred to help fishermen haul nets and catch fish in icy waters.",
+    "habitat": "Sporting Group | Origin: Canada",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "11-13 years",
+    "sizeCategory": "large",
+    "weight": "25-36 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Obesity",
+      "Progressive retinal atrophy"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Active",
+      "Outgoing",
+      "Gentle",
+      "Trusting"
+    ],
+    "dietNotes": "Prone to obesity; measure meals carefully and limit treats. Needs high-quality protein with controlled fat content."
+  },
+  {
+    "name": "German Shepherd",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=German_Shepherd_-_DSC_0346_(10096362833).jpg&w=400",
+    "audioUrl": "",
+    "lore": "Renowned for intelligence and versatility. Serves as police dogs, guide dogs, and search-and-rescue heroes worldwide.",
+    "habitat": "Herding Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 25,
+    "lifespan": "9-13 years",
+    "sizeCategory": "large",
+    "weight": "30-40 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Degenerative myelopathy",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Confident",
+      "Courageous",
+      "Intelligent",
+      "Loyal",
+      "Watchful"
+    ],
+    "dietNotes": "Feed a high-protein diet formulated for large active breeds. Split meals into two servings to help prevent bloat."
+  },
+  {
+    "name": "Golden Retriever",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Golden_Retriever_Carlos_%2810581910556%29.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Bred by Lord Tweedmouth in the Scottish Highlands. Their gentle mouth can carry a raw egg without cracking it.",
+    "habitat": "Sporting Group | Origin: Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "25-34 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Cancer",
+      "Heart disease",
+      "Eye conditions"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Reliable",
+      "Devoted",
+      "Intelligent",
+      "Kind"
+    ],
+    "dietNotes": "Needs a balanced diet with omega fatty acids for coat health. Monitor portions closely as they tend to overeat."
+  },
+  {
+    "name": "French Bulldog",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=2008-07-28_Dog_at_Frolick_Field.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Originally bred as miniature Bulldogs in England, they became wildly popular with Parisian lace workers in the 1800s.",
+    "habitat": "Non-Sporting Group | Origin: France",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 25,
+    "lifespan": "10-12 years",
+    "sizeCategory": "small",
+    "weight": "8-13 kg",
+    "exerciseNeeds": "low",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Brachycephalic syndrome",
+      "Spinal disorders",
+      "Allergies",
+      "Hip dysplasia"
+    ],
+    "temperamentTraits": [
+      "Playful",
+      "Adaptable",
+      "Smart",
+      "Affectionate"
+    ],
+    "dietNotes": "Feed a high-quality diet for small breeds. Prone to food allergies; limited-ingredient diets may help. Avoid overfeeding due to low exercise tolerance."
+  },
+  {
+    "name": "Bulldog",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bulldog_inglese.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Once bred for bull-baiting, today's Bulldog is a gentle couch potato. They're the mascot of the US Marine Corps.",
+    "habitat": "Non-Sporting Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 25,
+    "lifespan": "8-10 years",
+    "sizeCategory": "medium",
+    "weight": "18-25 kg",
+    "exerciseNeeds": "low",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Brachycephalic syndrome",
+      "Hip dysplasia",
+      "Cherry eye",
+      "Skin fold dermatitis"
+    ],
+    "temperamentTraits": [
+      "Calm",
+      "Courageous",
+      "Friendly",
+      "Dignified"
+    ],
+    "dietNotes": "Very prone to obesity; strict portion control is essential. Feed a moderate-calorie diet and keep facial wrinkles clean after meals."
+  },
+  {
+    "name": "Poodle",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Full_attention_%288067543690%29.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the most intelligent breeds. Their fancy haircuts originally served a practical purpose — keeping joints warm while swimming.",
+    "habitat": "Non-Sporting Group | Origin: Germany/France",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 25,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "20-32 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Progressive retinal atrophy",
+      "Epilepsy",
+      "Addison's disease"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Active",
+      "Alert",
+      "Faithful",
+      "Trainable"
+    ],
+    "dietNotes": "Needs high-quality protein to support an active lifestyle. Regular meals with omega fatty acids help maintain their curly coat."
+  },
+  {
+    "name": "Beagle",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Beagle_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Their incredible nose has 220 million scent receptors. Used by USDA at airports to sniff out contraband food.",
+    "habitat": "Hound Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "10-15 years",
+    "sizeCategory": "small",
+    "weight": "9-11 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Epilepsy",
+      "Hypothyroidism",
+      "Hip dysplasia",
+      "Cherry eye"
+    ],
+    "temperamentTraits": [
+      "Merry",
+      "Friendly",
+      "Curious",
+      "Determined",
+      "Amiable"
+    ],
+    "dietNotes": "Notorious food thieves; secure all food and measure meals carefully. Prone to obesity if allowed free-feeding."
+  },
+  {
+    "name": "Rottweiler",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Rottweiler_standing_facing_left.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Descended from Roman drover dogs. Butchers in Rottweil used them to pull carts of meat to market.",
+    "habitat": "Working Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 30,
+    "lifespan": "8-10 years",
+    "sizeCategory": "large",
+    "weight": "36-60 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Osteosarcoma",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Confident",
+      "Courageous",
+      "Calm",
+      "Good-natured"
+    ],
+    "dietNotes": "Requires a large-breed formula with joint-supporting nutrients. Feed two meals daily to reduce bloat risk; avoid exercise right after eating."
+  },
+  {
+    "name": "Yorkshire Terrier",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Yorkshire_Terrier_2.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Originally bred to catch rats in clothing mills. Despite tiny size, they have the heart of a terrier.",
+    "habitat": "Toy Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "11-15 years",
+    "sizeCategory": "small",
+    "weight": "2-3 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Portosystemic shunt",
+      "Collapsed trachea",
+      "Dental disease"
+    ],
+    "temperamentTraits": [
+      "Bold",
+      "Confident",
+      "Spirited",
+      "Affectionate",
+      "Courageous"
+    ],
+    "dietNotes": "Small stomachs need nutrient-dense food in small, frequent meals. Dental-friendly kibble helps prevent tooth problems common in the breed."
+  },
+  {
+    "name": "Dachshund",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Short-haired-Dachshund.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The 'sausage dog' was bred to hunt badgers underground. Their name literally means 'badger dog' in German.",
+    "habitat": "Hound Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "12-16 years",
+    "sizeCategory": "small",
+    "weight": "7-15 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Intervertebral disc disease",
+      "Obesity",
+      "Patellar luxation",
+      "Eye problems"
+    ],
+    "temperamentTraits": [
+      "Clever",
+      "Stubborn",
+      "Devoted",
+      "Lively",
+      "Courageous"
+    ],
+    "dietNotes": "Weight management is critical to protect their long spine. Feed measured portions and avoid letting them jump on/off furniture."
+  },
+  {
+    "name": "Boxer",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Boxer_female_brown.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Named for their habit of playing by standing on hind legs and 'boxing' with their front paws. Eternal puppies at heart.",
+    "habitat": "Working Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 25,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "25-32 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Cancer",
+      "Heart conditions",
+      "Hip dysplasia",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Fun-loving",
+      "Bright",
+      "Active",
+      "Loyal",
+      "Playful"
+    ],
+    "dietNotes": "Feed high-quality, grain-inclusive diet with good protein sources. Two meals daily to reduce bloat risk. Avoid foods with excessive fillers."
+  },
+  {
+    "name": "Siberian Husky",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Siberian_Husky_bi-eyed_Flickr.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The Chukchi people bred them for endurance sled pulling. In 1925, Huskies ran a life-saving serum relay 674 miles to Nome, Alaska.",
+    "habitat": "Working Group | Origin: Siberia",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 30,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "16-27 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Eye disorders",
+      "Hypothyroidism",
+      "Zinc deficiency"
+    ],
+    "temperamentTraits": [
+      "Outgoing",
+      "Mischievous",
+      "Loyal",
+      "Friendly",
+      "Gentle"
+    ],
+    "dietNotes": "Surprisingly efficient eaters that need less food than their size suggests. High-protein diet with fish-based omega oils for coat health."
+  },
+  {
+    "name": "Cavalier King Charles Spaniel",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Cavalier_King_Charles_Spaniel_trio.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Named after King Charles II, who was so devoted to them that he decreed they be allowed in any public place, including Parliament.",
+    "habitat": "Toy Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 25,
+    "lifespan": "9-14 years",
+    "sizeCategory": "small",
+    "weight": "5-8 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Mitral valve disease",
+      "Syringomyelia",
+      "Patellar luxation",
+      "Eye conditions"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Gentle",
+      "Graceful",
+      "Patient",
+      "Sociable"
+    ],
+    "dietNotes": "Heart-healthy diet with omega-3 fatty acids is beneficial. Monitor weight as they can easily become overweight with their love of treats."
+  },
+  {
+    "name": "Doberman Pinscher",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Dobermann_handling.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Created by tax collector Louis Dobermann who wanted a loyal guard dog. One of the smartest and most trainable breeds.",
+    "habitat": "Working Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 30,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "27-45 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Dilated cardiomyopathy",
+      "Von Willebrand's disease",
+      "Hip dysplasia",
+      "Wobbler syndrome"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Fearless",
+      "Alert",
+      "Intelligent",
+      "Energetic"
+    ],
+    "dietNotes": "Feed a high-protein, heart-healthy diet with taurine supplementation. Active dogs need calorie-dense food split into two daily meals."
+  },
+  {
+    "name": "Great Dane",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Dog_niemiecki_%25C5%25BC%25C3%25B3%25C5%2582ty_LM980.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Despite their name, they're German, not Danish. The tallest dog ever recorded was a Great Dane named Zeus at 44 inches.",
+    "habitat": "Working Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 30,
+    "lifespan": "7-10 years",
+    "sizeCategory": "giant",
+    "weight": "50-80 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Bloat",
+      "Hip dysplasia",
+      "Cardiomyopathy",
+      "Osteosarcoma"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Patient",
+      "Dependable",
+      "Gentle",
+      "Loving"
+    ],
+    "dietNotes": "Must use large-breed puppy food for slow, steady growth. Feed 2-3 small meals daily from an elevated bowl to reduce bloat risk."
+  },
+  {
+    "name": "Australian Shepherd",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Australian_Shepherd_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Despite the name, they were developed in the American West. Rodeo performers made them famous with incredible trick routines.",
+    "habitat": "Herding Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 25,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "18-29 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Epilepsy",
+      "Cataracts",
+      "MDR1 gene sensitivity"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Work-oriented",
+      "Exuberant",
+      "Good-natured",
+      "Protective"
+    ],
+    "dietNotes": "High-energy dogs need calorie-dense food with quality protein. Adjust portions based on activity level; working dogs need significantly more."
+  },
+  {
+    "name": "Miniature Schnauzer",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Miniature_Schnauzer.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Bred down from Standard Schnauzers crossed with Poodles. Their distinctive beard and eyebrows give them a wise, old-man look.",
+    "habitat": "Terrier Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "5-9 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Pancreatitis",
+      "Hyperlipidemia",
+      "Urinary stones",
+      "Cataracts"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Smart",
+      "Obedient",
+      "Alert",
+      "Spirited"
+    ],
+    "dietNotes": "Prone to pancreatitis; feed a low-fat, high-quality diet. Avoid fatty table scraps entirely. Regular feeding schedule is important."
+  },
+  {
+    "name": "Pembroke Welsh Corgi",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Welsh_Corgi_Pembroke.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Queen Elizabeth II owned over 30 Corgis during her lifetime. Welsh legend says fairies rode them into battle.",
+    "habitat": "Herding Group | Origin: Wales",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 25,
+    "lifespan": "12-13 years",
+    "sizeCategory": "small",
+    "weight": "10-14 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Degenerative myelopathy",
+      "Intervertebral disc disease",
+      "Obesity"
+    ],
+    "temperamentTraits": [
+      "Bold",
+      "Friendly",
+      "Playful",
+      "Tenacious",
+      "Protective"
+    ],
+    "dietNotes": "Very prone to obesity; strict portion control is essential. Feed a balanced diet and resist their expert begging skills."
+  },
+  {
+    "name": "Shih Tzu",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Shih-Tzu.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Bred as palace pets for Chinese emperors. Their name means 'lion dog' and they were treasured as living hot water bottles.",
+    "habitat": "Toy Group | Origin: China/Tibet",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "10-18 years",
+    "sizeCategory": "small",
+    "weight": "4-7 kg",
+    "exerciseNeeds": "low",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Brachycephalic syndrome",
+      "Patellar luxation",
+      "Eye problems",
+      "Dental disease"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Happy",
+      "Outgoing",
+      "Playful",
+      "Gentle"
+    ],
+    "dietNotes": "Small-breed formula with small kibble size for their flat face. Keep hair around the face trimmed to avoid food contamination."
+  },
+  {
+    "name": "Cocker Spaniel",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=English_Cocker_Spaniel_4.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Named for their skill hunting woodcock. The inspiration for Lady in Disney's 'Lady and the Tramp.'",
+    "habitat": "Sporting Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "10-14 years",
+    "sizeCategory": "medium",
+    "weight": "12-16 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Ear infections",
+      "Progressive retinal atrophy",
+      "Hip dysplasia",
+      "Autoimmune hemolytic anemia"
+    ],
+    "temperamentTraits": [
+      "Gentle",
+      "Smart",
+      "Happy",
+      "Merry",
+      "Faithful"
+    ],
+    "dietNotes": "Feed a balanced diet with omega fatty acids for their luxurious coat. Keep ears clean especially after eating from bowls to prevent infections."
+  },
+  {
+    "name": "Pomeranian",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Pomeranian_orange-sable_Coco.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Descended from large sled-pulling Spitz dogs. Queen Victoria's tiny Pomeranian sparked a craze for breeding them smaller.",
+    "habitat": "Toy Group | Origin: Pomerania",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "12-16 years",
+    "sizeCategory": "small",
+    "weight": "1.5-3 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Collapsed trachea",
+      "Dental disease",
+      "Alopecia X"
+    ],
+    "temperamentTraits": [
+      "Lively",
+      "Bold",
+      "Inquisitive",
+      "Extroverted",
+      "Intelligent"
+    ],
+    "dietNotes": "Tiny dogs need nutrient-dense, small-kibble food. Prone to low blood sugar; feed small meals 3 times daily rather than twice."
+  },
+  {
+    "name": "Chihuahua",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Chihuahua1_bvdb.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The world's smallest dog breed, named after the Mexican state. Ancient Aztecs believed they guided souls through the underworld.",
+    "habitat": "Toy Group | Origin: Mexico",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "14-16 years",
+    "sizeCategory": "small",
+    "weight": "1.5-3 kg",
+    "exerciseNeeds": "low",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Heart disease",
+      "Hydrocephalus",
+      "Dental disease"
+    ],
+    "temperamentTraits": [
+      "Charming",
+      "Graceful",
+      "Sassy",
+      "Alert",
+      "Devoted"
+    ],
+    "dietNotes": "Very small stomachs require nutrient-dense food in tiny portions. Prone to hypoglycemia; provide small frequent meals throughout the day."
+  },
+  {
+    "name": "Border Collie",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Border_Collie_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Widely considered the most intelligent dog breed. Chaser, a Border Collie, learned the names of over 1,000 objects.",
+    "habitat": "Herding Group | Origin: Scotland/England",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 25,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "14-20 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Epilepsy",
+      "Collie eye anomaly",
+      "Osteochondritis dissecans"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Energetic",
+      "Keen",
+      "Alert",
+      "Responsive"
+    ],
+    "dietNotes": "Extremely active dogs need high-calorie, protein-rich food. Working dogs may need 25-30% more calories than typical recommendations."
+  },
+  {
+    "name": "Pug",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Pug_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Ancient Chinese emperors prized Pugs so much they were guarded by soldiers. Their wrinkles were bred to form the Chinese character for 'prince.'",
+    "habitat": "Toy Group | Origin: China",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "13-15 years",
+    "sizeCategory": "small",
+    "weight": "6-8 kg",
+    "exerciseNeeds": "low",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Brachycephalic syndrome",
+      "Pug dog encephalitis",
+      "Eye injuries",
+      "Obesity"
+    ],
+    "temperamentTraits": [
+      "Charming",
+      "Mischievous",
+      "Loving",
+      "Even-tempered",
+      "Sociable"
+    ],
+    "dietNotes": "Highly prone to obesity; strictly measure all food and treats. Use a flat bowl or slow feeder to prevent gulping air while eating."
+  },
+  {
+    "name": "Maltese",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Maltese_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the oldest toy breeds, dating back over 2,000 years. Ancient Greeks built tombs for their beloved Maltese.",
+    "habitat": "Toy Group | Origin: Malta",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "3-4 kg",
+    "exerciseNeeds": "low",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Heart murmurs",
+      "Collapsed trachea",
+      "Dental disease"
+    ],
+    "temperamentTraits": [
+      "Gentle",
+      "Playful",
+      "Charming",
+      "Affectionate",
+      "Lively"
+    ],
+    "dietNotes": "Small-breed formula with easily digestible proteins. Tear staining can be diet-related; avoid foods with artificial dyes and excess iron."
+  },
+  {
+    "name": "Bernese Mountain Dog",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=3-BerneseMountainDogInGrass.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Swiss farm dogs that pulled milk carts through Alpine villages. One of four Swiss mountain dog breeds, and the only one with long hair.",
+    "habitat": "Working Group | Origin: Switzerland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 35,
+    "lifespan": "7-10 years",
+    "sizeCategory": "giant",
+    "weight": "36-50 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Cancer",
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Good-natured",
+      "Calm",
+      "Strong",
+      "Faithful",
+      "Affectionate"
+    ],
+    "dietNotes": "Large-breed formula with joint-supporting glucosamine. Prone to bloat; feed 2-3 smaller meals and avoid vigorous exercise after eating."
+  },
+  {
+    "name": "Weimaraner",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Weimaraner_wb.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The 'Gray Ghost' was bred for hunting large game like boar and deer. Their striking silver-gray coat and amber eyes are unmistakable.",
+    "habitat": "Sporting Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 35,
+    "lifespan": "10-13 years",
+    "sizeCategory": "large",
+    "weight": "25-40 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Bloat",
+      "Hip dysplasia",
+      "Hypothyroidism",
+      "Entropion"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Fearless",
+      "Alert",
+      "Obedient",
+      "Energetic"
+    ],
+    "dietNotes": "High-energy breed needs calorie-dense food with quality animal proteins. Feed two meals daily and use a slow feeder to reduce bloat risk."
+  },
+  {
+    "name": "Rhodesian Ridgeback",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Rhodesian_ridgeback.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Originally bred to track lions in Africa. The distinctive ridge on their back is formed by hair growing in the opposite direction.",
+    "habitat": "Hound Group | Origin: South Africa",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "32-41 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Dermoid sinus",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Dignified",
+      "Even-tempered",
+      "Loyal",
+      "Affectionate",
+      "Strong-willed"
+    ],
+    "dietNotes": "Athletic breed needs high-protein diet with moderate fat. Feed twice daily; they can be food-possessive, so teach good mealtime manners early."
+  },
+  {
+    "name": "Akita",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Akita_inu.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The legendary Hachiko waited for his deceased owner at a Tokyo train station every day for nearly 10 years. A national treasure of Japan.",
+    "habitat": "Working Group | Origin: Japan",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "10-13 years",
+    "sizeCategory": "large",
+    "weight": "32-59 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Autoimmune disorders",
+      "Bloat",
+      "Progressive retinal atrophy"
+    ],
+    "temperamentTraits": [
+      "Courageous",
+      "Dignified",
+      "Loyal",
+      "Profoundly Faithful",
+      "Alert"
+    ],
+    "dietNotes": "Feed a high-quality large-breed formula. Some Akitas are sensitive to certain proteins; monitor for food allergies. Two meals daily to prevent bloat."
+  },
+  {
+    "name": "Dalmatian",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Dalmatian_b_01.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Born pure white, they develop their spots as they grow. Historically ran alongside horse-drawn fire carriages to guard the equipment.",
+    "habitat": "Non-Sporting Group | Origin: Croatia",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 30,
+    "lifespan": "11-13 years",
+    "sizeCategory": "large",
+    "weight": "23-32 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Deafness",
+      "Urinary stones",
+      "Hip dysplasia",
+      "Skin allergies"
+    ],
+    "temperamentTraits": [
+      "Dignified",
+      "Smart",
+      "Outgoing",
+      "Energetic",
+      "Playful"
+    ],
+    "dietNotes": "Unique purine metabolism requires a low-purine diet. Avoid organ meats, sardines, and high-purine foods. Ensure plenty of fresh water."
+  },
+  {
+    "name": "Whippet",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Whippet_2018_6.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Can reach 35 mph in seconds, making them the fastest accelerating dog breed. Known as the 'poor man's racehorse.'",
+    "habitat": "Hound Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 30,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "9-13 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Heart murmurs",
+      "Eye defects",
+      "Anesthetic sensitivity",
+      "Undescended testicles"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Playful",
+      "Calm",
+      "Gentle",
+      "Quiet"
+    ],
+    "dietNotes": "Lean sighthound needs moderate-calorie diet. Their thin frame means even a little extra weight is noticeable and harmful. Feed twice daily."
+  },
+  {
+    "name": "Irish Setter",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Can_Setter_dog_GFDL.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Their gorgeous mahogany coat made them show ring favorites. President Nixon's Irish Setter, King Timahoe, lived in the White House.",
+    "habitat": "Sporting Group | Origin: Ireland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 30,
+    "lifespan": "12-15 years",
+    "sizeCategory": "large",
+    "weight": "27-32 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Epilepsy",
+      "Progressive retinal atrophy"
+    ],
+    "temperamentTraits": [
+      "Outgoing",
+      "Sweet-natured",
+      "Active",
+      "Loving",
+      "Rollicking"
+    ],
+    "dietNotes": "High-energy sporting dog needs protein-rich food. Prone to bloat; feed 2-3 smaller meals using a slow feeder. Avoid exercise after meals."
+  },
+  {
+    "name": "Samoyed",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Samoyed_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The Samoyede people slept with these dogs for warmth in -60F temperatures. Their permanent smile prevents drooling that would form icicles.",
+    "habitat": "Working Group | Origin: Siberia",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 35,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "16-30 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Diabetes",
+      "Progressive retinal atrophy",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Gentle",
+      "Adaptable",
+      "Loyal",
+      "Playful"
+    ],
+    "dietNotes": "Needs a balanced diet with good protein for their thick double coat. Originally thrived on fish and reindeer; fish-based diets work well."
+  },
+  {
+    "name": "Bull Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bullterrier-3453301920.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Bred from Bulldogs and terriers for dog fighting, now beloved clowns. General Patton's Bull Terrier, Willie, accompanied him through WWII.",
+    "habitat": "Terrier Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 30,
+    "lifespan": "12-13 years",
+    "sizeCategory": "medium",
+    "weight": "22-32 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Deafness",
+      "Heart disease",
+      "Kidney disease",
+      "Patellar luxation"
+    ],
+    "temperamentTraits": [
+      "Playful",
+      "Charming",
+      "Mischievous",
+      "Courageous",
+      "Active"
+    ],
+    "dietNotes": "Feed a balanced, protein-rich diet. Some are prone to skin allergies; a limited-ingredient diet can help identify triggers."
+  },
+  {
+    "name": "Basset Hound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Basset_hound_portrait.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Their droopy ears sweep scent off the ground toward their nose. Second only to Bloodhounds in tracking ability.",
+    "habitat": "Hound Group | Origin: France",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 30,
+    "lifespan": "12-13 years",
+    "sizeCategory": "medium",
+    "weight": "20-29 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Obesity",
+      "Ear infections",
+      "Hip dysplasia",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Patient",
+      "Low-key",
+      "Charming",
+      "Tenacious",
+      "Friendly"
+    ],
+    "dietNotes": "Extremely prone to obesity; strict calorie control is critical. Their soulful begging eyes are deceiving; do not overfeed."
+  },
+  {
+    "name": "Staffordshire Bull Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Staffordshire_Bull_Terrier_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Known as the 'nanny dog' in England for their gentle patience with children. Incredibly loyal and affectionate despite their tough appearance.",
+    "habitat": "Terrier Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 30,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "11-17 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Patellar luxation",
+      "L-2-hydroxyglutaric aciduria",
+      "Cataracts"
+    ],
+    "temperamentTraits": [
+      "Brave",
+      "Tenacious",
+      "Affectionate",
+      "Loyal",
+      "Reliable"
+    ],
+    "dietNotes": "Muscular breed needs protein-rich diet. Active dogs with good appetites; measure meals to maintain lean muscle without excess weight."
+  },
+  {
+    "name": "Shetland Sheepdog",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Shetland_Sheepdog_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Miniature Collies from the Shetland Islands. They're so eager to please that they consistently rank among the top breeds in obedience competitions.",
+    "habitat": "Herding Group | Origin: Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 30,
+    "lifespan": "12-14 years",
+    "sizeCategory": "small",
+    "weight": "6-12 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Collie eye anomaly",
+      "Hip dysplasia",
+      "Dermatomyositis",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Eager",
+      "Loyal",
+      "Playful",
+      "Gentle"
+    ],
+    "dietNotes": "Active herding breed needs quality protein and omega fatty acids for their abundant coat. MDR1 gene means some drugs interact with diet."
+  },
+  {
+    "name": "Vizsla",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Wy%25C5%25BCe%25C5%2582_w%25C4%2599gierski_g%25C5%2582adkow%25C5%2582osy_500.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Hungary's national dog, called the 'Velcro Vizsla' for their need to be constantly touching their owner. Ancient Magyar warriors hunted with them.",
+    "habitat": "Sporting Group | Origin: Hungary",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 35,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "18-29 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Epilepsy",
+      "Lymphosarcoma",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Energetic",
+      "Gentle",
+      "Loyal",
+      "Sensitive"
+    ],
+    "dietNotes": "Extremely active breed needs high-calorie, protein-rich food. Lean athletes that burn calories fast; adjust portions to activity level."
+  },
+  {
+    "name": "Bichon Frise",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bichon_Frise_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Renaissance royalty adored them. After the French Revolution, they survived by performing tricks as circus dogs.",
+    "habitat": "Non-Sporting Group | Origin: France/Belgium",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 25,
+    "lifespan": "14-15 years",
+    "sizeCategory": "small",
+    "weight": "3-5 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Allergies",
+      "Bladder stones",
+      "Dental disease"
+    ],
+    "temperamentTraits": [
+      "Playful",
+      "Curious",
+      "Cheerful",
+      "Gentle",
+      "Sensitive"
+    ],
+    "dietNotes": "Feed a high-quality small-breed formula. Prone to allergies; grain-free or limited-ingredient diets may benefit sensitive individuals."
+  },
+  {
+    "name": "Airedale Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Airedale_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The 'King of Terriers' — largest of all terrier breeds. Served as messenger dogs and sentries in both World Wars.",
+    "habitat": "Terrier Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 35,
+    "lifespan": "11-14 years",
+    "sizeCategory": "large",
+    "weight": "23-29 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Hypothyroidism",
+      "Gastric dilatation",
+      "Dermatitis"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Clever",
+      "Courageous",
+      "Confident",
+      "Outgoing"
+    ],
+    "dietNotes": "Active large terrier needs protein-rich food. Prone to skin issues; omega fatty acids and high-quality proteins support skin and coat health."
+  },
+  {
+    "name": "Belgian Malinois",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=04_-_Belgian_shepherd_dog_varieties_-_Groenendael%252CTervuren%252C_Malinois%252C_Laekenois.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The elite military working dog. Cairo, a Malinois, was part of the SEAL Team Six raid on Osama bin Laden.",
+    "habitat": "Herding Group | Origin: Belgium",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "14-16 years",
+    "sizeCategory": "large",
+    "weight": "25-34 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Progressive retinal atrophy",
+      "Epilepsy"
+    ],
+    "temperamentTraits": [
+      "Confident",
+      "Smart",
+      "Hard-working",
+      "Protective",
+      "Alert"
+    ],
+    "dietNotes": "Extremely high-energy working dog needs calorie-dense, protein-rich food. Working Malinois may need 30-40% more calories than pet dogs."
+  },
+  {
+    "name": "Bloodhound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bloodhound_Portrait.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Can follow a scent trail over 300 hours old. Their trailing evidence is admissible in court — the only breed with this distinction.",
+    "habitat": "Hound Group | Origin: Belgium/France",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 35,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "36-50 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Bloat",
+      "Hip dysplasia",
+      "Ear infections",
+      "Eyelid problems"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Independent",
+      "Inquisitive",
+      "Gentle",
+      "Affectionate"
+    ],
+    "dietNotes": "Very bloat-prone; feed 2-3 small meals daily from an elevated dish. Wipe face and ears after eating to prevent skin fold infections."
+  },
+  {
+    "name": "English Springer Spaniel",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=English_Springer_Spaniel.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Named for their ability to 'spring' game from hiding. They can work tirelessly in the field all day and cuddle all evening.",
+    "habitat": "Sporting Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 30,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "18-25 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Progressive retinal atrophy",
+      "Ear infections",
+      "Elbow dysplasia"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Playful",
+      "Obedient",
+      "Alert",
+      "Affectionate"
+    ],
+    "dietNotes": "Active sporting dog needs balanced nutrition with good protein. Keep ears clean after meals; floppy ears trap moisture and food debris."
+  },
+  {
+    "name": "Cane Corso",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=CaneCorso_(22).jpg&w=400",
+    "audioUrl": "",
+    "lore": "Ancient Roman war dog descended from the Molossus. Their name means 'guardian dog' in Latin. Nearly went extinct in the 1970s.",
+    "habitat": "Working Group | Origin: Italy",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "9-12 years",
+    "sizeCategory": "giant",
+    "weight": "40-50 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Eyelid abnormalities",
+      "Idiopathic epilepsy"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Affectionate",
+      "Majestic",
+      "Loyal",
+      "Protective"
+    ],
+    "dietNotes": "Large, muscular breed needs high-protein, large-breed formula. Feed 2-3 meals daily to prevent bloat. Use slow feeders for fast eaters."
+  },
+  {
+    "name": "Newfoundland",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Newfoundland_dog_Smoky.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Born to swim — they have webbed feet and a water-resistant coat. A Newfoundland is credited with saving Napoleon Bonaparte from drowning.",
+    "habitat": "Working Group | Origin: Canada",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 35,
+    "lifespan": "9-10 years",
+    "sizeCategory": "giant",
+    "weight": "55-70 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Cystinuria",
+      "Subvalvular aortic stenosis"
+    ],
+    "temperamentTraits": [
+      "Sweet",
+      "Patient",
+      "Devoted",
+      "Gentle",
+      "Trainable"
+    ],
+    "dietNotes": "Giant breed needs large-breed formula with controlled calcium for joint health. Prone to bloat; feed multiple smaller meals rather than one large one."
+  },
+  {
+    "name": "Papillon",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Papillon_-_PortoGaribaldi.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Named for their butterfly-like ears ('papillon' is French for butterfly). Marie Antoinette reportedly walked to the guillotine carrying her Papillon.",
+    "habitat": "Toy Group | Origin: France/Belgium",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 25,
+    "lifespan": "14-16 years",
+    "sizeCategory": "small",
+    "weight": "3-5 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Dental disease",
+      "Progressive retinal atrophy",
+      "Open fontanel"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Alert",
+      "Happy",
+      "Intelligent",
+      "Energetic"
+    ],
+    "dietNotes": "Small-breed formula with nutrient-dense ingredients. Active little dogs with fast metabolisms; ensure consistent feeding schedule."
+  },
+  {
+    "name": "Saint Bernard",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bernardyn.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Alpine rescue dogs that saved over 2,000 travelers in the Swiss Alps. Barry, the most famous, rescued over 40 people.",
+    "habitat": "Working Group | Origin: Switzerland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 35,
+    "lifespan": "8-10 years",
+    "sizeCategory": "giant",
+    "weight": "54-82 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Bloat",
+      "Osteosarcoma"
+    ],
+    "temperamentTraits": [
+      "Watchful",
+      "Patient",
+      "Gentle",
+      "Friendly",
+      "Calm"
+    ],
+    "dietNotes": "Giant breed needs controlled-calorie diet to prevent rapid growth. Feed 2-3 meals daily; avoid free-feeding. Joint supplements are beneficial."
+  },
+  {
+    "name": "Alaskan Malamute",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Alaskan_Malamute.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the oldest Arctic sled dogs, bred by the Inuit Mahlemut people. Can pull loads up to 3,000 pounds.",
+    "habitat": "Working Group | Origin: Alaska",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 35,
+    "lifespan": "10-14 years",
+    "sizeCategory": "large",
+    "weight": "34-45 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Chondrodysplasia",
+      "Hypothyroidism",
+      "Polyneuropathy"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Loyal",
+      "Playful",
+      "Dignified",
+      "Independent"
+    ],
+    "dietNotes": "Working sled dogs are efficient eaters; they need less food than expected. High-protein, moderate-fat diet works best. Avoid overfeeding."
+  },
+  {
+    "name": "West Highland White Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=West_Highland_White_Terrier_Krakow.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Bred white so hunters wouldn't mistake them for foxes. Their confident strut and perky ears make them one of the most recognizable terriers.",
+    "habitat": "Terrier Group | Origin: Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 25,
+    "lifespan": "13-15 years",
+    "sizeCategory": "small",
+    "weight": "7-10 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Skin allergies",
+      "Patellar luxation",
+      "Craniomandibular osteopathy",
+      "Legg-Calve-Perthes"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Alert",
+      "Hardy",
+      "Independent",
+      "Happy"
+    ],
+    "dietNotes": "Prone to skin allergies; a limited-ingredient or hypoallergenic diet can help. Avoid chicken-based foods if skin issues develop."
+  },
+  {
+    "name": "Jack Russell Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Jack_Russell_Terrier_2.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Named after Reverend John Russell, who bred them for fox hunting. Pound for pound, one of the most energetic dogs on Earth.",
+    "habitat": "Terrier Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 25,
+    "lifespan": "12-14 years",
+    "sizeCategory": "small",
+    "weight": "6-8 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Deafness",
+      "Legg-Calve-Perthes",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Fearless",
+      "Athletic",
+      "Clever",
+      "Vocal",
+      "Energetic"
+    ],
+    "dietNotes": "Extremely energetic small dog needs calorie-dense food. Despite small size, they burn enormous energy and need more food than you might expect."
+  },
+  {
+    "name": "Afghan Hound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Afghan_Hound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the oldest dog breeds, said to have been on Noah's Ark. Their flowing coat protected them in the harsh Afghan mountains.",
+    "habitat": "Hound Group | Origin: Afghanistan",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 50,
+    "lifespan": "12-18 years",
+    "sizeCategory": "large",
+    "weight": "23-27 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Cataracts",
+      "Hypothyroidism",
+      "Chylothorax"
+    ],
+    "temperamentTraits": [
+      "Aloof",
+      "Dignified",
+      "Independent",
+      "Happy",
+      "Clownish"
+    ],
+    "dietNotes": "Lean sighthound with fast metabolism. Feed a high-quality, protein-rich diet. Some benefit from elevated food bowls to protect their long necks."
+  },
+  {
+    "name": "Irish Wolfhound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Irish_Wolfhound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The tallest of all dog breeds. Ancient Irish laws only allowed kings and nobles to own them. They hunted wolves to extinction in Ireland.",
+    "habitat": "Hound Group | Origin: Ireland",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 55,
+    "lifespan": "6-8 years",
+    "sizeCategory": "giant",
+    "weight": "48-70 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Bloat",
+      "Heart disease",
+      "Osteosarcoma",
+      "Liver shunt"
+    ],
+    "temperamentTraits": [
+      "Courageous",
+      "Dignified",
+      "Calm",
+      "Gentle",
+      "Generous"
+    ],
+    "dietNotes": "Giant breed with short lifespan needs giant-breed formula. Feed 2-3 small meals daily to prevent bloat. Avoid heavy exercise around mealtimes."
+  },
+  {
+    "name": "Borzoi",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Borzoi_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Russian aristocracy bred them for wolf hunting. Leo Tolstoy immortalized them in 'War and Peace.' Can reach speeds of 40 mph.",
+    "habitat": "Hound Group | Origin: Russia",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 50,
+    "lifespan": "9-14 years",
+    "sizeCategory": "large",
+    "weight": "27-48 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Bloat",
+      "Osteosarcoma",
+      "Heart conditions",
+      "Progressive retinal atrophy"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Loyal",
+      "Regally Dignified",
+      "Calm",
+      "Agreeable"
+    ],
+    "dietNotes": "Deep-chested sighthound very prone to bloat. Feed 2-3 small meals daily and avoid exercise 1 hour before and after eating."
+  },
+  {
+    "name": "Komondor",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Komondor_delvin.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Their iconic corded coat makes them look like a giant mop, but it protects them from wolf bites while guarding sheep.",
+    "habitat": "Working Group | Origin: Hungary",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 60,
+    "lifespan": "10-12 years",
+    "sizeCategory": "giant",
+    "weight": "36-60 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Entropion",
+      "Ear infections"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Dignified",
+      "Brave",
+      "Independent",
+      "Calm"
+    ],
+    "dietNotes": "Large guardian breed needs high-quality, moderate-calorie food. Feed twice daily; prone to bloat so avoid exercise around meals."
+  },
+  {
+    "name": "Basenji",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Basenji_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The 'barkless dog' — they yodel instead of bark. Ancient Egyptians gave Basenjis as gifts to pharaohs. They groom themselves like cats.",
+    "habitat": "Hound Group | Origin: Central Africa",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 50,
+    "lifespan": "13-14 years",
+    "sizeCategory": "small",
+    "weight": "10-12 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Fanconi syndrome",
+      "Progressive retinal atrophy",
+      "Hip dysplasia",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Independent",
+      "Smart",
+      "Poised",
+      "Curious",
+      "Alert"
+    ],
+    "dietNotes": "Monitor for Fanconi syndrome symptoms that affect kidney function. Fresh water always available. High-quality protein diet in measured portions."
+  },
+  {
+    "name": "Xoloitzcuintli",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Xoloitzcuintle.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Over 3,000 years old, the ancient Aztec hairless dog. Named after the god Xolotl, who guided the dead. Considered national treasure of Mexico.",
+    "habitat": "Non-Sporting Group | Origin: Mexico",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 60,
+    "lifespan": "13-18 years",
+    "sizeCategory": "medium",
+    "weight": "5-25 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Skin issues",
+      "Dental problems",
+      "Acne",
+      "Sunburn"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Alert",
+      "Calm",
+      "Tranquil",
+      "Attentive"
+    ],
+    "dietNotes": "Hairless variety needs extra skin-supporting nutrients. Diet rich in omega fatty acids helps maintain healthy skin. Apply sunscreen before outdoor time."
+  },
+  {
+    "name": "Chinese Crested",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Chinese_Crested_Dog_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Chinese sailors kept them on ships to hunt rats. The hairless variety has silky hair on head, tail, and feet — looking like a tiny punk rocker.",
+    "habitat": "Toy Group | Origin: China/Africa",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 45,
+    "lifespan": "13-18 years",
+    "sizeCategory": "small",
+    "weight": "2-5 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Dental disease",
+      "Patellar luxation",
+      "Legg-Calve-Perthes",
+      "Eye problems"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Playful",
+      "Alert",
+      "Lively",
+      "Happy"
+    ],
+    "dietNotes": "Hairless variety has dental issues; soft food may be needed. Small frequent meals; prone to weight gain if overfed."
+  },
+  {
+    "name": "Saluki",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Saluki_dog_breed.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The 'Royal Dog of Egypt,' possibly the oldest domesticated breed. Mummified Salukis have been found in pharaohs' tombs.",
+    "habitat": "Hound Group | Origin: Middle East",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 55,
+    "lifespan": "10-17 years",
+    "sizeCategory": "large",
+    "weight": "18-27 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Heart conditions",
+      "Hypothyroidism",
+      "Hemangiosarcoma",
+      "Anesthetic sensitivity"
+    ],
+    "temperamentTraits": [
+      "Gentle",
+      "Dignified",
+      "Independent",
+      "Quiet",
+      "Devoted"
+    ],
+    "dietNotes": "Lean sighthound with low body fat; they naturally appear thin. Feed a high-quality, moderate-calorie diet. Sensitive to anesthesia."
+  },
+  {
+    "name": "Tibetan Mastiff",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=BIR_Grupp_2-_TIBETANSK_MASTIFF%252C_Legenda_Tibeta_Temudzhin_%252823938629470%2529.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Guardian of Himalayan monasteries. In 2014, a Tibetan Mastiff sold for $1.95 million in China, making it the most expensive dog ever sold.",
+    "habitat": "Working Group | Origin: Tibet",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 60,
+    "lifespan": "10-12 years",
+    "sizeCategory": "giant",
+    "weight": "34-73 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Hypothyroidism",
+      "Entropion",
+      "Autoimmune disorders"
+    ],
+    "temperamentTraits": [
+      "Independent",
+      "Reserved",
+      "Intelligent",
+      "Protective",
+      "Strong-willed"
+    ],
+    "dietNotes": "Guardian breed that eats less than their size suggests. Feed a large-breed formula; they may self-regulate food intake seasonally."
+  },
+  {
+    "name": "Pharaoh Hound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Pharaoh_Hound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "National dog of Malta. One of the few breeds that can blush — their nose and ears turn rosy when excited.",
+    "habitat": "Hound Group | Origin: Malta",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 55,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "18-27 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Anesthetic sensitivity",
+      "Allergies",
+      "Hip dysplasia",
+      "Patellar luxation"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Affectionate",
+      "Smart",
+      "Noble",
+      "Playful"
+    ],
+    "dietNotes": "Athletic sighthound needs quality protein with moderate fat. Lean breed; avoid overfeeding but ensure enough calories for their active lifestyle."
+  },
+  {
+    "name": "Norwegian Lundehund",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Lundehund.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Has six toes on each foot and can tip their head backward to touch their spine. Bred to hunt puffins on cliffsides.",
+    "habitat": "Non-Sporting Group | Origin: Norway",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 55,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "6-7 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Lundehund syndrome",
+      "Intestinal disease",
+      "Protein-losing enteropathy",
+      "Small intestinal bacterial overgrowth"
+    ],
+    "temperamentTraits": [
+      "Alert",
+      "Energetic",
+      "Loyal",
+      "Protective",
+      "Cheerful"
+    ],
+    "dietNotes": "Prone to serious intestinal issues (Lundehund syndrome). May need special easily digestible diet. Consult vet for breed-specific dietary needs."
+  },
+  {
+    "name": "Bedlington Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bedlington_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Looks like a lamb but hunts like a wolf. Originally bred by miners in Bedlington to catch rats and race for sport.",
+    "habitat": "Terrier Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 50,
+    "lifespan": "11-16 years",
+    "sizeCategory": "small",
+    "weight": "8-10 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Copper toxicosis",
+      "Patellar luxation",
+      "Retinal dysplasia",
+      "Kidney disease"
+    ],
+    "temperamentTraits": [
+      "Gentle",
+      "Loyal",
+      "Spirited",
+      "Energetic",
+      "Good-tempered"
+    ],
+    "dietNotes": "Prone to copper storage disease; avoid foods high in copper (organ meats, shellfish). Requires a specifically low-copper diet if affected."
+  },
+  {
+    "name": "Leonberger",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Leonberger_male.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Created to resemble the lion on the city crest of Leonberg. Used as water rescue dogs thanks to their webbed feet and massive size.",
+    "habitat": "Working Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 50,
+    "lifespan": "7-10 years",
+    "sizeCategory": "giant",
+    "weight": "41-77 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Bloat",
+      "Osteosarcoma"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Playful",
+      "Loyal",
+      "Gentle",
+      "Adaptable"
+    ],
+    "dietNotes": "Giant breed needs slow, controlled growth as a puppy. Feed large-breed formula in 2-3 meals daily. Joint supplements recommended."
+  },
+  {
+    "name": "Otterhound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Otterhound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the rarest breeds — fewer than 800 exist worldwide. Their webbed feet and oily double coat made them perfect otter hunters.",
+    "habitat": "Hound Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 60,
+    "lifespan": "10-13 years",
+    "sizeCategory": "large",
+    "weight": "36-54 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Epilepsy",
+      "Thrombocytopenia"
+    ],
+    "temperamentTraits": [
+      "Amiable",
+      "Boisterous",
+      "Even-tempered",
+      "Friendly",
+      "Independent"
+    ],
+    "dietNotes": "Active hound needs good-quality food with balanced protein and fat. Can be messy eaters; their beard collects food and water."
+  },
+  {
+    "name": "Lagotto Romagnolo",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Lagotto_Romagnolo.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The world's only breed specifically bred for truffle hunting. Their curly, waterproof coat and exceptional nose make them truffle-finding machines.",
+    "habitat": "Sporting Group | Origin: Italy",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 50,
+    "lifespan": "15-17 years",
+    "sizeCategory": "medium",
+    "weight": "11-16 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Epilepsy",
+      "Storage disease",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Keen",
+      "Loyal",
+      "Loving",
+      "Active",
+      "Trainable"
+    ],
+    "dietNotes": "Active working breed needs quality protein. Their curly coat benefits from omega fatty acids. Moderate portions to maintain a healthy weight."
+  },
+  {
+    "name": "Azawakh",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bistrita_2015_%252822%2529.jpg&w=400",
+    "audioUrl": "",
+    "lore": "A Saharan sighthound from the Tuareg nomads. So lean that their bone structure is visible through their skin — built for desert heat.",
+    "habitat": "Hound Group | Origin: West Africa",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 60,
+    "lifespan": "12-15 years",
+    "sizeCategory": "large",
+    "weight": "15-25 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Seizures",
+      "Autoimmune disorders",
+      "Hypothyroidism",
+      "Cardiac problems"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Independent",
+      "Affectionate",
+      "Attentive",
+      "Rugged"
+    ],
+    "dietNotes": "Naturally lean sighthound; visible ribs are normal for the breed. Feed a high-quality protein diet; they may eat less in hot weather."
+  },
+  {
+    "name": "Bergamasco Sheepdog",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Ortensia_di_Valle_Scrivia.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Their coat naturally forms into felt-like mats that protect against weather and predators. Once set, it never needs brushing.",
+    "habitat": "Herding Group | Origin: Italy",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 55,
+    "lifespan": "13-15 years",
+    "sizeCategory": "medium",
+    "weight": "26-38 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Eye problems",
+      "Bloat",
+      "Ear infections"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Patient",
+      "Sociable",
+      "Determined",
+      "Vigilant"
+    ],
+    "dietNotes": "Hardy breed with modest dietary needs. Feed a balanced large-breed diet. Once their coat 'sets' into mats, grooming needs are surprisingly low."
+  },
+  {
+    "name": "Thai Ridgeback",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Thai_Ridgeback.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of only three ridgeback breeds. Isolated on Thai islands for centuries, they evolved independently and can even climb trees.",
+    "habitat": "Hound Group | Origin: Thailand",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 55,
+    "lifespan": "12-13 years",
+    "sizeCategory": "medium",
+    "weight": "16-34 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Dermoid sinus",
+      "Bloat",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Independent",
+      "Intelligent",
+      "Tough",
+      "Active"
+    ],
+    "dietNotes": "Active, primitive breed does well on high-protein diets. Not prone to obesity but should still have measured meals twice daily."
+  },
+  {
+    "name": "Peruvian Inca Orchid",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Peruvian_Hairless_Dog.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Ancient Inca hairless dog considered magical. The Incas believed their body heat could cure arthritis and respiratory ailments.",
+    "habitat": "Hound Group | Origin: Peru",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 55,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "4-25 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Skin conditions",
+      "Dental issues",
+      "Epilepsy",
+      "Inflammatory bowel disease"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Loyal",
+      "Alert",
+      "Lively",
+      "Noble"
+    ],
+    "dietNotes": "Hairless breed needs skin-nourishing diet rich in omega-3 and omega-6 fatty acids. Dental issues may require softer foods."
+  },
+  {
+    "name": "Mudi",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Hondenras_Mudi.jpg&w=400",
+    "audioUrl": "",
+    "lore": "A rare Hungarian herding breed that can manage flocks of up to 500 sheep single-handedly. Also excels at hunting wild boar.",
+    "habitat": "Herding Group | Origin: Hungary",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 50,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "8-13 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Epilepsy",
+      "Patellar luxation",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Active",
+      "Alert",
+      "Versatile",
+      "Courageous"
+    ],
+    "dietNotes": "High-energy herding breed needs calorie-dense food. Active working dogs need more calories; adjust based on activity level."
+  },
+  {
+    "name": "Catalburun",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Pointer_04.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of only three breeds with a split nose (double nose). Fewer than 200 exist outside Turkey. Exceptional pointer with incredible scent ability.",
+    "habitat": "Sporting Group | Origin: Turkey",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 80,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "16-25 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Ear infections",
+      "Eye disorders",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Energetic",
+      "Focused",
+      "Gentle",
+      "Dedicated"
+    ],
+    "dietNotes": "Active pointer needs high-quality protein diet. Feed twice daily; moderate portions appropriate for their medium build and activity level."
+  },
+  {
+    "name": "New Guinea Singing Dog",
+    "scientificName": "Canis hallstromi (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=New_Guinea_Singing_Dog_on_trail-Cropped.jpg&w=400",
+    "audioUrl": "",
+    "lore": "A wild canid only recently studied, known for their haunting, harmonic howl. Can climb trees and bend their spine like a cat.",
+    "habitat": "Hound Group | Origin: Papua New Guinea",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 100,
+    "lifespan": "12-18 years",
+    "sizeCategory": "medium",
+    "weight": "9-14 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Generally very healthy",
+      "Hip dysplasia",
+      "Thyroid issues",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Alert",
+      "Curious",
+      "Independent",
+      "Agile",
+      "Intelligent"
+    ],
+    "dietNotes": "Primitive breed does well on a high-protein diet. They are resourceful eaters in the wild; domestic feeding should mimic whole-prey nutrition."
+  },
+  {
+    "name": "Chinook",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Chinook_sitting_in_snow.jpg&w=400",
+    "audioUrl": "",
+    "lore": "New Hampshire's state dog, bred by explorer Arthur Walden. Nearly went extinct with only 11 dogs left in 1981. A true American original.",
+    "habitat": "Working Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 80,
+    "lifespan": "12-15 years",
+    "sizeCategory": "large",
+    "weight": "25-41 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Epilepsy",
+      "Cryptorchidism",
+      "Gastrointestinal issues"
+    ],
+    "temperamentTraits": [
+      "Smart",
+      "Patient",
+      "Devoted",
+      "Friendly",
+      "Calm"
+    ],
+    "dietNotes": "Working sled dog breed needs good-quality, protein-rich food. Moderate fat content; adjust calories to activity level."
+  },
+  {
+    "name": "Telomian",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Telomian.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the rarest breeds. Malaysian indigenous people bred them to climb ladders to enter raised houses. Can grasp objects with their paws.",
+    "habitat": "Hound Group | Origin: Malaysia",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 100,
+    "lifespan": "12-14 years",
+    "sizeCategory": "small",
+    "weight": "8-13 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Generally healthy",
+      "Patellar luxation",
+      "Eye disorders",
+      "Dental issues"
+    ],
+    "temperamentTraits": [
+      "Alert",
+      "Intelligent",
+      "Agile",
+      "Independent",
+      "Sociable"
+    ],
+    "dietNotes": "Primitive breed thrives on high-protein diet. Small but active; feed measured meals twice daily with quality animal protein."
+  },
+  {
+    "name": "Carolina Dog",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Carolina_Dog.jpg&w=400",
+    "audioUrl": "",
+    "lore": "America's own 'dingo' — feral dogs discovered in South Carolina's swamps. DNA suggests they crossed the Bering land bridge with ancient humans.",
+    "habitat": "Hound Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 80,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "14-20 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Generally healthy",
+      "Hip dysplasia",
+      "Sensitive to anesthesia",
+      "Skin allergies"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Gentle",
+      "Reserved",
+      "Primitive",
+      "Resourceful"
+    ],
+    "dietNotes": "Hardy, primitive breed with few dietary issues. Benefits from high-protein, whole-ingredient foods. Moderate portions twice daily."
+  },
+  {
+    "name": "Kai Ken",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Kai_Ken.jpg&w=400",
+    "audioUrl": "",
+    "lore": "A natural monument of Japan. Their brindle coat earned them the nickname 'Tiger Dog.' So rare that even in Japan, few have seen one.",
+    "habitat": "Non-Sporting Group | Origin: Japan",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 90,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "11-25 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Generally healthy",
+      "Patellar luxation",
+      "Allergies",
+      "Hip dysplasia"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Brave",
+      "Alert",
+      "Loyal",
+      "Reserved"
+    ],
+    "dietNotes": "Japanese breed traditionally fed fish-based diets. Quality protein with omega fatty acids supports their brindle double coat."
+  },
+  {
+    "name": "Stabyhoun",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Stabyhoun.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the five rarest breeds in the world. Only about 7,000 exist globally. A versatile Dutch farm dog that excels at everything.",
+    "habitat": "Sporting Group | Origin: Netherlands",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 90,
+    "lifespan": "13-15 years",
+    "sizeCategory": "medium",
+    "weight": "18-25 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Epilepsy",
+      "Patent ductus arteriosus"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Gentle",
+      "Patient",
+      "Obedient",
+      "Devoted"
+    ],
+    "dietNotes": "Versatile sporting breed needs balanced nutrition with quality protein. Not prone to obesity but meals should still be measured."
+  },
+  {
+    "name": "Fila Brasileiro",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Fila_Brasileiro.jpg&w=400",
+    "audioUrl": "",
+    "lore": "So loyal that a Brazilian proverb says 'faithful as a Fila.' Bred to track escaped slaves and jaguars. Banned in several countries.",
+    "habitat": "Working Group | Origin: Brazil",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 80,
+    "lifespan": "9-11 years",
+    "sizeCategory": "giant",
+    "weight": "41-50 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Bloat",
+      "Entropion"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Brave",
+      "Determined",
+      "Docile",
+      "Obedient"
+    ],
+    "dietNotes": "Giant guardian breed needs large-breed formula with joint support. Prone to bloat; feed 2-3 smaller meals daily instead of one large meal."
+  },
+  {
+    "name": "Canaan Dog",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Canaan_Dog.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Descended from the pariah dogs of ancient Canaan. Used by the Israeli military as mine detectors and messengers.",
+    "habitat": "Herding Group | Origin: Israel",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 80,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "18-25 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Hypothyroidism",
+      "Patellar luxation",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Alert",
+      "Vigilant",
+      "Devoted",
+      "Docile",
+      "Quick"
+    ],
+    "dietNotes": "Hardy desert breed with efficient metabolism. Quality protein diet in moderate portions; they tend to be easy keepers."
+  },
+  {
+    "name": "Kooikerhondje",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Kooiker03.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Dutch duck decoying dogs that lured ducks into traps by wagging their fluffy white-tipped tails. A Kooiker allegedly saved William of Orange's life.",
+    "habitat": "Sporting Group | Origin: Netherlands",
+    "conservationStatus": "Domesticated",
+    "rarity": "legendary",
+    "baseXp": 85,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "9-14 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Von Willebrand's disease",
+      "Patellar luxation",
+      "Epilepsy",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Alert",
+      "Cheerful",
+      "Agile",
+      "Intelligent"
+    ],
+    "dietNotes": "Active sporting breed needs balanced nutrition. Not prone to overeating; feed measured meals with quality protein twice daily."
+  },
+  {
+    "name": "Japanese Chin",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Japanese_Chin_puppy.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Treasured by Japanese royalty for over a thousand years. These dainty lapdogs were gifts between noble houses and prized for their cat-like grace.",
+    "habitat": "Toy Group | Origin: Japan",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "10-12 years",
+    "sizeCategory": "small",
+    "weight": "1.5-5 kg",
+    "exerciseNeeds": "low",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Heart murmurs",
+      "Patellar luxation",
+      "Cataracts",
+      "GM2 gangliosidosis"
+    ],
+    "temperamentTraits": [
+      "Charming",
+      "Noble",
+      "Loving",
+      "Cat-like",
+      "Loyal"
+    ],
+    "dietNotes": "Toy breed needs small, nutrient-dense meals. Their flat face can make eating difficult; use shallow, wide bowls."
+  },
+  {
+    "name": "Pekingese",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=1AKC_Pekingese_Dog_Show_2011.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Sacred dogs of the Chinese imperial palace. Commoners had to bow to them, and stealing one was punishable by death.",
+    "habitat": "Toy Group | Origin: China",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-14 years",
+    "sizeCategory": "small",
+    "weight": "3-6 kg",
+    "exerciseNeeds": "low",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Brachycephalic syndrome",
+      "Intervertebral disc disease",
+      "Eye injuries",
+      "Patellar luxation"
+    ],
+    "temperamentTraits": [
+      "Opinionated",
+      "Affectionate",
+      "Loyal",
+      "Regal",
+      "Good-natured"
+    ],
+    "dietNotes": "Flat-faced breed prone to overheating; avoid warm food. Small meals with quality protein; monitor weight closely as excess weight worsens breathing."
+  },
+  {
+    "name": "Blenheim Spaniel",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Cavalier_King_Charles_Spaniel_trio.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Named after Blenheim Palace where the Duke of Marlborough bred chestnut-and-white spaniels. A color variety of the King Charles Spaniel.",
+    "habitat": "Toy Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "9-14 years",
+    "sizeCategory": "small",
+    "weight": "5-8 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Mitral valve disease",
+      "Syringomyelia",
+      "Patellar luxation",
+      "Eye conditions"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Gentle",
+      "Graceful",
+      "Patient",
+      "Sociable"
+    ],
+    "dietNotes": "Heart-healthy diet with omega-3 fatty acids. Monitor portions as they gain weight easily. Small-breed formula works well."
+  },
+  {
+    "name": "Toy Terrier",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Yorkshire_Terrier_studfee.jpg&w=400",
+    "audioUrl": "",
+    "lore": "A miniature version of the Manchester Terrier, bred to hunt rats in Victorian England. Despite their tiny size, they have a bold terrier spirit.",
+    "habitat": "Toy Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-13 years",
+    "sizeCategory": "small",
+    "weight": "3-4 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Legg-Calve-Perthes",
+      "Dental disease",
+      "Collapsed trachea"
+    ],
+    "temperamentTraits": [
+      "Alert",
+      "Spirited",
+      "Clever",
+      "Athletic",
+      "Loyal"
+    ],
+    "dietNotes": "Tiny breed needs small, frequent meals of nutrient-dense food. Dental-sized kibble helps maintain oral health."
+  },
+  {
+    "name": "Bluetick Coonhound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bluetick_Coonhound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Named for their distinctive blue-mottled coat. Bred in Louisiana to track raccoons, they have one of the most melodious baying voices of any hound.",
+    "habitat": "Hound Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "11-12 years",
+    "sizeCategory": "large",
+    "weight": "20-36 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Ear infections",
+      "Cataracts"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Intelligent",
+      "Devoted",
+      "Tenacious",
+      "Active"
+    ],
+    "dietNotes": "Active hound needs high-quality protein diet. Clean ears regularly, especially after eating from deep bowls. Feed twice daily."
+  },
+  {
+    "name": "Black and Tan Coonhound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Black_and_Tan_Coonhound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Descended from Bloodhounds and Foxhounds, they were the first coonhound breed recognized by the AKC. Tireless trackers with a deep, resonant bay.",
+    "habitat": "Hound Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "25-34 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Ear infections",
+      "Bloat",
+      "Eye problems"
+    ],
+    "temperamentTraits": [
+      "Easy-going",
+      "Friendly",
+      "Bright",
+      "Brave",
+      "Trusting"
+    ],
+    "dietNotes": "Active tracking dog needs calorie-dense food. Long, floppy ears need cleaning after meals. Feed twice daily to reduce bloat risk."
+  },
+  {
+    "name": "Walker Hound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Treeing_Walker_Coonhound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Developed from English Foxhounds by John W. Walker in Kentucky. Known for their speed, endurance, and ability to tree raccoons.",
+    "habitat": "Hound Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-13 years",
+    "sizeCategory": "large",
+    "weight": "20-32 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Ear infections",
+      "Bloat",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Smart",
+      "Brave",
+      "Courteous",
+      "Confident",
+      "Loving"
+    ],
+    "dietNotes": "Athletic coonhound needs quality protein for endurance. Feed measured meals twice daily; working dogs may need increased portions."
+  },
+  {
+    "name": "English Foxhound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=English_Foxhound_portrait.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the rarest AKC breeds in America despite centuries of English fox hunting heritage. Bred for stamina and pack cooperation.",
+    "habitat": "Hound Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "10-13 years",
+    "sizeCategory": "large",
+    "weight": "25-34 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Renal disease",
+      "Epilepsy",
+      "Ear infections"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Gentle",
+      "Sociable",
+      "Active",
+      "Tolerant"
+    ],
+    "dietNotes": "Bred for pack life and endurance; needs high-protein, calorie-dense food. Active hunters need significantly more calories than pet dogs."
+  },
+  {
+    "name": "Redbone Coonhound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Redbone-coonhound-detail.jpg&w=400",
+    "audioUrl": "",
+    "lore": "An all-American breed with a stunning solid red coat. Featured in the beloved novel 'Where the Red Fern Grows' as loyal hunting companions.",
+    "habitat": "Hound Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "large",
+    "weight": "20-32 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Ear infections",
+      "Bloat",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Even-tempered",
+      "Amiable",
+      "Eager",
+      "Mellow",
+      "Accommodating"
+    ],
+    "dietNotes": "Active hound breed needs balanced, protein-rich food. Prone to overeating; measure all meals. Keep ears clean after feeding."
+  },
+  {
+    "name": "Italian Greyhound",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Italian_Greyhound_standing_gray.jpg&w=400",
+    "audioUrl": "",
+    "lore": "A miniature Greyhound adored by Renaissance nobility. Frederick the Great of Prussia loved them so much he asked to be buried beside his.",
+    "habitat": "Toy Group | Origin: Italy",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "14-15 years",
+    "sizeCategory": "small",
+    "weight": "3-5 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Dental disease",
+      "Leg fractures",
+      "Patellar luxation",
+      "Progressive retinal atrophy"
+    ],
+    "temperamentTraits": [
+      "Playful",
+      "Sensitive",
+      "Alert",
+      "Affectionate",
+      "Athletic"
+    ],
+    "dietNotes": "Delicate toy breed with fast metabolism. Feed small, frequent meals of nutrient-dense food. Dental health requires regular attention."
+  },
+  {
+    "name": "Ibizan Hound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Ibizan_Hound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Resembles the ancient Egyptian god Anubis. Brought to the Balearic island of Ibiza by Phoenician traders over 3,000 years ago.",
+    "habitat": "Hound Group | Origin: Spain",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "11-14 years",
+    "sizeCategory": "large",
+    "weight": "20-29 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Anesthetic sensitivity",
+      "Seizures",
+      "Axonal dystrophy",
+      "Allergies"
+    ],
+    "temperamentTraits": [
+      "Clownish",
+      "Family-oriented",
+      "Even-tempered",
+      "Polite",
+      "Loyal"
+    ],
+    "dietNotes": "Lean sighthound needs quality protein without excess fat. Naturally thin; visible ribs may be normal. Feed twice daily."
+  },
+  {
+    "name": "Norwegian Elkhound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Norwegian_Elkhound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Vikings sailed with these fearless dogs over a thousand years ago. Bred to track and hold moose at bay until the hunter arrived.",
+    "habitat": "Hound Group | Origin: Norway",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "20-24 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Fanconi syndrome",
+      "Progressive retinal atrophy",
+      "Sebaceous cysts"
+    ],
+    "temperamentTraits": [
+      "Bold",
+      "Playful",
+      "Hardy",
+      "Alert",
+      "Loyal"
+    ],
+    "dietNotes": "Hardy Nordic breed prone to weight gain. Feed measured meals of quality food; reduce portions if activity decreases. Monitor kidney health."
+  },
+  {
+    "name": "Scottish Deerhound",
+    "scientificName": "Canis lupus familiaris (Hound)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Scottish_Deerhound.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The Royal Dog of Scotland, once so prized that no one below the rank of Earl could own one. Sir Walter Scott called them the most perfect creature.",
+    "habitat": "Hound Group | Origin: Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "8-11 years",
+    "sizeCategory": "giant",
+    "weight": "34-50 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Bloat",
+      "Osteosarcoma",
+      "Cardiomyopathy",
+      "Factor VII deficiency"
+    ],
+    "temperamentTraits": [
+      "Dignified",
+      "Gentle",
+      "Polite",
+      "Friendly",
+      "Docile"
+    ],
+    "dietNotes": "Giant sighthound prone to bloat. Feed 2-3 small meals daily. They are naturally lean; do not overfeed to 'fill them out.'"
+  },
+  {
+    "name": "American Staffordshire Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=American_Staffordshire_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Petey from 'The Little Rascals' was an AmStaff. Sergeant Stubby, the most decorated war dog of WWI, was also this breed.",
+    "habitat": "Terrier Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-16 years",
+    "sizeCategory": "medium",
+    "weight": "25-32 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Cerebellar ataxia",
+      "Heart disease",
+      "Skin allergies"
+    ],
+    "temperamentTraits": [
+      "Confident",
+      "Smart",
+      "Good-natured",
+      "Courageous",
+      "Loyal"
+    ],
+    "dietNotes": "Muscular breed needs high-protein diet. Active dogs with strong jaws; durable chew toys complement their feeding routine."
+  },
+  {
+    "name": "Border Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Border_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Bred on the Anglo-Scottish border to hunt foxes. Their otter-shaped head and wiry coat let them squeeze through tight spaces underground.",
+    "habitat": "Terrier Group | Origin: England/Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "5-7 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Heart defects",
+      "Hip dysplasia",
+      "Seizures"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Happy",
+      "Obedient",
+      "Plucky",
+      "Bold"
+    ],
+    "dietNotes": "Active small terrier needs quality protein. Not typically food-obsessed but will eat well after exercise. Measured meals twice daily."
+  },
+  {
+    "name": "Kerry Blue Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Kerry_Blue_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Born black, their coat gradually turns a distinctive blue-gray by age two. Ireland's national terrier, used as an all-purpose farm dog.",
+    "habitat": "Terrier Group | Origin: Ireland",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "15-18 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Hypothyroidism",
+      "Cataracts",
+      "Skin cysts"
+    ],
+    "temperamentTraits": [
+      "Alert",
+      "Smart",
+      "People-oriented",
+      "Adaptable",
+      "Spirited"
+    ],
+    "dietNotes": "Active terrier needs balanced protein-rich diet. Their non-shedding coat benefits from omega fatty acids and quality nutrition."
+  },
+  {
+    "name": "Irish Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Irish_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Known as the 'Daredevil' of the terrier world. Served as messenger dogs in WWI trenches and were praised for incredible bravery under fire.",
+    "habitat": "Terrier Group | Origin: Ireland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "13-15 years",
+    "sizeCategory": "medium",
+    "weight": "11-13 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Urinary stones",
+      "Hyperkeratosis",
+      "Cataracts",
+      "Hip dysplasia"
+    ],
+    "temperamentTraits": [
+      "Bold",
+      "Dashing",
+      "Respectful",
+      "Good-tempered",
+      "Courageous"
+    ],
+    "dietNotes": "Active terrier needs quality protein diet. Prone to urinary stones; ensure adequate water intake and avoid high-purine foods."
+  },
+  {
+    "name": "Norfolk Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Norfolk_terrier_CAC.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The smallest of the working terriers with drop ears. Cambridge University students kept them as ratters in their dorms in the 1880s.",
+    "habitat": "Terrier Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-16 years",
+    "sizeCategory": "small",
+    "weight": "5-6 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Mitral valve disease",
+      "Patellar luxation",
+      "Hip dysplasia",
+      "Dental disease"
+    ],
+    "temperamentTraits": [
+      "Alert",
+      "Fearless",
+      "Self-confident",
+      "Fun-loving",
+      "Sociable"
+    ],
+    "dietNotes": "Small terrier with a good appetite. Feed nutrient-dense small-breed food in measured portions. Dental care is important."
+  },
+  {
+    "name": "Norwich Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Norwich_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Nearly identical to the Norfolk Terrier except for their pricked ears. One of the smallest terrier breeds but fearless with vermin.",
+    "habitat": "Terrier Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "5-6 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Upper airway syndrome",
+      "Epilepsy",
+      "Hip dysplasia",
+      "Patellar luxation"
+    ],
+    "temperamentTraits": [
+      "Fearless",
+      "Loyal",
+      "Affectionate",
+      "Alert",
+      "Hardy"
+    ],
+    "dietNotes": "Small terrier with big appetite. Feed measured portions of quality small-breed food. Can be prone to weight gain if free-fed."
+  },
+  {
+    "name": "Wire Fox Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Wire_Fox_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Has won more Best in Show titles at Westminster than any other breed. Asta from 'The Thin Man' films made them Hollywood stars.",
+    "habitat": "Terrier Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "7-9 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Legg-Calve-Perthes",
+      "Lens luxation",
+      "Epilepsy"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Confident",
+      "Alert",
+      "Keen",
+      "Lively"
+    ],
+    "dietNotes": "Active terrier needs quality protein. Their wiry coat benefits from good nutrition with omega fatty acids. Feed twice daily."
+  },
+  {
+    "name": "Lakeland Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Lakeland_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Bred in England's Lake District to protect lambs from foxes. Their narrow, flexible body could follow foxes deep into rocky dens.",
+    "habitat": "Terrier Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "7-8 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Legg-Calve-Perthes",
+      "Lens luxation",
+      "Von Willebrand's disease",
+      "Distichiasis"
+    ],
+    "temperamentTraits": [
+      "Bold",
+      "Friendly",
+      "Confident",
+      "Entertaining",
+      "Tenacious"
+    ],
+    "dietNotes": "Active small terrier needs high-quality food. Not typically food-driven but will benefit from consistent feeding schedule twice daily."
+  },
+  {
+    "name": "Sealyham Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=SealyhamTerrier01.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Once the most popular terrier in Britain, now critically endangered. Alfred Hitchcock owned several and they appeared in his films.",
+    "habitat": "Terrier Group | Origin: Wales",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12-14 years",
+    "sizeCategory": "small",
+    "weight": "8-10 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Retinal dysplasia",
+      "Lens luxation",
+      "Deafness",
+      "Allergies"
+    ],
+    "temperamentTraits": [
+      "Outgoing",
+      "Friendly",
+      "Calm",
+      "Charming",
+      "Adaptable"
+    ],
+    "dietNotes": "Moderate activity breed; watch for weight gain. Feed quality food in measured portions. Their white coat benefits from good nutrition."
+  },
+  {
+    "name": "Cairn Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Cairn_Terrier_-_002.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Toto from 'The Wizard of Oz' was a Cairn Terrier named Terry. Originally bred to hunt between cairns (stone piles) in the Scottish Highlands.",
+    "habitat": "Terrier Group | Origin: Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "13-15 years",
+    "sizeCategory": "small",
+    "weight": "6-7 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Portosystemic shunt",
+      "Globoid cell leukodystrophy",
+      "Patellar luxation",
+      "Allergies"
+    ],
+    "temperamentTraits": [
+      "Alert",
+      "Cheerful",
+      "Busy",
+      "Hardy",
+      "Independent"
+    ],
+    "dietNotes": "Hardy terrier with good appetite. Feed quality food in controlled portions. Prone to weight gain if overfed or under-exercised."
+  },
+  {
+    "name": "Australian Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Australian_Terrier_adult_male.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The first breed developed in Australia, created to hunt snakes and rodents in the harsh outback. Tough and spirited despite their small size.",
+    "habitat": "Terrier Group | Origin: Australia",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "11-15 years",
+    "sizeCategory": "small",
+    "weight": "5-7 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Legg-Calve-Perthes",
+      "Diabetes",
+      "Allergies"
+    ],
+    "temperamentTraits": [
+      "Spirited",
+      "Courageous",
+      "Affectionate",
+      "Alert",
+      "Companionable"
+    ],
+    "dietNotes": "Small but hardy terrier needs quality, nutrient-dense food. Prone to diabetes; maintain consistent feeding schedule and healthy weight."
+  },
+  {
+    "name": "Dandie Dinmont Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Dandie_Dinmont_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The only breed named after a fictional character — from Sir Walter Scott's novel 'Guy Mannering.' Their topknot of silky hair is unique among terriers.",
+    "habitat": "Terrier Group | Origin: Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "8-11 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Intervertebral disc disease",
+      "Glaucoma",
+      "Cushing's disease",
+      "Epilepsy"
+    ],
+    "temperamentTraits": [
+      "Independent",
+      "Determined",
+      "Intelligent",
+      "Proud",
+      "Affectionate"
+    ],
+    "dietNotes": "Long-backed breed; weight management protects the spine. Feed measured portions and avoid excess treats that lead to weight gain."
+  },
+  {
+    "name": "Boston Terrier",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Boston-terrier-carlos-de.JPG&w=400",
+    "audioUrl": "",
+    "lore": "The 'American Gentleman' thanks to their tuxedo-like markings. One of the first breeds developed in the USA, originating in Boston around 1870.",
+    "habitat": "Non-Sporting Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "11-13 years",
+    "sizeCategory": "small",
+    "weight": "5-11 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Brachycephalic syndrome",
+      "Patellar luxation",
+      "Cataracts",
+      "Deafness"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Bright",
+      "Amusing",
+      "Gentle",
+      "Lively"
+    ],
+    "dietNotes": "Flat-faced breed; use wide, shallow bowls. Prone to gas and digestive sensitivity; quality food with easily digestible ingredients helps."
+  },
+  {
+    "name": "Giant Schnauzer",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Giant_Schnauzer_01.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Originally drove cattle in the Bavarian Alps, later served as police and military dogs. The largest of the three Schnauzer breeds.",
+    "habitat": "Working Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "giant",
+    "weight": "27-48 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Osteochondritis dissecans",
+      "Autoimmune thyroiditis",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Alert",
+      "Trainable",
+      "Powerful",
+      "Bold"
+    ],
+    "dietNotes": "Large, active working dog needs high-protein, calorie-dense food. Feed twice daily to reduce bloat risk. Joint supplements are beneficial."
+  },
+  {
+    "name": "Standard Schnauzer",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Standard_Schnauzer.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The original Schnauzer, from which the Miniature and Giant were bred. Albrecht Durer painted them in the 15th century. Versatile farm guardians.",
+    "habitat": "Working Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "13-16 years",
+    "sizeCategory": "medium",
+    "weight": "14-20 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Eye disorders",
+      "Autoimmune conditions",
+      "Skin tumors"
+    ],
+    "temperamentTraits": [
+      "Fearless",
+      "Smart",
+      "Spirited",
+      "Reliable",
+      "Good-natured"
+    ],
+    "dietNotes": "Active medium breed needs balanced nutrition. Not typically food-driven; consistent meals with quality protein twice daily."
+  },
+  {
+    "name": "Scottish Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Scottish_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Two US Presidents kept Scotties in the White House — FDR's Fala and George W. Bush's Barney. The Scottie dog is an iconic Monopoly game piece.",
+    "habitat": "Terrier Group | Origin: Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12 years",
+    "sizeCategory": "small",
+    "weight": "8-10 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Scottie cramp",
+      "Von Willebrand's disease",
+      "Bladder cancer",
+      "Craniomandibular osteopathy"
+    ],
+    "temperamentTraits": [
+      "Confident",
+      "Independent",
+      "Spirited",
+      "Alert",
+      "Dignified"
+    ],
+    "dietNotes": "Moderate exercise breed; avoid overfeeding. Quality protein with measured portions. Prone to bladder cancer; consider cancer-preventive nutrition."
+  },
+  {
+    "name": "Tibetan Terrier",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Tibetan_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Not actually a terrier — Tibetan monks bred them as 'Holy Dogs' and good luck charms. Their flat, snowshoe-like feet helped traverse Himalayan snow.",
+    "habitat": "Non-Sporting Group | Origin: Tibet",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "15-16 years",
+    "sizeCategory": "medium",
+    "weight": "8-14 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Progressive retinal atrophy",
+      "Patellar luxation",
+      "Hip dysplasia",
+      "Lens luxation"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Sensitive",
+      "Loyal",
+      "Intelligent",
+      "Reserved"
+    ],
+    "dietNotes": "Long-lived breed benefits from a balanced diet with antioxidants. Their heavy coat needs nutritional support from omega fatty acids."
+  },
+  {
+    "name": "Silky Terrier",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Australian_Silky_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Developed in Australia by crossing Yorkshire Terriers with Australian Terriers. Their glossy blue-and-tan coat is truly silky to the touch.",
+    "habitat": "Toy Group | Origin: Australia",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "13-15 years",
+    "sizeCategory": "small",
+    "weight": "4-5 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Legg-Calve-Perthes",
+      "Diabetes",
+      "Tracheal collapse"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Quick",
+      "Keenly Alert",
+      "Spirited",
+      "Joyful"
+    ],
+    "dietNotes": "Small breed with beautiful silky coat. Nutrient-dense food with omega fatty acids supports coat health. Feed small portions twice daily."
+  },
+  {
+    "name": "Soft-Coated Wheaten Terrier",
+    "scientificName": "Canis lupus familiaris (Terrier)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Soft-Coated_Wheaten_Terrier.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Known as the 'Poor Man's Wolfhound' in Ireland. Born dark, their soft, wheat-colored coat develops over the first two years of life.",
+    "habitat": "Terrier Group | Origin: Ireland",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "14-20 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Protein-losing nephropathy",
+      "Protein-losing enteropathy",
+      "Addison's disease",
+      "Renal dysplasia"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Happy",
+      "Devoted",
+      "Steady",
+      "Self-confident"
+    ],
+    "dietNotes": "Prone to protein-wasting diseases; high-quality, easily digestible protein is essential. Avoid high-fat diets. Regular vet monitoring recommended."
+  },
+  {
+    "name": "Lhasa Apso",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Lhasa_Apso.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Sentinel dogs of Tibetan monasteries for over a thousand years. The Dalai Lama traditionally gave them as gifts to honored visitors.",
+    "habitat": "Non-Sporting Group | Origin: Tibet",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "5-8 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Cherry eye",
+      "Kidney problems",
+      "Dry eye"
+    ],
+    "temperamentTraits": [
+      "Confident",
+      "Smart",
+      "Comical",
+      "Loyal",
+      "Independent"
+    ],
+    "dietNotes": "Small breed needs quality food. Their long coat requires nutritional support; omega fatty acids help maintain coat quality."
+  },
+  {
+    "name": "Flat-Coated Retriever",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Flat_Coated_Retriever_-_Black_(1).jpg&w=400",
+    "audioUrl": "",
+    "lore": "Known as the 'Peter Pan' of dogs because they never seem to grow up. Once the most popular retriever in Britain before Labs and Goldens took over.",
+    "habitat": "Sporting Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "8-10 years",
+    "sizeCategory": "large",
+    "weight": "25-36 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Cancer",
+      "Hip dysplasia",
+      "Patellar luxation",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Cheerful",
+      "Optimistic",
+      "Good-humored",
+      "Confident",
+      "Devoted"
+    ],
+    "dietNotes": "Very active sporting dog needs high-calorie, protein-rich food. Sadly cancer-prone breed; antioxidant-rich diet may help."
+  },
+  {
+    "name": "Curly-Coated Retriever",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Curly_Coated_Retriever.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The oldest of all retriever breeds, dating back to the late 1700s. Their tight, waterproof curls protect them in icy waters.",
+    "habitat": "Sporting Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "27-41 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Eye disorders",
+      "Bloat",
+      "Epilepsy"
+    ],
+    "temperamentTraits": [
+      "Confident",
+      "Proud",
+      "Intelligent",
+      "Wickedly Clever",
+      "Independent"
+    ],
+    "dietNotes": "Active sporting breed needs balanced, protein-rich food. Their unique curly coat is low maintenance but benefits from good nutrition."
+  },
+  {
+    "name": "Chesapeake Bay Retriever",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Chesapeake_Bay_Retriever1.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Maryland's state dog, bred to retrieve ducks from the icy Chesapeake Bay. Their oily, wavy coat repels water like a duck's feathers.",
+    "habitat": "Sporting Group | Origin: United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "10-13 years",
+    "sizeCategory": "large",
+    "weight": "25-36 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Progressive retinal atrophy",
+      "Bloat",
+      "Von Willebrand's disease"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Bright",
+      "Sensitive",
+      "Loyal",
+      "Protective"
+    ],
+    "dietNotes": "Hardy water retriever needs protein-rich diet with healthy fats. Their oily coat benefits from omega fatty acids in their food."
+  },
+  {
+    "name": "German Shorthaired Pointer",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=German_shorthaired_pointer.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The ultimate versatile hunting dog — they point, retrieve, and track on land and water. One of the most popular sporting breeds in the world.",
+    "habitat": "Sporting Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "20-32 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Lymphedema",
+      "Eye conditions"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Smart",
+      "Willing",
+      "Enthusiastic",
+      "Bold"
+    ],
+    "dietNotes": "Extremely active sporting dog needs high-calorie food. Working dogs may need 50% more calories than sedentary pets. Feed twice daily."
+  },
+  {
+    "name": "English Setter",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=English_setter.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the oldest gundog breeds, known for their elegant, speckled 'belton' coat pattern. Gentle and sweet-natured, the aristocrat of setters.",
+    "habitat": "Sporting Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12 years",
+    "sizeCategory": "large",
+    "weight": "20-36 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Deafness",
+      "Hypothyroidism",
+      "Elbow dysplasia"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Mellow",
+      "Gentle",
+      "Willing",
+      "Affectionate"
+    ],
+    "dietNotes": "Active sporting breed needs balanced nutrition with quality protein. Their feathered coat benefits from omega fatty acids."
+  },
+  {
+    "name": "Gordon Setter",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Orrvilas_enska_w800px.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The heaviest of the setter breeds, developed by the Duke of Gordon in Scotland. Their striking black-and-tan coat is unmistakable in the field.",
+    "habitat": "Sporting Group | Origin: Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12-13 years",
+    "sizeCategory": "large",
+    "weight": "25-36 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Progressive retinal atrophy",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Confident",
+      "Bold",
+      "Loyal",
+      "Alert"
+    ],
+    "dietNotes": "Large sporting breed needs protein-rich food. Deep-chested and prone to bloat; feed 2 meals daily and avoid exercise around mealtimes."
+  },
+  {
+    "name": "Brittany",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Brittany_Spaniel_standing.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Originally called the Brittany Spaniel, they work more like pointers than spaniels. The most popular pointing breed for American bird hunters.",
+    "habitat": "Sporting Group | Origin: France",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-14 years",
+    "sizeCategory": "medium",
+    "weight": "14-18 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Epilepsy",
+      "Hypothyroidism",
+      "Eye disorders"
+    ],
+    "temperamentTraits": [
+      "Bright",
+      "Fun-loving",
+      "Upbeat",
+      "Agile",
+      "Eager"
+    ],
+    "dietNotes": "Extremely energetic sporting breed needs calorie-dense, high-protein food. Active hunting dogs may need significantly increased portions."
+  },
+  {
+    "name": "Clumber Spaniel",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Clumber_Spaniel.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The heaviest of all spaniels. British royals including Prince Albert and King Edward VII kept them. Named after Clumber Park in Nottinghamshire.",
+    "habitat": "Sporting Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "25-39 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Intervertebral disc disease",
+      "Entropion",
+      "Ectropion"
+    ],
+    "temperamentTraits": [
+      "Gentle",
+      "Loyal",
+      "Amusing",
+      "Dignified",
+      "Mellow"
+    ],
+    "dietNotes": "Heaviest spaniel breed; prone to weight gain. Strict portion control needed. Quality food with moderate calories to maintain healthy weight."
+  },
+  {
+    "name": "Welsh Springer Spaniel",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Welsh_Springer_Spaniel_1.jpg&w=400",
+    "audioUrl": "",
+    "lore": "An ancient breed depicted in Welsh art from the Renaissance era. Their rich red-and-white coat makes them one of the most striking spaniels.",
+    "habitat": "Sporting Group | Origin: Wales",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "16-20 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Epilepsy",
+      "Glaucoma",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Happy",
+      "Active",
+      "Loyal",
+      "Faithful",
+      "Reserved"
+    ],
+    "dietNotes": "Active sporting breed needs balanced, protein-rich diet. Moderate eaters; feed quality food twice daily with appropriate portions."
+  },
+  {
+    "name": "Sussex Spaniel",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Sussex_spaniel_t43.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the rarest spaniel breeds, nearly extinct after WWII. Unique among spaniels for their distinctive rich golden-liver coat and low-slung build.",
+    "habitat": "Sporting Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "13-15 years",
+    "sizeCategory": "medium",
+    "weight": "16-20 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Intervertebral disc disease",
+      "Heart murmurs",
+      "Ear infections"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Cheerful",
+      "Calm",
+      "Sociable",
+      "Devoted"
+    ],
+    "dietNotes": "Low-slung breed prone to weight gain. Feed measured portions of quality food. Long back means excess weight risks disc problems."
+  },
+  {
+    "name": "Irish Water Spaniel",
+    "scientificName": "Canis lupus familiaris (Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Irish_Water_Spaniel.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The tallest of all spaniels with a distinctive 'rat tail' and tight liver-colored curls. One of the oldest and rarest spaniel breeds.",
+    "habitat": "Sporting Group | Origin: Ireland",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12-13 years",
+    "sizeCategory": "large",
+    "weight": "20-30 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Hypothyroidism",
+      "Eye disorders",
+      "Ear infections"
+    ],
+    "temperamentTraits": [
+      "Playful",
+      "Hard-working",
+      "Brave",
+      "Alert",
+      "Inquisitive"
+    ],
+    "dietNotes": "Active water dog needs protein-rich diet. Their unique curly coat benefits from omega fatty acids. Feed measured meals twice daily."
+  },
+  {
+    "name": "Kuvasz",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Kuvasz_named_Kan.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Ancient Hungarian flock guardian prized by King Matthias Corvinus, who trusted them more than his own guards. Nearly went extinct during WWII.",
+    "habitat": "Working Group | Origin: Hungary",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "10-12 years",
+    "sizeCategory": "giant",
+    "weight": "32-52 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Osteochondritis dissecans",
+      "Hypothyroidism",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Brave",
+      "Patient",
+      "Protective",
+      "Independent"
+    ],
+    "dietNotes": "Large guardian breed needs controlled calories with joint-supporting nutrients. Feed 2-3 meals daily to prevent bloat."
+  },
+  {
+    "name": "Schipperke",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Schipperke_2.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Little black foxlike dogs that guarded Belgian canal boats. Their name means 'little captain' in Flemish. Naturally tailless with a mischievous spirit.",
+    "habitat": "Non-Sporting Group | Origin: Belgium",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-14 years",
+    "sizeCategory": "small",
+    "weight": "5-9 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "MPS IIIB",
+      "Legg-Calve-Perthes",
+      "Epilepsy",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Confident",
+      "Alert",
+      "Curious",
+      "Faithful",
+      "Foxlike"
+    ],
+    "dietNotes": "Active small breed needs nutrient-dense food. Not prone to overeating but should have measured portions for optimal weight."
+  },
+  {
+    "name": "Belgian Sheepdog",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Groenendael.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Also called the Groenendael, this elegant all-black Belgian shepherd served as message carriers and ambulance dogs in both World Wars.",
+    "habitat": "Herding Group | Origin: Belgium",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-14 years",
+    "sizeCategory": "large",
+    "weight": "20-30 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Epilepsy",
+      "Progressive retinal atrophy",
+      "Cancer"
+    ],
+    "temperamentTraits": [
+      "Bright",
+      "Watchful",
+      "Serious",
+      "Devoted",
+      "Versatile"
+    ],
+    "dietNotes": "Active herding breed needs high-protein food. Their dense black coat benefits from omega fatty acids. Adjust calories to activity level."
+  },
+  {
+    "name": "Briard",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Briard_2.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Napoleon and Lafayette both owned Briards. This ancient French sheepdog served as sentries and supply carriers in the trenches of WWI.",
+    "habitat": "Herding Group | Origin: France",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12 years",
+    "sizeCategory": "large",
+    "weight": "25-40 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Progressive retinal atrophy",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Faithful",
+      "Loyal",
+      "Obedient",
+      "Protective",
+      "Spirited"
+    ],
+    "dietNotes": "Large herding breed needs protein-rich food. Deep chest means bloat risk; feed 2 meals daily. Extensive coat needs nutritional support."
+  },
+  {
+    "name": "Australian Kelpie",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Working_Kelpie.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Legendary Australian herding dogs that can manage thousands of sheep. Famous for running across the backs of sheep in packed yards.",
+    "habitat": "Herding Group | Origin: Australia",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "10-13 years",
+    "sizeCategory": "medium",
+    "weight": "14-21 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Progressive retinal atrophy",
+      "Cerebellar abiotrophy",
+      "Hip dysplasia",
+      "Cryptorchidism"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Alert",
+      "Intelligent",
+      "Eager",
+      "Energetic"
+    ],
+    "dietNotes": "Extremely active herding dog needs high-calorie, protein-dense food. Working dogs may need double the calories of pet dogs."
+  },
+  {
+    "name": "Old English Sheepdog",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Old_English_Sheepdog_%28dog%29.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Their shaggy coat once served as shearing material for their owners. The Dulux paint mascot made them one of the most recognizable breeds.",
+    "habitat": "Herding Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "27-46 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Deafness",
+      "Cataracts",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Adaptable",
+      "Gentle",
+      "Smart",
+      "Sociable",
+      "Playful"
+    ],
+    "dietNotes": "Large breed with enormous coat that hides weight gain. Weigh regularly and feed measured meals. Coat needs nutritional support."
+  },
+  {
+    "name": "Collie",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Rough_Collie_600.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Lassie made them the most famous dog in the world. Queen Victoria fell in love with them at Balmoral and popularized the breed.",
+    "habitat": "Herding Group | Origin: Scotland",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "12-14 years",
+    "sizeCategory": "large",
+    "weight": "23-34 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Collie eye anomaly",
+      "MDR1 gene sensitivity",
+      "Dermatomyositis",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Devoted",
+      "Graceful",
+      "Proud",
+      "Friendly",
+      "Intelligent"
+    ],
+    "dietNotes": "MDR1 gene means drug sensitivity; some foods interact. Quality protein with omega fatty acids for their luxurious coat."
+  },
+  {
+    "name": "Bouvier des Flandres",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bouvier_des_Flandres.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Belgian cattle herders nearly wiped out in WWI. Lucky, a Bouvier, was the beloved dog of President Ronald Reagan. Powerful and versatile farm dogs.",
+    "habitat": "Herding Group | Origin: Belgium",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "10-12 years",
+    "sizeCategory": "large",
+    "weight": "27-40 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Subaortic stenosis",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Courageous",
+      "Strong-willed",
+      "Loyal",
+      "Gentle"
+    ],
+    "dietNotes": "Large working breed needs protein-rich food. Prone to bloat; feed 2-3 smaller meals. Bearded face collects food; wipe after eating."
+  },
+  {
+    "name": "Miniature Pinscher",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Miniature_Pinscher.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The 'King of Toys' predates the Doberman despite their similar look. Known for their distinctive hackney-like high-stepping gait.",
+    "habitat": "Toy Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-16 years",
+    "sizeCategory": "small",
+    "weight": "4-5 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Legg-Calve-Perthes",
+      "Progressive retinal atrophy",
+      "Hypothyroidism"
+    ],
+    "temperamentTraits": [
+      "Fearless",
+      "Energetic",
+      "Fun-loving",
+      "Proud",
+      "Alert"
+    ],
+    "dietNotes": "Tiny breed with high metabolism. Feed nutrient-dense, small-breed food in measured portions. Prone to obesity if over-treated."
+  },
+  {
+    "name": "Greater Swiss Mountain Dog",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Greater_Swiss_Mountain_Dog.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The oldest and largest of the four Swiss mountain dog breeds. Pulled heavy carts for Swiss dairymen and butchers through Alpine villages.",
+    "habitat": "Working Group | Origin: Switzerland",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "8-11 years",
+    "sizeCategory": "giant",
+    "weight": "45-64 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Epilepsy",
+      "Distichiasis"
+    ],
+    "temperamentTraits": [
+      "Faithful",
+      "Dependable",
+      "Gentle",
+      "Family-oriented",
+      "Alert"
+    ],
+    "dietNotes": "Giant breed needs large-breed formula with controlled growth nutrients. Very prone to bloat; feed 2-3 small meals daily."
+  },
+  {
+    "name": "Appenzeller Sennenhund",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Appenzeller-sennenhund.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of four Swiss mountain dog breeds, the Appenzeller is the most energetic. Traditionally used to herd cattle and pull carts in the Swiss Alps.",
+    "habitat": "Working Group | Origin: Switzerland",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "22-32 kg",
+    "exerciseNeeds": "very high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Eye disorders",
+      "Epilepsy",
+      "Heart conditions"
+    ],
+    "temperamentTraits": [
+      "Reliable",
+      "Fearless",
+      "Energetic",
+      "Self-assured",
+      "Lively"
+    ],
+    "dietNotes": "Very active mountain breed needs high-calorie food. Working dogs require increased portions. Balanced diet supports their active lifestyle."
+  },
+  {
+    "name": "Entlebucher Mountain Dog",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Entlebucher.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The smallest of the four Swiss mountain dog breeds. A lively, self-confident herder from the Entlebuch valley near Lucerne.",
+    "habitat": "Herding Group | Origin: Switzerland",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "11-13 years",
+    "sizeCategory": "medium",
+    "weight": "20-30 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Progressive retinal atrophy",
+      "Ectopic ureter",
+      "Heart conditions"
+    ],
+    "temperamentTraits": [
+      "Loyal",
+      "Smart",
+      "Enthusiastic",
+      "Determined",
+      "Independent"
+    ],
+    "dietNotes": "Active herding breed needs balanced, protein-rich food. Feed measured meals twice daily; adjust portions to activity level."
+  },
+  {
+    "name": "Bullmastiff",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Bullmastiff_edited.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The 'Gamekeeper's Night Dog' — bred to catch poachers on English estates. They would pin intruders without biting, holding them until help arrived.",
+    "habitat": "Working Group | Origin: England",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "7-9 years",
+    "sizeCategory": "giant",
+    "weight": "45-59 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "low",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Elbow dysplasia",
+      "Bloat",
+      "Lymphoma"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Loyal",
+      "Brave",
+      "Alert",
+      "Docile"
+    ],
+    "dietNotes": "Giant breed prone to bloat; feed 2-3 small meals daily. Large-breed formula with joint support. Avoid exercise around mealtimes."
+  },
+  {
+    "name": "American Eskimo Dog",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=American_Eskimo_Dog.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Despite the name, they are of German Spitz origin. Became famous performing tricks in traveling circuses across 19th-century America.",
+    "habitat": "Non-Sporting Group | Origin: Germany/United States",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "13-15 years",
+    "sizeCategory": "small",
+    "weight": "8-16 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Patellar luxation",
+      "Progressive retinal atrophy",
+      "Legg-Calve-Perthes"
+    ],
+    "temperamentTraits": [
+      "Playful",
+      "Perky",
+      "Smart",
+      "Alert",
+      "Friendly"
+    ],
+    "dietNotes": "Active Spitz breed needs quality protein. Their thick white coat benefits from omega fatty acids. Feed measured meals twice daily."
+  },
+  {
+    "name": "Affenpinscher",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Affenpinscher.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The 'Monkey Dog' — their name means 'monkey-like terrier' in German. Originally bred to hunt rats in German kitchens and stables.",
+    "habitat": "Toy Group | Origin: Germany",
+    "conservationStatus": "Domesticated",
+    "rarity": "rare",
+    "baseXp": 80,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "3-4 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Heart murmurs",
+      "Legg-Calve-Perthes",
+      "Hip dysplasia"
+    ],
+    "temperamentTraits": [
+      "Confident",
+      "Famously Funny",
+      "Fearless",
+      "Stubborn",
+      "Curious"
+    ],
+    "dietNotes": "Tiny breed needs small, frequent meals of nutrient-dense food. Their flat face may benefit from small kibble or wet food."
+  },
+  {
+    "name": "Great Pyrenees",
+    "scientificName": "Canis lupus familiaris (Working)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Great_Pyrenees.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Royal Dog of France under Louis XIV. These majestic white guardians have protected sheep from wolves and bears in the Pyrenees mountains for centuries.",
+    "habitat": "Working Group | Origin: France",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "10-12 years",
+    "sizeCategory": "giant",
+    "weight": "39-54 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Patellar luxation",
+      "Osteosarcoma"
+    ],
+    "temperamentTraits": [
+      "Patient",
+      "Calm",
+      "Smart",
+      "Gentle",
+      "Strong-willed"
+    ],
+    "dietNotes": "Giant guardian breed; surprisingly modest appetite for their size. Feed large-breed formula in 2 meals daily. Prone to bloat."
+  },
+  {
+    "name": "Chow Chow",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=ChowChow2Szczecin.jpg&w=400",
+    "audioUrl": "",
+    "lore": "One of the oldest breeds with a distinctive blue-black tongue. Ancient Chinese emperors kept hundreds as hunting dogs. Sigmund Freud had one at his sessions.",
+    "habitat": "Non-Sporting Group | Origin: China",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "8-12 years",
+    "sizeCategory": "medium",
+    "weight": "20-32 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Entropion",
+      "Autoimmune disorders",
+      "Bloat"
+    ],
+    "temperamentTraits": [
+      "Dignified",
+      "Bright",
+      "Serious-minded",
+      "Aloof",
+      "Loyal"
+    ],
+    "dietNotes": "Prone to skin issues; quality protein with limited fillers helps. Their thick double coat needs nutritional support. Moderate portions."
+  },
+  {
+    "name": "Keeshond",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Keeshond_Majic_standing_cropped.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Named after Cornelis 'Kees' de Gyselaer, leader of Dutch Patriots. They were mascots of the Dutch political uprising against the House of Orange.",
+    "habitat": "Non-Sporting Group | Origin: Netherlands",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "medium",
+    "weight": "16-20 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Patellar luxation",
+      "Epilepsy",
+      "Hyperparathyroidism"
+    ],
+    "temperamentTraits": [
+      "Friendly",
+      "Lively",
+      "Outgoing",
+      "Alert",
+      "Bright"
+    ],
+    "dietNotes": "Spitz breed prone to weight gain under heavy coat. Regular weigh-ins important; feed measured portions of quality food."
+  },
+  {
+    "name": "Brussels Griffon",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Griffon_Bruxellois_(1).jpg&w=400",
+    "audioUrl": "",
+    "lore": "Belgian stable dogs bred to catch rats. Queen Marie Henriette of Belgium popularized them as companion dogs. Their expressive face is almost human.",
+    "habitat": "Toy Group | Origin: Belgium",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "3-5 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Eye problems",
+      "Cleft palate",
+      "Hip dysplasia"
+    ],
+    "temperamentTraits": [
+      "Alert",
+      "Curious",
+      "Loyal",
+      "Sensitive",
+      "Self-important"
+    ],
+    "dietNotes": "Tiny breed needs nutrient-dense food. Flat face can make eating messy; use wide, shallow bowls. Small frequent meals preferred."
+  },
+  {
+    "name": "Cardigan Welsh Corgi",
+    "scientificName": "Canis lupus familiaris (Herding)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Cardigan_Welsh_Corgi.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The older of the two Corgi breeds with a long fox-like tail. Welsh farmers used them to drive cattle by nipping at their heels for over 3,000 years.",
+    "habitat": "Herding Group | Origin: Wales",
+    "conservationStatus": "Domesticated",
+    "rarity": "uncommon",
+    "baseXp": 40,
+    "lifespan": "12-15 years",
+    "sizeCategory": "small",
+    "weight": "11-17 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "moderate",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Degenerative myelopathy",
+      "Progressive retinal atrophy",
+      "Intervertebral disc disease"
+    ],
+    "temperamentTraits": [
+      "Affectionate",
+      "Loyal",
+      "Smart",
+      "Active",
+      "Alert"
+    ],
+    "dietNotes": "Prone to obesity like their Pembroke cousins. Strict portion control essential. Long-backed; excess weight risks spinal problems."
+  },
+  {
+    "name": "Toy Poodle",
+    "scientificName": "Canis lupus familiaris (Toy)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Toy_Poodle.jpg&w=400",
+    "audioUrl": "",
+    "lore": "Bred down from Standard Poodles as companion dogs for Parisian aristocrats. Despite their dainty appearance, they are among the most intelligent breeds.",
+    "habitat": "Toy Group | Origin: France",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "10-18 years",
+    "sizeCategory": "small",
+    "weight": "2-4 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Patellar luxation",
+      "Progressive retinal atrophy",
+      "Legg-Calve-Perthes",
+      "Epilepsy"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Agile",
+      "Self-confident",
+      "Active",
+      "Faithful"
+    ],
+    "dietNotes": "Tiny but long-lived breed needs nutrient-dense food. Small frequent meals to prevent hypoglycemia. Dental care is important."
+  },
+  {
+    "name": "Miniature Poodle",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Full_attention_%25288067543690%2529.jpg&w=400",
+    "audioUrl": "",
+    "lore": "The mid-sized Poodle, originally used for truffle hunting in France. Their hypoallergenic curly coat made them favorites in European royal courts.",
+    "habitat": "Non-Sporting Group | Origin: France",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "10-18 years",
+    "sizeCategory": "small",
+    "weight": "5-9 kg",
+    "exerciseNeeds": "moderate",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Progressive retinal atrophy",
+      "Epilepsy",
+      "Patellar luxation",
+      "Legg-Calve-Perthes"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Active",
+      "Proud",
+      "Agile",
+      "Trainable"
+    ],
+    "dietNotes": "Active small breed needs quality protein for energy and coat health. Hypoallergenic coat benefits from omega fatty acids."
+  },
+  {
+    "name": "Standard Poodle",
+    "scientificName": "Canis lupus familiaris (Non-Sporting)",
+    "imageUrl": "https://commons.wikimedia.org/w/thumb.php?f=Full_attention_(8067543916).jpg&w=400",
+    "audioUrl": "",
+    "lore": "Originally a German water retriever — 'Pudel' means 'to splash.' The second most intelligent dog breed. Their iconic clip protected joints while swimming.",
+    "habitat": "Non-Sporting Group | Origin: Germany/France",
+    "conservationStatus": "Domesticated",
+    "rarity": "common",
+    "baseXp": 20,
+    "lifespan": "10-18 years",
+    "sizeCategory": "large",
+    "weight": "20-32 kg",
+    "exerciseNeeds": "high",
+    "groomingNeeds": "high",
+    "healthPredispositions": [
+      "Hip dysplasia",
+      "Bloat",
+      "Addison's disease",
+      "Progressive retinal atrophy"
+    ],
+    "temperamentTraits": [
+      "Intelligent",
+      "Active",
+      "Alert",
+      "Faithful",
+      "Elegant"
+    ],
+    "dietNotes": "Active large breed needs protein-rich food. Prone to bloat; feed 2 meals daily. Curly coat needs nutritional support from quality fats."
+  }
+]

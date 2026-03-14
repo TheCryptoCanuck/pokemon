@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Network Security Configuration for DogQuest
+  - Enforces HTTPS for all network communication
+  - Restricts cleartext (HTTP) traffic
+  - Pins trusted domains for media resources
+-->
+<network-security-config>
+    <!-- Disable cleartext (HTTP) traffic globally -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Trusted domains for dog images (Wikimedia Commons) -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">upload.wikimedia.org</domain>
+        <domain includeSubdomains="true">commons.wikimedia.org</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+
+    <!-- OpenStreetMap tile server for Live Map -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">tile.openstreetmap.org</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+
+</network-security-config>

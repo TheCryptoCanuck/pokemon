@@ -1,0 +1,45 @@
+# Keystore and signing
+android/key.properties
+*.jks
+*.keystore
+
+# Flutter/Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python helper scripts output
+*.pyc
+__pycache__/
+mobilenet_v2_1.0_224_quant.tflite
+
+# Training data & large models (keep out of repo)
+supplemental_dogs/
+stanford_dogs/
+*.h5
+*.keras
+dog_model_v*.tflite
+saved_model/
+
+# Training logs & reports
+*.log
+auto_train_output.log
+download_output.log
+train_v*_report.json
+audit_flagged.json
+audit_gallery.html
+audit_report.txt
+
+# Temporary analysis output
+dup_analysis.py
