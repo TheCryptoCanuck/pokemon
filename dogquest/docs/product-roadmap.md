@@ -103,67 +103,67 @@ After this phase: social feed shows real posts, dogs nearby uses geolocation que
 broadcast in real-time, and the magic moment (breed ID → social discovery) works.
 ```
 
-- [ ] **TASK-013** — Deploy social database tables
+- [x] **TASK-013** — Deploy social database tables
   Files: Supabase SQL Editor (remote)
   Notes: Execute SQL from PRD Section 3 for: `social_posts`, `post_likes`, `post_comments`, `follows`, `user_blocks`, `content_reports`. Include all indexes. Enable RLS on every table. Verify: tables visible in Supabase with correct schemas.
 
-- [ ] **TASK-014** — Deploy friendship and pack tables
+- [x] **TASK-014** — Deploy friendship and pack tables
   Files: Supabase SQL Editor (remote)
   Notes: Execute SQL from PRD Section 3 for: `friendships`, `packs`, `pack_members`, `pack_dogs`. Include indexes. Enable RLS. Add policies: friendships visible to both parties, packs visible to members, pack dogs visible to pack members. FR-032, FR-033. Verify: tables exist with correct constraints.
 
-- [ ] **TASK-015** — Deploy lost dog and community tables
+- [x] **TASK-015** — Deploy lost dog and community tables
   Files: Supabase SQL Editor (remote)
   Notes: Execute SQL from PRD Section 3 for: `lost_dog_reports`, `lost_dog_sightings`, `breed_communities`, `breed_community_memberships`, `breed_community_posts`, `playdates`, `playdate_rsvps`. Include the GIST spatial index on lost_dog_reports. Enable RLS. Lost dog reports readable by all (including unauthenticated) for public safety. FR-036 through FR-040. Verify: tables exist, spatial index created.
 
-- [ ] **TASK-016** — Deploy RLS policies for social tables
+- [x] **TASK-016** — Deploy RLS policies for social tables
   Files: Supabase SQL Editor (remote)
   Notes: Add RLS policies from PRD Section 2: social posts readable by all authenticated, writable by author. Post likes/comments writable by authenticated users. Follows: users manage their own follows. Blocks: users manage their own blocks. Content reports: writable by authenticated users, readable only by reporter. Lost dog reports: readable by all, writable by owner. Breed community posts: readable by all authenticated, writable by author. Verify: test CRUD operations through Supabase API Explorer with two different user sessions.
 
-- [ ] **TASK-017** — Deploy Supabase RPC functions
+- [x] **TASK-017** — Deploy Supabase RPC functions
   Files: Supabase SQL Editor (remote)
   Notes: Create all RPC functions from PRD Section 4: `get_feed()`, `get_dogs_nearby()`, `get_active_lost_dogs()`, `sync_sightings()`, `get_leaderboard()`. These are SECURITY DEFINER functions. Verify: call each function from the API Explorer with test data and confirm correct results. The `get_dogs_nearby()` function uses Haversine formula for geo-distance.
 
-- [ ] **TASK-018** — Set up Supabase Storage buckets
+- [x] **TASK-018** — Set up Supabase Storage buckets
   Files: Supabase Storage (remote)
   Notes: Create 4 storage buckets as specified in PRD Section 4: `dog-photos` (authenticated read/write own), `sighting-photos` (authenticated read/write own), `lost-dog-photos` (public read, authenticated write), `community-photos` (authenticated read/write). Max file size 5MB. Allowed MIME types: image/jpeg, image/png, image/webp. Verify: upload a test image to each bucket, confirm access policies work.
 
-- [ ] **TASK-019** — Create Supabase social service replacing local mock data
+- [x] **TASK-019** — Create Supabase social service replacing local mock data
   Files: `lib/services/supabase_social_service.dart` (new), `lib/services/dog_social_service.dart`
   Notes: Create `supabase_social_service.dart` that implements: getFeed (calls `get_feed` RPC), createPost (inserts into social_posts), likePost (toggle post_likes), commentOnPost (insert post_comments), followUser (insert follows), unfollowUser (delete follows), blockUser (insert user_blocks), reportContent (insert content_reports). The existing `dog_social_service.dart` returns mock data — the new service replaces it. Use a Riverpod provider that checks Supabase auth state: if authenticated return Supabase service, if not return local mock. FR-023, FR-028, FR-029, FR-030, FR-031. Verify: create a post, fetch feed, confirm post appears.
 
-- [ ] **TASK-020** — Wire dog_feed_screen.dart to real Supabase data
+- [x] **TASK-020** — Wire dog_feed_screen.dart to real Supabase data
   Files: `lib/screens/dog_feed_screen.dart`
   Notes: Replace the mock data calls with `SupabaseSocialService.getFeed()`. Implement cursor-based pagination (pass `created_at` of last post as cursor). Add pull-to-refresh. Add real-time subscription on `social_posts` table so new posts appear live. Wire like/comment buttons to real Supabase operations. Show loading skeleton while fetching. Show offline banner when disconnected (cached posts from Hive). FR-023, FR-028, NFR-022. Verify: post created by another user appears in feed. Like increments count. Pull-to-refresh works.
 
-- [ ] **TASK-021** — Wire dogs_nearby_screen.dart to Supabase geolocation
+- [x] **TASK-021** — Wire dogs_nearby_screen.dart to Supabase geolocation
   Files: `lib/screens/dogs_nearby_screen.dart`
   Notes: Replace mock data with `supabase.rpc('get_dogs_nearby', params: {lat, lon, radius})`. Use `LocationService` to get current GPS. Default radius 5 miles. Show distance on each dog card. Add "Send Friend Request" button wired to friendships table. Handle location denied state and offline state. FR-024. Verify: create two test users with location data, confirm they appear in each other's Dogs Nearby list.
 
-- [ ] **TASK-022** — Wire breed_community_screen.dart to Supabase
+- [x] **TASK-022** — Wire breed_community_screen.dart to Supabase
   Files: `lib/screens/breed_community_screen.dart`
   Notes: Seed the `breed_communities` table with all 294 breed names. Wire join/leave to `breed_community_memberships`. Wire community posts to `breed_community_posts`. Show member count and post count. Auto-join community when user discovers a breed. FR-025. Verify: discover a breed, community auto-joined, post appears in community feed.
 
-- [ ] **TASK-023** — Wire lost dog reporting to Supabase with real-time alerts
+- [x] **TASK-023** — Wire lost dog reporting to Supabase with real-time alerts
   Files: `lib/screens/lost_dog_screen.dart`, `lib/screens/lost_dog_map_screen.dart`, `lib/services/lost_dog_service.dart`, `lib/services/lost_dog_alert_service.dart`
   Notes: Wire lost dog report creation to `lost_dog_reports` table with photo upload to `lost-dog-photos` bucket. Wire "I've Seen This Dog" to `lost_dog_sightings` table. Add real-time subscription on `lost_dog_sightings` for report owner — pins appear on map live. Use `get_active_lost_dogs` RPC to show nearby lost dogs on the Live Map. Wire "Mark as Found" to update report status and notify helpers. FR-036 through FR-040. Verify: create lost dog report, another user submits sighting, pin appears on owner's map in real-time.
 
-- [ ] **TASK-024** — Wire friendships and pack to Supabase
+- [x] **TASK-024** — Wire friendships and pack to Supabase
   Files: `lib/services/dog_friendship_service.dart`, `lib/services/pack_service.dart`, `lib/screens/dog_friendships_screen.dart`, `lib/screens/pack_screen.dart`
   Notes: Wire friendship requests (send/accept/reject) to `friendships` table. Add real-time subscription for pending friendship requests (show notification badge). Wire Pack creation to `packs` table with invite code generation. Wire Pack member join via invite code to `pack_members`. Wire Pack dog assignment to `pack_dogs`. FR-032, FR-033. Verify: send friendship request, recipient sees pending request in real-time, accept it, both see the friendship.
 
-- [ ] **TASK-025** — Implement photo upload for dog profiles and sightings
+- [x] **TASK-025** — Implement photo upload for dog profiles and sightings
   Files: `lib/services/photo_upload_service.dart` (new)
   Notes: Create a reusable photo upload service. Resize images client-side to max 1024px before upload (NFR-024). Strip EXIF GPS data from photos before upload (NFR-013). Upload to appropriate Supabase Storage bucket based on context (dog-photos, sighting-photos, etc.). Return the public URL. Wire into `add_dog_screen.dart` for dog profile photos and into the sighting flow for scan photos. Verify: upload a photo, URL is accessible, image is resized, no EXIF GPS in stored file.
 
-- [ ] **TASK-026** — Auto-generate social posts on key events
+- [x] **TASK-026** — Auto-generate social posts on key events
   Files: `lib/services/social_post_generator.dart` (new), `lib/services/player_service.dart`, `lib/services/kennel_service.dart`
   Notes: Create a service that auto-creates social posts when: breed discovered (breed_discovered), achievement unlocked (achievement_unlocked), streak milestone reached at 7/30/100 days (streak_milestone), level up (level_up), rare/legendary breed found (rare_find), themed set completed (set_completed). Hook into existing services — `player_service` on XP gain, `kennel_service` on new breed. Only post if user is authenticated with Supabase. FR-028. Verify: discover a new breed, social post auto-appears in feed.
 
-- [ ] **TASK-027** — Add playdate matcher with Supabase backend
+- [x] **TASK-027** — Add playdate matcher with Supabase backend
   Files: `lib/widgets/playdate_matcher.dart`, `lib/services/playdate_service.dart` (new)
   Notes: Create `playdate_service.dart` that manages playdates table: create playdate (with location, time, max dogs), RSVP (going/maybe/declined), list upcoming playdates near user. Wire the existing `playdate_matcher.dart` widget to show nearby upcoming playdates and allow RSVP. FR-026. Verify: create a playdate, another user nearby sees it in matcher, RSVPs as "going."
 
-- [ ] **TASK-028** — Write integration tests for social features
+- [x] **TASK-028** — Write integration tests for social features
   Files: `test/supabase_social_test.dart` (new)
   Notes: Test: (1) create social post appears in feed, (2) like/unlike toggles correctly, (3) dogs nearby returns users within radius, (4) lost dog report creates and sighting pins update, (5) friendship request flow (send/accept), (6) photo upload resizes and strips EXIF. Mock Supabase for unit tests. Verify: `flutter test test/supabase_social_test.dart` passes.
 

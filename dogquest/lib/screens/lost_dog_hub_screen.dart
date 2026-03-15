@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
 import '../constants.dart';
 import '../models/lost_dog_report.dart';
 import '../services/lost_dog_service.dart';
+import '../services/supabase_lost_dog_service.dart';
 
 class LostDogHubScreen extends ConsumerStatefulWidget {
   const LostDogHubScreen({super.key});
@@ -131,33 +133,120 @@ class _LostDogHubScreenState extends ConsumerState<LostDogHubScreen>
 
 // ─── Missing Dogs Tab ─────────────────────────────────────────────────────────
 
-class _MissingDogsTab extends StatelessWidget {
+class _MissingDogsTab extends ConsumerStatefulWidget {
   final LostDogService lostDogSvc;
   final VoidCallback onChanged;
 
   const _MissingDogsTab({required this.lostDogSvc, required this.onChanged});
 
   @override
-  Widget build(BuildContext context) {
-    final activeReports = lostDogSvc.activeReports;
+  ConsumerState<_MissingDogsTab> createState() => _MissingDogsTabState();
+}
 
-    if (activeReports.isEmpty) {
+class _MissingDogsTabState extends ConsumerState<_MissingDogsTab> {
+  List<LostDogReportRemote> _remoteReports = [];
+  bool _loadingRemote = false;
+  /// IDs of local reports that have a matching remote counterpart (by name+breed).
+  final Set<String> _localIdsWithRemote = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRemoteReports();
+  }
+
+  Future<void> _fetchRemoteReports() async {
+    final remoteSvc = ref.read(supabaseLostDogServiceProvider);
+    if (remoteSvc == null) return;
+
+    setState(() => _loadingRemote = true);
+    try {
+      final reports = await remoteSvc.getMyReports();
+      // Deduplicate: mark local reports that match a remote report by dogName.
+      final localReports = widget.lostDogSvc.activeReports;
+      final remoteNames = reports
+          .where((r) => r.isActive)
+          .map((r) => r.dogName.toLowerCase())
+          .toSet();
+      _localIdsWithRemote.clear();
+      for (final local in localReports) {
+        if (remoteNames.contains(local.dogName.toLowerCase())) {
+          _localIdsWithRemote.add(local.id);
+        }
+      }
+      setState(() {
+        _remoteReports = reports;
+        _loadingRemote = false;
+      });
+    } catch (_) {
+      setState(() => _loadingRemote = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final localReports = widget.lostDogSvc.activeReports;
+    // Remote-only reports: active remote reports whose name does NOT match a local report.
+    final localNames =
+        localReports.map((r) => r.dogName.toLowerCase()).toSet();
+    final remoteOnly = _remoteReports
+        .where((r) => r.isActive && !localNames.contains(r.dogName.toLowerCase()))
+        .toList();
+
+    final totalCount = localReports.length + remoteOnly.length;
+
+    if (totalCount == 0 && !_loadingRemote) {
       return _buildEmptyState();
     }
 
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-      itemCount: activeReports.length + 1,
+      itemCount: totalCount + 1 + (_loadingRemote ? 1 : 0),
       itemBuilder: (context, index) {
         if (index == 0) {
-          return _buildNetworkHeader(activeReports.length);
+          return _buildNetworkHeader(totalCount);
         }
-        final report = activeReports[index - 1];
-        return _LostDogReportCard(
-          report: report,
-          lostDogSvc: lostDogSvc,
-          onChanged: onChanged,
-        );
+        if (_loadingRemote && index == 1) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.amber.shade300,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'Syncing cloud reports...',
+                  style: TextStyle(color: Colors.amber.shade300, fontSize: 12),
+                ),
+              ],
+            ),
+          );
+        }
+        final adjustedIndex =
+            index - 1 - (_loadingRemote ? 1 : 0);
+
+        // Local reports first, then remote-only.
+        if (adjustedIndex < localReports.length) {
+          final report = localReports[adjustedIndex];
+          return _LostDogReportCard(
+            report: report,
+            lostDogSvc: widget.lostDogSvc,
+            onChanged: widget.onChanged,
+            hasCloudSync: _localIdsWithRemote.contains(report.id),
+          );
+        }
+        final remoteIndex = adjustedIndex - localReports.length;
+        if (remoteIndex < remoteOnly.length) {
+          return _RemoteLostDogCard(report: remoteOnly[remoteIndex]);
+        }
+        return const SizedBox.shrink();
       },
     );
   }
@@ -268,11 +357,13 @@ class _LostDogReportCard extends StatelessWidget {
   final LostDogReport report;
   final LostDogService lostDogSvc;
   final VoidCallback onChanged;
+  final bool hasCloudSync;
 
   const _LostDogReportCard({
     required this.report,
     required this.lostDogSvc,
     required this.onChanged,
+    this.hasCloudSync = false,
   });
 
   String _daysSince(DateTime date) {
@@ -308,109 +399,167 @@ class _LostDogReportCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () => _showReportOptions(context),
+          onTap: report.status == LostDogStatus.found
+              ? null
+              : () => _showReportOptions(context),
           child: Padding(
             padding: const EdgeInsets.all(14),
-            child: Row(
-              children: [
-                // Dog photo or placeholder
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: SizedBox(
-                    width: 72,
-                    height: 72,
-                    child: hasPhoto
-                        ? Image.file(
-                            File(report.photoPath!),
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => _photoPlaceholder(),
-                          )
-                        : _photoPlaceholder(),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                // Info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: report.status == LostDogStatus.found
+                ? Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              report.dogName,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                      // Greyed-out placeholder for reunited dogs
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox(
+                          width: 72,
+                          height: 72,
+                          child: Container(
+                            color: Colors.green.withValues(alpha: 0.08),
+                            child: const Center(
+                              child: Icon(Icons.pets, color: Colors.green, size: 30),
                             ),
                           ),
-                          _buildStatusBadge(),
-                        ],
-                      ),
-                      if (report.breed != null) ...[
-                        const SizedBox(height: 3),
-                        Text(
-                          report.breed!,
-                          style: const TextStyle(
-                            color: Colors.white54,
-                            fontSize: 13,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Icon(Icons.schedule,
-                              color: Colors.red.shade300, size: 14),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Missing since ${_formatDate(report.lostDate)}',
-                            style: TextStyle(
-                              color: Colors.red.shade300,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        _daysSince(report.lostDate),
-                        style: const TextStyle(
-                          color: Colors.white38,
-                          fontSize: 11,
                         ),
                       ),
-                      if (report.lastSeenLocation != null) ...[
-                        const SizedBox(height: 4),
-                        Row(
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.location_on,
-                                color: Colors.white38, size: 13),
-                            const SizedBox(width: 3),
-                            Expanded(
-                              child: Text(
-                                report.lastSeenLocation!,
-                                style: const TextStyle(
-                                  color: Colors.white38,
-                                  fontSize: 11,
+                            Row(
+                              children: [
+                                const Expanded(
+                                  child: Text(
+                                    'Reunited',
+                                    style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
                                 ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                                _buildStatusBadge(),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'This dog has been safely returned to their owner.',
+                              style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 12),
                             ),
                           ],
                         ),
-                      ],
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      // Dog photo or placeholder
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox(
+                          width: 72,
+                          height: 72,
+                          child: hasPhoto
+                              ? Image.file(
+                                  File(report.photoPath!),
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => _photoPlaceholder(),
+                                )
+                              : _photoPlaceholder(),
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      // Info
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    report.dogName,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (hasCloudSync)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 6),
+                                    child: Tooltip(
+                                      message: 'Synced to cloud',
+                                      child: Icon(Icons.cloud_done,
+                                          color: Colors.blue.shade300, size: 16),
+                                    ),
+                                  ),
+                                _buildStatusBadge(),
+                              ],
+                            ),
+                            if (report.breed != null) ...[
+                              const SizedBox(height: 3),
+                              Text(
+                                report.breed!,
+                                style: const TextStyle(
+                                  color: Colors.white54,
+                                  fontSize: 13,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Icon(Icons.schedule,
+                                    color: Colors.red.shade300, size: 14),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Missing since ${_formatDate(report.lostDate)}',
+                                  style: TextStyle(
+                                    color: Colors.red.shade300,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              _daysSince(report.lostDate),
+                              style: const TextStyle(
+                                color: Colors.white38,
+                                fontSize: 11,
+                              ),
+                            ),
+                            if (report.lastSeenLocation != null) ...[
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(Icons.location_on,
+                                      color: Colors.white38, size: 13),
+                                  const SizedBox(width: 3),
+                                  Expanded(
+                                    child: Text(
+                                      report.lastSeenLocation!,
+                                      style: const TextStyle(
+                                        color: Colors.white38,
+                                        fontSize: 11,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.chevron_right, color: Colors.white24, size: 20),
                     ],
                   ),
-                ),
-                const SizedBox(width: 4),
-                const Icon(Icons.chevron_right, color: Colors.white24, size: 20),
-              ],
-            ),
           ),
         ),
       ),
@@ -472,63 +621,179 @@ class _LostDogReportCard extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        decoration: const BoxDecoration(
-          color: bgCard,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+      isScrollControlled: true,
+      builder: (ctx) {
+        final hasPhoto = report.photoPath != null &&
+            report.photoPath!.isNotEmpty &&
+            File(report.photoPath!).existsSync();
+        final daysAgo = DateTime.now().difference(report.lostDate).inDays;
+
+        return DraggableScrollableSheet(
+          initialChildSize: 0.85,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          builder: (_, scrollController) => Container(
+            decoration: const BoxDecoration(
+              color: bgCard,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            child: ListView(
+              controller: scrollController,
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
               children: [
                 // Handle bar
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.white24,
-                    borderRadius: BorderRadius.circular(2),
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                // Dog name header
-                Text(
-                  report.dogName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                const SizedBox(height: 16),
+
+                // ── Photo ──
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: SizedBox(
+                    height: 220,
+                    width: double.infinity,
+                    child: hasPhoto
+                        ? Image.file(
+                            File(report.photoPath!),
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _detailPhotoPlaceholder(),
+                          )
+                        : _detailPhotoPlaceholder(),
                   ),
+                ),
+                const SizedBox(height: 16),
+
+                // ── Name + status ──
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        report.dogName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ),
+                    _buildStatusBadge(),
+                  ],
                 ),
                 if (report.breed != null) ...[
                   const SizedBox(height: 4),
                   Text(
                     report.breed!,
-                    style: const TextStyle(color: Colors.white54, fontSize: 14),
+                    style: const TextStyle(color: Colors.white54, fontSize: 15),
                   ),
                 ],
-                if (report.notes != null && report.notes!.isNotEmpty) ...[
-                  const SizedBox(height: 12),
+                const SizedBox(height: 20),
+
+                // ── Info grid ──
+                _detailRow(Icons.schedule, Colors.red.shade300,
+                    'Missing Since', '${_formatDate(report.lostDate)} ($daysAgo day${daysAgo == 1 ? '' : 's'} ago)'),
+                if (report.lastSeenLocation != null)
+                  _detailRow(Icons.location_on, Colors.amber,
+                      'Last Seen', report.lastSeenLocation!),
+                if (report.lastSeenLat != null && report.lastSeenLon != null)
+                  _detailRow(Icons.map_outlined, Colors.blue.shade300,
+                      'GPS', '${report.lastSeenLat!.toStringAsFixed(4)}, ${report.lastSeenLon!.toStringAsFixed(4)}'),
+                _detailRow(Icons.calendar_today, Colors.white38,
+                    'Reported', _formatDate(report.createdAt)),
+
+                // ── Owner contact ──
+                if (report.ownerContact != null && report.ownerContact!.isNotEmpty) ...[
+                  const SizedBox(height: 16),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.04),
-                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.amber.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
                     ),
-                    child: Text(
-                      report.notes!,
-                      style: const TextStyle(
-                        color: Colors.white60,
-                        fontSize: 13,
-                        height: 1.4,
-                      ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.phone, color: Colors.amber.shade300, size: 20),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Owner Contact',
+                                  style: TextStyle(color: Colors.amber, fontSize: 11, fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 2),
+                              Text(
+                                report.ownerContact!,
+                                style: const TextStyle(color: Colors.white, fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
+
+                // ── Notes ──
+                if (report.notes != null && report.notes!.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.04),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Description & Notes',
+                            style: TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 6),
+                        Text(
+                          report.notes!,
+                          style: const TextStyle(color: Colors.white70, fontSize: 14, height: 1.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
                 const SizedBox(height: 24),
+
+                // ── Actions ──
+                // Share poster
+                _BottomSheetAction(
+                  icon: Icons.share,
+                  iconColor: Colors.amber,
+                  label: 'Share Lost Dog Poster',
+                  subtitle: 'Create a shareable poster to spread the word',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    context.push('/lost-dog/share', extra: report);
+                  },
+                ),
+                const SizedBox(height: 8),
+                // View on map
+                _BottomSheetAction(
+                  icon: Icons.map,
+                  iconColor: Colors.blue.shade300,
+                  label: 'View on Map',
+                  subtitle: 'See last known location on the network map',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    context.push('/lost-dog/map');
+                  },
+                ),
+                const SizedBox(height: 8),
                 // Mark as Found
                 _BottomSheetAction(
                   icon: Icons.celebration,
@@ -565,7 +830,47 @@ class _LostDogReportCard extends StatelessWidget {
               ],
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Widget _detailPhotoPlaceholder() {
+    return Container(
+      color: Colors.amber.withValues(alpha: 0.08),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.pets, color: Colors.amber.withValues(alpha: 0.4), size: 64),
+            const SizedBox(height: 8),
+            Text('No photo available',
+                style: TextStyle(color: Colors.amber.withValues(alpha: 0.4), fontSize: 13)),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _detailRow(IconData icon, Color iconColor, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: iconColor, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: const TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 2),
+                Text(value, style: const TextStyle(color: Colors.white, fontSize: 14)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -676,17 +981,208 @@ class _BottomSheetAction extends StatelessWidget {
   }
 }
 
+// ─── Remote-Only Lost Dog Card (cloud badge) ─────────────────────────────────
+
+class _RemoteLostDogCard extends StatelessWidget {
+  final LostDogReportRemote report;
+
+  const _RemoteLostDogCard({required this.report});
+
+  @override
+  Widget build(BuildContext context) {
+    final daysAgo = DateTime.now().difference(report.lastSeenAt).inDays;
+    final timeLabel = daysAgo == 0
+        ? 'Today'
+        : daysAgo == 1
+            ? '1 day ago'
+            : '$daysAgo days ago';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: bgCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.blue.withValues(alpha: 0.15)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            // Cloud photo placeholder
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: SizedBox(
+                width: 72,
+                height: 72,
+                child: report.photoUrl != null
+                    ? Image.network(
+                        report.photoUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: Colors.blue.withValues(alpha: 0.08),
+                          child: const Center(
+                            child: Icon(Icons.cloud, color: Colors.blue, size: 30),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        color: Colors.blue.withValues(alpha: 0.08),
+                        child: const Center(
+                          child: Icon(Icons.cloud, color: Colors.blue, size: 30),
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          report.dogName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      // Cloud-only badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              color: Colors.blue.withValues(alpha: 0.4)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.cloud,
+                                color: Colors.blue.shade300, size: 11),
+                            const SizedBox(width: 3),
+                            Text(
+                              'Cloud',
+                              style: TextStyle(
+                                color: Colors.blue.shade300,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (report.breed.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      report.breed,
+                      style: const TextStyle(color: Colors.white54, fontSize: 13),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.schedule, color: Colors.red.shade300, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Missing $timeLabel',
+                        style: TextStyle(color: Colors.red.shade300, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  if (report.distanceMiles != null) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.near_me,
+                            color: Colors.white38, size: 13),
+                        const SizedBox(width: 3),
+                        Text(
+                          '${report.distanceMiles!.toStringAsFixed(1)} mi away',
+                          style:
+                              const TextStyle(color: Colors.white38, fontSize: 11),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ).animate().fadeIn().slideX(begin: 0.03);
+  }
+}
+
 // ─── Help Find Tab ────────────────────────────────────────────────────────────
 
-class _HelpFindTab extends StatelessWidget {
+class _HelpFindTab extends ConsumerStatefulWidget {
   final LostDogService lostDogSvc;
 
   const _HelpFindTab({required this.lostDogSvc});
 
   @override
+  ConsumerState<_HelpFindTab> createState() => _HelpFindTabState();
+}
+
+class _HelpFindTabState extends ConsumerState<_HelpFindTab> {
+  List<LostDogReportRemote> _nearbyReports = [];
+  bool _loadingNearby = false;
+  String? _nearbyError;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchNearby();
+  }
+
+  Future<void> _fetchNearby() async {
+    final remoteSvc = ref.read(supabaseLostDogServiceProvider);
+    if (remoteSvc == null) return;
+
+    setState(() {
+      _loadingNearby = true;
+      _nearbyError = null;
+    });
+
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 10),
+        ),
+      );
+      final reports = await remoteSvc.getActiveNearby(
+        position.latitude,
+        position.longitude,
+        radiusMiles: 25.0,
+      );
+      setState(() {
+        _nearbyReports = reports;
+        _loadingNearby = false;
+      });
+    } catch (e) {
+      setState(() {
+        _loadingNearby = false;
+        _nearbyError = 'Could not fetch nearby reports';
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final missingCount = lostDogSvc.activeLostCount;
-    final scanCount = lostDogSvc.totalScans;
+    final missingCount = widget.lostDogSvc.activeLostCount;
+    final scanCount = widget.lostDogSvc.totalScans;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 100),
@@ -909,6 +1405,164 @@ class _HelpFindTab extends StatelessWidget {
               ],
             ),
           ).animate().fadeIn(delay: 500.ms),
+
+          // ── Nearby Lost Dogs from Cloud ──
+          if (_loadingNearby)
+            Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.amber.shade300,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Searching for lost dogs nearby...',
+                      style: TextStyle(color: Colors.amber.shade300, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          if (_nearbyError != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: Text(
+                _nearbyError!,
+                style: TextStyle(color: Colors.red.shade300, fontSize: 12),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          if (!_loadingNearby && _nearbyReports.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Icon(Icons.location_on, color: Colors.red.shade300, size: 18),
+                const SizedBox(width: 6),
+                Text(
+                  '${_nearbyReports.length} Lost Dog${_nearbyReports.length == 1 ? '' : 's'} Nearby',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ).animate().fadeIn(delay: 600.ms),
+            const SizedBox(height: 12),
+            ..._nearbyReports.map((report) {
+              final daysAgo =
+                  DateTime.now().difference(report.lastSeenAt).inDays;
+              final timeLabel = daysAgo == 0
+                  ? 'Today'
+                  : daysAgo == 1
+                      ? '1 day ago'
+                      : '$daysAgo days ago';
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: bgCard,
+                  borderRadius: BorderRadius.circular(14),
+                  border:
+                      Border.all(color: Colors.red.withValues(alpha: 0.15)),
+                ),
+                child: Row(
+                  children: [
+                    // Photo or placeholder
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: SizedBox(
+                        width: 56,
+                        height: 56,
+                        child: report.photoUrl != null
+                            ? Image.network(
+                                report.photoUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  color: Colors.red.withValues(alpha: 0.08),
+                                  child: const Center(
+                                    child: Icon(Icons.pets,
+                                        color: Colors.redAccent, size: 24),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                color: Colors.red.withValues(alpha: 0.08),
+                                child: const Center(
+                                  child: Icon(Icons.pets,
+                                      color: Colors.redAccent, size: 24),
+                                ),
+                              ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            report.dogName,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (report.breed.isNotEmpty)
+                            Text(
+                              report.breed,
+                              style: const TextStyle(
+                                  color: Colors.white54, fontSize: 12),
+                            ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Missing $timeLabel',
+                            style: TextStyle(
+                                color: Colors.red.shade300, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Distance badge
+                    if (report.distanceMiles != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.near_me,
+                                color: Colors.amber, size: 12),
+                            const SizedBox(width: 3),
+                            Text(
+                              '${report.distanceMiles!.toStringAsFixed(1)} mi',
+                              style: const TextStyle(
+                                color: Colors.amber,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ).animate().fadeIn(delay: 650.ms).slideY(begin: 0.03);
+            }),
+          ],
         ],
       ),
     );
