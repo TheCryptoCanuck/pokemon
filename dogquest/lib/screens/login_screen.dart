@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../constants.dart';
-import '../services/auth_service.dart';
+import '../services/supabase_auth_service.dart';
+import '../services/supabase_user_service.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -20,6 +21,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordCtrl = TextEditingController();
   bool _loading = false;
   String? _error;
+  final _shakeKey = GlobalKey();
 
   @override
   void dispose() {
@@ -36,23 +38,48 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      await ref.read(authServiceProvider).login(
-            _emailCtrl.text.trim(),
-            _passwordCtrl.text,
+      final response = await ref.read(supabaseAuthServiceProvider).signIn(
+            email: _emailCtrl.text.trim(),
+            password: _passwordCtrl.text,
           );
+      // Fetch/cache user profile on login
+      final user = response.user;
+      if (user != null) {
+        try {
+          await ref.read(supabaseUserServiceProvider).fetchProfile(user.id);
+        } catch (_) {
+          // Non-critical — profile will sync later
+        }
+      }
       // Clear offline mode now that user is authenticated
       Hive.box('dogquest_player_stats').put('offline_mode', false);
       if (!mounted) return;
-      // If pushed from profile (or elsewhere), pop back; otherwise navigate to main app
       if (context.canPop()) {
         context.pop();
       } else {
         context.go('/identify');
       }
-    } on AuthException catch (e) {
+    } on SupabaseAuthException catch (e) {
       setState(() => _error = e.message);
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _forgotPassword() async {
+    final email = _emailCtrl.text.trim();
+    if (email.isEmpty || !email.contains('@')) {
+      setState(() => _error = 'Enter your email above, then tap Forgot Password');
+      return;
+    }
+    try {
+      await ref.read(supabaseAuthServiceProvider).resetPassword(email);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password reset email sent — check your inbox')),
+      );
+    } on SupabaseAuthException catch (e) {
+      setState(() => _error = e.message);
     }
   }
 
@@ -96,6 +123,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: 32),
                   if (_error != null)
                     Container(
+                      key: _shakeKey,
                       width: double.infinity,
                       padding: const EdgeInsets.all(12),
                       margin: const EdgeInsets.only(bottom: 16),
@@ -108,7 +136,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         _error!,
                         style: const TextStyle(color: Colors.redAccent, fontSize: 13),
                       ),
-                    ),
+                    ).animate().shakeX(duration: 400.ms, hz: 4, amount: 6),
                   TextFormField(
                     controller: _emailCtrl,
                     keyboardType: TextInputType.emailAddress,
@@ -145,7 +173,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           : const Text('Sign In'),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: _loading ? null : _forgotPassword,
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(color: Colors.white38, fontSize: 13),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   TextButton(
                     onPressed: () => context.go('/register'),
                     child: const Text(

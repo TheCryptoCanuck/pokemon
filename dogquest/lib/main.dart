@@ -11,6 +11,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'constants.dart';
 import 'router.dart';
@@ -44,6 +45,9 @@ import 'services/smart_notification_service.dart';
 import 'services/tflite_identification_service.dart';
 import 'services/dog_embedding_service.dart';
 import 'services/lost_dog_service.dart';
+import 'services/auth_migration_service.dart';
+import 'services/supabase_auth_service.dart';
+import 'services/supabase_user_service.dart';
 import 'widgets/streak_break_dialog.dart';
 
 final _log = Logger('Main');
@@ -89,6 +93,10 @@ Future<void> _openEncryptedSightingsBox(List<int> encryptionKey) async {
 /// When empty, the app runs without Sentry (identical to previous behavior).
 const _sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
 const _environment = String.fromEnvironment('ENV', defaultValue: 'development');
+
+/// Supabase configuration — passed at build time via --dart-define
+const _supabaseUrl = String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://hdcpymjnrbelaawhncep.supabase.co');
+const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: 'sb_publishable_lrICH1RprCBAxgQAs8tg4g_eKAXDme4');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -184,6 +192,9 @@ class _AppBootstrapState extends State<AppBootstrap> {
   bool _streakSaverUsed = false;
   int _currentStreak = 0;
 
+  // Auth migration state
+  bool _needsMigration = false;
+
   @override
   void initState() {
     super.initState();
@@ -210,12 +221,23 @@ class _AppBootstrapState extends State<AppBootstrap> {
       _progressController.add(1.0);
       await Future.delayed(Duration(milliseconds: remaining > 0 ? remaining : 300));
 
+      // Check for legacy auth migration need
+      bool needsMigration = false;
+      final migrationSvc = AuthMigrationService(
+        SupabaseAuthService(Supabase.instance.client),
+        SupabaseUserService(Supabase.instance.client),
+      );
+      if (!migrationSvc.wasPrompted && await migrationSvc.hasLegacyAuth()) {
+        needsMigration = Supabase.instance.client.auth.currentSession == null;
+      }
+
       if (mounted) {
         setState(() {
           _overrides = overrides;
           _brokenStreakValue = initResult.brokenStreakValue;
           _streakSaverUsed = initResult.streakSaverUsed;
           _currentStreak = initResult.currentStreak;
+          _needsMigration = needsMigration;
           _showApp = true;
         });
         // Trigger crossfade after the app widget tree has built
@@ -223,9 +245,15 @@ class _AppBootstrapState extends State<AppBootstrap> {
         if (mounted) {
           setState(() => _appOpacity = 1.0);
         }
+        // Show migration dialog first, then streak dialog
+        if (_needsMigration) {
+          await Future.delayed(const Duration(milliseconds: 800));
+          if (mounted) {
+            await _showMigrationDialog(migrationSvc);
+          }
+        }
         // Show streak break/save dialog after app is visible
         if (_brokenStreakValue > 1 || _streakSaverUsed) {
-          // Wait for the crossfade and router to settle
           await Future.delayed(const Duration(milliseconds: 800));
           if (mounted) {
             _showStreakDialog();
@@ -242,6 +270,150 @@ class _AppBootstrapState extends State<AppBootstrap> {
         setState(() => _fatalError = e.toString());
       }
     }
+  }
+
+  Future<void> _showMigrationDialog(AuthMigrationService migrationSvc) async {
+    final navContext = rootNavigatorKey.currentContext;
+    if (navContext == null) return;
+
+    final email = migrationSvc.legacyEmail ?? '';
+    final username = migrationSvc.legacyUsername ?? '';
+
+    await showDialog<bool>(
+      context: navContext,
+      barrierDismissible: false,
+      builder: (ctx) {
+        final emailCtrl = TextEditingController(text: email);
+        final usernameCtrl = TextEditingController(text: username);
+        final passwordCtrl = TextEditingController();
+        final formKey = GlobalKey<FormState>();
+        bool loading = false;
+        String? error;
+
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            return AlertDialog(
+              backgroundColor: bgCard,
+              title: const Text(
+                'Upgrade Your Account',
+                style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
+              ),
+              content: SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Create a cloud account to enable social features and backup your collection.',
+                        style: TextStyle(color: Colors.white70, fontSize: 13),
+                      ),
+                      const SizedBox(height: 16),
+                      if (error != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Text(
+                            error!,
+                            style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                          ),
+                        ),
+                      TextFormField(
+                        controller: usernameCtrl,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: const InputDecoration(
+                          labelText: 'Username',
+                          labelStyle: TextStyle(color: Colors.white54),
+                        ),
+                        validator: (v) => (v == null || v.trim().length < 3)
+                            ? 'At least 3 characters'
+                            : null,
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: emailCtrl,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(color: Colors.white54),
+                        ),
+                        validator: (v) => (v == null || !v.contains('@'))
+                            ? 'Enter a valid email'
+                            : null,
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: passwordCtrl,
+                        obscureText: true,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: const InputDecoration(
+                          labelText: 'Choose a Password',
+                          labelStyle: TextStyle(color: Colors.white54),
+                        ),
+                        validator: (v) => (v == null || v.length < 6)
+                            ? 'At least 6 characters'
+                            : null,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: loading
+                      ? null
+                      : () async {
+                          await migrationSvc.markPrompted();
+                          if (ctx.mounted) Navigator.of(ctx).pop(false);
+                        },
+                  child: const Text(
+                    'Not Now',
+                    style: TextStyle(color: Colors.white38),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: loading
+                      ? null
+                      : () async {
+                          if (!formKey.currentState!.validate()) return;
+                          setDialogState(() {
+                            loading = true;
+                            error = null;
+                          });
+                          try {
+                            final success = await migrationSvc.migrateToSupabase(
+                              email: emailCtrl.text.trim(),
+                              password: passwordCtrl.text,
+                              username: usernameCtrl.text.trim(),
+                            );
+                            await migrationSvc.markPrompted();
+                            if (ctx.mounted) Navigator.of(ctx).pop(success);
+                          } on SupabaseAuthException catch (e) {
+                            setDialogState(() {
+                              error = e.message;
+                              loading = false;
+                            });
+                          } catch (e) {
+                            setDialogState(() {
+                              error = 'Upgrade failed. Try again later.';
+                              loading = false;
+                            });
+                          }
+                        },
+                  child: loading
+                      ? const SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Upgrade'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   void _showStreakDialog() {
@@ -344,6 +516,14 @@ Future<_InitResult> _initializeServices(
 
   update('Setting up...', 0.05);
   await Future.delayed(Duration.zero); // yield to let animations tick
+
+  // Initialize Supabase before Hive — auth state may be needed early
+  await Supabase.initialize(
+    url: _supabaseUrl,
+    anonKey: _supabaseAnonKey,
+  );
+  _log.info('Supabase initialized (${_supabaseUrl.split('.').first.split('//').last})');
+
   await Hive.initFlutter();
   await Future.delayed(Duration.zero);
   await SecurityManager.instance.initialize();
@@ -407,7 +587,6 @@ Future<_InitResult> _initializeServices(
   final kennelBox = boxResults[0] as Box<String>;
   final playerBox = boxResults[1];
   final pendingSyncBox = boxResults[2] as Box<Map>;
-  final collectionsBox = boxResults[3];
   final socialBox = boxResults[4];
 
   final kennelSvc = KennelService(kennelBox);
@@ -415,7 +594,7 @@ Future<_InitResult> _initializeServices(
   final dailyDogSvc = DailyDogService(dogSvc, playerBox);
   kennelSvc.setDogService(dogSvc);
   final dogGroupSvc = DogGroupService(dogSvc, kennelSvc);
-  final breedCollectionSvc = BreedCollectionService(collectionsBox, kennelSvc);
+  final breedCollectionSvc = BreedCollectionService(kennelSvc, playerBox);
 
   // Open the sightings box with AES encryption before SightingService
   // accesses it. Hive returns the already-opened box on subsequent
@@ -457,6 +636,7 @@ Future<_InitResult> _initializeServices(
   update('Syncing data...', 0.88);
   await Future.delayed(Duration.zero); // yield for animations
   final backendSync = BackendSyncService(
+    api: apiClient,
     pendingSyncBox: pendingSyncBox,
   );
 
@@ -500,7 +680,7 @@ Future<_InitResult> _initializeServices(
       analyticsProvider.overrideWithValue(analytics),
       dailyDogServiceProvider.overrideWithValue(dailyDogSvc),
       dogGroupServiceProvider.overrideWithValue(dogGroupSvc),
-      breedCollectionServiceProvider.overrideWithValue(breedCollectionSvc),
+      breedCollectionProvider.overrideWithValue(breedCollectionSvc),
       sightingServiceProvider.overrideWithValue(sightingSvc),
       apiClientProvider.overrideWithValue(apiClient),
       backendSyncProvider.overrideWithValue(backendSync),

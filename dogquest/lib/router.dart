@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/kennel_screen.dart';
 import 'screens/field_guide_screen.dart';
 import 'screens/home_shell.dart';
@@ -26,30 +28,63 @@ import 'screens/breed_community_screen.dart';
 import 'screens/lost_dog_hub_screen.dart';
 import 'screens/report_lost_screen.dart';
 import 'screens/scan_stray_screen.dart';
+import 'screens/shelter_mode_screen.dart';
+import 'screens/lost_dog_map_screen.dart';
+import 'screens/share_lost_dog_screen.dart';
+import 'screens/marketplace_screen.dart';
+import 'screens/service_list_screen.dart';
+import 'screens/provider_detail_screen.dart';
+import 'models/lost_dog_report.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
+
+/// Listenable that notifies GoRouter when Supabase auth state changes.
+class SupabaseAuthNotifier extends ChangeNotifier {
+  late final StreamSubscription<AuthState> _sub;
+
+  SupabaseAuthNotifier() {
+    _sub = Supabase.instance.client.auth.onAuthStateChange.listen((_) {
+      notifyListeners();
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+}
+
+final _authNotifier = SupabaseAuthNotifier();
 
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: '/identify',
   observers: [SentryNavigatorObserver()],
+  refreshListenable: _authNotifier,
   redirect: (context, state) {
     final loc = state.matchedLocation;
 
     // Allow auth and onboarding routes through
-    if (loc == '/onboarding' || loc == '/login' || loc == '/register' || loc == '/privacy') {
+    const authRoutes = {'/onboarding', '/login', '/register', '/privacy'};
+    if (authRoutes.contains(loc)) {
+      // If already authenticated and on an auth route, redirect to app
+      final session = Supabase.instance.client.auth.currentSession;
+      if (session != null && (loc == '/login' || loc == '/register')) {
+        return '/identify';
+      }
       return null;
     }
 
     // Onboarding gate
     if (!OnboardingScreen.isComplete()) return '/onboarding';
 
-    // Auth gate — skip if user chose offline mode
+    // Auth gate — check Supabase session first, then offline mode fallback
+    final session = Supabase.instance.client.auth.currentSession;
     final playerBox = Hive.box('dogquest_player_stats');
     final offlineMode = playerBox.get('offline_mode', defaultValue: false) as bool;
-    final hasToken = playerBox.get('has_auth_token', defaultValue: false) as bool;
 
-    if (!hasToken && !offlineMode) return '/login';
+    if (session == null && !offlineMode) return '/login';
 
     return null;
   },
@@ -140,6 +175,42 @@ final router = GoRouter(
       builder: (_, __) => const ScanStrayScreen(),
     ),
     GoRoute(
+      path: '/lost-dog/map',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, __) => const LostDogMapScreen(),
+    ),
+    GoRoute(
+      path: '/lost-dog/share',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, state) => ShareLostDogScreen(
+        report: state.extra! as LostDogReport,
+      ),
+    ),
+    GoRoute(
+      path: '/shelter-mode',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, __) => const ShelterModeScreen(),
+    ),
+    GoRoute(
+      path: '/marketplace',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, __) => const MarketplaceScreen(),
+    ),
+    GoRoute(
+      path: '/marketplace/category/:name',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, state) => ServiceListScreen(
+        categoryName: state.pathParameters['name'] ?? '',
+      ),
+    ),
+    GoRoute(
+      path: '/marketplace/provider/:id',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, state) => ProviderDetailScreen(
+        providerId: state.pathParameters['id'] ?? '',
+      ),
+    ),
+    GoRoute(
       path: '/breed/:name',
       parentNavigatorKey: rootNavigatorKey,
       builder: (_, state) => BreedCommunityScreen(
@@ -162,10 +233,7 @@ final router = GoRouter(
       path: '/quiz',
       parentNavigatorKey: rootNavigatorKey,
       pageBuilder: (context, state) => CustomTransitionPage(
-        child: Scaffold(
-          backgroundColor: bgDeep,
-          body: const SafeArea(child: QuizScreen()),
-        ),
+        child: const QuizScreen(),
         transitionsBuilder: (context, animation, _, child) =>
             SlideTransition(
               position: Tween(begin: const Offset(0, 1), end: Offset.zero)

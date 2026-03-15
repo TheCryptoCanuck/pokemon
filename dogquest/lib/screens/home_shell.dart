@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../constants.dart';
 import '../services/analytics_service.dart';
+import '../widgets/connection_status_banner.dart';
 
 const _tabLabels = ['Sightings', 'Identify', 'Kennel', 'Field Guide', 'Me'];
 
@@ -16,12 +17,19 @@ class HomeShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SafeArea(
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          child: KeyedSubtree(
-            key: ValueKey(navigationShell.currentIndex),
-            child: navigationShell,
-          ),
+        child: Column(
+          children: [
+            const ConnectionStatusBanner(),
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: KeyedSubtree(
+                  key: ValueKey(navigationShell.currentIndex),
+                  child: navigationShell,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
