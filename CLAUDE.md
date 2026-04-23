@@ -42,15 +42,17 @@ Key routing rules:
 - Code review, check the diff, "look at my changes" → invoke /review
 - Visual polish, design audit, "this looks off" → invoke /design-review
 - Developer experience audit, try onboarding → invoke /devex-review
-- Ship, deploy, create a PR, "send it" → invoke /ship
-- Merge + deploy + verify → invoke /land-and-deploy
+- Ship, create a PR, "send it", "open a PR" → invoke /ship
+- Merge to main, deploy to production, verify → invoke /land-and-deploy
 - Configure deployment → invoke /setup-deploy
 - Post-deploy monitoring → invoke /canary
 - Update docs after shipping → invoke /document-release
 - Weekly retro, "how'd we do" → invoke /retro
 - Second opinion, codex review → invoke /codex
-- Safety mode, careful mode, lock it down → invoke /careful or /guard
-- Restrict edits to a directory → invoke /freeze or /unfreeze
+- Destructive command warnings, safety mode → invoke /careful
+- Full lockdown, restrict edits + warnings → invoke /guard
+- Restrict edits to a directory → invoke /freeze
+- Remove edit restriction, allow all edits → invoke /unfreeze
 - Upgrade gstack → invoke /gstack-upgrade
 - Save progress, "save my work" → invoke /context-save
 - Resume, restore, "where was I" → invoke /context-restore
