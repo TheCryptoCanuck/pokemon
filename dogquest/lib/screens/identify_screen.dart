@@ -70,7 +70,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
 
   Future<void> _initCameraAndLocation() async {
     await _initCamera();
-    _initLocation(); // fire-and-forget after camera permission completes
+    unawaited(
+        _initLocation()); // fire-and-forget after camera permission completes (sec-C5)
   }
 
   /// Request location permission and pre-cache GPS coordinates for species filtering.
