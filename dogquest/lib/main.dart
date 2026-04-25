@@ -43,9 +43,13 @@ import 'services/breed_collection_service.dart';
 import 'services/dog_social_service.dart';
 import 'services/mystery_reward_service.dart';
 import 'services/smart_notification_service.dart';
+import 'services/shared_tflite_service.dart';
 import 'services/tflite_identification_service.dart';
 import 'services/dog_embedding_service.dart';
+import 'services/lost_dog_alert_service.dart';
 import 'services/lost_dog_service.dart';
+import 'services/lost_dog_sync_service.dart';
+import 'services/supabase_lost_dog_service.dart';
 import 'services/auth_migration_service.dart';
 import 'services/supabase_auth_service.dart';
 import 'services/supabase_user_service.dart';
@@ -589,20 +593,29 @@ Future<_InitResult> _initializeServices(
   await dogSvc.load();
   await Future.delayed(Duration.zero); // yield after heavy JSON parse
 
-  // ML model (the heavy one)
+  // ML model (the heavy one) — loaded once by SharedTfliteService
   update('Loading AI model...', 0.35);
   await Future.delayed(Duration.zero); // yield before heaviest step
-  final tfliteSvc = TfliteIdentificationService(dogSvc);
-  final modelLoaded = await tfliteSvc.loadModel();
+  final sharedTflite = SharedTfliteService();
+  final sharedModelLoaded = await sharedTflite.loadModel();
   await Future.delayed(Duration.zero); // yield after model load
-  if (!modelLoaded) {
+  if (!sharedModelLoaded) {
     throw Exception(
       'Dog classifier model failed to load.\n'
       'Ensure dog_model.tflite is present in assets.\n'
       'DogQuest requires real ML inference — no mock mode.',
     );
   }
-  debugPrint('[DogQuest] Dog classifier loaded — real identification active');
+  debugPrint(
+      '[DogQuest] TFLite model loaded once — real identification active');
+
+  // Both TfliteIdentificationService and DogEmbeddingService use the shared model
+  final tfliteSvc = TfliteIdentificationService(dogSvc, sharedTflite);
+  final modelLoaded = await tfliteSvc.loadModel();
+  await Future.delayed(Duration.zero); // yield after label cache build
+  if (!modelLoaded) {
+    throw Exception('Failed to build TFLite identification service.');
+  }
 
   update('Preparing your collection...', 0.60);
   await Future.delayed(Duration.zero); // yield for animations
@@ -663,10 +676,20 @@ Future<_InitResult> _initializeServices(
   final friendshipSvc = DogFriendshipService(playerBox, dogSvc);
   final dogSocialSvc = DogSocialService(socialBox);
 
-  // Lost Dog Recognition Network
-  final embeddingSvc = DogEmbeddingService();
+  // Lost Dog Recognition Network (uses the same shared TFLite model)
+  final embeddingSvc = DogEmbeddingService(sharedTflite);
   await embeddingSvc.loadModel();
   final lostDogSvc = LostDogService(playerBox, embeddingSvc, locationSvc);
+  final alertedBox = await Hive.openBox<int>('dogquest_alerted_reports');
+  final lostDogAlertSvc =
+      LostDogAlertService(lostDogSvc, locationSvc, alertedBox);
+
+  final supabaseClient = Supabase.instance.client;
+  final supabaseLostDogSvc = supabaseClient.auth.currentUser != null
+      ? SupabaseLostDogService(supabaseClient)
+      : null;
+  final lostDogSyncSvc = LostDogSyncService(lostDogSvc, supabaseLostDogSvc);
+  lostDogSyncSvc.start();
 
   update('Syncing data...', 0.88);
   await Future.delayed(Duration.zero); // yield for animations
@@ -708,6 +731,7 @@ Future<_InitResult> _initializeServices(
 
   return _InitResult(
     overrides: [
+      sharedTfliteServiceProvider.overrideWithValue(sharedTflite),
       dogServiceProvider.overrideWithValue(dogSvc),
       identificationServiceProvider.overrideWithValue(tfliteSvc),
       kennelServiceProvider.overrideWithValue(kennelSvc),
@@ -732,6 +756,8 @@ Future<_InitResult> _initializeServices(
       dogSocialServiceProvider.overrideWithValue(dogSocialSvc),
       dogEmbeddingServiceProvider.overrideWithValue(embeddingSvc),
       lostDogServiceProvider.overrideWithValue(lostDogSvc),
+      lostDogAlertServiceProvider.overrideWithValue(lostDogAlertSvc),
+      lostDogSyncServiceProvider.overrideWithValue(lostDogSyncSvc),
     ],
     brokenStreakValue: playerNotifier.brokenStreakValue,
     streakSaverUsed: playerNotifier.streakSaverUsed,

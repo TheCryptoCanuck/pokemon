@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:logging/logging.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
+import 'shared_tflite_service.dart';
 
 final _log = Logger('DogEmbeddingService');
 
@@ -53,20 +54,28 @@ Uint8List _preprocessForEmbedding(Uint8List bytes) {
 /// softmax output serves as a "breed fingerprint" — dogs of the same individual
 /// produce very similar probability distributions, enabling matching.
 class DogEmbeddingService {
-  Interpreter? _interpreter;
+  final SharedTfliteService _sharedTflite;
   bool _loaded = false;
 
   bool get isLoaded => _loaded;
 
+  DogEmbeddingService(this._sharedTflite);
+
   /// Load the TFLite model (same model as breed identification).
+  /// Delegates to the shared service; the actual load happens once globally.
   Future<bool> loadModel() async {
     try {
-      _interpreter = await Interpreter.fromAsset('assets/dog_model.tflite');
+      final modelLoaded = await _sharedTflite.loadModel();
+      if (!modelLoaded) {
+        _loaded = false;
+        return false;
+      }
       _loaded = true;
-      _log.info('Embedding model loaded');
+      _log.info('DogEmbeddingService ready');
       return true;
     } catch (e) {
       _log.warning('Failed to load embedding model: $e');
+      _loaded = false;
       return false;
     }
   }
@@ -76,7 +85,8 @@ class DogEmbeddingService {
   /// Returns normalized probability distribution across all breeds.
   /// Two photos of the same dog will produce similar distributions.
   Future<List<double>> extractEmbedding(File imageFile) async {
-    if (!_loaded || _interpreter == null) {
+    final interpreter = _sharedTflite.interpreter;
+    if (!_loaded || interpreter == null) {
       _log.warning('Model not loaded');
       return [];
     }
@@ -85,7 +95,7 @@ class DogEmbeddingService {
       final bytes = await imageFile.readAsBytes();
       final tensor = await compute(_preprocessForEmbedding, bytes);
 
-      final outputTensor = _interpreter!.getOutputTensor(0);
+      final outputTensor = interpreter.getOutputTensor(0);
       final numClasses = outputTensor.shape.last;
       final isUint8 = outputTensor.type == TensorType.uint8;
 
@@ -96,7 +106,7 @@ class DogEmbeddingService {
         output = List.filled(numClasses, 0.0).reshape([1, numClasses]);
       }
 
-      _interpreter!.run(tensor, output);
+      interpreter.run(tensor, output);
 
       final rawScores = output[0] as List;
       final embedding = List<double>.filled(numClasses, 0.0);
@@ -156,8 +166,8 @@ class DogEmbeddingService {
   }
 
   void dispose() {
-    _interpreter?.close();
-    _interpreter = null;
+    // Don't close the shared interpreter — SharedTfliteService owns the lifecycle.
+    // Just clear local state.
     _loaded = false;
   }
 }

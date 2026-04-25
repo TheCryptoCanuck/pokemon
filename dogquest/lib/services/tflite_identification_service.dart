@@ -9,6 +9,7 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import '../models/dog.dart';
 import 'dog_service.dart';
 import 'identification_service.dart';
+import 'shared_tflite_service.dart';
 
 /// Input size constant accessible to the top-level preprocessing function.
 /// v5: 260x260 for EfficientNetB2 (was 224 for B0).
@@ -99,14 +100,14 @@ final _log = Logger('TfliteIdentificationService');
 /// Dog identification using an on-device TFLite classifier.
 ///
 /// Expects:
-///   - `assets/dog_model.tflite` — EfficientNet/MobileNet dog classifier
+///   - Shared TFLite model from [SharedTfliteService]
 ///   - `assets/dog_labels.txt`   — one label per line (scientific or common name)
 ///
 /// Compatible with Google's AIY Vision Dog Classifier V1 and similar models
 /// trained on iNaturalist/NADogs data with 224×224 input.
 class TfliteIdentificationService implements IdentificationService {
   final DogService _dogService;
-  Interpreter? _interpreter;
+  final SharedTfliteService _sharedTflite;
   List<String> _labels = [];
   bool _loaded = false;
 
@@ -123,16 +124,25 @@ class TfliteIdentificationService implements IdentificationService {
   /// Enable Test-Time Augmentation (original + horizontal flip, averaged).
   static const bool _enableTTA = true;
 
-  TfliteIdentificationService(this._dogService);
+  TfliteIdentificationService(this._dogService, this._sharedTflite);
 
   @override
   bool get isModelLoaded => _loaded;
 
   /// Load the TFLite model and labels from assets.
   /// Returns true if successful, false if model files are missing.
+  ///
+  /// This method ensures the shared TFLite service is loaded, then loads
+  /// labels and builds the label cache.
   Future<bool> loadModel() async {
     try {
-      _interpreter = await Interpreter.fromAsset('assets/dog_model.tflite');
+      // Ensure the shared interpreter is loaded (idempotent)
+      final modelLoaded = await _sharedTflite.loadModel();
+      if (!modelLoaded) {
+        _loaded = false;
+        return false;
+      }
+
       _labels = await _loadLabels();
       // Pre-resolve all labels to Dog objects once at load time
       _labelCache = {
@@ -140,13 +150,14 @@ class TfliteIdentificationService implements IdentificationService {
           label: _dogService.lookupByCommonName(label),
       };
       _loaded = true;
-      _log.info(
-        'TFLite model loaded: '
-        'input=${_interpreter!.getInputTensor(0).shape}, '
-        'output=${_interpreter!.getOutputTensor(0).shape}, '
-        '${_labels.length} labels, '
-        '${_labelCache.values.where((d) => d != null).length} matched',
-      );
+      final interpreter = _sharedTflite.interpreter;
+      if (interpreter != null) {
+        _log.info(
+          'TfliteIdentificationService ready: '
+          '${_labels.length} labels, '
+          '${_labelCache.values.where((d) => d != null).length} matched',
+        );
+      }
       return true;
     } catch (e) {
       _log.warning('TFLite model not available: $e');
@@ -166,7 +177,8 @@ class TfliteIdentificationService implements IdentificationService {
 
   @override
   Future<List<IdentificationResult>> identify(File imageFile) async {
-    if (!_loaded || _interpreter == null) {
+    final interpreter = _sharedTflite.interpreter;
+    if (!_loaded || interpreter == null) {
       _log.warning('Model not loaded, cannot identify');
       return [];
     }
@@ -180,7 +192,7 @@ class TfliteIdentificationService implements IdentificationService {
       final flatTensors = _enableTTA ? tensors : [tensors[0]];
 
       // 2. Run inference on the main isolate (fast native call)
-      final outputTensor = _interpreter!.getOutputTensor(0);
+      final outputTensor = interpreter.getOutputTensor(0);
       final outputShape = outputTensor.shape;
       final numClasses = outputShape.last;
       final isUint8 = outputTensor.type == TensorType.uint8;
@@ -199,7 +211,7 @@ class TfliteIdentificationService implements IdentificationService {
         } else {
           output = List.filled(numClasses, 0.0).reshape([1, numClasses]);
         }
-        _interpreter!.run(flatInput, output);
+        interpreter.run(flatInput, output);
 
         final rawScores = output[0] as List;
         for (int i = 0; i < numClasses; i++) {
