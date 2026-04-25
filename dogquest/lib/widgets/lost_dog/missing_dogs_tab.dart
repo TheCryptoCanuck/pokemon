@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 
 import '../../constants.dart';
 import '../../models/lost_dog_report.dart';
@@ -8,6 +12,8 @@ import '../../services/lost_dog_service.dart';
 import '../../services/supabase_lost_dog_service.dart';
 import 'lost_dog_report_card.dart';
 import 'remote_lost_dog_card.dart';
+
+final _log = Logger('MissingDogsTab');
 
 class MissingDogsTab extends ConsumerStatefulWidget {
   final LostDogService lostDogSvc;
@@ -32,7 +38,7 @@ class _MissingDogsTabState extends ConsumerState<MissingDogsTab> {
   @override
   void initState() {
     super.initState();
-    _fetchRemoteReports();
+    unawaited(_fetchRemoteReports()); // sec-C1: explicit fire-and-forget
   }
 
   Future<void> _fetchRemoteReports() async {
@@ -42,6 +48,7 @@ class _MissingDogsTabState extends ConsumerState<MissingDogsTab> {
     setState(() => _loadingRemote = true);
     try {
       final reports = await remoteSvc.getMyReports();
+      if (!mounted) return; // sec-C1
       // Deduplicate: mark local reports that match a remote report by dogName.
       final localReports = widget.lostDogSvc.activeReports;
       final remoteNames = reports
@@ -58,7 +65,18 @@ class _MissingDogsTabState extends ConsumerState<MissingDogsTab> {
         _remoteReports = reports;
         _loadingRemote = false;
       });
-    } catch (_) {
+    } catch (e, st) {
+      // sec-C3: don't swallow remote-fetch failures.
+      _log.warning('Failed to fetch remote lost-dog reports', e, st);
+      unawaited(
+        FirebaseCrashlytics.instance.recordError(
+          e,
+          st,
+          reason: 'missing_dogs_tab._fetchRemoteReports',
+          fatal: false,
+        ),
+      );
+      if (!mounted) return;
       setState(() => _loadingRemote = false);
     }
   }

@@ -1,13 +1,19 @@
+import 'dart:async';
+
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logging/logging.dart';
 
 import '../../constants.dart';
 import '../../models/lost_dog_report.dart';
 import '../../services/lost_dog_service.dart';
 import '../../services/supabase_lost_dog_service.dart';
+
+final _log = Logger('HelpFindTab');
 
 class HelpFindTab extends ConsumerStatefulWidget {
   final LostDogService lostDogSvc;
@@ -26,7 +32,7 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
   @override
   void initState() {
     super.initState();
-    _fetchNearby();
+    unawaited(_fetchNearby()); // sec-C1: explicit fire-and-forget
   }
 
   Future<void> _fetchNearby() async {
@@ -45,20 +51,40 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
           timeLimit: Duration(seconds: 10),
         ),
       );
+      if (!mounted) return; // sec-C1
       final reports = await remoteSvc.getActiveNearby(
         position.latitude,
         position.longitude,
-        radiusMiles: 25.0,
+        radiusKm: 40.0,
       );
+      if (!mounted) return; // sec-C1
       setState(() {
         _nearbyReports = reports;
         _loadingNearby = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      // sec-C3: surface geolocator/network exceptions instead of swallowing.
+      _log.warning('Failed to fetch nearby lost-dog reports', e, st);
+      unawaited(
+        FirebaseCrashlytics.instance.recordError(
+          e,
+          st,
+          reason: 'help_find_tab._fetchNearby',
+          fatal: false,
+        ),
+      );
+      if (!mounted) return;
       setState(() {
         _loadingNearby = false;
         _nearbyError = 'Could not fetch nearby reports';
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              'Could not fetch nearby reports — check location & network.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
 
@@ -416,7 +442,7 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
                       ),
                     ),
                     // Distance badge
-                    if (report.distanceMiles != null)
+                    if (report.distanceKm != null)
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
@@ -431,7 +457,7 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
                                 color: Colors.amber, size: 12),
                             const SizedBox(width: 3),
                             Text(
-                              '${report.distanceMiles!.toStringAsFixed(1)} mi',
+                              '${report.distanceKm!.toStringAsFixed(1)} km',
                               style: const TextStyle(
                                 color: Colors.amber,
                                 fontSize: 11,
