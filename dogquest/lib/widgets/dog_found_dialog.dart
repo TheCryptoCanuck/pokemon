@@ -277,7 +277,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        'Breeds ${ref.read(kennelServiceProvider).count} / ${ref.read(dogServiceProvider).all.length} collected',
+                        'Breeds ${ref.read(kennelServiceProvider).count + (widget.alreadyOwned ? 0 : 1)} / ${ref.read(dogServiceProvider).all.length} in your kennel',
                         style: const TextStyle(color: Colors.white38, fontSize: 11),
                       ),
                     ),
