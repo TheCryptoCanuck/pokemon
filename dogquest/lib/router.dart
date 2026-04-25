@@ -86,6 +86,19 @@ final router = GoRouter(
 
     if (session == null && !offlineMode) return '/login';
 
+    // sec-C1: invalidate stale offline_mode flag when an authenticated
+    // session exists. Without this, offline mode can persist across login
+    // boundaries (deep links, password resets, second-account logins on a
+    // shared device, etc.) and cause sightings created offline to attribute
+    // to whichever user is currently authenticated. The login/register
+    // screens already clear it on their happy paths; this is the safety net
+    // for every other code path that produces a session.
+    if (session != null && offlineMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await playerBox.put('offline_mode', false);
+      });
+    }
+
     return null;
   },
   routes: [
