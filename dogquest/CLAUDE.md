@@ -2,7 +2,16 @@
 
 ## Project Overview
 
-DogQuest is a Flutter-based dog breed identification app forked from AviQuest. The deployed model identifies **150 dog breeds** (v5.1 EfficientNetB2); the in-training v6 EfficientNetV2-S targets **294 breeds**. Features include TFLite visual ML identification, deep gamification (XP, combos, streaks, mastery, daily challenges, flash challenges, mystery rewards, achievements), a social layer (dog profiles, activity feed, dogs nearby, breed communities, playdate matcher), Pack (family co-ownership), Dog Friendships, a Neighborhood Map with Live Map (OSM tiles), Lost Dog reports, shareable Dog Passport cards, and Demo mode. Local-first with Hive; Supabase backend planned for social features.
+DogQuest is a Flutter-based dog breed identification app. The deployed model identifies **150 dog breeds** (v5.1 EfficientNetB2); the in-training v6 EfficientNetV2-S targets **294 breeds**. Features include TFLite visual ML identification, deep gamification (XP, combos, streaks, mastery, daily challenges, flash challenges, mystery rewards, achievements), a social layer (dog profiles, activity feed, dogs nearby, breed communities, playdate matcher), Pack (family co-ownership), Dog Friendships, a Neighborhood Map with Live Map (OSM tiles), Lost Dog reports, shareable Dog Passport cards, and Demo mode. Local-first with Hive; Supabase backend planned for social features.
+
+## Repo layout (monorepo)
+
+DogQuest is a subproject of the **`TheCryptoCanuck/boring`** monorepo (private). Sibling subprojects under the same root include `backend/`, `infrastructure/terraform/`, `ml/`, `docs/`, `agents/`, and `.ui-design/`.
+
+- **Git root:** the monorepo root, one directory above `dogquest/` — NOT `dogquest/` itself.
+- **CI workflows:** live at the repo root in `<repo-root>/.github/workflows/`, NOT `dogquest/.github/`. The DogQuest CI yml scopes flutter commands via `defaults.run.working-directory: ./dogquest`.
+- **Run git from the repo root.** From `dogquest/`, `git log -- PATH` resolves PATH cwd-relative and silently misses repo-root paths like `.github/workflows/`. Use absolute paths or `cd $(git rev-parse --show-toplevel)` first. (See `.second_brain/01_Memory/Failure_Patterns.md → git-log-cwd-relative-path-arguments`.)
+- **Active branch:** `phase-1/social-backend-realtime`.
 
 ## Tech Stack
 
@@ -15,7 +24,7 @@ DogQuest is a Flutter-based dog breed identification app forked from AviQuest. T
 - **Backend**: None yet — Supabase planned (real-time, auth, PostgreSQL, storage)
 - **ML Model (deployed)**: EfficientNetB2 v5.1, uint8 quantized, 260x260 input, **150 breeds** (matches `assets/dog_labels.txt`), 10.8 MB, 87.2% accuracy
 - **ML Model (training target, v6)**: EfficientNetV2-S, 300x300 input, **294 breeds** target. A 296-output v6 checkpoint was trained but not shipped — see `assets/dog_labels.txt.bak` (296 lines) for the prior export. Current deployed `dog_labels.txt` is the 150-label v5.1.
-- **Analytics**: Firebase Analytics (aviquest-508a6), Sentry (wired, needs DSN)
+- **Analytics**: Firebase Analytics, Sentry (wired, needs DSN)
 - **Key Libraries**: flutter_riverpod, go_router, flutter_animate, camera, cached_network_image, tflite_flutter 0.11.0, image_picker, permission_handler, geolocator, flutter_map, latlong2, sentry_flutter, firebase_core, firebase_analytics, hive, hive_flutter, flutter_secure_storage
 
 ## Project Structure
@@ -32,9 +41,9 @@ dogquest/
 │   ├── router.dart            ← go_router with auth gate & StatefulShellRoute
 │   ├── models/                ← 6 models (Dog, Sighting, Player, Pack, MyDogProfile, LostDogReport, etc.)
 │   ├── screens/               ← 32 screens (identify, kennel, profile, quiz, map, social, pack, passport, etc.)
-│   ├── services/              ← 57 services (player, dog, kennel, sighting, ML, pack, friendship, social, sync, etc.)
+│   ├── services/              ← 59 services (player, dog, kennel, sighting, ML, pack, friendship, social, sync, lost_dog_map_controller, lost_dog_sync_service, etc.)
 │   ├── helpers/               ← 3 helpers (date_helpers, game_helpers, ui_helpers)
-│   └── widgets/               ← 92 .dart files across `widgets/`, `widgets/identify/`, `widgets/lost_dog/`, `widgets/map/`, `widgets/pack/`, `widgets/profile/`, `widgets/quiz/` (post 2026-04-25 god-class extraction)
+│   └── widgets/               ← 94 .dart files across `widgets/`, `widgets/identify/`, `widgets/lost_dog/`, `widgets/map/`, `widgets/pack/`, `widgets/profile/`, `widgets/quiz/` (post 2026-04-25 god-class extraction; +lost_dog_stats_panel, +lost_dog_detail_sheet)
 ├── test/                      ← 22 test files (unit, widget, integration, performance)
 ├── assets/
 │   ├── dogs.json              ← 147 breed database entries (working toward 294 with v6)
@@ -97,7 +106,7 @@ dogquest/
 - **LocationFilterService DISABLED** — dog breeds are globally distributed
 - Name aliases in `dog_service.dart` map model labels to breed names in `dogs.json`
 - Dog images: use `thumb.php` Wikimedia API (CDN `/thumb/` URLs return 429)
-- Hive boxes prefixed `dogquest_` to avoid collision with AviQuest
+- Hive boxes prefixed `dogquest_` for namespace isolation
 - ML inference offloaded to isolate via `compute()`
 - JWT stored in FlutterSecureStorage; Hive sightings box AES-encrypted
 - `audit_supplemental.py`: auto-detects model input size from TFLite metadata
@@ -129,14 +138,14 @@ adb shell am start -n com.dogquest.app/.MainActivity
 - Offline login accepts any password if email matches (`auth_service.dart:71-80`) — will be replaced by Supabase Auth
 - PII (username, email) in unencrypted Hive box while JWT is encrypted (`auth_service.dart:27-30`)
 - Default dev API URL ships in release builds if `--dart-define` omitted (`api_client.dart:16`)
-- 11 files over 800 lines remain (down from earlier; `quiz_screen.dart` 1,648 → 1,042 via TASK-046; `lost_dog_hub_screen.dart` 1,665 → 127 via 2026-04-25 god-class extraction). Largest remaining: `lost_dog_map_screen.dart` 1,390, `profile_screen.dart` 1,268, `pack_screen.dart` 1,253. T5 polish queue.
+- 10 files over 800 lines remain (down from earlier; `quiz_screen.dart` 1,648 → 1,042 via TASK-046; `lost_dog_hub_screen.dart` 1,665 → 127 via 2026-04-25 god-class extraction; `lost_dog_map_screen.dart` 1,390 → 870 via Phase 4a 2026-04-25). Largest remaining: `profile_screen.dart` 1,268, `pack_screen.dart` 1,253. T5 polish queue.
 
-## Key Differences from AviQuest
+## Notable Conventions
 
-- No audio identification (BirdNET removed)
+- No audio identification (visual ML only)
 - No backend sync (local-first; Supabase backend planned)
-- Firebase Analytics present (not removed — firebase_core + firebase_analytics in pubspec)
-- 7 AKC breed groups replace 14 bird families
-- Routes: `/aviary` → `/kennel`
+- Firebase Analytics wired via `firebase_core` + `firebase_analytics` in pubspec
+- 7 AKC breed groups
+- Primary routes: `/identify`, `/kennel`, `/profile`, `/quiz`, `/map`, `/social`, `/pack`, `/passport`
 - Dog-themed achievements, player titles, avatars
-- Additional features: Pack, Dog Friendships, Neighborhood Map, Dog Passport, Lost Dog, Social Layer, Demo Mode
+- Headline features: Pack, Dog Friendships, Neighborhood Map, Dog Passport, Lost Dog, Social Layer, Demo Mode
