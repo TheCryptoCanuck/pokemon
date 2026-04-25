@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-DogQuest is a Flutter-based dog breed identification app forked from AviQuest. It features **294 dog breeds**, TFLite visual ML identification, deep gamification (XP, combos, streaks, mastery, daily challenges, flash challenges, mystery rewards, achievements), a social layer (dog profiles, activity feed, dogs nearby, breed communities, playdate matcher), Pack (family co-ownership), Dog Friendships, a Neighborhood Map with Live Map (OSM tiles), Lost Dog reports, shareable Dog Passport cards, and Demo mode. Local-first with Hive; Supabase backend planned for social features.
+DogQuest is a Flutter-based dog breed identification app forked from AviQuest. The deployed model identifies **150 dog breeds** (v5.1 EfficientNetB2); the in-training v6 EfficientNetV2-S targets **294 breeds**. Features include TFLite visual ML identification, deep gamification (XP, combos, streaks, mastery, daily challenges, flash challenges, mystery rewards, achievements), a social layer (dog profiles, activity feed, dogs nearby, breed communities, playdate matcher), Pack (family co-ownership), Dog Friendships, a Neighborhood Map with Live Map (OSM tiles), Lost Dog reports, shareable Dog Passport cards, and Demo mode. Local-first with Hive; Supabase backend planned for social features.
 
 ## Tech Stack
 
@@ -13,8 +13,8 @@ DogQuest is a Flutter-based dog breed identification app forked from AviQuest. I
 - **Storage**: Hive (local NoSQL), boxes prefixed `dogquest_`, AES-encrypted sightings box
 - **Auth**: Local Hive-based (Supabase Auth planned)
 - **Backend**: None yet — Supabase planned (real-time, auth, PostgreSQL, storage)
-- **ML Model (deployed)**: EfficientNetB2 v5.1, uint8 quantized, 260x260 input, 150 breeds, 10.3 MB, 87.2% accuracy
-- **ML Model (training)**: EfficientNetV2-S v6, 300x300 input, 294 breeds
+- **ML Model (deployed)**: EfficientNetB2 v5.1, uint8 quantized, 260x260 input, **150 breeds** (matches `assets/dog_labels.txt`), 10.8 MB, 87.2% accuracy
+- **ML Model (training target, v6)**: EfficientNetV2-S, 300x300 input, **294 breeds** target. A 296-output v6 checkpoint was trained but not shipped — see `assets/dog_labels.txt.bak` (296 lines) for the prior export. Current deployed `dog_labels.txt` is the 150-label v5.1.
 - **Analytics**: Firebase Analytics (aviquest-508a6), Sentry (wired, needs DSN)
 - **Key Libraries**: flutter_riverpod, go_router, flutter_animate, camera, cached_network_image, tflite_flutter 0.11.0, image_picker, permission_handler, geolocator, flutter_map, latlong2, sentry_flutter, firebase_core, firebase_analytics, hive, hive_flutter, flutter_secure_storage
 
@@ -31,16 +31,16 @@ dogquest/
 │   ├── constants.dart         ← Rarity enum, colors, achievements, breed sets
 │   ├── router.dart            ← go_router with auth gate & StatefulShellRoute
 │   ├── models/                ← 6 models (Dog, Sighting, Player, Pack, MyDogProfile, LostDogReport, etc.)
-│   ├── screens/               ← 34 screens (identify, kennel, profile, quiz, map, social, pack, passport, etc.)
-│   ├── services/              ← 50+ services (player, dog, kennel, sighting, ML, pack, friendship, social, etc.)
+│   ├── screens/               ← 32 screens (identify, kennel, profile, quiz, map, social, pack, passport, etc.)
+│   ├── services/              ← 57 services (player, dog, kennel, sighting, ML, pack, friendship, social, sync, etc.)
 │   ├── helpers/               ← 3 helpers (date_helpers, game_helpers, ui_helpers)
-│   └── widgets/               ← 10+ widgets (dog_detail_sheet, dog_found_dialog, dog_passport_card, capture_button, playdate_matcher, etc.)
-├── test/                      ← 16 test files (unit, widget, integration, performance)
+│   └── widgets/               ← 92 .dart files across `widgets/`, `widgets/identify/`, `widgets/lost_dog/`, `widgets/map/`, `widgets/pack/`, `widgets/profile/`, `widgets/quiz/` (post 2026-04-25 god-class extraction)
+├── test/                      ← 22 test files (unit, widget, integration, performance)
 ├── assets/
-│   ├── dogs.json              ← 294 breed database (all fields enriched)
-│   ├── dog_labels.txt         ← 294 breed labels (matches model output order)
-│   └── dog_model.tflite       ← Current: v5.1 (150 breeds), pending: v6 (294 breeds)
-├── supplemental_dogs/         ← 180 breed folders, 42,543 training images
+│   ├── dogs.json              ← 147 breed database entries (working toward 294 with v6)
+│   ├── dog_labels.txt         ← 150 breed labels (matches deployed v5.1 model output order)
+│   └── dog_model.tflite       ← Currently deployed: v5.1 (150 breeds, 10.8 MB). Pending v6 retrain → 294 breeds.
+├── supplemental_dogs/         ← 181 breed folders, 37,511 training images (post 2026-04-25 quarantine audit; 5,082 images removed)
 ├── train_model_v6.py          ← v6 training (EfficientNetV2-S, 294 breeds, progressive 224→300)
 ├── train_model_v5.py          ← v5 training (EfficientNetB2, RandAug, progressive resize)
 ├── audit_supplemental.py      ← TFLite image quality auditor (auto-detects model input size)
@@ -56,9 +56,9 @@ dogquest/
 - XP system with leveling and player titles
 - Combos (24h discovery window), streaks, mastery per breed
 - Daily challenges, flash challenges, mystery rewards
-- 294-breed collection with 4 rarity tiers: 173 common / 77 uncommon / 34 rare / 10 legendary
+- 294-breed target collection with 4 rarity tiers: 173 common / 77 uncommon / 34 rare / 10 legendary (deployed v5.1 surfaces 150 of these; v6 retrain unlocks the remaining 144)
 - 18 themed breed sets (Snow Pack, Tiny Titans, etc.)
-- Achievements including "collect all 294 breeds"
+- Achievements including "collect all 294 breeds" (target — gates on v6 deployment)
 - Demo mode with 26 pre-seeded breeds and 42 sightings (activate in Settings)
 
 ### Social Layer
@@ -75,15 +75,16 @@ dogquest/
 - Dog Friendships with Neighborhood Map
 - Lost Dog reports and alerts
 
-## Breed Expansion (294 breeds)
+## Breed Expansion (294-breed target — v6 in training)
 
-- **294 breeds** total: 120 Stanford Dogs + 174 supplemental (180 folders, 42,543 images)
-- `dogs.json`: all fields populated (enriched by `enrich_dogs.py`)
-- `dog_labels.txt`: 294 labels sorted to match model output order
+- **294 breeds target**: 120 Stanford Dogs + 174 supplemental (181 folders, 37,511 images post-audit)
+- **Currently deployed**: 150 breeds (v5.1). The 294-breed gate is the v6 retrain landing.
+- `dogs.json`: 147 entries currently populated; full 294 enrichment pending v6 (`enrich_dogs.py`)
+- `dog_labels.txt`: 150 deployed labels (matches v5.1 output order). `dog_labels.txt.bak` retains the prior 296-output v6 attempt.
 - `dog_service.dart`: 188+ name aliases mapping model labels to breed names
-- `dog_group_service.dart`: all 7 AKC groups expanded for 294 breeds
-- `breed_collection_service.dart`: 18 themed breed sets
-- **v6 model training** (EfficientNetV2-S): ~10+ hours on CPU
+- `dog_group_service.dart`: 7 AKC groups expanded for the full 294 target
+- `breed_collection_service.dart`: 18 themed breed sets (some require v6 breeds to be reachable)
+- **v6 model training** (EfficientNetV2-S): ~10+ hours on CPU; GPU path validated (RTX 3060 Ti) for ~10× audit-time speedup
 
 ## Critical Technical Notes
 
@@ -103,11 +104,12 @@ dogquest/
 
 ## Testing
 
-16 test files covering:
+22 test files covering:
 - **Models**: `dog_test.dart`
-- **Services**: breed_collection, combo, demo, dog_friendship, dog_mastery, dog_service, kennel, lost_dog, mystery_reward, pack, player, sighting, tflite_identification
+- **Services**: breed_collection, combo, demo, dog_friendship, dog_mastery, dog_service, kennel, lost_dog, mystery_reward, pack, player, sighting, tflite_identification, sync_services, supabase_social
 - **Performance**: `perf_benchmark_test.dart`
-- **Quiz**: `quiz_engine_test.dart`
+- **Quiz**: `quiz_engine_test.dart`, `quiz_screen_test.dart`
+- **Other**: `ad_service_test.dart`, `tflite_identification_service_test.dart`
 
 ## Build & Deploy
 
@@ -127,7 +129,7 @@ adb shell am start -n com.dogquest.app/.MainActivity
 - Offline login accepts any password if email matches (`auth_service.dart:71-80`) — will be replaced by Supabase Auth
 - PII (username, email) in unencrypted Hive box while JWT is encrypted (`auth_service.dart:27-30`)
 - Default dev API URL ships in release builds if `--dart-define` omitted (`api_client.dart:16`)
-- 7 God-class files over 800 lines; `quiz_screen.dart` at 1,648 lines — refactoring planned
+- 11 files over 800 lines remain (down from earlier; `quiz_screen.dart` 1,648 → 1,042 via TASK-046; `lost_dog_hub_screen.dart` 1,665 → 127 via 2026-04-25 god-class extraction). Largest remaining: `lost_dog_map_screen.dart` 1,390, `profile_screen.dart` 1,268, `pack_screen.dart` 1,253. T5 polish queue.
 
 ## Key Differences from AviQuest
 
