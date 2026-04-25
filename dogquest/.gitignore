@@ -32,6 +32,12 @@ stanford_dogs/
 dog_model_v*.tflite
 saved_model/
 
+# Vestigial FastAPI backend (sec-C3) — Supabase is the live backend.
+# This directory was inherited from the AviQuest fork and is no longer used.
+# It must NOT be checked in: it contained placeholder secrets and an
+# embedded SQLite DB. If you find a `backend/` directory locally, delete it.
+backend/
+
 # Training logs & reports
 *.log
 auto_train_output.log
