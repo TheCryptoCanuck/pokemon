@@ -28,13 +28,12 @@ import 'screens/breed_community_screen.dart';
 import 'screens/lost_dog_hub_screen.dart';
 import 'screens/report_lost_screen.dart';
 import 'screens/scan_stray_screen.dart';
-import 'screens/shelter_mode_screen.dart';
 import 'screens/lost_dog_map_screen.dart';
-import 'screens/share_lost_dog_screen.dart';
-import 'screens/marketplace_screen.dart';
-import 'screens/service_list_screen.dart';
-import 'screens/provider_detail_screen.dart';
-import 'models/lost_dog_report.dart';
+// NOTE: imports for shelter_mode_screen, share_lost_dog_screen, marketplace_screen,
+// service_list_screen, provider_detail_screen, reunion_celebration_screen, and
+// models/lost_dog_report removed pending those features being completed and
+// committed. Routes for those features are stripped below — restore the imports
+// AND the routes together when shipping. Tracked: T5-feature-restore.
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -194,37 +193,9 @@ final router = GoRouter(
       parentNavigatorKey: rootNavigatorKey,
       builder: (_, __) => const LostDogMapScreen(),
     ),
-    GoRoute(
-      path: '/lost-dog/share',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (_, state) => ShareLostDogScreen(
-        report: state.extra! as LostDogReport,
-      ),
-    ),
-    GoRoute(
-      path: '/shelter-mode',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (_, __) => const ShelterModeScreen(),
-    ),
-    GoRoute(
-      path: '/marketplace',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (_, __) => const MarketplaceScreen(),
-    ),
-    GoRoute(
-      path: '/marketplace/category/:name',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (_, state) => ServiceListScreen(
-        categoryName: state.pathParameters['name'] ?? '',
-      ),
-    ),
-    GoRoute(
-      path: '/marketplace/provider/:id',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (_, state) => ProviderDetailScreen(
-        providerId: state.pathParameters['id'] ?? '',
-      ),
-    ),
+    // /lost-dog/share, /shelter-mode, /marketplace, /marketplace/category/:name,
+    // and /marketplace/provider/:id routes removed pending those screens being
+    // committed. Restore alongside the imports above. (T5-feature-restore)
     GoRoute(
       path: '/breed/:name',
       parentNavigatorKey: rootNavigatorKey,
@@ -256,5 +227,7 @@ final router = GoRouter(
         ),
       ),
     ),
+    // /reunion-celebration route removed pending reunion_celebration_screen
+    // being committed. (T5-feature-restore)
   ],
 );
