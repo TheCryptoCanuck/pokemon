@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
@@ -229,7 +230,9 @@ class SightingSyncService {
 
       await Supabase.instance.client.rpc(
         'sync_sightings',
-        params: {'p_sightings': [payload]},
+        params: {
+          'p_sightings': [payload]
+        },
       );
 
       markSynced(localId);
@@ -261,8 +264,7 @@ class SightingSyncService {
   /// Attempt to sync unsynced sightings if we have connectivity.
   Future<void> _trySyncUnsynced() async {
     try {
-      final results =
-          await Connectivity().checkConnectivity();
+      final results = await Connectivity().checkConnectivity();
       if (results.contains(ConnectivityResult.none)) {
         _log.fine('Offline — sync deferred');
         return;

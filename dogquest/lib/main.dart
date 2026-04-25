@@ -80,7 +80,8 @@ Future<void> _openEncryptedSightingsBox(List<int> encryptionKey) async {
         encryptionCipher: HiveAesCipher(encryptionKey));
     _log.info('Opened encrypted sightings box');
   } catch (e) {
-    _log.warning('Failed to open sightings box (likely unencrypted migration): $e');
+    _log.warning(
+        'Failed to open sightings box (likely unencrypted migration): $e');
     // Delete the old unencrypted box and create a fresh encrypted one
     await Hive.deleteBoxFromDisk(boxName);
     await Hive.openBox<Map>(boxName,
@@ -95,8 +96,10 @@ const _sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
 const _environment = String.fromEnvironment('ENV', defaultValue: 'development');
 
 /// Supabase configuration — passed at build time via --dart-define
-const _supabaseUrl = String.fromEnvironment('SUPABASE_URL', defaultValue: 'https://hdcpymjnrbelaawhncep.supabase.co');
-const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: 'sb_publishable_lrICH1RprCBAxgQAs8tg4g_eKAXDme4');
+const _supabaseUrl = String.fromEnvironment('SUPABASE_URL',
+    defaultValue: 'https://hdcpymjnrbelaawhncep.supabase.co');
+const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY',
+    defaultValue: 'sb_publishable_lrICH1RprCBAxgQAs8tg4g_eKAXDme4');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -122,7 +125,8 @@ void main() async {
 /// when Sentry is not active (SentryFlutter sets its own when active).
 void _installLocalErrorHandlers() {
   FlutterError.onError = (details) {
-    _log.severe('FlutterError: ${details.exceptionAsString()}', details.exception, details.stack);
+    _log.severe('FlutterError: ${details.exceptionAsString()}',
+        details.exception, details.stack);
     FlutterError.presentError(details);
   };
   PlatformDispatcher.instance.onError = (error, stack) {
@@ -146,11 +150,16 @@ Future<void> _guardedStartup() async {
               const SizedBox(height: 16),
               const Text(
                 'Something went wrong',
-                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
-                kDebugMode ? details.exceptionAsString() : 'An unexpected error occurred',
+                kDebugMode
+                    ? details.exceptionAsString()
+                    : 'An unexpected error occurred',
                 style: const TextStyle(color: Colors.white54, fontSize: 12),
                 textAlign: TextAlign.center,
                 maxLines: 3,
@@ -211,7 +220,8 @@ class _AppBootstrapState extends State<AppBootstrap> {
   Future<void> _initialize() async {
     try {
       final startTime = DateTime.now();
-      final initResult = await _initializeServices(_statusController, _progressController);
+      final initResult =
+          await _initializeServices(_statusController, _progressController);
       final overrides = initResult.overrides;
 
       // Ensure splash shows for at least 2.5 seconds so animations play
@@ -219,7 +229,8 @@ class _AppBootstrapState extends State<AppBootstrap> {
       final remaining = 2500 - elapsed;
       _statusController.add('Ready!');
       _progressController.add(1.0);
-      await Future.delayed(Duration(milliseconds: remaining > 0 ? remaining : 300));
+      await Future.delayed(
+          Duration(milliseconds: remaining > 0 ? remaining : 300));
 
       // Check for legacy auth migration need
       bool needsMigration = false;
@@ -296,7 +307,8 @@ class _AppBootstrapState extends State<AppBootstrap> {
               backgroundColor: bgCard,
               title: const Text(
                 'Upgrade Your Account',
-                style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
               ),
               content: SingleChildScrollView(
                 child: Form(
@@ -315,7 +327,8 @@ class _AppBootstrapState extends State<AppBootstrap> {
                           padding: const EdgeInsets.only(bottom: 12),
                           child: Text(
                             error!,
-                            style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                            style: const TextStyle(
+                                color: Colors.redAccent, fontSize: 12),
                           ),
                         ),
                       TextFormField(
@@ -381,7 +394,8 @@ class _AppBootstrapState extends State<AppBootstrap> {
                             error = null;
                           });
                           try {
-                            final success = await migrationSvc.migrateToSupabase(
+                            final success =
+                                await migrationSvc.migrateToSupabase(
                               email: emailCtrl.text.trim(),
                               password: passwordCtrl.text,
                               username: usernameCtrl.text.trim(),
@@ -462,29 +476,29 @@ class _AppBootstrapState extends State<AppBootstrap> {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Stack(
-      children: [
-        // Splash stays mounted until app fades in fully
-        MaterialApp(
-          home: SplashScreen(
-            statusStream: _statusController.stream,
-            progressStream: _progressController.stream,
-          ),
-          theme: ThemeData.dark(),
-          debugShowCheckedModeBanner: false,
-        ),
-        // App fades in over the splash
-        if (_showApp && _overrides != null)
-          AnimatedOpacity(
-            opacity: _appOpacity,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOut,
-            child: ProviderScope(
-              overrides: _overrides!,
-              child: const DogQuest(),
+        children: [
+          // Splash stays mounted until app fades in fully
+          MaterialApp(
+            home: SplashScreen(
+              statusStream: _statusController.stream,
+              progressStream: _progressController.stream,
             ),
+            theme: ThemeData.dark(),
+            debugShowCheckedModeBanner: false,
           ),
-      ],
-    ),
+          // App fades in over the splash
+          if (_showApp && _overrides != null)
+            AnimatedOpacity(
+              opacity: _appOpacity,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut,
+              child: ProviderScope(
+                overrides: _overrides!,
+                child: const DogQuest(),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -522,7 +536,8 @@ Future<_InitResult> _initializeServices(
     url: _supabaseUrl,
     anonKey: _supabaseAnonKey,
   );
-  _log.info('Supabase initialized (${_supabaseUrl.split('.').first.split('//').last})');
+  _log.info(
+      'Supabase initialized (${_supabaseUrl.split('.').first.split('//').last})');
 
   await Hive.initFlutter();
   await Future.delayed(Duration.zero);
@@ -573,16 +588,17 @@ Future<_InitResult> _initializeServices(
   update('Preparing your collection...', 0.60);
   await Future.delayed(Duration.zero); // yield for animations
   final locationSvc = LocationService();
+  ApiClient.assertBaseUrl();
   final apiClient = ApiClient();
 
   // Parallelize independent Hive box opens
   final hiveEncryptionKey = await _getOrCreateHiveEncryptionKey();
   final boxResults = await Future.wait([
-    Hive.openBox<String>('dogquest_kennel'),       // [0]
-    Hive.openBox('dogquest_player_stats'),          // [1]
-    Hive.openBox<Map>('dogquest_pending_syncs'),    // [2]
-    Hive.openBox('dogquest_collections'),           // [3]
-    Hive.openBox('dogquest_social'),                // [4]
+    Hive.openBox<String>('dogquest_kennel'), // [0]
+    Hive.openBox('dogquest_player_stats'), // [1]
+    Hive.openBox<Map>('dogquest_pending_syncs'), // [2]
+    Hive.openBox('dogquest_collections'), // [3]
+    Hive.openBox('dogquest_social'), // [4]
   ]);
   final kennelBox = boxResults[0] as Box<String>;
   final playerBox = boxResults[1];
@@ -594,7 +610,7 @@ Future<_InitResult> _initializeServices(
   final dailyDogSvc = DailyDogService(dogSvc, playerBox);
   kennelSvc.setDogService(dogSvc);
   final dogGroupSvc = DogGroupService(dogSvc, kennelSvc);
-  final breedCollectionSvc = BreedCollectionService(kennelSvc, playerBox);
+  final breedCollectionSvc = BreedCollectionService(playerBox, kennelSvc);
 
   // Open the sightings box with AES encryption before SightingService
   // accesses it. Hive returns the already-opened box on subsequent
@@ -636,23 +652,23 @@ Future<_InitResult> _initializeServices(
   update('Syncing data...', 0.88);
   await Future.delayed(Duration.zero); // yield for animations
   final backendSync = BackendSyncService(
-    api: apiClient,
     pendingSyncBox: pendingSyncBox,
   );
 
   await NotificationService.init();
   await NotificationService.scheduleFromPreferences();
 
-  final uncollectedDogs = dogSvc.all
-      .where((b) => !kennelSvc.contains(b.name))
-      .toList();
+  final uncollectedDogs =
+      dogSvc.all.where((b) => !kennelSvc.contains(b.name)).toList();
   final challengeState = dailyChallengeNotifier.currentState;
   SmartNotificationService.scheduleAll(
     streak: playerNotifier.currentState.streak,
-    challengesCompleted: challengeState.challenges.where((c) => c.completed).length,
+    challengesCompleted:
+        challengeState.challenges.where((c) => c.completed).length,
     totalChallenges: challengeState.challenges.length,
     uncollectedDogNames: uncollectedDogs.map((b) => b.name).toList(),
-    uncollectedHabitat: uncollectedDogs.isNotEmpty ? uncollectedDogs.first.habitat : null,
+    uncollectedHabitat:
+        uncollectedDogs.isNotEmpty ? uncollectedDogs.first.habitat : null,
   ).catchError((e) {
     debugPrint('[DogQuest] Smart notification scheduling failed: $e');
   });
@@ -680,7 +696,7 @@ Future<_InitResult> _initializeServices(
       analyticsProvider.overrideWithValue(analytics),
       dailyDogServiceProvider.overrideWithValue(dailyDogSvc),
       dogGroupServiceProvider.overrideWithValue(dogGroupSvc),
-      breedCollectionProvider.overrideWithValue(breedCollectionSvc),
+      breedCollectionServiceProvider.overrideWithValue(breedCollectionSvc),
       sightingServiceProvider.overrideWithValue(sightingSvc),
       apiClientProvider.overrideWithValue(apiClient),
       backendSyncProvider.overrideWithValue(backendSync),

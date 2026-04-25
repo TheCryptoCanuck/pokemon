@@ -37,7 +37,7 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
   Future<void> _loadLocation() async {
     try {
       final locSvc = ref.read(locationServiceProvider);
-      final pos = await locSvc.getCurrentLocation();
+      final pos = await locSvc.getLocation();
       if (pos != null && mounted) {
         setState(() {
           _refLat = pos.latitude;
@@ -76,9 +76,13 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
     setState(() => _isLoading = true);
     try {
       final uid = Supabase.instance.client.auth.currentUser?.id;
-      if (uid == null) { setState(() => _isLoading = false); return; }
+      if (uid == null) {
+        setState(() => _isLoading = false);
+        return;
+      }
 
-      final response = await Supabase.instance.client.rpc('get_dogs_nearby', params: {
+      final response =
+          await Supabase.instance.client.rpc('get_dogs_nearby', params: {
         'p_user_id': uid,
         'p_lat': _refLat,
         'p_lon': _refLon,
@@ -146,7 +150,8 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
                               final dog = _remoteDogs[index];
                               return _RemoteNearbyCard(dog: dog)
                                   .animate()
-                                  .fadeIn(delay: Duration(milliseconds: index * 40))
+                                  .fadeIn(
+                                      delay: Duration(milliseconds: index * 40))
                                   .slideX(begin: 0.05, end: 0);
                             },
                           ),
@@ -216,7 +221,8 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
                         sightingCount: sightingCount,
                         lastSeen: sighting.timestamp,
                         rarity: dog?.rarity ?? Rarity.common,
-                      ).animate()
+                      )
+                          .animate()
                           .fadeIn(delay: Duration(milliseconds: index * 40))
                           .slideX(begin: 0.05, end: 0);
                     },
@@ -237,18 +243,21 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
         setState(() => _radiusMiles = r);
         if (_isOnline && _hasLocation) _fetchRemoteDogs();
       },
-      itemBuilder: (_) => [1.0, 2.0, 5.0, 10.0, 25.0].map((r) =>
-        PopupMenuItem(
-          value: r,
-          child: Text(
-            '${r.toStringAsFixed(0)} mi radius',
-            style: TextStyle(
-              color: r == _radiusMiles ? accent : textPrimary,
-              fontWeight: r == _radiusMiles ? FontWeight.bold : FontWeight.normal,
+      itemBuilder: (_) => [1.0, 2.0, 5.0, 10.0, 25.0]
+          .map(
+            (r) => PopupMenuItem(
+              value: r,
+              child: Text(
+                '${r.toStringAsFixed(0)} mi radius',
+                style: TextStyle(
+                  color: r == _radiusMiles ? accent : textPrimary,
+                  fontWeight:
+                      r == _radiusMiles ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
             ),
-          ),
-        ),
-      ).toList(),
+          )
+          .toList(),
     );
   }
 
@@ -260,8 +269,14 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _StatChip(icon: Icons.pets, label: '$count', subtitle: 'dogs nearby'),
-          _StatChip(icon: Icons.radar, label: '${_radiusMiles.toStringAsFixed(0)} mi', subtitle: 'radius'),
-          _StatChip(icon: Icons.location_on, label: _hasLocation ? 'Active' : 'No GPS', subtitle: 'location'),
+          _StatChip(
+              icon: Icons.radar,
+              label: '${_radiusMiles.toStringAsFixed(0)} mi',
+              subtitle: 'radius'),
+          _StatChip(
+              icon: Icons.location_on,
+              label: _hasLocation ? 'Active' : 'No GPS',
+              subtitle: 'location'),
         ],
       ),
     );
@@ -275,13 +290,18 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
         Center(
           child: Column(
             children: [
-              Icon(Icons.explore_off, size: 64, color: textSecondary.withValues(alpha: 0.3)),
+              Icon(Icons.explore_off,
+                  size: 64, color: textSecondary.withValues(alpha: 0.3)),
               const SizedBox(height: 16),
-              Text('No dogs spotted nearby yet', style: TextStyle(color: textSecondary, fontSize: 16)),
+              Text('No dogs spotted nearby yet',
+                  style: TextStyle(color: textSecondary, fontSize: 16)),
               const SizedBox(height: 8),
               Text(
-                _hasLocation ? 'Try expanding your search radius!' : 'Enable location to find nearby dogs.',
-                style: TextStyle(color: textSecondary.withValues(alpha: 0.6), fontSize: 14),
+                _hasLocation
+                    ? 'Try expanding your search radius!'
+                    : 'Enable location to find nearby dogs.',
+                style: TextStyle(
+                    color: textSecondary.withValues(alpha: 0.6), fontSize: 14),
               ),
             ],
           ),
@@ -295,8 +315,10 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
     final dLat = _toRad(lat2 - lat1);
     final dLon = _toRad(lon2 - lon1);
     final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_toRad(lat1)) * math.cos(_toRad(lat2)) *
-        math.sin(dLon / 2) * math.sin(dLon / 2);
+        math.cos(_toRad(lat1)) *
+            math.cos(_toRad(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return R * c;
   }
@@ -355,7 +377,8 @@ class _RemoteNearbyCard extends StatelessWidget {
                   ? CachedNetworkImage(
                       imageUrl: dog.photoUrl!,
                       fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) => const Icon(Icons.pets, color: accent, size: 24),
+                      errorWidget: (_, __, ___) =>
+                          const Icon(Icons.pets, color: accent, size: 24),
                     )
                   : const Icon(Icons.pets, color: accent, size: 24),
             ),
@@ -366,7 +389,10 @@ class _RemoteNearbyCard extends StatelessWidget {
                 children: [
                   Text(
                     dog.dogName,
-                    style: const TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 15),
+                    style: const TextStyle(
+                        color: textPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15),
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -382,7 +408,10 @@ class _RemoteNearbyCard extends StatelessWidget {
                         dog.distanceMiles < 0.5
                             ? '${(dog.distanceMiles * 5280).toStringAsFixed(0)} ft away'
                             : '${dog.distanceMiles.toStringAsFixed(1)} mi away',
-                        style: TextStyle(color: accent, fontSize: 12, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            color: accent,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(width: 12),
                       Icon(Icons.person, size: 12, color: textSecondary),
@@ -426,10 +455,14 @@ class _LocalNearbyCard extends StatelessWidget {
 
   Color get _rarityColor {
     switch (rarity) {
-      case Rarity.uncommon: return Colors.green;
-      case Rarity.rare: return Colors.blue;
-      case Rarity.legendary: return Colors.purple;
-      default: return textSecondary;
+      case Rarity.uncommon:
+        return Colors.green;
+      case Rarity.rare:
+        return Colors.blue;
+      case Rarity.legendary:
+        return Colors.purple;
+      default:
+        return textSecondary;
     }
   }
 
@@ -452,7 +485,8 @@ class _LocalNearbyCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 48, height: 48,
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
                 color: _rarityColor.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
@@ -468,17 +502,24 @@ class _LocalNearbyCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(breed,
-                          style: const TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 15)),
+                            style: const TextStyle(
+                                color: textPrimary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15)),
                       ),
                       if (rarity != Rarity.common)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
                             color: _rarityColor.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(rarity.name.toUpperCase(),
-                            style: TextStyle(color: _rarityColor, fontSize: 10, fontWeight: FontWeight.bold)),
+                              style: TextStyle(
+                                  color: _rarityColor,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold)),
                         ),
                     ],
                   ),
@@ -492,19 +533,23 @@ class _LocalNearbyCard extends StatelessWidget {
                           distanceKm < 1
                               ? '${(distanceKm * 1000).toStringAsFixed(0)}m away'
                               : '${distanceKm.toStringAsFixed(1)}km away',
-                          style: TextStyle(color: accent, fontSize: 12, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                              color: accent,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(width: 12),
                       ],
                       Icon(Icons.visibility, size: 12, color: textSecondary),
                       const SizedBox(width: 4),
-                      Text('$sightingCount sighting${sightingCount != 1 ? "s" : ""}',
-                        style: TextStyle(color: textSecondary, fontSize: 12)),
+                      Text(
+                          '$sightingCount sighting${sightingCount != 1 ? "s" : ""}',
+                          style: TextStyle(color: textSecondary, fontSize: 12)),
                       const SizedBox(width: 12),
                       Icon(Icons.access_time, size: 12, color: textSecondary),
                       const SizedBox(width: 4),
                       Text(_timeAgo(lastSeen),
-                        style: TextStyle(color: textSecondary, fontSize: 12)),
+                          style: TextStyle(color: textSecondary, fontSize: 12)),
                     ],
                   ),
                 ],
@@ -524,7 +569,8 @@ class _StatChip extends StatelessWidget {
   final String label;
   final String subtitle;
 
-  const _StatChip({required this.icon, required this.label, required this.subtitle});
+  const _StatChip(
+      {required this.icon, required this.label, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -532,7 +578,9 @@ class _StatChip extends StatelessWidget {
       children: [
         Icon(icon, color: accent, size: 20),
         const SizedBox(height: 4),
-        Text(label, style: const TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(label,
+            style: const TextStyle(
+                color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
         Text(subtitle, style: TextStyle(color: textSecondary, fontSize: 11)),
       ],
     );
