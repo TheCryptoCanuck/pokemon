@@ -56,9 +56,11 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     final remoteSvc = ref.read(supabaseFriendshipServiceProvider);
     if (remoteSvc != null) {
       try {
-        final friendships = await remoteSvc.getMyFriendships()
+        final friendships = await remoteSvc
+            .getMyFriendships()
             .timeout(const Duration(seconds: 8));
-        final pending = await remoteSvc.getPendingRequests()
+        final pending = await remoteSvc
+            .getPendingRequests()
             .timeout(const Duration(seconds: 8));
         if (mounted) {
           setState(() {
@@ -71,7 +73,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
           _pendingSub?.cancel();
           _pendingSub = remoteSvc.watchPendingRequests().listen((requests) {
             if (mounted) {
-              setState(() => _remotePending = requests);
+              setState(() => _remotePending =
+                  requests.map(FriendshipRemote.fromJson).toList());
             }
           });
           return;
@@ -84,8 +87,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
     // Local fallback
     final svc = ref.read(socialServiceProvider);
     try {
-      final data = await svc.fetchFriends()
-          .timeout(const Duration(seconds: 8));
+      final data = await svc.fetchFriends().timeout(const Duration(seconds: 8));
       if (data != null && mounted) {
         setState(() {
           _friends = List<Map<String, dynamic>>.from(data['friends'] ?? []);
@@ -126,7 +128,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
       setState(() => _searching = true);
       try {
         final svc = ref.read(socialServiceProvider);
-        final results = await svc.searchUsers(query.trim())
+        final results = await svc
+            .searchUsers(query.trim())
             .timeout(const Duration(seconds: 8));
         if (mounted) {
           setState(() {
@@ -150,37 +153,13 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
   }
 
   Future<void> _sendRequest(int userId) async {
-    // Try Supabase first
-    final remoteSvc = ref.read(supabaseFriendshipServiceProvider);
-    if (remoteSvc != null && _useRemote) {
-      try {
-        await remoteSvc.sendRequest(userId.toString());
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Friend request sent!'),
-              backgroundColor: Color(0xFF2E7D32),
-            ),
-          );
-          _searchController.clear();
-          setState(() => _searchResults = []);
-          _loadFriends();
-        }
-        return;
-      } catch (_) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Could not send request. Maybe already friends?'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-        return;
-      }
-    }
-
-    // Local fallback
+    // Outbound friend requests use the local SocialService.
+    // Remote (Supabase) friend requests require resolving both the
+    // requester's and recipient's dog ids, which this UI's search flow
+    // does not yet surface. Until the search returns dog records,
+    // outbound sends go through local. Inbound accept/reject still use
+    // the remote path because they operate on a friendshipId already
+    // returned by getPendingRequests().
     final svc = ref.read(socialServiceProvider);
     final success = await svc.sendFriendRequest(userId);
     if (success && mounted) {
@@ -330,7 +309,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('Friends',
-                style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    color: Colors.amber, fontWeight: FontWeight.bold)),
             if (_pendingBadgeCount > 0) ...[
               const SizedBox(width: 8),
               Container(
@@ -342,7 +322,9 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                 child: Text(
                   '$_pendingBadgeCount',
                   style: const TextStyle(
-                      color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -351,45 +333,47 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
         iconTheme: const IconThemeData(color: Colors.white70),
       ),
       body: _loading
-          ? const Center(
-              child: CircularProgressIndicator(color: Colors.amber))
+          ? const Center(child: CircularProgressIndicator(color: Colors.amber))
           : _offline && _friends.isEmpty && _remoteFriendships.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.cloud_off, color: Colors.white38, size: 48),
-                  const SizedBox(height: 16),
-                  const Text('Friends feature available when connected',
-                      style: TextStyle(color: Colors.white54, fontSize: 16)),
-                  const SizedBox(height: 8),
-                  const Text('Connect to the internet to find friends',
-                      style: TextStyle(color: Colors.white38, fontSize: 13)),
-                  const SizedBox(height: 20),
-                  TextButton.icon(
-                    onPressed: _loadFriends,
-                    icon: const Icon(Icons.refresh, color: Colors.amber, size: 18),
-                    label: const Text('Retry',
-                        style: TextStyle(color: Colors.amber)),
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.cloud_off,
+                          color: Colors.white38, size: 48),
+                      const SizedBox(height: 16),
+                      const Text('Friends feature available when connected',
+                          style:
+                              TextStyle(color: Colors.white54, fontSize: 16)),
+                      const SizedBox(height: 8),
+                      const Text('Connect to the internet to find friends',
+                          style:
+                              TextStyle(color: Colors.white38, fontSize: 13)),
+                      const SizedBox(height: 20),
+                      TextButton.icon(
+                        onPressed: _loadFriends,
+                        icon: const Icon(Icons.refresh,
+                            color: Colors.amber, size: 18),
+                        label: const Text('Retry',
+                            style: TextStyle(color: Colors.amber)),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
-          : RefreshIndicator(
-              color: Colors.amber,
-              backgroundColor: bgCard,
-              onRefresh: _loadFriends,
-              child: _useRemote ? _buildRemoteBody() : _buildLocalBody(),
-            ),
+                )
+              : RefreshIndicator(
+                  color: Colors.amber,
+                  backgroundColor: bgCard,
+                  onRefresh: _loadFriends,
+                  child: _useRemote ? _buildRemoteBody() : _buildLocalBody(),
+                ),
     );
   }
 
   // ─── Remote (Supabase) body ─────────────────────────────────────
 
   Widget _buildRemoteBody() {
-    final accepted = _remoteFriendships
-        .where((f) => f.status == 'accepted')
-        .toList();
+    final accepted =
+        _remoteFriendships.where((f) => f.status == 'accepted').toList();
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -434,10 +418,9 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             ),
           )
         else
-          ...accepted.asMap().entries.map((e) =>
-              _buildRemoteFriendTile(e.value)
-                  .animate()
-                  .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
+          ...accepted.asMap().entries.map((e) => _buildRemoteFriendTile(e.value)
+              .animate()
+              .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
 
         const SizedBox(height: 40),
       ],
@@ -581,8 +564,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
         // Pending requests
         if (_pendingRequests.isNotEmpty) ...[
           const SizedBox(height: 20),
-          _sectionHeader(
-              'Pending Requests', '${_pendingRequests.length}'),
+          _sectionHeader('Pending Requests', '${_pendingRequests.length}'),
           const SizedBox(height: 8),
           ..._pendingRequests.asMap().entries.map((e) =>
               _buildPendingTile(e.value)
@@ -595,10 +577,9 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
           const SizedBox(height: 20),
           _sectionHeader('Sent Requests', '${_sentRequests.length}'),
           const SizedBox(height: 8),
-          ..._sentRequests.asMap().entries.map((e) =>
-              _buildSentTile(e.value)
-                  .animate()
-                  .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
+          ..._sentRequests.asMap().entries.map((e) => _buildSentTile(e.value)
+              .animate()
+              .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
         ],
 
         // Friends list
@@ -615,21 +596,17 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             child: const Column(
               children: [
                 Text('No friends yet',
-                    style: TextStyle(
-                        color: Colors.white54, fontSize: 15)),
+                    style: TextStyle(color: Colors.white54, fontSize: 15)),
                 SizedBox(height: 4),
-                Text(
-                    'Search for users above to send friend requests!',
-                    style: TextStyle(
-                        color: Colors.white38, fontSize: 12)),
+                Text('Search for users above to send friend requests!',
+                    style: TextStyle(color: Colors.white38, fontSize: 12)),
               ],
             ),
           )
         else
-          ..._friends.asMap().entries.map((e) =>
-              _buildFriendTile(e.value)
-                  .animate()
-                  .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
+          ..._friends.asMap().entries.map((e) => _buildFriendTile(e.value)
+              .animate()
+              .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
 
         const SizedBox(height: 40),
       ],
@@ -678,8 +655,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             child: SizedBox(
                 width: 20,
                 height: 20,
-                child:
-                    CircularProgressIndicator(color: Colors.amber, strokeWidth: 2))),
+                child: CircularProgressIndicator(
+                    color: Colors.amber, strokeWidth: 2))),
       );
     }
 
@@ -714,8 +691,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 14)),
-                    Text(
-                        'Lv.${user['level']} ${user['level_title']}',
+                    Text('Lv.${user['level']} ${user['level_title']}',
                         style: const TextStyle(
                             color: Colors.white54, fontSize: 11)),
                   ],
@@ -785,8 +761,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             tooltip: 'Accept',
           ),
           IconButton(
-            icon:
-                const Icon(Icons.cancel, color: Colors.red, size: 28),
+            icon: const Icon(Icons.cancel, color: Colors.red, size: 28),
             onPressed: () => _removeFriend(request['id'] as int),
             tooltip: 'Decline',
           ),
@@ -813,8 +788,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
               color: Colors.white.withValues(alpha: 0.08),
             ),
             child: const Center(
-                child: Icon(Icons.hourglass_top,
-                    color: Colors.white38, size: 20)),
+                child:
+                    Icon(Icons.hourglass_top, color: Colors.white38, size: 20)),
           ),
           const SizedBox(width: 12),
           Expanded(
