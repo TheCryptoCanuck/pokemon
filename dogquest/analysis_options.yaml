@@ -1,6 +1,10 @@
 include: package:flutter_lints/flutter.yaml
 
+# sec-C4 (2026-04-25): const lints re-enabled to unblock rebuild optimization
+# across god-class screens. Run `dart fix --apply` after pulling this change to
+# auto-promote constructors; add per-line `// ignore: prefer_const_constructors`
+# only for the few legitimate non-const cases (e.g. RenderRepaintBoundary).
 linter:
   rules:
-    prefer_const_constructors: false
-    prefer_const_literals_to_create_immutables: false
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
