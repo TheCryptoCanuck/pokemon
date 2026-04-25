@@ -46,9 +46,11 @@ import 'services/smart_notification_service.dart';
 import 'services/shared_tflite_service.dart';
 import 'services/tflite_identification_service.dart';
 import 'services/dog_embedding_service.dart';
-import 'services/lost_dog_alert_service.dart';
+// NOTE: lost_dog_alert_service and lost_dog_sync_service imports removed —
+// those files exist on disk but were never committed. Their construction +
+// provider registrations below are also stripped. Restore alongside the
+// service files when committed. (T5-feature-restore)
 import 'services/lost_dog_service.dart';
-import 'services/lost_dog_sync_service.dart';
 import 'services/supabase_lost_dog_service.dart';
 import 'services/auth_migration_service.dart';
 import 'services/supabase_auth_service.dart';
@@ -680,16 +682,13 @@ Future<_InitResult> _initializeServices(
   final embeddingSvc = DogEmbeddingService(sharedTflite);
   await embeddingSvc.loadModel();
   final lostDogSvc = LostDogService(playerBox, embeddingSvc, locationSvc);
-  final alertedBox = await Hive.openBox<int>('dogquest_alerted_reports');
-  final lostDogAlertSvc =
-      LostDogAlertService(lostDogSvc, locationSvc, alertedBox);
+  // alertedBox kept open for downstream consumers; LostDogAlertService stripped
+  // pending its file being committed. (T5-feature-restore)
+  await Hive.openBox<int>('dogquest_alerted_reports');
 
-  final supabaseClient = Supabase.instance.client;
-  final supabaseLostDogSvc = supabaseClient.auth.currentUser != null
-      ? SupabaseLostDogService(supabaseClient)
-      : null;
-  final lostDogSyncSvc = LostDogSyncService(lostDogSvc, supabaseLostDogSvc);
-  lostDogSyncSvc.start();
+  // supabaseLostDogSvc + LostDogSyncService construction stripped together —
+  // the only consumer of supabaseLostDogSvc was LostDogSyncService.
+  // (T5-feature-restore)
 
   update('Syncing data...', 0.88);
   await Future.delayed(Duration.zero); // yield for animations
@@ -756,8 +755,9 @@ Future<_InitResult> _initializeServices(
       dogSocialServiceProvider.overrideWithValue(dogSocialSvc),
       dogEmbeddingServiceProvider.overrideWithValue(embeddingSvc),
       lostDogServiceProvider.overrideWithValue(lostDogSvc),
-      lostDogAlertServiceProvider.overrideWithValue(lostDogAlertSvc),
-      lostDogSyncServiceProvider.overrideWithValue(lostDogSyncSvc),
+      // lostDogAlertServiceProvider + lostDogSyncServiceProvider overrides
+      // stripped pending the corresponding service files being committed.
+      // (T5-feature-restore)
     ],
     brokenStreakValue: playerNotifier.brokenStreakValue,
     streakSaverUsed: playerNotifier.streakSaverUsed,
