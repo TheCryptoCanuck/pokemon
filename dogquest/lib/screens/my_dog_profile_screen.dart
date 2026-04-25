@@ -20,7 +20,9 @@ class MyDogProfileScreen extends ConsumerWidget {
       return Scaffold(
         backgroundColor: bgDeep,
         appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
-        body: const Center(child: Text('Dog not found', style: TextStyle(color: Colors.white54))),
+        body: const Center(
+            child:
+                Text('Dog not found', style: TextStyle(color: Colors.white54))),
       );
     }
 
@@ -39,7 +41,8 @@ class MyDogProfileScreen extends ConsumerWidget {
             pinned: true,
             backgroundColor: bgDeep,
             flexibleSpace: FlexibleSpaceBar(
-              background: dog.photoPath != null && File(dog.photoPath!).existsSync()
+              background: dog.photoPath != null &&
+                      File(dog.photoPath!).existsSync()
                   ? Stack(
                       fit: StackFit.expand,
                       children: [
@@ -73,22 +76,31 @@ class MyDogProfileScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Name
-                  Text(dog.name,
-                    style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+                  Text(
+                    dog.name,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold),
                   ).animate().fadeIn(),
 
                   // Breed
                   if (dog.breed != null) ...[
                     const SizedBox(height: 4),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 5),
                       decoration: BoxDecoration(
                         color: Colors.amber.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+                        border: Border.all(
+                            color: Colors.amber.withValues(alpha: 0.3)),
                       ),
                       child: Text(dog.breed!,
-                        style: const TextStyle(color: Colors.amber, fontSize: 14, fontWeight: FontWeight.w600)),
+                          style: const TextStyle(
+                              color: Colors.amber,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600)),
                     ).animate().fadeIn(delay: 100.ms),
                   ],
 
@@ -107,7 +119,9 @@ class MyDogProfileScreen extends ConsumerWidget {
                       if (dog.daysUntilCelebration != null) ...[
                         if (dog.ageYears != null) const SizedBox(width: 12),
                         _InfoCard(
-                          icon: dog.usesGotchaDay ? Icons.favorite : Icons.celebration,
+                          icon: dog.usesGotchaDay
+                              ? Icons.favorite
+                              : Icons.celebration,
                           value: '${dog.daysUntilCelebration}',
                           label: dog.daysUntilCelebration == 1
                               ? 'day until ${dog.usesGotchaDay ? "gotcha day" : "birthday"}'
@@ -120,7 +134,8 @@ class MyDogProfileScreen extends ConsumerWidget {
                         const SizedBox(width: 12),
                         _InfoCard(
                           icon: Icons.timeline,
-                          value: '${dogYears(dog.ageYears!, breedData.sizeCategory)}',
+                          value:
+                              '${dogYears(dog.ageYears!, breedData.sizeCategory)}',
                           label: 'dog years',
                           color: Colors.deepPurpleAccent,
                         ),
@@ -133,20 +148,32 @@ class MyDogProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 24),
                     const Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('Personality', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: Text('Personality',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
                     ),
                     const SizedBox(height: 10),
                     Wrap(
-                      spacing: 8, runSpacing: 8,
-                      children: dog.personalityTags.map((t) => Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.amber.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
-                        ),
-                        child: Text(t, style: const TextStyle(color: Colors.amber, fontSize: 13)),
-                      )).toList(),
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: dog.personalityTags
+                          .map((t) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.amber.withValues(alpha: 0.08),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                      color:
+                                          Colors.amber.withValues(alpha: 0.2)),
+                                ),
+                                child: Text(t,
+                                    style: const TextStyle(
+                                        color: Colors.amber, fontSize: 13)),
+                              ))
+                          .toList(),
                     ).animate().fadeIn(delay: 200.ms),
                   ],
 
@@ -169,7 +196,8 @@ class MyDogProfileScreen extends ConsumerWidget {
                       ),
                       icon: const Icon(Icons.badge, size: 22),
                       label: const Text('View Passport',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFD4874E),
                         foregroundColor: Colors.white,
@@ -177,7 +205,8 @@ class MyDogProfileScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         elevation: 4,
-                        shadowColor: const Color(0xFFD4874E).withValues(alpha: 0.4),
+                        shadowColor:
+                            const Color(0xFFD4874E).withValues(alpha: 0.4),
                       ),
                     ),
                   ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
@@ -192,11 +221,13 @@ class MyDogProfileScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(children: [
-                      Icon(Icons.pets, color: Colors.amber.withValues(alpha: 0.5), size: 20),
+                      Icon(Icons.pets,
+                          color: Colors.amber.withValues(alpha: 0.5), size: 20),
                       const SizedBox(width: 10),
                       Text(
                         'DogQuest member since ${_formatDate(dog.createdAt)}',
-                        style: const TextStyle(color: Colors.white38, fontSize: 12),
+                        style: const TextStyle(
+                            color: Colors.white38, fontSize: 12),
                       ),
                     ]),
                   ).animate().fadeIn(delay: 250.ms),
@@ -212,7 +243,20 @@ class MyDogProfileScreen extends ConsumerWidget {
   }
 
   String _formatDate(DateTime date) {
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     return '${months[date.month - 1]} ${date.year}';
   }
 }
@@ -223,7 +267,11 @@ class _InfoCard extends StatelessWidget {
   final String label;
   final Color color;
 
-  const _InfoCard({required this.icon, required this.value, required this.label, required this.color});
+  const _InfoCard(
+      {required this.icon,
+      required this.value,
+      required this.label,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -237,8 +285,12 @@ class _InfoCard extends StatelessWidget {
         child: Column(children: [
           Icon(icon, color: color, size: 24),
           const SizedBox(height: 6),
-          Text(value, style: TextStyle(color: color, fontSize: 24, fontWeight: FontWeight.bold)),
-          Text(label, style: const TextStyle(color: Colors.white54, fontSize: 11), textAlign: TextAlign.center),
+          Text(value,
+              style: TextStyle(
+                  color: color, fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(label,
+              style: const TextStyle(color: Colors.white54, fontSize: 11),
+              textAlign: TextAlign.center),
         ]),
       ),
     );
@@ -267,10 +319,14 @@ class _BreedInsightsCard extends StatelessWidget {
         children: [
           // Header
           Row(children: [
-            Icon(Icons.biotech, color: Colors.amber.withValues(alpha: 0.8), size: 22),
+            Icon(Icons.biotech,
+                color: Colors.amber.withValues(alpha: 0.8), size: 22),
             const SizedBox(width: 10),
             const Text('Breed Insights',
-              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold)),
           ]).animate().fadeIn(),
 
           const SizedBox(height: 16),
@@ -279,12 +335,21 @@ class _BreedInsightsCard extends StatelessWidget {
           Row(
             children: [
               if (breed.lifespan.isNotEmpty)
-                _MiniInfoTile(icon: Icons.favorite_border, label: 'Lifespan', value: breed.lifespan),
+                _MiniInfoTile(
+                    icon: Icons.favorite_border,
+                    label: 'Lifespan',
+                    value: breed.lifespan),
               if (breed.lifespan.isNotEmpty) const SizedBox(width: 10),
-              _MiniInfoTile(icon: Icons.straighten, label: 'Size', value: _sizeLabel(breed.sizeCategory)),
+              _MiniInfoTile(
+                  icon: Icons.straighten,
+                  label: 'Size',
+                  value: _sizeLabel(breed.sizeCategory)),
               if (breed.weight.isNotEmpty) ...[
                 const SizedBox(width: 10),
-                _MiniInfoTile(icon: Icons.monitor_weight_outlined, label: 'Weight', value: breed.weight),
+                _MiniInfoTile(
+                    icon: Icons.monitor_weight_outlined,
+                    label: 'Weight',
+                    value: breed.weight),
               ],
             ],
           ).animate().fadeIn(delay: 50.ms),
@@ -293,47 +358,72 @@ class _BreedInsightsCard extends StatelessWidget {
 
           // Exercise & grooming needs
           Row(children: [
-            Expanded(child: _NeedsIndicator(label: 'Exercise', level: breed.exerciseNeeds, color: Colors.orange)),
+            Expanded(
+                child: _NeedsIndicator(
+                    label: 'Exercise',
+                    level: breed.exerciseNeeds,
+                    color: Colors.orange)),
             const SizedBox(width: 12),
-            Expanded(child: _NeedsIndicator(label: 'Grooming', level: breed.groomingNeeds, color: Colors.blue)),
+            Expanded(
+                child: _NeedsIndicator(
+                    label: 'Grooming',
+                    level: breed.groomingNeeds,
+                    color: Colors.blue)),
           ]).animate().fadeIn(delay: 100.ms),
 
           // Health predispositions
           if (breed.healthPredispositions.isNotEmpty) ...[
             const SizedBox(height: 18),
             const Text('Health Watch',
-              style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600)),
+                style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             ...breed.healthPredispositions.map((h) => Padding(
-              padding: const EdgeInsets.only(bottom: 5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.warning_amber_rounded, color: Colors.amber.withValues(alpha: 0.7), size: 16),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(h, style: const TextStyle(color: Colors.white60, fontSize: 13))),
-                ],
-              ),
-            )),
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.warning_amber_rounded,
+                          color: Colors.amber.withValues(alpha: 0.7), size: 16),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: Text(h,
+                              style: const TextStyle(
+                                  color: Colors.white60, fontSize: 13))),
+                    ],
+                  ),
+                )),
           ],
 
           // Temperament traits as chips
           if (breed.temperamentTraits.isNotEmpty) ...[
             const SizedBox(height: 18),
             const Text('Temperament',
-              style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600)),
+                style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             Wrap(
-              spacing: 6, runSpacing: 6,
-              children: breed.temperamentTraits.map((t) => Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.deepPurple.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.3)),
-                ),
-                child: Text(t, style: const TextStyle(color: Colors.deepPurpleAccent, fontSize: 12)),
-              )).toList(),
+              spacing: 6,
+              runSpacing: 6,
+              children: breed.temperamentTraits
+                  .map((t) => Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.deepPurple.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                              color: Colors.deepPurple.withValues(alpha: 0.3)),
+                        ),
+                        child: Text(t,
+                            style: const TextStyle(
+                                color: Colors.deepPurpleAccent, fontSize: 12)),
+                      ))
+                  .toList(),
             ),
           ],
 
@@ -341,27 +431,35 @@ class _BreedInsightsCard extends StatelessWidget {
           if (breed.dietNotes.isNotEmpty) ...[
             const SizedBox(height: 18),
             Row(children: [
-              Icon(Icons.restaurant, color: Colors.amber.withValues(alpha: 0.6), size: 16),
+              Icon(Icons.restaurant,
+                  color: Colors.amber.withValues(alpha: 0.6), size: 16),
               const SizedBox(width: 8),
               const Text('Diet Notes',
-                style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600)),
+                  style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600)),
             ]),
             const SizedBox(height: 6),
             Text(breed.dietNotes,
-              style: const TextStyle(color: Colors.white54, fontSize: 13, height: 1.4)),
+                style: const TextStyle(
+                    color: Colors.white54, fontSize: 13, height: 1.4)),
           ],
         ],
       ),
-    ).animate().fadeIn(delay: 250.ms).slideY(begin: 0.05, curve: Curves.easeOut);
+    )
+        .animate()
+        .fadeIn(delay: 250.ms)
+        .slideY(begin: 0.05, curve: Curves.easeOut);
   }
 
   static String _sizeLabel(String s) => switch (s) {
-    'small' => 'Small',
-    'medium' => 'Medium',
-    'large' => 'Large',
-    'giant' => 'Giant',
-    _ => 'Medium',
-  };
+        'small' => 'Small',
+        'medium' => 'Medium',
+        'large' => 'Large',
+        'giant' => 'Giant',
+        _ => 'Medium',
+      };
 }
 
 class _MiniInfoTile extends StatelessWidget {
@@ -369,7 +467,8 @@ class _MiniInfoTile extends StatelessWidget {
   final String label;
   final String value;
 
-  const _MiniInfoTile({required this.icon, required this.label, required this.value});
+  const _MiniInfoTile(
+      {required this.icon, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -383,11 +482,14 @@ class _MiniInfoTile extends StatelessWidget {
         child: Column(children: [
           Icon(icon, color: Colors.amber.withValues(alpha: 0.6), size: 18),
           const SizedBox(height: 4),
-          Text(value,
-            style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+          Text(
+            value,
+            style: const TextStyle(
+                color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
             textAlign: TextAlign.center,
           ),
-          Text(label,
+          Text(
+            label,
             style: const TextStyle(color: Colors.white38, fontSize: 10),
             textAlign: TextAlign.center,
           ),
@@ -402,34 +504,43 @@ class _NeedsIndicator extends StatelessWidget {
   final String level;
   final Color color;
 
-  const _NeedsIndicator({required this.label, required this.level, required this.color});
+  const _NeedsIndicator(
+      {required this.label, required this.level, required this.color});
 
   int get _filledDots => switch (level) {
-    'low' => 1,
-    'moderate' => 2,
-    'high' => 3,
-    'very high' => 4,
-    _ => 2,
-  };
+        'low' => 1,
+        'moderate' => 2,
+        'high' => 3,
+        'very high' => 4,
+        _ => 2,
+      };
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white54, fontSize: 11)),
+        Text(label,
+            style: const TextStyle(color: Colors.white54, fontSize: 11)),
         const SizedBox(height: 4),
         Row(children: [
-          ...List.generate(4, (i) => Container(
-            width: 10, height: 10,
-            margin: const EdgeInsets.only(right: 4),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: i < _filledDots ? color.withValues(alpha: 0.8) : Colors.white12,
-            ),
-          )),
+          ...List.generate(
+              4,
+              (i) => Container(
+                    width: 10,
+                    height: 10,
+                    margin: const EdgeInsets.only(right: 4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: i < _filledDots
+                          ? color.withValues(alpha: 0.8)
+                          : Colors.white12,
+                    ),
+                  )),
           const SizedBox(width: 4),
-          Text(level, style: TextStyle(color: color.withValues(alpha: 0.7), fontSize: 11)),
+          Text(level,
+              style:
+                  TextStyle(color: color.withValues(alpha: 0.7), fontSize: 11)),
         ]),
       ],
     );

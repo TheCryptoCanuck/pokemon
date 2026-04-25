@@ -92,7 +92,8 @@ void main() {
         neighborDogName: 'Buddy',
         neighborBreed: 'Pug',
         neighborEmoji: '\u{1F436}',
-        visits: 5, // acquaintance (3), next friend (7), progress = (5-3)/(7-3) = 0.5
+        visits:
+            5, // acquaintance (3), next friend (7), progress = (5-3)/(7-3) = 0.5
         lastVisit: DateTime(2026, 1, 1),
         createdAt: DateTime(2026, 1, 1),
       );
@@ -161,7 +162,8 @@ void main() {
         lastVisit: DateTime(2026, 3, 1),
         createdAt: DateTime(2026, 2, 1),
       );
-      final updated = original.copyWith(visits: 4, lastVisit: DateTime(2026, 3, 2));
+      final updated =
+          original.copyWith(visits: 4, lastVisit: DateTime(2026, 3, 2));
       expect(updated.visits, 4);
       expect(updated.lastVisit, DateTime(2026, 3, 2));
       // Unchanged

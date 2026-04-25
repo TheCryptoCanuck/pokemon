@@ -183,10 +183,9 @@ class PlaydateService {
         if (dist <= radiusMiles) {
           // Extract count from the aggregate join
           final countList = row['rsvp_count'] as List<dynamic>?;
-          final rsvpCount =
-              countList != null && countList.isNotEmpty
-                  ? (countList.first as Map<String, dynamic>)['count'] as int? ?? 0
-                  : 0;
+          final rsvpCount = countList != null && countList.isNotEmpty
+              ? (countList.first as Map<String, dynamic>)['count'] as int? ?? 0
+              : 0;
           final mapped = Map<String, dynamic>.from(row);
           mapped['rsvp_count'] = rsvpCount;
           mapped.remove('rsvp_count'); // remove list version
@@ -197,8 +196,8 @@ class PlaydateService {
         }
       }
 
-      results.sort((a, b) =>
-          (a.distanceMiles ?? 999).compareTo(b.distanceMiles ?? 999));
+      results.sort(
+          (a, b) => (a.distanceMiles ?? 999).compareTo(b.distanceMiles ?? 999));
       _log.info('Found ${results.length} nearby playdates');
       return results;
     } catch (e, st) {
@@ -289,12 +288,10 @@ class PlaydateService {
           .select('playdate_id')
           .eq('user_id', _userId);
 
-      final rsvpIds =
-          rsvps.map((r) => r['playdate_id'] as String).toSet();
+      final rsvpIds = rsvps.map((r) => r['playdate_id'] as String).toSet();
 
       // Remove any organized ones from rsvp set to avoid duplicates
-      final organizedIds =
-          organized.map((r) => r['id'] as String).toSet();
+      final organizedIds = organized.map((r) => r['id'] as String).toSet();
       final extraIds = rsvpIds.difference(organizedIds);
 
       List<Map<String, dynamic>> rsvpPlaydates = [];

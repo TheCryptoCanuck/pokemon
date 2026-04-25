@@ -26,7 +26,8 @@ class WeeklyPackReport extends StatelessWidget {
           const Color(0xFF448AFF).withValues(alpha: 0.06),
         ]),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFF7C4DFF).withValues(alpha: 0.25)),
+        border:
+            Border.all(color: const Color(0xFF7C4DFF).withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,9 +39,13 @@ class WeeklyPackReport extends StatelessWidget {
               const SizedBox(width: 8),
               const Expanded(
                 child: Text('Weekly Pack Report',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15)),
               ),
-              Text(weekLabel, style: const TextStyle(color: Colors.white38, fontSize: 11)),
+              Text(weekLabel,
+                  style: const TextStyle(color: Colors.white38, fontSize: 11)),
             ],
           ),
           const SizedBox(height: 16),
@@ -48,11 +53,14 @@ class WeeklyPackReport extends StatelessWidget {
           // Stats row
           Row(
             children: [
-              _reportStat('\u{1F43E}', '${pack.weeklyBreedsFound}', 'New Breeds', Colors.amber),
+              _reportStat('\u{1F43E}', '${pack.weeklyBreedsFound}',
+                  'New Breeds', Colors.amber),
               const SizedBox(width: 10),
-              _reportStat('\u{26A1}', '${pack.weeklyXpEarned}', 'XP Earned', const Color(0xFFD4874E)),
+              _reportStat('\u{26A1}', '${pack.weeklyXpEarned}', 'XP Earned',
+                  const Color(0xFFD4874E)),
               const SizedBox(width: 10),
-              _reportStat('\u{1F525}', '${pack.weeklyActiveDays}', 'Active Days', const Color(0xFFFF9800)),
+              _reportStat('\u{1F525}', '${pack.weeklyActiveDays}',
+                  'Active Days', const Color(0xFFFF9800)),
             ],
           ),
 
@@ -69,7 +77,8 @@ class WeeklyPackReport extends StatelessWidget {
               return Column(
                 children: [
                   Container(
-                    width: 28, height: 28,
+                    width: 28,
+                    height: 28,
                     decoration: BoxDecoration(
                       color: isActive
                           ? Colors.amber.withValues(alpha: isToday ? 0.4 : 0.2)
@@ -83,7 +92,8 @@ class WeeklyPackReport extends StatelessWidget {
                     ),
                     child: Center(
                       child: isActive
-                          ? const Icon(Icons.check, color: Colors.amber, size: 14)
+                          ? const Icon(Icons.check,
+                              color: Colors.amber, size: 14)
                           : null,
                     ),
                   ),
@@ -92,7 +102,8 @@ class WeeklyPackReport extends StatelessWidget {
                       style: TextStyle(
                         color: isToday ? Colors.amber : Colors.white30,
                         fontSize: 10,
-                        fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                        fontWeight:
+                            isToday ? FontWeight.bold : FontWeight.normal,
                       )),
                 ],
               );
@@ -111,7 +122,8 @@ class WeeklyPackReport extends StatelessWidget {
               ),
               child: Text(
                 _motivationMessage(pack.weeklyActiveDays, dayOfWeek),
-                style: const TextStyle(color: Colors.white38, fontSize: 11, height: 1.4),
+                style: const TextStyle(
+                    color: Colors.white38, fontSize: 11, height: 1.4),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -133,8 +145,11 @@ class WeeklyPackReport extends StatelessWidget {
           children: [
             Text(emoji, style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 4),
-            Text(value, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 16)),
-            Text(label, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+            Text(value,
+                style: TextStyle(
+                    color: color, fontWeight: FontWeight.bold, fontSize: 16)),
+            Text(label,
+                style: const TextStyle(color: Colors.white38, fontSize: 10)),
           ],
         ),
       ),
@@ -142,15 +157,30 @@ class WeeklyPackReport extends StatelessWidget {
   }
 
   String _shortDate(DateTime d) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     return '${months[d.month - 1]} ${d.day}';
   }
 
   String _motivationMessage(int activeDays, int dayOfWeek) {
     final remaining = 7 - dayOfWeek;
     if (activeDays == 0) return 'Start spotting dogs to light up your week!';
-    if (activeDays >= dayOfWeek) return 'Perfect attendance so far! Keep it up for $remaining more day${remaining == 1 ? '' : 's'}.';
-    if (activeDays >= 5) return 'Almost a full week! Just ${7 - activeDays} more day${7 - activeDays == 1 ? '' : 's'} to go.';
+    if (activeDays >= dayOfWeek)
+      return 'Perfect attendance so far! Keep it up for $remaining more day${remaining == 1 ? '' : 's'}.';
+    if (activeDays >= 5)
+      return 'Almost a full week! Just ${7 - activeDays} more day${7 - activeDays == 1 ? '' : 's'} to go.';
     return 'Your pack has been active $activeDays day${activeDays == 1 ? '' : 's'} this week. Go explore together!';
   }
 }

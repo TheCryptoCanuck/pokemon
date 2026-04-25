@@ -73,7 +73,8 @@ class SupabaseConnectionService {
 }
 
 /// Riverpod provider for the connection service (singleton).
-final supabaseConnectionServiceProvider = Provider<SupabaseConnectionService>((ref) {
+final supabaseConnectionServiceProvider =
+    Provider<SupabaseConnectionService>((ref) {
   final svc = SupabaseConnectionService();
   ref.onDispose(() => svc.dispose());
   return svc;

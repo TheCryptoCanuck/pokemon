@@ -25,24 +25,25 @@ class Sighting {
   });
 
   Map<String, dynamic> toMap() => {
-    'dog': dogName,
-    'ts': timestamp.toIso8601String(),
-    'conf': confidence,
-    'src': source,
-    if (latitude != null) 'lat': latitude,
-    if (longitude != null) 'lon': longitude,
-    if (accuracy != null) 'acc': accuracy,
-  };
+        'dog': dogName,
+        'ts': timestamp.toIso8601String(),
+        'conf': confidence,
+        'src': source,
+        if (latitude != null) 'lat': latitude,
+        if (longitude != null) 'lon': longitude,
+        if (accuracy != null) 'acc': accuracy,
+      };
 
   factory Sighting.fromMap(Map<dynamic, dynamic> map) => Sighting(
-    dogName: map['dog'] as String? ?? '',
-    timestamp: DateTime.tryParse(map['ts'] as String? ?? '') ?? DateTime.now(),
-    confidence: (map['conf'] as num?)?.toDouble() ?? 1.0,
-    source: map['src'] as String? ?? 'mock',
-    latitude: (map['lat'] as num?)?.toDouble(),
-    longitude: (map['lon'] as num?)?.toDouble(),
-    accuracy: (map['acc'] as num?)?.toDouble(),
-  );
+        dogName: map['dog'] as String? ?? '',
+        timestamp:
+            DateTime.tryParse(map['ts'] as String? ?? '') ?? DateTime.now(),
+        confidence: (map['conf'] as num?)?.toDouble() ?? 1.0,
+        source: map['src'] as String? ?? 'mock',
+        latitude: (map['lat'] as num?)?.toDouble(),
+        longitude: (map['lon'] as num?)?.toDouble(),
+        accuracy: (map['acc'] as num?)?.toDouble(),
+      );
 }
 
 /// Tracks every dog sighting, enabling encounter history and stats.
@@ -79,9 +80,7 @@ class SightingService {
   /// from the Hive box once per invalidation cycle.
   List<Sighting> get all {
     if (_cachedAll != null) return _cachedAll!;
-    _cachedAll = _box.values
-        .map((m) => Sighting.fromMap(m))
-        .toList()
+    _cachedAll = _box.values.map((m) => Sighting.fromMap(m)).toList()
       ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
     return _cachedAll!;
   }
@@ -123,7 +122,8 @@ class SightingService {
     final sightings = all;
     final grouped = <String, List<Sighting>>{};
     for (final s in sightings) {
-      final key = '${s.timestamp.year}-${s.timestamp.month.toString().padLeft(2, '0')}-${s.timestamp.day.toString().padLeft(2, '0')}';
+      final key =
+          '${s.timestamp.year}-${s.timestamp.month.toString().padLeft(2, '0')}-${s.timestamp.day.toString().padLeft(2, '0')}';
       grouped.putIfAbsent(key, () => []).add(s);
     }
     return grouped;
@@ -133,7 +133,8 @@ class SightingService {
   (String date, int count)? get bestDay {
     final grouped = groupedByDate();
     if (grouped.isEmpty) return null;
-    final best = grouped.entries.reduce((a, b) => a.value.length >= b.value.length ? a : b);
+    final best = grouped.entries
+        .reduce((a, b) => a.value.length >= b.value.length ? a : b);
     return (best.key, best.value.length);
   }
 

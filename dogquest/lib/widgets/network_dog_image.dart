@@ -9,13 +9,20 @@ class NetworkDogImage extends StatelessWidget {
   final double? width;
   final BoxFit fit;
 
-  const NetworkDogImage({super.key, required this.url, required this.height, this.width, this.fit = BoxFit.contain});
+  const NetworkDogImage(
+      {super.key,
+      required this.url,
+      required this.height,
+      this.width,
+      this.fit = BoxFit.contain});
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: url,
-      httpHeaders: const {'User-Agent': 'DogQuest/1.0 (dog identification app)'},
+      httpHeaders: const {
+        'User-Agent': 'DogQuest/1.0 (dog identification app)'
+      },
       height: height,
       width: width ?? double.infinity,
       fit: fit,
@@ -27,7 +34,8 @@ class NetworkDogImage extends StatelessWidget {
       errorWidget: (_, __, ___) => Container(
         height: height,
         color: bgCard,
-        child: const Center(child: Icon(Icons.broken_image, color: Colors.white24, size: 48)),
+        child: const Center(
+            child: Icon(Icons.broken_image, color: Colors.white24, size: 48)),
       ),
     );
   }

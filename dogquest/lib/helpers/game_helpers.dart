@@ -24,7 +24,11 @@ const achievements = {
   'first_uncommon': ('🟤', 'Uncommon Find', 'Spot your first Uncommon breed'),
   'first_rare': ('🔵', 'Rare Encounter', 'Spot your first Rare breed'),
   'first_epic': ('🟣', 'Epic Discovery', 'Spot your first Epic breed'),
-  'ten_uncommon': ('📦', 'Uncommon Collector', 'Spot 10 different Uncommon breeds'),
+  'ten_uncommon': (
+    '📦',
+    'Uncommon Collector',
+    'Spot 10 different Uncommon breeds'
+  ),
   'ten_rare': ('💠', 'Rare Collector', 'Spot 10 different Rare breeds'),
 
   // ─── Levelling ──────────────────────────────────────────────────────
@@ -40,7 +44,11 @@ const achievements = {
 
   // ─── Conservation ───────────────────────────────────────────────────
   'endangered_spotter': ('🛡️', 'Guardian', 'Identify an endangered dog'),
-  'conservation_hero': ('🌱', 'Conservation Hero', 'Collect 5 threatened species'),
+  'conservation_hero': (
+    '🌱',
+    'Conservation Hero',
+    'Collect 5 threatened species'
+  ),
 
   // ─── Quiz ─────────────────────────────────────────────────────────
   'first_quiz': ('📝', 'Quiz Taker', 'Complete your first quiz'),

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 ///
 /// Call [XpToast.show] after awarding XP to give the user visual feedback.
 class XpToast {
-  static void show(BuildContext context, {required int xp, String? multiplierLabel}) {
+  static void show(BuildContext context,
+      {required int xp, String? multiplierLabel}) {
     final overlay = Overlay.of(context);
     late final OverlayEntry entry;
 

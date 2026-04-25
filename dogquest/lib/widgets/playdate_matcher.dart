@@ -207,8 +207,8 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                         labelText: 'Location name',
                         labelStyle: TextStyle(color: textSecondary),
                         enabledBorder: UnderlineInputBorder(
-                          borderSide:
-                              BorderSide(color: textSecondary.withValues(alpha: 0.3)),
+                          borderSide: BorderSide(
+                              color: textSecondary.withValues(alpha: 0.3)),
                         ),
                         focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: accent),
@@ -221,10 +221,11 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                       contentPadding: EdgeInsets.zero,
                       title: Text(
                         'Date: ${DateFormat.yMMMd().format(selectedDate)}',
-                        style: const TextStyle(color: textPrimary, fontSize: 14),
+                        style:
+                            const TextStyle(color: textPrimary, fontSize: 14),
                       ),
-                      trailing:
-                          const Icon(Icons.calendar_today, color: accent, size: 20),
+                      trailing: const Icon(Icons.calendar_today,
+                          color: accent, size: 20),
                       onTap: () async {
                         final picked = await showDatePicker(
                           context: ctx,
@@ -243,10 +244,11 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                       contentPadding: EdgeInsets.zero,
                       title: Text(
                         'Time: ${selectedTime.format(ctx)}',
-                        style: const TextStyle(color: textPrimary, fontSize: 14),
+                        style:
+                            const TextStyle(color: textPrimary, fontSize: 14),
                       ),
-                      trailing:
-                          const Icon(Icons.access_time, color: accent, size: 20),
+                      trailing: const Icon(Icons.access_time,
+                          color: accent, size: 20),
                       onTap: () async {
                         final picked = await showTimePicker(
                           context: ctx,
@@ -285,8 +287,8 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                         labelText: 'Description (optional)',
                         labelStyle: TextStyle(color: textSecondary),
                         enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: textSecondary.withValues(alpha: 0.3)),
+                          borderSide: BorderSide(
+                              color: textSecondary.withValues(alpha: 0.3)),
                         ),
                         focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: accent),
@@ -448,8 +450,8 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                 child: SizedBox(
                   width: 20,
                   height: 20,
-                  child: CircularProgressIndicator(
-                      strokeWidth: 2, color: accent),
+                  child:
+                      CircularProgressIndicator(strokeWidth: 2, color: accent),
                 ),
               ),
             )
@@ -701,11 +703,9 @@ class _PlaydateCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(match.neighbor.emoji,
-                  style: const TextStyle(fontSize: 28)),
+              Text(match.neighbor.emoji, style: const TextStyle(fontSize: 28)),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: _compatColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
@@ -725,9 +725,7 @@ class _PlaydateCard extends StatelessWidget {
           Text(
             match.neighbor.name,
             style: const TextStyle(
-                color: textPrimary,
-                fontWeight: FontWeight.bold,
-                fontSize: 14),
+                color: textPrimary, fontWeight: FontWeight.bold, fontSize: 14),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

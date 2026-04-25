@@ -48,10 +48,12 @@ class HomeShell extends ConsumerWidget {
               'to_tab': toTab,
             });
           }
-          navigationShell.goBranch(i, initialLocation: i == navigationShell.currentIndex);
+          navigationShell.goBranch(i,
+              initialLocation: i == navigationShell.currentIndex);
         },
         items: [
-          const BottomNavigationBarItem(icon: Icon(Icons.location_on_outlined), label: 'Sightings'),
+          const BottomNavigationBarItem(
+              icon: Icon(Icons.location_on_outlined), label: 'Sightings'),
           BottomNavigationBarItem(
             icon: Container(
               padding: const EdgeInsets.all(10),
@@ -67,12 +69,15 @@ class HomeShell extends ConsumerWidget {
                 color: Colors.amber,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.camera_alt, size: 28, color: Colors.black87),
+              child:
+                  const Icon(Icons.camera_alt, size: 28, color: Colors.black87),
             ),
             label: 'Identify',
           ),
-          const BottomNavigationBarItem(icon: Icon(Icons.collections), label: 'Kennel'),
-          const BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Field Guide'),
+          const BottomNavigationBarItem(
+              icon: Icon(Icons.collections), label: 'Kennel'),
+          const BottomNavigationBarItem(
+              icon: Icon(Icons.menu_book), label: 'Field Guide'),
           const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
         ],
       ),

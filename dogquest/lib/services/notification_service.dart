@@ -69,7 +69,8 @@ class NotificationService {
         android: AndroidNotificationDetails(
           _streakChannelId,
           _streakChannelName,
-          channelDescription: 'Daily reminder to maintain your identifying streak',
+          channelDescription:
+              'Daily reminder to maintain your identifying streak',
           importance: Importance.high,
           priority: Priority.defaultPriority,
           icon: '@mipmap/ic_launcher',
@@ -115,7 +116,8 @@ class NotificationService {
       matchDateTimeComponents: DateTimeComponents.time,
       payload: 'daily_dog',
     );
-    debugPrint('[Notifications] Daily dog reminder scheduled for 9:00 AM daily');
+    debugPrint(
+        '[Notifications] Daily dog reminder scheduled for 9:00 AM daily');
   }
 
   /// Cancel the daily dog alert.
@@ -136,7 +138,8 @@ class NotificationService {
   /// If that time has already passed today, returns tomorrow's instance.
   static tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
-    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    var scheduled =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
     if (scheduled.isBefore(now)) {
       scheduled = scheduled.add(const Duration(days: 1));
     }

@@ -41,7 +41,8 @@ class DataConsentDialog {
               'Your sightings can help conservation! When enabled, '
               'anonymized observation data (species, location, date) '
               'is shared with researchers and conservation partners.',
-              style: TextStyle(color: Colors.white70, fontSize: 14, height: 1.5),
+              style:
+                  TextStyle(color: Colors.white70, fontSize: 14, height: 1.5),
             ),
             SizedBox(height: 16),
             Text(

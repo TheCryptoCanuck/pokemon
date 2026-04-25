@@ -105,7 +105,8 @@ class DogService {
     'french bulldog': 'French Bulldog',
     'great dane': 'Great Dane',
     'saint bernard': 'Saint Bernard',
-    'eskimo dog': 'Siberian Husky', // ImageNet "Eskimo dog" = sled dogs (huskies), NOT small American Eskimo
+    'eskimo dog':
+        'Siberian Husky', // ImageNet "Eskimo dog" = sled dogs (huskies), NOT small American Eskimo
     'malamute': 'Alaskan Malamute',
     'siberian husky': 'Siberian Husky',
     'leonberg': 'Leonberger',
@@ -146,7 +147,8 @@ class DogService {
     // Dead ImageNet labels — map to closest app breed
     'dingo': 'Carolina Dog', // Carolina Dog = American Dingo
     'dhole': 'Canaan Dog', // Asian wild dog, visually closest to Canaan Dog
-    'african hunting dog': 'Pharaoh Hound', // African wild dog, prevent dead label
+    'african hunting dog':
+        'Pharaoh Hound', // African wild dog, prevent dead label
     // Supplemental breed aliases (case variants)
     // 'dalmatian' already mapped above
     'bulldog': 'Bulldog',
@@ -171,16 +173,18 @@ class DogService {
       for (final b in _dogs) {
         final lower = b.name.toLowerCase();
         _commonIndex.putIfAbsent(lower, () => b);
-        _normalizedCommonIndex.putIfAbsent(_normalizeCommonName(b.name), () => b);
+        _normalizedCommonIndex.putIfAbsent(
+            _normalizeCommonName(b.name), () => b);
       }
 
       // Register name aliases in the common name index
       for (final entry in _nameAliases.entries) {
-        final target = _index[entry.value] ?? _commonIndex[entry.value.toLowerCase()];
+        final target =
+            _index[entry.value] ?? _commonIndex[entry.value.toLowerCase()];
         if (target != null) {
           _commonIndex.putIfAbsent(entry.key, () => target);
           _normalizedCommonIndex.putIfAbsent(
-            _normalizeCommonName(entry.key), () => target);
+              _normalizeCommonName(entry.key), () => target);
         }
       }
 
@@ -197,7 +201,8 @@ class DogService {
   /// - strip commas, hyphens, apostrophes
   /// - sort words alphabetically
   static String _normalizeCommonName(String name) {
-    final cleaned = name.toLowerCase()
+    final cleaned = name
+        .toLowerCase()
         .replaceAll(',', ' ')
         .replaceAll('-', ' ')
         .replaceAll("'", '')
@@ -250,17 +255,18 @@ class DogService {
   }
 
   Dog unknownDog(String name) => Dog(
-    name: name,
-    scientificName: 'Species not yet in database',
-    imageUrl: '',
-    audioUrl: '',
-    lore: 'You found something we\'ve never seen before! This species isn\'t in our database yet. '
-        'Your discovery has been logged and will help us grow DogQuest.',
-    habitat: 'Unknown',
-    conservationStatus: 'Unknown',
-    rarity: Rarity.unknown,
-    baseXp: 100,
-  );
+        name: name,
+        scientificName: 'Species not yet in database',
+        imageUrl: '',
+        audioUrl: '',
+        lore:
+            'You found something we\'ve never seen before! This species isn\'t in our database yet. '
+            'Your discovery has been logged and will help us grow DogQuest.',
+        habitat: 'Unknown',
+        conservationStatus: 'Unknown',
+        rarity: Rarity.unknown,
+        baseXp: 100,
+      );
 
   /// Weighted random dog pick: common 60%, uncommon 25%, rare 12%, legendary 3%
   Dog weightedRandomDog(Random rng) {
@@ -330,5 +336,6 @@ class DogService {
 }
 
 final dogServiceProvider = Provider<DogService>((ref) {
-  throw UnimplementedError('dogServiceProvider must be overridden after loading');
+  throw UnimplementedError(
+      'dogServiceProvider must be overridden after loading');
 });

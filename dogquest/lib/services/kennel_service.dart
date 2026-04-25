@@ -38,5 +38,6 @@ class KennelService {
 }
 
 final kennelServiceProvider = Provider<KennelService>((ref) {
-  throw UnimplementedError('kennelServiceProvider must be overridden after Hive init');
+  throw UnimplementedError(
+      'kennelServiceProvider must be overridden after Hive init');
 });

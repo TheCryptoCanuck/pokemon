@@ -51,9 +51,8 @@ class IdentificationResultCard extends StatelessWidget {
     final isTopMatch = rank == 1;
     // Show qualitative label in gauge instead of raw percentage
     final normalizedValue = ConfidenceTier.normalizedDisplay(confidence);
-    final gaugeLabel = confidence >= 0.35
-        ? 'HIGH'
-        : (confidence >= 0.20 ? 'GOOD' : '?');
+    final gaugeLabel =
+        confidence >= 0.35 ? 'HIGH' : (confidence >= 0.20 ? 'GOOD' : '?');
 
     return Container(
       margin: EdgeInsets.only(
@@ -202,8 +201,10 @@ class IdentificationResultCard extends StatelessWidget {
       ),
     )
         .animate()
-        .slideY(begin: 0.3, end: 0, duration: 450.ms, curve: Curves.easeOutCubic)
-        .fadeIn(duration: 400.ms, delay: Duration(milliseconds: (rank - 1) * 120));
+        .slideY(
+            begin: 0.3, end: 0, duration: 450.ms, curve: Curves.easeOutCubic)
+        .fadeIn(
+            duration: 400.ms, delay: Duration(milliseconds: (rank - 1) * 120));
   }
 }
 

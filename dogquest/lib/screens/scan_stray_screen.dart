@@ -121,7 +121,8 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            const Icon(Icons.phone_in_talk_rounded, color: Colors.amber, size: 22),
+            const Icon(Icons.phone_in_talk_rounded,
+                color: Colors.amber, size: 22),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
@@ -182,7 +183,8 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor: Colors.green.shade800,
-                  content: const Text('Owner has been notified! Thank you for helping.'),
+                  content: const Text(
+                      'Owner has been notified! Thank you for helping.'),
                 ),
               );
             },
@@ -294,7 +296,8 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
             const Text(
               'Take a photo and we\'ll check it against reported missing dogs in your area.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white54, fontSize: 15, height: 1.4),
+              style:
+                  TextStyle(color: Colors.white54, fontSize: 15, height: 1.4),
             ),
             const SizedBox(height: 36),
 
@@ -351,7 +354,8 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
               label: const Text('Choose from Gallery'),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white54,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
@@ -483,7 +487,8 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 56),
+            const Icon(Icons.error_outline_rounded,
+                color: Colors.redAccent, size: 56),
             const SizedBox(height: 16),
             Text(
               _error ?? 'Something went wrong',
@@ -498,7 +503,8 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.amber,
                 foregroundColor: Colors.black87,
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),
@@ -559,14 +565,16 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
                         hasMatches
                             ? 'Review matches below'
                             : 'This dog may not be reported missing',
-                        style: const TextStyle(color: Colors.white38, fontSize: 12),
+                        style: const TextStyle(
+                            color: Colors.white38, fontSize: 12),
                       ),
                     ],
                   ),
                 ),
                 IconButton(
                   onPressed: _reset,
-                  icon: const Icon(Icons.close_rounded, color: Colors.white38, size: 20),
+                  icon: const Icon(Icons.close_rounded,
+                      color: Colors.white38, size: 20),
                   tooltip: 'New scan',
                 ),
               ],
@@ -649,7 +657,8 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
               'This dog doesn\'t match any currently reported missing dogs. '
               'If the dog seems lost, consider contacting local animal services.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white54, fontSize: 14, height: 1.4),
+              style:
+                  TextStyle(color: Colors.white54, fontSize: 14, height: 1.4),
             ),
           ],
         ),
@@ -733,7 +742,8 @@ class _LostDogMatchCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.favorite_rounded, color: Colors.amber, size: 18),
+                  const Icon(Icons.favorite_rounded,
+                      color: Colors.amber, size: 18),
                   const SizedBox(width: 8),
                   Text(
                     'This could be ${match.dogName}!',
@@ -756,7 +766,8 @@ class _LostDogMatchCard extends StatelessWidget {
                 Row(
                   children: [
                     // Scanned photo
-                    Expanded(child: _photoFrame('Scanned Dog', scannedPhoto, null)),
+                    Expanded(
+                        child: _photoFrame('Scanned Dog', scannedPhoto, null)),
                     const SizedBox(width: 10),
                     // Similarity arrow
                     Column(

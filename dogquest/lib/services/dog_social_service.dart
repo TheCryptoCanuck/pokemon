@@ -32,30 +32,34 @@ class DogSocialProfile {
   });
 
   Map<String, dynamic> toJson() => {
-    'dogName': dogName,
-    'breed': breed,
-    'photoPath': photoPath,
-    'bio': bio,
-    'personalityTags': personalityTags,
-    'followerCount': followerCount,
-    'followingCount': followingCount,
-    'photoGallery': photoGallery,
-    'createdAt': createdAt.toIso8601String(),
-    'isFollowed': isFollowed,
-  };
+        'dogName': dogName,
+        'breed': breed,
+        'photoPath': photoPath,
+        'bio': bio,
+        'personalityTags': personalityTags,
+        'followerCount': followerCount,
+        'followingCount': followingCount,
+        'photoGallery': photoGallery,
+        'createdAt': createdAt.toIso8601String(),
+        'isFollowed': isFollowed,
+      };
 
-  factory DogSocialProfile.fromJson(Map<String, dynamic> json) => DogSocialProfile(
-    dogName: json['dogName'] as String? ?? '',
-    breed: json['breed'] as String? ?? '',
-    photoPath: json['photoPath'] as String?,
-    bio: json['bio'] as String? ?? '',
-    personalityTags: (json['personalityTags'] as List<dynamic>?)?.cast<String>() ?? [],
-    followerCount: json['followerCount'] as int? ?? 0,
-    followingCount: json['followingCount'] as int? ?? 0,
-    photoGallery: (json['photoGallery'] as List<dynamic>?)?.cast<String>() ?? [],
-    createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
-    isFollowed: json['isFollowed'] as bool? ?? false,
-  );
+  factory DogSocialProfile.fromJson(Map<String, dynamic> json) =>
+      DogSocialProfile(
+        dogName: json['dogName'] as String? ?? '',
+        breed: json['breed'] as String? ?? '',
+        photoPath: json['photoPath'] as String?,
+        bio: json['bio'] as String? ?? '',
+        personalityTags:
+            (json['personalityTags'] as List<dynamic>?)?.cast<String>() ?? [],
+        followerCount: json['followerCount'] as int? ?? 0,
+        followingCount: json['followingCount'] as int? ?? 0,
+        photoGallery:
+            (json['photoGallery'] as List<dynamic>?)?.cast<String>() ?? [],
+        createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
+            DateTime.now(),
+        isFollowed: json['isFollowed'] as bool? ?? false,
+      );
 
   DogSocialProfile copyWith({
     String? bio,
@@ -64,18 +68,19 @@ class DogSocialProfile {
     int? followingCount,
     List<String>? photoGallery,
     bool? isFollowed,
-  }) => DogSocialProfile(
-    dogName: dogName,
-    breed: breed,
-    photoPath: photoPath,
-    bio: bio ?? this.bio,
-    personalityTags: personalityTags ?? this.personalityTags,
-    followerCount: followerCount ?? this.followerCount,
-    followingCount: followingCount ?? this.followingCount,
-    photoGallery: photoGallery ?? this.photoGallery,
-    createdAt: createdAt,
-    isFollowed: isFollowed ?? this.isFollowed,
-  );
+  }) =>
+      DogSocialProfile(
+        dogName: dogName,
+        breed: breed,
+        photoPath: photoPath,
+        bio: bio ?? this.bio,
+        personalityTags: personalityTags ?? this.personalityTags,
+        followerCount: followerCount ?? this.followerCount,
+        followingCount: followingCount ?? this.followingCount,
+        photoGallery: photoGallery ?? this.photoGallery,
+        createdAt: createdAt,
+        isFollowed: isFollowed ?? this.isFollowed,
+      );
 }
 
 /// Activity feed item — represents a social event.
@@ -83,7 +88,8 @@ class FeedItem {
   final String id;
   final String dogName;
   final String breed;
-  final String type; // 'sighting', 'new_friend', 'level_up', 'achievement', 'photo'
+  final String
+      type; // 'sighting', 'new_friend', 'level_up', 'achievement', 'photo'
   final String text;
   final String? photoPath;
   final DateTime timestamp;
@@ -103,28 +109,29 @@ class FeedItem {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'dogName': dogName,
-    'breed': breed,
-    'type': type,
-    'text': text,
-    'photoPath': photoPath,
-    'timestamp': timestamp.toIso8601String(),
-    if (latitude != null) 'lat': latitude,
-    if (longitude != null) 'lon': longitude,
-  };
+        'id': id,
+        'dogName': dogName,
+        'breed': breed,
+        'type': type,
+        'text': text,
+        'photoPath': photoPath,
+        'timestamp': timestamp.toIso8601String(),
+        if (latitude != null) 'lat': latitude,
+        if (longitude != null) 'lon': longitude,
+      };
 
   factory FeedItem.fromJson(Map<String, dynamic> json) => FeedItem(
-    id: json['id'] as String? ?? '',
-    dogName: json['dogName'] as String? ?? '',
-    breed: json['breed'] as String? ?? '',
-    type: json['type'] as String? ?? 'sighting',
-    text: json['text'] as String? ?? '',
-    photoPath: json['photoPath'] as String?,
-    timestamp: DateTime.tryParse(json['timestamp'] as String? ?? '') ?? DateTime.now(),
-    latitude: (json['lat'] as num?)?.toDouble(),
-    longitude: (json['lon'] as num?)?.toDouble(),
-  );
+        id: json['id'] as String? ?? '',
+        dogName: json['dogName'] as String? ?? '',
+        breed: json['breed'] as String? ?? '',
+        type: json['type'] as String? ?? 'sighting',
+        text: json['text'] as String? ?? '',
+        photoPath: json['photoPath'] as String?,
+        timestamp: DateTime.tryParse(json['timestamp'] as String? ?? '') ??
+            DateTime.now(),
+        latitude: (json['lat'] as num?)?.toDouble(),
+        longitude: (json['lon'] as num?)?.toDouble(),
+      );
 }
 
 /// Manages dog social profiles, following, and the activity feed.
@@ -182,11 +189,13 @@ class DogSocialService {
     final raw = _box.get(_profilesKey) as String?;
     if (raw == null || raw.isEmpty) return {};
     final map = jsonDecode(raw) as Map<String, dynamic>;
-    return map.map((k, v) => MapEntry(k, DogSocialProfile.fromJson(v as Map<String, dynamic>)));
+    return map.map((k, v) =>
+        MapEntry(k, DogSocialProfile.fromJson(v as Map<String, dynamic>)));
   }
 
   void _saveProfiles(Map<String, DogSocialProfile> profiles) {
-    _box.put(_profilesKey, jsonEncode(profiles.map((k, v) => MapEntry(k, v.toJson()))));
+    _box.put(_profilesKey,
+        jsonEncode(profiles.map((k, v) => MapEntry(k, v.toJson()))));
   }
 
   // ─── Following ──────────────────────────────────────────────
@@ -241,7 +250,10 @@ class DogSocialService {
     final feed = _loadFeed();
     if (!followedOnly) return feed.take(limit).toList();
     final followedDogs = _loadFollowing();
-    return feed.where((item) => followedDogs.contains(item.dogName)).take(limit).toList();
+    return feed
+        .where((item) => followedDogs.contains(item.dogName))
+        .take(limit)
+        .toList();
   }
 
   /// Get feed items for a specific dog.
@@ -253,7 +265,9 @@ class DogSocialService {
     final raw = _box.get(_feedKey) as String?;
     if (raw == null || raw.isEmpty) return [];
     final list = jsonDecode(raw) as List<dynamic>;
-    return list.map((e) => FeedItem.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => FeedItem.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   void _saveFeed(List<FeedItem> feed) {
@@ -275,5 +289,6 @@ class DogSocialService {
 }
 
 final dogSocialServiceProvider = Provider<DogSocialService>((ref) {
-  throw UnimplementedError('dogSocialServiceProvider must be overridden after Hive init');
+  throw UnimplementedError(
+      'dogSocialServiceProvider must be overridden after Hive init');
 });

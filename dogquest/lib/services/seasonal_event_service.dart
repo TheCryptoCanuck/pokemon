@@ -49,7 +49,8 @@ class SeasonalEventService {
         id: 'spring_walkathon',
         name: 'Spring Walkathon',
         emoji: '🌸',
-        description: 'Spring is here! Walk your dogs and identify breeds for 2x XP.',
+        description:
+            'Spring is here! Walk your dogs and identify breeds for 2x XP.',
         themeColor: const Color(0xFFD4874E),
         xpMultiplier: 2.0,
         startDate: DateTime(year, 3, 23),
@@ -71,7 +72,8 @@ class SeasonalEventService {
         id: 'puppy_season',
         name: 'Puppy Season',
         emoji: '🐶',
-        description: 'Puppies everywhere! Find toy and small breeds for bonus XP.',
+        description:
+            'Puppies everywhere! Find toy and small breeds for bonus XP.',
         themeColor: const Color(0xFFFF9800),
         xpMultiplier: 1.5,
         startDate: DateTime(year, 6, 1),
@@ -104,7 +106,8 @@ class SeasonalEventService {
         id: 'holiday_pup_parade',
         name: 'Holiday Pup Parade',
         emoji: '🎄',
-        description: 'Spread holiday cheer! Every breed identified earns bonus XP.',
+        description:
+            'Spread holiday cheer! Every breed identified earns bonus XP.',
         themeColor: Colors.red,
         xpMultiplier: 2.0,
         startDate: DateTime(year, 12, 1),

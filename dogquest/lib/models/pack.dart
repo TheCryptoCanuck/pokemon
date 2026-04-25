@@ -19,33 +19,35 @@ class PackMember {
   bool get isAlpha => role == 'alpha';
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'role': role,
-    'avatarEmoji': avatarEmoji,
-    'dogNames': dogNames,
-    'joinedAt': joinedAt.toIso8601String(),
-  };
+        'name': name,
+        'role': role,
+        'avatarEmoji': avatarEmoji,
+        'dogNames': dogNames,
+        'joinedAt': joinedAt.toIso8601String(),
+      };
 
   factory PackMember.fromJson(Map<String, dynamic> json) => PackMember(
-    name: json['name'] as String? ?? '',
-    role: json['role'] as String? ?? 'member',
-    avatarEmoji: json['avatarEmoji'] as String?,
-    dogNames: (json['dogNames'] as List<dynamic>?)?.cast<String>() ?? [],
-    joinedAt: DateTime.tryParse(json['joinedAt'] as String? ?? '') ?? DateTime.now(),
-  );
+        name: json['name'] as String? ?? '',
+        role: json['role'] as String? ?? 'member',
+        avatarEmoji: json['avatarEmoji'] as String?,
+        dogNames: (json['dogNames'] as List<dynamic>?)?.cast<String>() ?? [],
+        joinedAt: DateTime.tryParse(json['joinedAt'] as String? ?? '') ??
+            DateTime.now(),
+      );
 
   PackMember copyWith({
     String? name,
     String? role,
     String? avatarEmoji,
     List<String>? dogNames,
-  }) => PackMember(
-    name: name ?? this.name,
-    role: role ?? this.role,
-    avatarEmoji: avatarEmoji ?? this.avatarEmoji,
-    dogNames: dogNames ?? this.dogNames,
-    joinedAt: joinedAt,
-  );
+  }) =>
+      PackMember(
+        name: name ?? this.name,
+        role: role ?? this.role,
+        avatarEmoji: avatarEmoji ?? this.avatarEmoji,
+        dogNames: dogNames ?? this.dogNames,
+        joinedAt: joinedAt,
+      );
 }
 
 /// A Pack represents a family group that shares dogs and stats.
@@ -85,30 +87,32 @@ class Pack {
   }
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'emoji': emoji,
-    'inviteCode': inviteCode,
-    'members': members.map((m) => m.toJson()).toList(),
-    'createdAt': createdAt.toIso8601String(),
-    'weeklyBreedsFound': weeklyBreedsFound,
-    'weeklyXpEarned': weeklyXpEarned,
-    'weeklyActiveDays': weeklyActiveDays,
-    'weeklyStartDate': weeklyStartDate,
-  };
+        'name': name,
+        'emoji': emoji,
+        'inviteCode': inviteCode,
+        'members': members.map((m) => m.toJson()).toList(),
+        'createdAt': createdAt.toIso8601String(),
+        'weeklyBreedsFound': weeklyBreedsFound,
+        'weeklyXpEarned': weeklyXpEarned,
+        'weeklyActiveDays': weeklyActiveDays,
+        'weeklyStartDate': weeklyStartDate,
+      };
 
   factory Pack.fromJson(Map<String, dynamic> json) => Pack(
-    name: json['name'] as String? ?? '',
-    emoji: json['emoji'] as String? ?? '\u{1F43E}',
-    inviteCode: json['inviteCode'] as String? ?? '',
-    members: (json['members'] as List<dynamic>?)
-        ?.map((m) => PackMember.fromJson(m as Map<String, dynamic>))
-        .toList() ?? [],
-    createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
-    weeklyBreedsFound: json['weeklyBreedsFound'] as int? ?? 0,
-    weeklyXpEarned: json['weeklyXpEarned'] as int? ?? 0,
-    weeklyActiveDays: json['weeklyActiveDays'] as int? ?? 0,
-    weeklyStartDate: json['weeklyStartDate'] as String?,
-  );
+        name: json['name'] as String? ?? '',
+        emoji: json['emoji'] as String? ?? '\u{1F43E}',
+        inviteCode: json['inviteCode'] as String? ?? '',
+        members: (json['members'] as List<dynamic>?)
+                ?.map((m) => PackMember.fromJson(m as Map<String, dynamic>))
+                .toList() ??
+            [],
+        createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
+            DateTime.now(),
+        weeklyBreedsFound: json['weeklyBreedsFound'] as int? ?? 0,
+        weeklyXpEarned: json['weeklyXpEarned'] as int? ?? 0,
+        weeklyActiveDays: json['weeklyActiveDays'] as int? ?? 0,
+        weeklyStartDate: json['weeklyStartDate'] as String?,
+      );
 
   Pack copyWith({
     String? name,
@@ -118,17 +122,18 @@ class Pack {
     int? weeklyXpEarned,
     int? weeklyActiveDays,
     String? weeklyStartDate,
-  }) => Pack(
-    name: name ?? this.name,
-    emoji: emoji ?? this.emoji,
-    inviteCode: inviteCode,
-    members: members ?? this.members,
-    createdAt: createdAt,
-    weeklyBreedsFound: weeklyBreedsFound ?? this.weeklyBreedsFound,
-    weeklyXpEarned: weeklyXpEarned ?? this.weeklyXpEarned,
-    weeklyActiveDays: weeklyActiveDays ?? this.weeklyActiveDays,
-    weeklyStartDate: weeklyStartDate ?? this.weeklyStartDate,
-  );
+  }) =>
+      Pack(
+        name: name ?? this.name,
+        emoji: emoji ?? this.emoji,
+        inviteCode: inviteCode,
+        members: members ?? this.members,
+        createdAt: createdAt,
+        weeklyBreedsFound: weeklyBreedsFound ?? this.weeklyBreedsFound,
+        weeklyXpEarned: weeklyXpEarned ?? this.weeklyXpEarned,
+        weeklyActiveDays: weeklyActiveDays ?? this.weeklyActiveDays,
+        weeklyStartDate: weeklyStartDate ?? this.weeklyStartDate,
+      );
 
   /// Generate a random 6-character invite code.
   static String generateInviteCode() {
@@ -144,13 +149,13 @@ const packEmojiOptions = [
   '\u{1F3E0}', // house
   '\u{1F436}', // dog face
   '\u{1F43A}', // wolf
-  '\u{2B50}',  // star
+  '\u{2B50}', // star
   '\u{1F525}', // fire
   '\u{1F496}', // sparkling heart
   '\u{1F308}', // rainbow
   '\u{1F3C6}', // trophy
   '\u{1F6E1}', // shield
-  '\u{26A1}',  // lightning
+  '\u{26A1}', // lightning
   '\u{1F31F}', // glowing star
 ];
 

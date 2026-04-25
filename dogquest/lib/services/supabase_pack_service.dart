@@ -61,8 +61,10 @@ class PackMemberRemote {
     return PackMemberRemote(
       id: json['id'] as String,
       userId: json['user_id'] as String,
-      username: user?['username'] as String? ?? json['username'] as String? ?? '',
-      displayName: user?['display_name'] as String? ?? json['display_name'] as String?,
+      username:
+          user?['username'] as String? ?? json['username'] as String? ?? '',
+      displayName:
+          user?['display_name'] as String? ?? json['display_name'] as String?,
       avatarId: user?['avatar_id'] as String? ?? json['avatar_id'] as String?,
       role: json['role'] as String,
       joinedAt: DateTime.parse(json['joined_at'] as String),
@@ -191,10 +193,8 @@ class SupabasePackService {
     _log.info('Joined pack ${packRow['name']} via code $code');
 
     // Return pack with updated member count
-    final members = await _client
-        .from('pack_members')
-        .select('id')
-        .eq('pack_id', packId);
+    final members =
+        await _client.from('pack_members').select('id').eq('pack_id', packId);
 
     return PackRemote(
       id: packId,
@@ -273,8 +273,7 @@ class SupabasePackService {
 
       if ((memberships as List).isEmpty) return [];
 
-      final packIds =
-          memberships.map((m) => m['pack_id'] as String).toList();
+      final packIds = memberships.map((m) => m['pack_id'] as String).toList();
 
       // Fetch packs
       final packs = await _client
@@ -375,7 +374,8 @@ class SupabasePackService {
   /// Generate a random 6-character uppercase alphanumeric invite code.
   String _generateInviteCode() {
     final random = Random.secure();
-    return List.generate(6, (_) => _chars[random.nextInt(_chars.length)]).join();
+    return List.generate(6, (_) => _chars[random.nextInt(_chars.length)])
+        .join();
   }
 }
 

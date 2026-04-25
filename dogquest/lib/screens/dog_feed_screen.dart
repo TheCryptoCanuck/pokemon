@@ -49,7 +49,11 @@ class _DogFeedScreenState extends ConsumerState<DogFeedScreen> {
     }
     setState(() => _isLoading = true);
     final posts = await social.getFeed(limit: 20);
-    if (mounted) setState(() { _remotePosts = posts; _isLoading = false; });
+    if (mounted)
+      setState(() {
+        _remotePosts = posts;
+        _isLoading = false;
+      });
   }
 
   Future<void> _loadMore() async {
@@ -175,9 +179,8 @@ class _DogFeedScreenState extends ConsumerState<DogFeedScreen> {
           color: bgCard,
           borderRadius: BorderRadius.circular(12),
         ),
-      )
-          .animate(onPlay: (c) => c.repeat())
-          .shimmer(duration: 1200.ms, color: Colors.white.withValues(alpha: 0.05)),
+      ).animate(onPlay: (c) => c.repeat()).shimmer(
+          duration: 1200.ms, color: Colors.white.withValues(alpha: 0.05)),
     );
   }
 
@@ -189,7 +192,8 @@ class _DogFeedScreenState extends ConsumerState<DogFeedScreen> {
         Center(
           child: Column(
             children: [
-              Icon(Icons.pets, size: 64, color: textSecondary.withValues(alpha: 0.3)),
+              Icon(Icons.pets,
+                  size: 64, color: textSecondary.withValues(alpha: 0.3)),
               const SizedBox(height: 16),
               Text(
                 _followedOnly
@@ -200,7 +204,8 @@ class _DogFeedScreenState extends ConsumerState<DogFeedScreen> {
               const SizedBox(height: 8),
               Text(
                 'Start identifying dogs to see their activity here!',
-                style: TextStyle(color: textSecondary.withValues(alpha: 0.6), fontSize: 14),
+                style: TextStyle(
+                    color: textSecondary.withValues(alpha: 0.6), fontSize: 14),
               ),
             ],
           ),
@@ -220,33 +225,55 @@ class _RemoteFeedCard extends ConsumerWidget {
 
   IconData _iconForType(String type) {
     switch (type) {
-      case 'breed_discovered': return Icons.camera_alt;
-      case 'achievement_unlocked': return Icons.emoji_events;
-      case 'streak_milestone': return Icons.local_fire_department;
-      case 'level_up': return Icons.arrow_upward;
-      case 'rare_find': return Icons.star;
-      case 'set_completed': return Icons.collections;
-      case 'lost_dog_alert': return Icons.warning_amber;
-      case 'lost_dog_found': return Icons.celebration;
-      case 'friendship_formed': return Icons.favorite;
-      case 'photo_shared': return Icons.photo;
-      default: return Icons.pets;
+      case 'breed_discovered':
+        return Icons.camera_alt;
+      case 'achievement_unlocked':
+        return Icons.emoji_events;
+      case 'streak_milestone':
+        return Icons.local_fire_department;
+      case 'level_up':
+        return Icons.arrow_upward;
+      case 'rare_find':
+        return Icons.star;
+      case 'set_completed':
+        return Icons.collections;
+      case 'lost_dog_alert':
+        return Icons.warning_amber;
+      case 'lost_dog_found':
+        return Icons.celebration;
+      case 'friendship_formed':
+        return Icons.favorite;
+      case 'photo_shared':
+        return Icons.photo;
+      default:
+        return Icons.pets;
     }
   }
 
   Color _colorForType(String type) {
     switch (type) {
-      case 'breed_discovered': return Colors.blue;
-      case 'achievement_unlocked': return Colors.purple;
-      case 'streak_milestone': return Colors.orange;
-      case 'level_up': return Colors.amber;
-      case 'rare_find': return Colors.amber.shade700;
-      case 'set_completed': return Colors.green;
-      case 'lost_dog_alert': return Colors.red;
-      case 'lost_dog_found': return Colors.green;
-      case 'friendship_formed': return Colors.pink;
-      case 'photo_shared': return Colors.teal;
-      default: return accent;
+      case 'breed_discovered':
+        return Colors.blue;
+      case 'achievement_unlocked':
+        return Colors.purple;
+      case 'streak_milestone':
+        return Colors.orange;
+      case 'level_up':
+        return Colors.amber;
+      case 'rare_find':
+        return Colors.amber.shade700;
+      case 'set_completed':
+        return Colors.green;
+      case 'lost_dog_alert':
+        return Colors.red;
+      case 'lost_dog_found':
+        return Colors.green;
+      case 'friendship_formed':
+        return Colors.pink;
+      case 'photo_shared':
+        return Colors.teal;
+      default:
+        return accent;
     }
   }
 
@@ -281,7 +308,8 @@ class _RemoteFeedCard extends ConsumerWidget {
                     color: typeColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(_iconForType(post.postType), color: typeColor, size: 20),
+                  child: Icon(_iconForType(post.postType),
+                      color: typeColor, size: 20),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -331,12 +359,14 @@ class _RemoteFeedCard extends ConsumerWidget {
                   placeholder: (_, __) => Container(
                     height: 180,
                     color: bgDeep,
-                    child: const Center(child: CircularProgressIndicator(color: accent)),
+                    child: const Center(
+                        child: CircularProgressIndicator(color: accent)),
                   ),
                   errorWidget: (_, __, ___) => Container(
                     height: 100,
                     color: bgDeep,
-                    child: Center(child: Icon(Icons.broken_image, color: textSecondary)),
+                    child: Center(
+                        child: Icon(Icons.broken_image, color: textSecondary)),
                   ),
                 ),
               ),
@@ -452,23 +482,35 @@ class _LocalFeedCard extends ConsumerWidget {
 
   IconData _iconForType(String type) {
     switch (type) {
-      case 'sighting': return Icons.camera_alt;
-      case 'new_friend': return Icons.favorite;
-      case 'level_up': return Icons.arrow_upward;
-      case 'achievement': return Icons.emoji_events;
-      case 'photo': return Icons.photo;
-      default: return Icons.pets;
+      case 'sighting':
+        return Icons.camera_alt;
+      case 'new_friend':
+        return Icons.favorite;
+      case 'level_up':
+        return Icons.arrow_upward;
+      case 'achievement':
+        return Icons.emoji_events;
+      case 'photo':
+        return Icons.photo;
+      default:
+        return Icons.pets;
     }
   }
 
   Color _colorForType(String type) {
     switch (type) {
-      case 'sighting': return Colors.blue;
-      case 'new_friend': return Colors.pink;
-      case 'level_up': return Colors.amber;
-      case 'achievement': return Colors.purple;
-      case 'photo': return Colors.green;
-      default: return accent;
+      case 'sighting':
+        return Colors.blue;
+      case 'new_friend':
+        return Colors.pink;
+      case 'level_up':
+        return Colors.amber;
+      case 'achievement':
+        return Colors.purple;
+      case 'photo':
+        return Colors.green;
+      default:
+        return accent;
     }
   }
 
@@ -504,7 +546,8 @@ class _LocalFeedCard extends ConsumerWidget {
                     color: typeColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(_iconForType(item.type), color: typeColor, size: 20),
+                  child:
+                      Icon(_iconForType(item.type), color: typeColor, size: 20),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -512,14 +555,17 @@ class _LocalFeedCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(item.dogName,
-                        style: const TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 15)),
+                          style: const TextStyle(
+                              color: textPrimary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15)),
                       Text(item.breed,
-                        style: TextStyle(color: textSecondary, fontSize: 12)),
+                          style: TextStyle(color: textSecondary, fontSize: 12)),
                     ],
                   ),
                 ),
                 Text(_timeAgo(item.timestamp),
-                  style: TextStyle(color: textSecondary, fontSize: 12)),
+                    style: TextStyle(color: textSecondary, fontSize: 12)),
                 const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () {
@@ -539,7 +585,8 @@ class _LocalFeedCard extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 10),
-            Text(item.text, style: const TextStyle(color: textPrimary, fontSize: 14)),
+            Text(item.text,
+                style: const TextStyle(color: textPrimary, fontSize: 14)),
             if (item.photoPath != null) ...[
               const SizedBox(height: 10),
               ClipRRect(
@@ -550,8 +597,10 @@ class _LocalFeedCard extends ConsumerWidget {
                   width: double.infinity,
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => Container(
-                    height: 100, color: bgDeep,
-                    child: Center(child: Icon(Icons.broken_image, color: textSecondary)),
+                    height: 100,
+                    color: bgDeep,
+                    child: Center(
+                        child: Icon(Icons.broken_image, color: textSecondary)),
                   ),
                 ),
               ),

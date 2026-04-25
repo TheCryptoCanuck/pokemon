@@ -203,9 +203,13 @@ class RecommendationService {
     List<Dog> allDogs,
   ) {
     final result = <Rarity, double>{};
-    for (final rarity in [Rarity.common, Rarity.uncommon, Rarity.rare, Rarity.legendary]) {
-      final totalInRarity =
-          allDogs.where((b) => b.rarity == rarity).length;
+    for (final rarity in [
+      Rarity.common,
+      Rarity.uncommon,
+      Rarity.rare,
+      Rarity.legendary
+    ]) {
+      final totalInRarity = allDogs.where((b) => b.rarity == rarity).length;
       final collectedInRarity =
           collected.where((b) => b.rarity == rarity).length;
       if (totalInRarity == 0) continue;

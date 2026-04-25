@@ -122,8 +122,7 @@ class SmartNotificationService {
 
     String body;
     if (uncollectedDogNames.isEmpty) {
-      body =
-          "Your daily challenges are ready! Can you sweep all three?";
+      body = "Your daily challenges are ready! Can you sweep all three?";
     } else {
       final rng = Random();
       final dogName =

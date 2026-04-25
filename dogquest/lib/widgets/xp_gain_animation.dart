@@ -130,7 +130,8 @@ class _XpGainOverlayState extends State<_XpGainOverlay>
     final size = MediaQuery.of(context).size;
 
     return AnimatedBuilder(
-      animation: Listenable.merge([_mainController, _countController, _levelUpController]),
+      animation: Listenable.merge(
+          [_mainController, _countController, _levelUpController]),
       builder: (context, _) {
         final levelUpProgress = _levelUpController.value;
         final showLevelUp = widget.didLevelUp && levelUpProgress > 0;
@@ -255,22 +256,27 @@ class _XpGainOverlayState extends State<_XpGainOverlay>
                       ),
 
                       // Streak multiplier
-                      if (widget.streakMultiplier != null && widget.streakMultiplier! > 1.0)
+                      if (widget.streakMultiplier != null &&
+                          widget.streakMultiplier! > 1.0)
                         Padding(
                           padding: const EdgeInsets.only(top: 12),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 6),
                             decoration: BoxDecoration(
                               color: Colors.orange.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.orange.withValues(alpha: 0.5)),
+                              border: Border.all(
+                                  color: Colors.orange.withValues(alpha: 0.5)),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Text(
                                   '\u{1F525}',
-                                  style: TextStyle(fontSize: 20, decoration: TextDecoration.none),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      decoration: TextDecoration.none),
                                 ),
                                 const SizedBox(width: 6),
                                 Text(

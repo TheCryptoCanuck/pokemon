@@ -27,12 +27,12 @@ Uint8List _preprocessForEmbedding(Uint8List bytes) {
   final scaledW = (w * scale).round();
   final scaledH = (h * scale).round();
   final resized = img.copyResize(oriented,
-      width: scaledW, height: scaledH,
-      interpolation: img.Interpolation.linear);
+      width: scaledW, height: scaledH, interpolation: img.Interpolation.linear);
   final cropped = img.copyCrop(resized,
       x: (scaledW - _kInputSize) ~/ 2,
       y: (scaledH - _kInputSize) ~/ 2,
-      width: _kInputSize, height: _kInputSize);
+      width: _kInputSize,
+      height: _kInputSize);
 
   final flat = Uint8List(_kInputSize * _kInputSize * 3);
   int offset = 0;
@@ -163,5 +163,6 @@ class DogEmbeddingService {
 }
 
 final dogEmbeddingServiceProvider = Provider<DogEmbeddingService>((ref) {
-  throw UnimplementedError('dogEmbeddingServiceProvider must be overridden after init');
+  throw UnimplementedError(
+      'dogEmbeddingServiceProvider must be overridden after init');
 });

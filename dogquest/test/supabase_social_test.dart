@@ -122,7 +122,10 @@ void main() {
 
     // 1. getFeed returns parsed SocialPost list
     test('getFeed returns parsed SocialPost list', () async {
-      final rawData = [_postJson(), _postJson(id: 'post-2', postType: 'level_up')];
+      final rawData = [
+        _postJson(),
+        _postJson(id: 'post-2', postType: 'level_up')
+      ];
 
       when(() => mockClient.rpc('get_feed', params: any(named: 'params')))
           .thenAnswer((_) async => rawData);
@@ -287,7 +290,8 @@ void main() {
     });
 
     // 9. onBreedDiscovered with legendary rarity creates two posts
-    test('onBreedDiscovered with legendary rarity creates breed_discovered and rare_find',
+    test(
+        'onBreedDiscovered with legendary rarity creates breed_discovered and rare_find',
         () async {
       generator.onBreedDiscovered('Xoloitzcuintli', rarity: 'legendary');
       await _pump();

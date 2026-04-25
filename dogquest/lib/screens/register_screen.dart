@@ -69,7 +69,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     double score = 0;
     if (p.length >= 6) score += 0.25;
     if (p.length >= 10) score += 0.25;
-    if (RegExp(r'[A-Z]').hasMatch(p) && RegExp(r'[a-z]').hasMatch(p)) score += 0.25;
+    if (RegExp(r'[A-Z]').hasMatch(p) && RegExp(r'[a-z]').hasMatch(p))
+      score += 0.25;
     if (RegExp(r'[0-9!@#\$%^&*(),.?":{}|<>]').hasMatch(p)) score += 0.25;
     return score;
   }
@@ -128,132 +129,144 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             child: Form(
               key: _formKey,
               child: AutofillGroup(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('🐶', style: TextStyle(fontSize: 64))
-                      .animate()
-                      .fadeIn()
-                      .scale(),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.amber,
-                    ),
-                  ).animate().fadeIn(delay: 100.ms),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Join DogQuest and start your collection',
-                    style: TextStyle(color: Colors.white54),
-                  ).animate().fadeIn(delay: 200.ms),
-                  const SizedBox(height: 32),
-                  if (_error != null)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.red.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.red.withValues(alpha: 0.4)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('🐶', style: TextStyle(fontSize: 64))
+                        .animate()
+                        .fadeIn()
+                        .scale(),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Create Account',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amber,
                       ),
-                      child: Text(
-                        _error!,
-                        style: const TextStyle(color: Colors.redAccent, fontSize: 13),
-                      ),
-                    ).animate().shakeX(duration: 400.ms, hz: 4, amount: 6),
-                  TextFormField(
-                    controller: _usernameCtrl,
-                    autofillHints: const [AutofillHints.username],
-                    style: const TextStyle(color: Colors.white),
-                    decoration: _inputDecoration('Username').copyWith(
-                      suffixIcon: _usernameStatus == null
-                          ? null
-                          : _usernameStatus == 'checking'
-                              ? const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: SizedBox(
-                                    height: 16,
-                                    width: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white38),
-                                  ),
-                                )
-                              : Icon(
-                                  _usernameStatus == 'available' ? Icons.check_circle : Icons.cancel,
-                                  color: _usernameStatus == 'available' ? Colors.greenAccent : Colors.redAccent,
-                                  size: 20,
-                                ),
-                    ),
-                    validator: (v) {
-                      if (v == null || v.trim().length < 3) return 'At least 3 characters';
-                      if (v.trim().length > 50) return 'Max 50 characters';
-                      if (_usernameStatus == 'taken') return 'Username is taken';
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailCtrl,
-                    keyboardType: TextInputType.emailAddress,
-                    autofillHints: const [AutofillHints.email],
-                    style: const TextStyle(color: Colors.white),
-                    decoration: _inputDecoration('Email'),
-                    validator: (v) =>
-                        (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordCtrl,
-                    obscureText: true,
-                    autofillHints: const [AutofillHints.newPassword],
-                    style: const TextStyle(color: Colors.white),
-                    decoration: _inputDecoration('Password'),
-                    onChanged: (_) => setState(() {}),
-                    validator: (v) =>
-                        (v == null || v.length < 6) ? 'At least 6 characters' : null,
-                  ),
-                  if (_passwordCtrl.text.isNotEmpty) ...[
+                    ).animate().fadeIn(delay: 100.ms),
                     const SizedBox(height: 8),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: _passwordStrength,
-                        backgroundColor: Colors.white12,
-                        color: _strengthColor,
-                        minHeight: 4,
+                    const Text(
+                      'Join DogQuest and start your collection',
+                      style: TextStyle(color: Colors.white54),
+                    ).animate().fadeIn(delay: 200.ms),
+                    const SizedBox(height: 32),
+                    if (_error != null)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: Colors.red.withValues(alpha: 0.4)),
+                        ),
+                        child: Text(
+                          _error!,
+                          style: const TextStyle(
+                              color: Colors.redAccent, fontSize: 13),
+                        ),
+                      ).animate().shakeX(duration: 400.ms, hz: 4, amount: 6),
+                    TextFormField(
+                      controller: _usernameCtrl,
+                      autofillHints: const [AutofillHints.username],
+                      style: const TextStyle(color: Colors.white),
+                      decoration: _inputDecoration('Username').copyWith(
+                        suffixIcon: _usernameStatus == null
+                            ? null
+                            : _usernameStatus == 'checking'
+                                ? const Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: SizedBox(
+                                      height: 16,
+                                      width: 16,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white38),
+                                    ),
+                                  )
+                                : Icon(
+                                    _usernameStatus == 'available'
+                                        ? Icons.check_circle
+                                        : Icons.cancel,
+                                    color: _usernameStatus == 'available'
+                                        ? Colors.greenAccent
+                                        : Colors.redAccent,
+                                    size: 20,
+                                  ),
+                      ),
+                      validator: (v) {
+                        if (v == null || v.trim().length < 3)
+                          return 'At least 3 characters';
+                        if (v.trim().length > 50) return 'Max 50 characters';
+                        if (_usernameStatus == 'taken')
+                          return 'Username is taken';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _emailCtrl,
+                      keyboardType: TextInputType.emailAddress,
+                      autofillHints: const [AutofillHints.email],
+                      style: const TextStyle(color: Colors.white),
+                      decoration: _inputDecoration('Email'),
+                      validator: (v) => (v == null || !v.contains('@'))
+                          ? 'Enter a valid email'
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _passwordCtrl,
+                      obscureText: true,
+                      autofillHints: const [AutofillHints.newPassword],
+                      style: const TextStyle(color: Colors.white),
+                      decoration: _inputDecoration('Password'),
+                      onChanged: (_) => setState(() {}),
+                      validator: (v) => (v == null || v.length < 6)
+                          ? 'At least 6 characters'
+                          : null,
+                    ),
+                    if (_passwordCtrl.text.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: LinearProgressIndicator(
+                          value: _passwordStrength,
+                          backgroundColor: Colors.white12,
+                          color: _strengthColor,
+                          minHeight: 4,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _loading ? null : _register,
+                        child: _loading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.black,
+                                ),
+                              )
+                            : const Text('Create Account'),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: () => context.go('/login'),
+                      child: const Text(
+                        'Already have an account? Sign in',
+                        style: TextStyle(color: Colors.amber),
                       ),
                     ),
                   ],
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _loading ? null : _register,
-                      child: _loading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.black,
-                              ),
-                            )
-                          : const Text('Create Account'),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextButton(
-                    onPressed: () => context.go('/login'),
-                    child: const Text(
-                      'Already have an account? Sign in',
-                      style: TextStyle(color: Colors.amber),
-                    ),
-                  ),
-                ],
-              ),
+                ),
               ),
             ),
           ),

@@ -36,10 +36,13 @@ class ConnectionStatusBanner extends ConsumerWidget {
           const SizedBox(width: 8),
           const Text(
             'Offline — local mode',
-            style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+            style: TextStyle(
+                color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
           ),
         ],
       ),
-    ).animate().slideY(begin: -1, end: 0, duration: 300.ms, curve: Curves.easeOut);
+    )
+        .animate()
+        .slideY(begin: -1, end: 0, duration: 300.ms, curve: Curves.easeOut);
   }
 }

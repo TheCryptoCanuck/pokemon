@@ -221,7 +221,8 @@ void main() {
       }
     });
 
-    test('preserves rank order — largest logit maps to largest probability', () {
+    test('preserves rank order — largest logit maps to largest probability',
+        () {
       final probs = _softmax([1.0, 5.0, 2.0, -3.0]);
       final maxProb = probs.reduce((a, b) => a > b ? a : b);
       // Index 1 has the highest logit (5.0) and must have the highest prob.
@@ -321,30 +322,48 @@ void main() {
       expect(out.rejectionReason, equals('entropy'));
     });
 
-    test('clear 70% winner with 9-class residual is NOT rejected by entropy', () {
+    test('clear 70% winner with 9-class residual is NOT rejected by entropy',
+        () {
       final rest = 0.30 / 9;
       final scores = [0.70, ...List<double>.filled(9, rest)];
       final out = _mirrorBuildResults(scores);
       expect(out.rejectionReason, isNot(equals('entropy')));
     });
 
-    test('moderate 40% winner across 10 classes is NOT rejected by entropy', () {
-      final scores = [0.40, 0.20, 0.10, 0.08, 0.07, 0.05, 0.04, 0.03, 0.02, 0.01];
+    test('moderate 40% winner across 10 classes is NOT rejected by entropy',
+        () {
+      final scores = [
+        0.40,
+        0.20,
+        0.10,
+        0.08,
+        0.07,
+        0.05,
+        0.04,
+        0.03,
+        0.02,
+        0.01
+      ];
       final out = _mirrorBuildResults(scores);
       expect(out.rejectionReason, isNot(equals('entropy')));
     });
 
-    test('entropy uses natural log — uniform n-class always gives normEntropy 1.0', () {
+    test(
+        'entropy uses natural log — uniform n-class always gives normEntropy 1.0',
+        () {
       // For a uniform distribution: H = ln(n), maxH = ln(n) → normEntropy = 1.0.
       for (final n in [3, 7, 50]) {
         final scores = List<double>.filled(n, 1.0 / n);
         final out = _mirrorBuildResults(scores);
-        expect(out.rejected, isTrue, reason: 'uniform $n-class should be rejected');
+        expect(out.rejected, isTrue,
+            reason: 'uniform $n-class should be rejected');
         expect(out.rejectionReason, equals('entropy'));
       }
     });
 
-    test('threshold is strictly > 0.97, so scores at exactly 0.97 are not rejected', () {
+    test(
+        'threshold is strictly > 0.97, so scores at exactly 0.97 are not rejected',
+        () {
       // A discriminative 15-class distribution has normEntropy well below 0.97.
       final rest = 0.35 / 14;
       final scores = [0.65, ...List<double>.filled(14, rest)];
@@ -390,7 +409,8 @@ void main() {
       expect(out.rejectionReason, isNot(equals('gap')));
     });
 
-    test('boundary: topProb exactly 0.05 does NOT trigger gate 2 (strict <)', () {
+    test('boundary: topProb exactly 0.05 does NOT trigger gate 2 (strict <)',
+        () {
       // 0.05 is not strictly < 0.05.
       final out = _mirrorBuildResults([0.050, 0.044]);
       expect(out.rejectionReason, isNot(equals('gap')));
@@ -490,14 +510,16 @@ void main() {
     test('returns empty accepted list when all entries fail acceptEntry', () {
       // Distribution is valid (gate 1 and gate 2 both pass) but no Dog match.
       // The real service returns _unrecognizedResult() in this case.
-      final out = _mirrorBuildResults([0.70, 0.20, 0.10], acceptEntry: (_) => false);
+      final out =
+          _mirrorBuildResults([0.70, 0.20, 0.10], acceptEntry: (_) => false);
       expect(out.rejected, isFalse);
       expect(out.accepted, isEmpty);
     });
 
     test('scan window is _topK*2 = 6 candidates maximum', () {
       // 7 entries all above minConfidence. Scan window = 6; capped at 3 accepted.
-      final out = _mirrorBuildResults([0.30, 0.28, 0.20, 0.10, 0.07, 0.04, 0.01]);
+      final out =
+          _mirrorBuildResults([0.30, 0.28, 0.20, 0.10, 0.07, 0.04, 0.01]);
       expect(out.rejected, isFalse);
       expect(out.accepted.length, equals(3));
       expect(out.accepted[0].prob, closeTo(0.30, 1e-9));
@@ -579,7 +601,8 @@ void main() {
       expect(avg[2], closeTo((0.04 + 0.10 + 0.30) / 3, 1e-9));
     });
 
-    test('three-variant average preserves probability sum (if inputs sum to 1)', () {
+    test('three-variant average preserves probability sum (if inputs sum to 1)',
+        () {
       final v1 = [0.70, 0.20, 0.10];
       final v2 = [0.50, 0.35, 0.15];
       final v3 = [0.80, 0.15, 0.05];
@@ -588,7 +611,8 @@ void main() {
       expect(sum, closeTo(1.0, 1e-9));
     });
 
-    test('averaging three variants converges toward a confident prediction', () {
+    test('averaging three variants converges toward a confident prediction',
+        () {
       // All three agree strongly on class 0. The average should also be high.
       final v1 = [0.80, 0.10, 0.10];
       final v2 = [0.75, 0.15, 0.10];
@@ -599,7 +623,9 @@ void main() {
       expect(avg[0], greaterThan(avg[2]));
     });
 
-    test('flip variant that disagrees slightly does not reverse the top prediction', () {
+    test(
+        'flip variant that disagrees slightly does not reverse the top prediction',
+        () {
       // Variant 2 (flipped) is less confident on class 0 but still agrees.
       // Variant 3 (zoomed-out) is slightly noisier. Average still picks class 0.
       final tight = [0.72, 0.12, 0.16];
@@ -616,7 +642,9 @@ void main() {
       expect(avg.length, equals(151));
     });
 
-    test('averaged scores are fed correctly into _buildResults — accepted count unchanged', () {
+    test(
+        'averaged scores are fed correctly into _buildResults — accepted count unchanged',
+        () {
       // Pre-average the scores and pass to _mirrorBuildResults.
       // Should produce the same accepted list as using the average directly.
       final v1 = [0.60, 0.25, 0.10, 0.05];
@@ -629,7 +657,8 @@ void main() {
       expect(out.accepted.length, equals(3));
     });
 
-    test('uint8 scores divided by 255 before accumulating — division is exact', () {
+    test('uint8 scores divided by 255 before accumulating — division is exact',
+        () {
       // Simulate the uint8 decode: raw output 204/255 ≈ 0.800, 51/255 = 0.200.
       final uint8Raw1 = [204, 51];
       final uint8Raw2 = [196, 59];
@@ -663,10 +692,12 @@ void main() {
           .thenReturn(_dog('Golden Retriever'));
       when(() => mockDogService.lookupByCommonName('Labrador Retriever'))
           .thenReturn(_dog('Labrador Retriever'));
-      when(() => mockDogService.lookupByCommonName('unknown_xyz')).thenReturn(null);
+      when(() => mockDogService.lookupByCommonName('unknown_xyz'))
+          .thenReturn(null);
 
       final cache = {
-        for (final label in labels) label: mockDogService.lookupByCommonName(label),
+        for (final label in labels)
+          label: mockDogService.lookupByCommonName(label),
       };
 
       expect(cache.length, equals(labels.length));
@@ -675,8 +706,10 @@ void main() {
 
     test('matched labels store a non-null Dog', () {
       final mockDogService = MockDogService();
-      when(() => mockDogService.lookupByCommonName('Beagle')).thenReturn(_dog('Beagle'));
-      when(() => mockDogService.lookupByCommonName('Poodle')).thenReturn(_dog('Poodle'));
+      when(() => mockDogService.lookupByCommonName('Beagle'))
+          .thenReturn(_dog('Beagle'));
+      when(() => mockDogService.lookupByCommonName('Poodle'))
+          .thenReturn(_dog('Poodle'));
 
       final cache = {
         for (final label in ['Beagle', 'Poodle'])
@@ -689,17 +722,21 @@ void main() {
 
     test('unmatched labels store null — no crash on miss', () {
       final mockDogService = MockDogService();
-      when(() => mockDogService.lookupByCommonName('unknown_breed_xyz')).thenReturn(null);
+      when(() => mockDogService.lookupByCommonName('unknown_breed_xyz'))
+          .thenReturn(null);
 
       final cache = {
-        'unknown_breed_xyz': mockDogService.lookupByCommonName('unknown_breed_xyz'),
+        'unknown_breed_xyz':
+            mockDogService.lookupByCommonName('unknown_breed_xyz'),
       };
 
       expect(cache.containsKey('unknown_breed_xyz'), isTrue);
       expect(cache['unknown_breed_xyz'], isNull);
     });
 
-    test('lookupByCommonName is called exactly once per label during cache build', () {
+    test(
+        'lookupByCommonName is called exactly once per label during cache build',
+        () {
       final mockDogService = MockDogService();
       when(() => mockDogService.lookupByCommonName(any())).thenReturn(null);
 
@@ -725,7 +762,8 @@ void main() {
 
       final labels = List.generate(151, (i) => 'Breed $i');
       final cache = {
-        for (final label in labels) label: mockDogService.lookupByCommonName(label),
+        for (final label in labels)
+          label: mockDogService.lookupByCommonName(label),
       };
 
       expect(cache.length, equals(151));
@@ -802,15 +840,19 @@ void main() {
 
       test('confidence 0.90 yields ConfidenceTier.high', () {
         expect(
-          IdentificationResult(dog: _dog('Poodle'), confidence: 0.90, source: 'ml')
+          IdentificationResult(
+                  dog: _dog('Poodle'), confidence: 0.90, source: 'ml')
               .confidenceTier,
           equals(ConfidenceTier.high),
         );
       });
 
-      test('confidence 0.34 yields ConfidenceTier.medium (just below high boundary)', () {
+      test(
+          'confidence 0.34 yields ConfidenceTier.medium (just below high boundary)',
+          () {
         expect(
-          IdentificationResult(dog: _dog('Bulldog'), confidence: 0.34, source: 'ml')
+          IdentificationResult(
+                  dog: _dog('Bulldog'), confidence: 0.34, source: 'ml')
               .confidenceTier,
           equals(ConfidenceTier.medium),
         );
@@ -818,7 +860,8 @@ void main() {
 
       test('confidence 0.20 yields ConfidenceTier.medium (lower boundary)', () {
         expect(
-          IdentificationResult(dog: _dog('Beagle'), confidence: 0.20, source: 'ml')
+          IdentificationResult(
+                  dog: _dog('Beagle'), confidence: 0.20, source: 'ml')
               .confidenceTier,
           equals(ConfidenceTier.medium),
         );
@@ -832,9 +875,12 @@ void main() {
         );
       });
 
-      test('confidence 0.19 yields ConfidenceTier.low (just below medium boundary)', () {
+      test(
+          'confidence 0.19 yields ConfidenceTier.low (just below medium boundary)',
+          () {
         expect(
-          IdentificationResult(dog: _dog('Chihuahua'), confidence: 0.19, source: 'ml')
+          IdentificationResult(
+                  dog: _dog('Chihuahua'), confidence: 0.19, source: 'ml')
               .confidenceTier,
           equals(ConfidenceTier.low),
         );
@@ -842,7 +888,8 @@ void main() {
 
       test('confidence 0.03 (minConfidence) yields ConfidenceTier.low', () {
         expect(
-          IdentificationResult(dog: _dog('Basenji'), confidence: 0.03, source: 'ml')
+          IdentificationResult(
+                  dog: _dog('Basenji'), confidence: 0.03, source: 'ml')
               .confidenceTier,
           equals(ConfidenceTier.low),
         );
@@ -850,7 +897,8 @@ void main() {
 
       test('confidence 0.0 yields ConfidenceTier.low', () {
         expect(
-          IdentificationResult(dog: _dog('Shih Tzu'), confidence: 0.0, source: 'ml')
+          IdentificationResult(
+                  dog: _dog('Shih Tzu'), confidence: 0.0, source: 'ml')
               .confidenceTier,
           equals(ConfidenceTier.low),
         );
@@ -860,7 +908,8 @@ void main() {
     group('isUnrecognized', () {
       test('source "ml" → isUnrecognized is false', () {
         expect(
-          IdentificationResult(dog: _dog('Boxer'), confidence: 0.75, source: 'ml')
+          IdentificationResult(
+                  dog: _dog('Boxer'), confidence: 0.75, source: 'ml')
               .isUnrecognized,
           isFalse,
         );
@@ -891,34 +940,42 @@ void main() {
 
     group('isCloseToAlternative', () {
       test('gap < 0.10 → isCloseToAlternative returns true', () {
-        final top1 = IdentificationResult(dog: _dog('Lab'), confidence: 0.50, source: 'ml');
-        final top2 = IdentificationResult(dog: _dog('Golden'), confidence: 0.45, source: 'ml');
+        final top1 = IdentificationResult(
+            dog: _dog('Lab'), confidence: 0.50, source: 'ml');
+        final top2 = IdentificationResult(
+            dog: _dog('Golden'), confidence: 0.45, source: 'ml');
         expect(top1.isCloseToAlternative(top2), isTrue);
       });
 
       test('gap of 0.11 → isCloseToAlternative returns false', () {
         // 0.50 - 0.39 = 0.11, which is safely above the 0.10 threshold.
         // Avoids the IEEE 754 issue where 0.50 - 0.40 ≈ 0.09999... < 0.10.
-        final top1 = IdentificationResult(dog: _dog('Lab'), confidence: 0.50, source: 'ml');
-        final top2 = IdentificationResult(dog: _dog('Golden'), confidence: 0.39, source: 'ml');
+        final top1 = IdentificationResult(
+            dog: _dog('Lab'), confidence: 0.50, source: 'ml');
+        final top2 = IdentificationResult(
+            dog: _dog('Golden'), confidence: 0.39, source: 'ml');
         expect(top1.isCloseToAlternative(top2), isFalse);
       });
 
       test('gap > 0.10 → isCloseToAlternative returns false', () {
-        final top1 = IdentificationResult(dog: _dog('Lab'), confidence: 0.72, source: 'ml');
-        final top2 = IdentificationResult(dog: _dog('Golden'), confidence: 0.12, source: 'ml');
+        final top1 = IdentificationResult(
+            dog: _dog('Lab'), confidence: 0.72, source: 'ml');
+        final top2 = IdentificationResult(
+            dog: _dog('Golden'), confidence: 0.12, source: 'ml');
         expect(top1.isCloseToAlternative(top2), isFalse);
       });
 
       test('null other → isCloseToAlternative returns false', () {
-        final result = IdentificationResult(dog: _dog('Lab'), confidence: 0.50, source: 'ml');
+        final result = IdentificationResult(
+            dog: _dog('Lab'), confidence: 0.50, source: 'ml');
         expect(result.isCloseToAlternative(null), isFalse);
       });
     });
 
     test('dog field is preserved on the result', () {
       final dog = _dog('Rottweiler', rarity: Rarity.uncommon, baseXp: 35);
-      final result = IdentificationResult(dog: dog, confidence: 0.50, source: 'ml');
+      final result =
+          IdentificationResult(dog: dog, confidence: 0.50, source: 'ml');
       expect(result.dog.name, equals('Rottweiler'));
       expect(result.dog.rarity, equals(Rarity.uncommon));
       expect(result.dog.baseXp, equals(35));
@@ -1021,7 +1078,8 @@ void main() {
     });
 
     test('no Dog matches in the DB → empty accepted list', () {
-      final out = _mirrorBuildResults([0.70, 0.20, 0.10], acceptEntry: (_) => false);
+      final out =
+          _mirrorBuildResults([0.70, 0.20, 0.10], acceptEntry: (_) => false);
       expect(out.rejected, isFalse);
       expect(out.accepted, isEmpty);
     });

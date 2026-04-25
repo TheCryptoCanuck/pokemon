@@ -231,7 +231,8 @@ class BreedCollectionService {
       // Already marked as complete — skip
       if (_box.get(collection.id) == true) continue;
       // Check if all breeds are now collected
-      final allCollected = collection.breeds.every((b) => collected.contains(b));
+      final allCollected =
+          collection.breeds.every((b) => collected.contains(b));
       if (allCollected) {
         _box.put(collection.id, true);
         completed.add(collection);

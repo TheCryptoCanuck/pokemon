@@ -23,7 +23,8 @@ class DailyDogService {
   Dog get todaysDog {
     final now = DateTime.now();
     // Days since epoch gives a stable daily index.
-    final daysSinceEpoch = now.toUtc().difference(DateTime.utc(2024, 1, 1)).inDays;
+    final daysSinceEpoch =
+        now.toUtc().difference(DateTime.utc(2024, 1, 1)).inDays;
     final allDogs = _dogService.all;
     return allDogs[daysSinceEpoch % allDogs.length];
   }

@@ -16,7 +16,8 @@ class LevelUpDialog extends StatelessWidget {
   });
 
   /// Show the level-up dialog if a level change occurred.
-  static void showIfLeveledUp(BuildContext context, int oldLevel, PlayerState newState) {
+  static void showIfLeveledUp(
+      BuildContext context, int oldLevel, PlayerState newState) {
     if (newState.level > oldLevel) {
       HapticFeedback.heavyImpact();
       showDialog(
@@ -40,9 +41,13 @@ class LevelUpDialog extends StatelessWidget {
         decoration: BoxDecoration(
           color: bgCard,
           borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: Colors.amber.withValues(alpha: 0.6), width: 2),
+          border:
+              Border.all(color: Colors.amber.withValues(alpha: 0.6), width: 2),
           boxShadow: [
-            BoxShadow(color: Colors.amber.withValues(alpha: 0.3), blurRadius: 40, spreadRadius: 8),
+            BoxShadow(
+                color: Colors.amber.withValues(alpha: 0.3),
+                blurRadius: 40,
+                spreadRadius: 8),
           ],
         ),
         child: Column(
@@ -51,9 +56,14 @@ class LevelUpDialog extends StatelessWidget {
             // Animated star burst
             const Text('⭐', style: TextStyle(fontSize: 72))
                 .animate(onPlay: (c) => c.repeat(reverse: true))
-                .scale(begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2), duration: 800.ms)
+                .scale(
+                    begin: const Offset(0.8, 0.8),
+                    end: const Offset(1.2, 1.2),
+                    duration: 800.ms)
                 .then()
-                .shimmer(duration: 1200.ms, color: Colors.amber.withValues(alpha: 0.6)),
+                .shimmer(
+                    duration: 1200.ms,
+                    color: Colors.amber.withValues(alpha: 0.6)),
             const SizedBox(height: 16),
 
             // LEVEL UP text
@@ -65,7 +75,10 @@ class LevelUpDialog extends StatelessWidget {
                 color: Colors.amber,
                 letterSpacing: 3,
               ),
-            ).animate().fadeIn().scale(begin: const Offset(0.5, 0.5), curve: Curves.elasticOut, duration: 600.ms),
+            ).animate().fadeIn().scale(
+                begin: const Offset(0.5, 0.5),
+                curve: Curves.elasticOut,
+                duration: 600.ms),
             const SizedBox(height: 12),
 
             // Level number

@@ -69,7 +69,8 @@ class SecurityManager {
         context: context,
         builder: (ctx) => AlertDialog(
           backgroundColor: const Color(0xFF2A1F1A),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Row(
             children: [
               Icon(Icons.warning_amber_rounded, color: Colors.amber, size: 28),
@@ -86,7 +87,8 @@ class SecurityManager {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('I Understand', style: TextStyle(color: Colors.amber)),
+              child: const Text('I Understand',
+                  style: TextStyle(color: Colors.amber)),
             ),
           ],
         ),

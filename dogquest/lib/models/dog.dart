@@ -83,9 +83,9 @@ class Dog {
       weight: json['weight'] as String? ?? '',
       exerciseNeeds: json['exerciseNeeds'] as String? ?? 'moderate',
       groomingNeeds: json['groomingNeeds'] as String? ?? 'moderate',
-      healthPredispositions: (json['healthPredispositions'] as List<dynamic>?)
-              ?.cast<String>() ??
-          const [],
+      healthPredispositions:
+          (json['healthPredispositions'] as List<dynamic>?)?.cast<String>() ??
+              const [],
       temperamentTraits:
           (json['temperamentTraits'] as List<dynamic>?)?.cast<String>() ??
               const [],
@@ -94,31 +94,35 @@ class Dog {
   }
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'scientificName': scientificName,
-    'imageUrl': imageUrl,
-    'audioUrl': audioUrl,
-    'lore': lore,
-    'habitat': habitat,
-    'conservationStatus': conservationStatus,
-    'rarity': rarity.name,
-    'baseXp': baseXp,
-    'lifespan': lifespan,
-    'sizeCategory': sizeCategory,
-    'weight': weight,
-    'exerciseNeeds': exerciseNeeds,
-    'groomingNeeds': groomingNeeds,
-    'healthPredispositions': healthPredispositions,
-    'temperamentTraits': temperamentTraits,
-    'dietNotes': dietNotes,
-  };
+        'name': name,
+        'scientificName': scientificName,
+        'imageUrl': imageUrl,
+        'audioUrl': audioUrl,
+        'lore': lore,
+        'habitat': habitat,
+        'conservationStatus': conservationStatus,
+        'rarity': rarity.name,
+        'baseXp': baseXp,
+        'lifespan': lifespan,
+        'sizeCategory': sizeCategory,
+        'weight': weight,
+        'exerciseNeeds': exerciseNeeds,
+        'groomingNeeds': groomingNeeds,
+        'healthPredispositions': healthPredispositions,
+        'temperamentTraits': temperamentTraits,
+        'dietNotes': dietNotes,
+      };
 
   int get xp {
     switch (rarity) {
-      case Rarity.uncommon: return (baseXp * 1.5).round();
-      case Rarity.rare: return baseXp * 2;
-      case Rarity.legendary: return baseXp * 5;
-      default: return baseXp;
+      case Rarity.uncommon:
+        return (baseXp * 1.5).round();
+      case Rarity.rare:
+        return baseXp * 2;
+      case Rarity.legendary:
+        return baseXp * 5;
+      default:
+        return baseXp;
     }
   }
 }

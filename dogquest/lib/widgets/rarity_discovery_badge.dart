@@ -59,8 +59,7 @@ class RarityDiscoveryBadge extends StatelessWidget {
     }
   }
 
-  bool get _useShimmer =>
-      rarity == Rarity.rare || rarity == Rarity.legendary;
+  bool get _useShimmer => rarity == Rarity.rare || rarity == Rarity.legendary;
 
   bool get _useGlow => rarity == Rarity.legendary;
 

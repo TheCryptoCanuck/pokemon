@@ -47,14 +47,18 @@ class SeasonalEventBanner extends ConsumerWidget {
                   if (daysLeft <= 3) ...[
                     const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 1),
                       decoration: BoxDecoration(
                         color: Colors.red.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         daysLeft <= 1 ? 'LAST DAY!' : '$daysLeft days left',
-                        style: const TextStyle(color: Colors.red, fontSize: 9, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -65,7 +69,9 @@ class SeasonalEventBanner extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis),
                 if (daysLeft > 3)
                   Text('$daysLeft days remaining',
-                      style: TextStyle(color: event.themeColor.withValues(alpha: 0.6), fontSize: 10)),
+                      style: TextStyle(
+                          color: event.themeColor.withValues(alpha: 0.6),
+                          fontSize: 10)),
               ],
             ),
           ),
@@ -75,7 +81,8 @@ class SeasonalEventBanner extends ConsumerWidget {
             decoration: BoxDecoration(
               color: event.themeColor.withValues(alpha: 0.25),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: event.themeColor.withValues(alpha: 0.4)),
+              border:
+                  Border.all(color: event.themeColor.withValues(alpha: 0.4)),
             ),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Text(
@@ -86,7 +93,10 @@ class SeasonalEventBanner extends ConsumerWidget {
                     fontSize: 16),
               ),
               Text('XP',
-                  style: TextStyle(color: event.themeColor.withValues(alpha: 0.7), fontSize: 9, fontWeight: FontWeight.bold)),
+                  style: TextStyle(
+                      color: event.themeColor.withValues(alpha: 0.7),
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold)),
             ]),
           ),
         ],

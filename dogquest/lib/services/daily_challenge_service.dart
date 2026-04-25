@@ -212,9 +212,11 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
 
     if (storedDate == todayKey) {
       // Load existing challenges
-      final stored = _box.get('daily_challenges', defaultValue: <dynamic>[]) as List;
+      final stored =
+          _box.get('daily_challenges', defaultValue: <dynamic>[]) as List;
       final challenges = stored
-          .map((e) => DailyChallenge.fromMap(Map<dynamic, dynamic>.from(e as Map)))
+          .map((e) =>
+              DailyChallenge.fromMap(Map<dynamic, dynamic>.from(e as Map)))
           .toList();
       final swept =
           _box.get('daily_sweep_claimed', defaultValue: false) as bool;
@@ -298,8 +300,7 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
         id: '${dateKey}_family',
         type: ChallengeType.identifyFamily,
         title: '${familyNames[familyIndex]} Explorer',
-        description:
-            'Identify a dog from the ${familyNames[familyIndex]}',
+        description: 'Identify a dog from the ${familyNames[familyIndex]}',
         target: 1,
         xpReward: 150,
         familyId: familyIds[familyIndex],
@@ -472,15 +473,14 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
           shouldProgress = true;
           break;
         case ChallengeType.findRareDog:
-          shouldProgress = dogRarity == Rarity.rare ||
-              dogRarity == Rarity.legendary;
+          shouldProgress =
+              dogRarity == Rarity.rare || dogRarity == Rarity.legendary;
           break;
         case ChallengeType.findLegendary:
           shouldProgress = dogRarity == Rarity.legendary;
           break;
         case ChallengeType.identifyFamily:
-          shouldProgress =
-              familyId != null && c.familyId == familyId;
+          shouldProgress = familyId != null && c.familyId == familyId;
           break;
         case ChallengeType.identifyUnique:
           // Unique tracking — increment per identification, dedupe is caller's
@@ -500,7 +500,8 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
         );
         if (nowComplete && !c.completed) {
           xpEarned += c.xpReward;
-          _log.info('Daily challenge completed: ${c.title} (+${c.xpReward} XP)');
+          _log.info(
+              'Daily challenge completed: ${c.title} (+${c.xpReward} XP)');
         }
       }
     }
@@ -587,8 +588,7 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
     if (mission.id.contains('unique_') || mission.id.contains('sightings_')) {
       shouldProgress = true;
     } else if (mission.id.contains('rare_')) {
-      shouldProgress =
-          rarity == Rarity.rare || rarity == Rarity.legendary;
+      shouldProgress = rarity == Rarity.rare || rarity == Rarity.legendary;
     } else if (mission.id.contains('families_')) {
       // For family-based weekly missions, only progress if familyId is set
       shouldProgress = familyId != null;
@@ -658,7 +658,8 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
     if (mission == null || !mission.completed) return 0;
     // Mark as claimed by setting progress beyond target (or just return the XP)
     // The mission stays completed — it won't reset until next week.
-    _log.info('Weekly mission claimed: ${mission.title} (+${mission.xpReward} XP)');
+    _log.info(
+        'Weekly mission claimed: ${mission.title} (+${mission.xpReward} XP)');
     return mission.xpReward;
   }
 

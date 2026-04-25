@@ -91,7 +91,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: _skip,
-                child: const Text('Skip', style: TextStyle(color: Colors.white38)),
+                child:
+                    const Text('Skip', style: TextStyle(color: Colors.white38)),
               ),
             ),
 
@@ -166,7 +167,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 end: Alignment.bottomRight,
                 colors: [Color(0xFF1A3A1A), Color(0xFF2A5A2A)],
               ),
-              border: Border.all(color: Colors.amber.withValues(alpha: 0.3), width: 1.5),
+              border: Border.all(
+                  color: Colors.amber.withValues(alpha: 0.3), width: 1.5),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.4),
@@ -189,9 +191,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(delay: 100.ms).scale(
-            begin: const Offset(0.95, 0.95),
-            delay: 100.ms,
-          ),
+                begin: const Offset(0.95, 0.95),
+                delay: 100.ms,
+              ),
           const SizedBox(height: 16),
           Text(
             page.body,

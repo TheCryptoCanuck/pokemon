@@ -42,8 +42,10 @@ class AvatarOption {
   final String name;
   final String description;
   final Color bgColor;
+
   /// Unlock condition check: takes (level, kennelCount, achievements, streak, totalSightings).
-  final bool Function(int level, int kennelCount, Set<String> achievements, int streak, int totalSightings) isUnlocked;
+  final bool Function(int level, int kennelCount, Set<String> achievements,
+      int streak, int totalSightings) isUnlocked;
 
   const AvatarOption({
     required this.id,
@@ -72,7 +74,7 @@ final List<AvatarOption> avatarOptions = [
     name: 'Good Boy',
     description: 'A faithful companion',
     bgColor: const Color(0xFFE57373),
-    isUnlocked: (_, kennel, __, ___, ____) => kennel >=1,
+    isUnlocked: (_, kennel, __, ___, ____) => kennel >= 1,
   ),
   AvatarOption(
     id: 'guard_dog',
@@ -80,7 +82,7 @@ final List<AvatarOption> avatarOptions = [
     name: 'Guard Dog',
     description: 'Always on watch',
     bgColor: const Color(0xFF7E57C2),
-    isUnlocked: (_, kennel, __, ___, ____) => kennel >=10,
+    isUnlocked: (_, kennel, __, ___, ____) => kennel >= 10,
   ),
   AvatarOption(
     id: 'bloodhound',
@@ -88,7 +90,7 @@ final List<AvatarOption> avatarOptions = [
     name: 'Bloodhound',
     description: 'Nothing escapes your nose',
     bgColor: const Color(0xFF8D6E63),
-    isUnlocked: (_, kennel, __, ___, ____) => kennel >=20,
+    isUnlocked: (_, kennel, __, ___, ____) => kennel >= 20,
   ),
   AvatarOption(
     id: 'show_champion',
@@ -96,7 +98,7 @@ final List<AvatarOption> avatarOptions = [
     name: 'Show Champion',
     description: 'Best in show',
     bgColor: const Color(0xFF66BB6A),
-    isUnlocked: (_, kennel, __, ___, ____) => kennel >=50,
+    isUnlocked: (_, kennel, __, ___, ____) => kennel >= 50,
   ),
   AvatarOption(
     id: 'top_dog',
@@ -104,7 +106,7 @@ final List<AvatarOption> avatarOptions = [
     name: 'Top Dog',
     description: 'The ultimate canine expert',
     bgColor: const Color(0xFFFF7043),
-    isUnlocked: (_, kennel, __, ___, ____) => kennel >=100,
+    isUnlocked: (_, kennel, __, ___, ____) => kennel >= 100,
   ),
   // Level milestones
   AvatarOption(
@@ -147,7 +149,8 @@ final List<AvatarOption> avatarOptions = [
     name: 'Gem Hunter',
     description: 'Find a rare dog',
     bgColor: const Color(0xFF42A5F5),
-    isUnlocked: (_, __, achievements, ___, ____) => achievements.contains('rare_find'),
+    isUnlocked: (_, __, achievements, ___, ____) =>
+        achievements.contains('rare_find'),
   ),
   AvatarOption(
     id: 'legend',
@@ -155,7 +158,8 @@ final List<AvatarOption> avatarOptions = [
     name: 'Legendary',
     description: 'Find a legendary dog',
     bgColor: const Color(0xFFAB47BC),
-    isUnlocked: (_, __, achievements, ___, ____) => achievements.contains('legendary_find'),
+    isUnlocked: (_, __, achievements, ___, ____) =>
+        achievements.contains('legendary_find'),
   ),
   // Special achievements
   AvatarOption(
@@ -164,7 +168,8 @@ final List<AvatarOption> avatarOptions = [
     name: 'Scholar',
     description: 'Complete 10 quizzes',
     bgColor: const Color(0xFF26A69A),
-    isUnlocked: (_, __, achievements, ___, ____) => achievements.contains('ten_quizzes'),
+    isUnlocked: (_, __, achievements, ___, ____) =>
+        achievements.contains('ten_quizzes'),
   ),
   AvatarOption(
     id: 'shield',
@@ -172,7 +177,8 @@ final List<AvatarOption> avatarOptions = [
     name: 'Guardian',
     description: 'Spot an endangered dog',
     bgColor: const Color(0xFF5C6BC0),
-    isUnlocked: (_, __, achievements, ___, ____) => achievements.contains('endangered_spotter'),
+    isUnlocked: (_, __, achievements, ___, ____) =>
+        achievements.contains('endangered_spotter'),
   ),
   // Sighting milestone
   AvatarOption(

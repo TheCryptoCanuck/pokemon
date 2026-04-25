@@ -231,8 +231,7 @@ class SupabaseLostDogService {
 
       final list = response as List<dynamic>;
       return list
-          .map((e) =>
-              LostDogReportRemote.fromJson(e as Map<String, dynamic>))
+          .map((e) => LostDogReportRemote.fromJson(e as Map<String, dynamic>))
           .toList();
     } catch (e) {
       _log.warning('Failed to fetch nearby lost dogs: $e');
@@ -286,8 +285,7 @@ class SupabaseLostDogService {
           .order('created_at', ascending: false);
 
       return (response as List<dynamic>)
-          .map((e) =>
-              LostDogSightingRemote.fromJson(e as Map<String, dynamic>))
+          .map((e) => LostDogSightingRemote.fromJson(e as Map<String, dynamic>))
           .toList();
     } catch (e) {
       _log.warning('Failed to fetch sightings for report $reportId: $e');
@@ -304,9 +302,8 @@ class SupabaseLostDogService {
         .stream(primaryKey: ['id'])
         .eq('report_id', reportId)
         .order('created_at')
-        .map((rows) => rows
-            .map((e) => LostDogSightingRemote.fromJson(e))
-            .toList());
+        .map((rows) =>
+            rows.map((e) => LostDogSightingRemote.fromJson(e)).toList());
   }
 
   // ─── Report lifecycle ──────────────────────────────────────────────────
@@ -358,8 +355,7 @@ class SupabaseLostDogService {
           .order('created_at', ascending: false);
 
       return (response as List<dynamic>)
-          .map((e) =>
-              LostDogReportRemote.fromJson(e as Map<String, dynamic>))
+          .map((e) => LostDogReportRemote.fromJson(e as Map<String, dynamic>))
           .toList();
     } catch (e) {
       _log.warning('Failed to fetch my reports: $e');
@@ -374,8 +370,7 @@ class SupabaseLostDogService {
 
 /// Provides [SupabaseLostDogService] when the user is authenticated,
 /// or `null` when offline / unauthenticated.
-final supabaseLostDogServiceProvider =
-    Provider<SupabaseLostDogService?>((ref) {
+final supabaseLostDogServiceProvider = Provider<SupabaseLostDogService?>((ref) {
   final session = Supabase.instance.client.auth.currentSession;
   if (session == null) return null;
   return SupabaseLostDogService(Supabase.instance.client);

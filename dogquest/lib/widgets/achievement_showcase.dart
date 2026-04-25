@@ -188,9 +188,7 @@ class _EmojiGlow extends StatelessWidget {
           emoji,
           style: const TextStyle(fontSize: 48),
         ),
-      )
-          .animate(onPlay: (c) => c.repeat(reverse: true))
-          .scale(
+      ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
             begin: const Offset(1.0, 1.0),
             end: const Offset(1.06, 1.06),
             duration: 1500.ms,
@@ -242,9 +240,7 @@ class _ProgressBar extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
-            )
-                .animate()
-                .scaleX(
+            ).animate().scaleX(
                   begin: 0.0,
                   end: 1.0,
                   duration: 800.ms,

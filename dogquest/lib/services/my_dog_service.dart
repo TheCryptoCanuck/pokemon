@@ -15,7 +15,9 @@ class MyDogService {
     final raw = _box.get(_key) as String?;
     if (raw == null || raw.isEmpty) return [];
     final list = jsonDecode(raw) as List<dynamic>;
-    return list.map((e) => MyDogProfile.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => MyDogProfile.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   /// Whether the user has registered at least one dog.
@@ -60,5 +62,6 @@ class MyDogService {
 }
 
 final myDogServiceProvider = Provider<MyDogService>((ref) {
-  throw UnimplementedError('myDogServiceProvider must be overridden after Hive init');
+  throw UnimplementedError(
+      'myDogServiceProvider must be overridden after Hive init');
 });

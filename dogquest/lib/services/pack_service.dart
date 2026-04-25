@@ -85,7 +85,8 @@ class PackService {
 
     final now = DateTime.now();
     final weekStart = _weekStartKey(now);
-    final todayKey = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final todayKey =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
     final lastActiveDay = _box.get('pack_last_active_day') as String?;
 
     if (lastActiveDay == todayKey) return; // Already recorded today
@@ -120,5 +121,6 @@ class PackService {
 }
 
 final packServiceProvider = Provider<PackService>((ref) {
-  throw UnimplementedError('packServiceProvider must be overridden after Hive init');
+  throw UnimplementedError(
+      'packServiceProvider must be overridden after Hive init');
 });

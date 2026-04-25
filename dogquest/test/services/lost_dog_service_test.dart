@@ -160,7 +160,8 @@ void main() {
       germanShepherd[2] = 0.7;
       germanShepherd[3] = 0.1;
 
-      final sim = DogEmbeddingService.cosineSimilarity(goldenRetriever, germanShepherd);
+      final sim =
+          DogEmbeddingService.cosineSimilarity(goldenRetriever, germanShepherd);
       expect(sim, lessThan(0.5));
     });
 
@@ -216,12 +217,14 @@ void main() {
       final a = syntheticEmb(1);
       final b = syntheticEmb(1);
       final sim = DogEmbeddingService.cosineSimilarity(a, b);
-      expect(sim, greaterThan(0.85), reason: 'Same-breed embeddings should match');
+      expect(sim, greaterThan(0.85),
+          reason: 'Same-breed embeddings should match');
 
       // Two embeddings with different spike indices (different breeds)
       final c = syntheticEmb(10);
       final crossSim = DogEmbeddingService.cosineSimilarity(a, c);
-      expect(crossSim, lessThan(0.5), reason: 'Different-breed embeddings should not match');
+      expect(crossSim, lessThan(0.5),
+          reason: 'Different-breed embeddings should not match');
     });
   });
 

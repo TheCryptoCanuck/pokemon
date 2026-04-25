@@ -78,7 +78,8 @@ class _StreakFireWidgetState extends State<StreakFireWidget>
             ),
             boxShadow: [
               BoxShadow(
-                color: fireColor.withValues(alpha: glowOpacity * _controller.value),
+                color: fireColor.withValues(
+                    alpha: glowOpacity * _controller.value),
                 blurRadius: glowRadius,
                 spreadRadius: 1,
               ),

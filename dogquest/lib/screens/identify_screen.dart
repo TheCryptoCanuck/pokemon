@@ -31,6 +31,9 @@ import '../widgets/flash_challenge_banner.dart';
 import '../widgets/mystery_bone_reveal.dart';
 import '../widgets/seasonal_event_banner.dart';
 import '../widgets/xp_gain_animation.dart';
+import '../widgets/identify/camera_placeholder.dart';
+import '../widgets/identify/zoom_indicator.dart';
+import '../widgets/identify/camera_controls.dart';
 
 final _log = Logger('IdentifyScreen');
 
@@ -41,7 +44,8 @@ class IdentifyScreen extends ConsumerStatefulWidget {
   ConsumerState<IdentifyScreen> createState() => _IdentifyScreenState();
 }
 
-class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBindingObserver {
+class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
+    with WidgetsBindingObserver {
   static List<CameraDescription>? _cachedCameras;
   final _player = AudioPlayer();
   CameraController? _cam;
@@ -56,7 +60,6 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
   double _minZoom = 1.0;
   double _maxZoom = 1.0;
   double _baseZoom = 1.0; // zoom level when pinch gesture starts
-
 
   @override
   void initState() {
@@ -95,7 +98,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
       _cam?.dispose();
       _cam = null;
       if (mounted) setState(() => _camReady = false);
@@ -171,7 +175,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
       _log.warning('Photo capture failed', e);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not capture photo — please try again')),
+        const SnackBar(
+            content: Text('Could not capture photo — please try again')),
       );
     } finally {
       if (mounted) {
@@ -219,11 +224,17 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
           child: Center(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               const SizedBox(
-                width: 48, height: 48,
-                child: CircularProgressIndicator(color: Colors.amber, strokeWidth: 3),
+                width: 48,
+                height: 48,
+                child: CircularProgressIndicator(
+                    color: Colors.amber, strokeWidth: 3),
               ),
               const SizedBox(height: 16),
-              const Text('Sniffing for a match...', style: TextStyle(color: Colors.white, fontSize: 16, decoration: TextDecoration.none)),
+              const Text('Sniffing for a match...',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      decoration: TextDecoration.none)),
               const SizedBox(height: 24),
               TextButton(
                 onPressed: () {
@@ -231,7 +242,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
                   _scanOverlay?.remove();
                   _scanOverlay = null;
                 },
-                child: const Text('Cancel', style: TextStyle(color: Colors.white54, fontSize: 14)),
+                child: const Text('Cancel',
+                    style: TextStyle(color: Colors.white54, fontSize: 14)),
               ),
             ]),
           ),
@@ -254,7 +266,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
       _log.warning('ML model not loaded — cannot identify');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Dog identification model is still loading — please wait a moment'),
+          content: Text(
+              'Dog identification model is still loading — please wait a moment'),
           duration: Duration(seconds: 3),
         ),
       );
@@ -265,13 +278,16 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
 
     List<IdentificationResult> rawResults;
     try {
-      rawResults = await idService.identify(imageFile).timeout(const Duration(seconds: 15));
+      rawResults = await idService
+          .identify(imageFile)
+          .timeout(const Duration(seconds: 15));
     } on TimeoutException {
       if (!mounted) return;
       _removeScanOverlay();
       _log.warning('Visual identification timed out after 15s');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Identification timed out — please try again')),
+        const SnackBar(
+            content: Text('Identification timed out — please try again')),
       );
       return;
     }
@@ -327,7 +343,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
       builder: (ctx) => AlertDialog(
         backgroundColor: bgCard,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('No match found', style: TextStyle(color: Colors.amber)),
+        title:
+            const Text('No match found', style: TextStyle(color: Colors.amber)),
         content: Text(
           showManualSearch
               ? 'Could not match this dog to a known breed. You can search for the breed manually, or try a different photo.'
@@ -374,7 +391,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
 
   void _showFoundDialog(List<IdentificationResult> results) {
     final topResult = results.first;
-    final alternatives = results.length > 1 ? results.sublist(1) : <IdentificationResult>[];
+    final alternatives =
+        results.length > 1 ? results.sublist(1) : <IdentificationResult>[];
     final kennelSvc = ref.read(kennelServiceProvider);
     final alreadyOwned = kennelSvc.contains(topResult.dog.name);
 
@@ -400,7 +418,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
         source: topResult.source,
         alternatives: allAlternatives,
         alreadyOwned: alreadyOwned,
-        onAdd: () => _addDog(topResult.dog, confidence: topResult.confidence, source: topResult.source),
+        onAdd: () => _addDog(topResult.dog,
+            confidence: topResult.confidence, source: topResult.source),
         onSelectAlternative: (alt) {
           ref.read(analyticsProvider).track('alternative_selected', {
             'original_dog': topResult.dog.name,
@@ -417,7 +436,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
     );
   }
 
-  Future<void> _addDog(Dog dog, {double confidence = 0.0, String source = 'ml'}) async {
+  Future<void> _addDog(Dog dog,
+      {double confidence = 0.0, String source = 'ml'}) async {
     final alreadyOwned = ref.read(kennelServiceProvider).contains(dog.name);
 
     // ── Delegate all business logic to the orchestrator ──────────────────
@@ -451,7 +471,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
       XpGainAnimation.show(
         context,
         xp: outcome.xpEarned,
-        streakMultiplier: outcome.totalMultiplier > 1.0 ? outcome.totalMultiplier : null,
+        streakMultiplier:
+            outcome.totalMultiplier > 1.0 ? outcome.totalMultiplier : null,
         didLevelUp: outcome.leveledUp,
         newLevel: outcome.leveledUp ? outcome.newLevel : null,
       );
@@ -467,8 +488,11 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
             const Text('⭐', style: TextStyle(fontSize: 24)),
             const SizedBox(width: 12),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('Daily Dog Bonus!', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-              Text('+${outcome.dailyDogBonusXp} bonus XP', style: const TextStyle(color: Colors.black87)),
+              const Text('Daily Dog Bonus!',
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold)),
+              Text('+${outcome.dailyDogBonusXp} bonus XP',
+                  style: const TextStyle(color: Colors.black87)),
             ]),
           ]),
         ),
@@ -516,7 +540,10 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
             content: Row(children: [
               const Text('🔄', style: TextStyle(fontSize: 22)),
               const SizedBox(width: 12),
-              Expanded(child: Text(outcome.milestoneText!, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500))),
+              Expanded(
+                  child: Text(outcome.milestoneText!,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500))),
             ]),
           ),
         );
@@ -524,7 +551,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
     }
 
     // ── UI: Share prompt (after all overlays settle) ────────────────────
-    final isSpecialFind = dog.rarity == Rarity.rare || dog.rarity == Rarity.legendary;
+    final isSpecialFind =
+        dog.rarity == Rarity.rare || dog.rarity == Rarity.legendary;
     if (isSpecialFind) {
       // Auto-show share sheet for rare/legendary finds
       Future.delayed(Duration(milliseconds: delayMs + 500), () {
@@ -539,7 +567,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
           SnackBar(
             backgroundColor: bgCard,
             duration: const Duration(seconds: 4),
-            content: const Text('New breed added!', style: TextStyle(color: Colors.white70)),
+            content: const Text('New breed added!',
+                style: TextStyle(color: Colors.white70)),
             action: SnackBarAction(
               label: 'Share',
               textColor: Colors.amber,
@@ -578,15 +607,18 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
                 GestureDetector(
                   onScaleStart: (_) => _baseZoom = _currentZoom,
                   onScaleUpdate: (details) {
-                    final newZoom = (_baseZoom * details.scale).clamp(_minZoom, _maxZoom);
+                    final newZoom =
+                        (_baseZoom * details.scale).clamp(_minZoom, _maxZoom);
                     if ((newZoom - _currentZoom).abs() > 0.05) {
                       _currentZoom = newZoom;
-                      _cam?.setZoomLevel(_currentZoom); // fire-and-forget to avoid HAL race
+                      _cam?.setZoomLevel(
+                          _currentZoom); // fire-and-forget to avoid HAL race
                       setState(() {});
                     }
                   },
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
+                    borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(24)),
                     child: CameraPreview(_cam!),
                   ),
                 )
@@ -596,19 +628,25 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
                   child: Container(
                     decoration: BoxDecoration(
                       color: bgCard,
-                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
+                      borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(24)),
                     ),
                     child: Center(
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
                         Icon(
-                          _cameraError != null ? Icons.videocam_off_rounded : Icons.camera_alt,
+                          _cameraError != null
+                              ? Icons.videocam_off_rounded
+                              : Icons.camera_alt,
                           size: 64,
                           color: Colors.white24,
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          _cameraError != null ? 'Camera not available' : 'Camera loading...',
-                          style: const TextStyle(color: Colors.white54, fontSize: 16),
+                          _cameraError != null
+                              ? 'Camera not available'
+                              : 'Camera loading...',
+                          style: const TextStyle(
+                              color: Colors.white54, fontSize: 16),
                           textAlign: TextAlign.center,
                         ),
                         if (_cameraError != null) ...[
@@ -672,14 +710,18 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
                   right: 0,
                   child: Center(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: Colors.black54,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
                         '${_currentZoom.toStringAsFixed(1)}x',
-                        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -694,8 +736,10 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
               ),
 
               // ── First-time tip (#7) ──
-              if (!_camReady || _identifying) const SizedBox.shrink()
-              else const _FirstTimeTip(),
+              if (!_camReady || _identifying)
+                const SizedBox.shrink()
+              else
+                const _FirstTimeTip(),
 
               // ── Bottom controls: gallery, capture button ──
               Positioned(
@@ -703,38 +747,41 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> with WidgetsBin
                 left: 0,
                 right: 0,
                 child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Gallery picker button (left) with label
-                          Semantics(
-                            label: 'Pick image from gallery',
-                            child: Column(mainAxisSize: MainAxisSize.min, children: [
-                              Material(
-                                color: Colors.black45,
-                                shape: const CircleBorder(),
-                                clipBehavior: Clip.antiAlias,
-                                child: InkWell(
-                                  onTap: _pickFromGallery,
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(14),
-                                    child: Icon(Icons.photo_library_rounded, color: Colors.white, size: 26),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              const Text('Gallery', style: TextStyle(color: Colors.white54, fontSize: 10)),
-                            ]),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Gallery picker button (left) with label
+                    Semantics(
+                      label: 'Pick image from gallery',
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Material(
+                          color: Colors.black45,
+                          shape: const CircleBorder(),
+                          clipBehavior: Clip.antiAlias,
+                          child: InkWell(
+                            onTap: _pickFromGallery,
+                            child: const Padding(
+                              padding: EdgeInsets.all(14),
+                              child: Icon(Icons.photo_library_rounded,
+                                  color: Colors.white, size: 26),
+                            ),
                           ),
-                          const SizedBox(width: 28),
-                          // Main capture button (center)
-                          CaptureButton(
-                            onTap: _takePhoto,
-                            isProcessing: _identifying,
-                            mode: CaptureMode.photo,
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text('Gallery',
+                            style:
+                                TextStyle(color: Colors.white54, fontSize: 10)),
+                      ]),
+                    ),
+                    const SizedBox(width: 28),
+                    // Main capture button (center)
+                    CaptureButton(
+                      onTap: _takePhoto,
+                      isProcessing: _identifying,
+                      mode: CaptureMode.photo,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -793,7 +840,10 @@ class _BreedSearchDialogState extends State<_BreedSearchDialog> {
             children: [
               const Text(
                 'Search Breeds',
-                style: TextStyle(color: Colors.amber, fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.amber,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               TextField(
@@ -832,7 +882,8 @@ class _BreedSearchDialogState extends State<_BreedSearchDialog> {
                           final dog = _results[i];
                           return ListTile(
                             dense: true,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 8),
                             leading: Container(
                               width: 36,
                               height: 36,
@@ -841,28 +892,33 @@ class _BreedSearchDialogState extends State<_BreedSearchDialog> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Center(
-                                child: Icon(Icons.pets, color: Colors.white54, size: 18),
+                                child: Icon(Icons.pets,
+                                    color: Colors.white54, size: 18),
                               ),
                             ),
                             title: Text(
                               dog.name,
-                              style: const TextStyle(color: Colors.white, fontSize: 14),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
                             ),
                             subtitle: Text(
                               dog.habitat,
-                              style: const TextStyle(color: Colors.white38, fontSize: 11),
+                              style: const TextStyle(
+                                  color: Colors.white38, fontSize: 11),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             trailing: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
                                 color: dog.rarity.color.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(
                                 dog.rarity.label,
-                                style: TextStyle(color: dog.rarity.color, fontSize: 10),
+                                style: TextStyle(
+                                    color: dog.rarity.color, fontSize: 10),
                               ),
                             ),
                             onTap: () => widget.onSelect(dog),
@@ -905,8 +961,11 @@ class _DailyDogPill extends ConsumerWidget {
         const Icon(Icons.wb_sunny, color: Colors.amber, size: 14),
         const SizedBox(width: 6),
         Text(
-          claimed ? '${dog.name} (claimed)' : '${dog.name} — ${DailyDogService.bonusMultiplier}x XP',
-          style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500),
+          claimed
+              ? '${dog.name} (claimed)'
+              : '${dog.name} — ${DailyDogService.bonusMultiplier}x XP',
+          style: const TextStyle(
+              color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500),
         ),
       ]),
     );
@@ -938,7 +997,9 @@ class _DailyChallengePill extends ConsumerWidget {
         ),
         const SizedBox(width: 6),
         Text(
-          completed == total ? 'Challenges complete!' : '$completed/$total challenges',
+          completed == total
+              ? 'Challenges complete!'
+              : '$completed/$total challenges',
           style: const TextStyle(color: Colors.white70, fontSize: 11),
         ),
       ]),
@@ -971,7 +1032,10 @@ class _FirstTimeTip extends ConsumerWidget {
           Expanded(
             child: Text(
               'Point at a dog and tap the button to identify the breed!',
-              style: TextStyle(color: Colors.black87, fontSize: 13, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500),
             ),
           ),
         ]),

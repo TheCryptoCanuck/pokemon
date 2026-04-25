@@ -29,8 +29,9 @@ class _LevelProgressRingState extends State<LevelProgressRing>
   late Animation<double> _progressAnim;
   late Animation<double> _sparkleRotation;
 
-  double get _progress =>
-      widget.xpForNext > 0 ? (widget.xp / widget.xpForNext).clamp(0.0, 1.0) : 0.0;
+  double get _progress => widget.xpForNext > 0
+      ? (widget.xp / widget.xpForNext).clamp(0.0, 1.0)
+      : 0.0;
 
   String get _title {
     final l = widget.level;
@@ -178,9 +179,7 @@ class _LevelProgressRingState extends State<LevelProgressRing>
                 color: Colors.white,
               ),
             ),
-          )
-              .animate(onPlay: (c) => c.repeat(reverse: true))
-              .scale(
+          ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
                 begin: const Offset(1.0, 1.0),
                 end: const Offset(1.08, 1.08),
                 duration: 800.ms,
@@ -260,8 +259,7 @@ class _RingPainter extends CustomPainter {
       final opacity = (0.4 + rng.nextDouble() * 0.6).clamp(0.0, 1.0);
       final dotSize = 1.0 + rng.nextDouble() * 1.5;
 
-      final dotPaint = Paint()
-        ..color = Colors.amber.withValues(alpha: opacity);
+      final dotPaint = Paint()..color = Colors.amber.withValues(alpha: opacity);
       canvas.drawCircle(Offset(sx, sy), dotSize, dotPaint);
     }
 
@@ -272,7 +270,8 @@ class _RingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _RingPainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.sparkleAngle != sparkleAngle;
+      oldDelegate.progress != progress ||
+      oldDelegate.sparkleAngle != sparkleAngle;
 }
 
 /// Wrapper to use [AnimatedBuilder] (which is just [AnimatedWidget]) but with

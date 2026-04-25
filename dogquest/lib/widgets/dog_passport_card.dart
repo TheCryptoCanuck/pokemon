@@ -74,7 +74,8 @@ class DogPassportCard extends StatelessWidget {
           Positioned(
             right: -40,
             top: -20,
-            child: Icon(Icons.pets,
+            child: Icon(
+              Icons.pets,
               size: 200,
               color: Colors.white.withValues(alpha: 0.015),
             ),
@@ -82,7 +83,8 @@ class DogPassportCard extends StatelessWidget {
           Positioned(
             left: -30,
             bottom: 60,
-            child: Icon(Icons.pets,
+            child: Icon(
+              Icons.pets,
               size: 160,
               color: Colors.white.withValues(alpha: 0.015),
             ),
@@ -181,9 +183,11 @@ class DogPassportCard extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFD4874E).withValues(alpha: 0.3)),
+            border: Border.all(
+                color: const Color(0xFFD4874E).withValues(alpha: 0.3)),
           ),
-          child: Icon(Icons.memory, color: const Color(0xFFD4874E).withValues(alpha: 0.5), size: 20),
+          child: Icon(Icons.memory,
+              color: const Color(0xFFD4874E).withValues(alpha: 0.5), size: 20),
         ),
       ],
     );
@@ -199,7 +203,9 @@ class DogPassportCard extends StatelessWidget {
           height: 140,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFD4874E).withValues(alpha: 0.5), width: 2),
+            border: Border.all(
+                color: const Color(0xFFD4874E).withValues(alpha: 0.5),
+                width: 2),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.4),
@@ -209,14 +215,15 @@ class DogPassportCard extends StatelessWidget {
             ],
           ),
           clipBehavior: Clip.antiAlias,
-          child: profile.photoPath != null && File(profile.photoPath!).existsSync()
-              ? Image.file(File(profile.photoPath!), fit: BoxFit.cover)
-              : Container(
-                  color: bgCard,
-                  child: const Center(
-                    child: Icon(Icons.pets, color: Colors.amber, size: 48),
-                  ),
-                ),
+          child:
+              profile.photoPath != null && File(profile.photoPath!).existsSync()
+                  ? Image.file(File(profile.photoPath!), fit: BoxFit.cover)
+                  : Container(
+                      color: bgCard,
+                      child: const Center(
+                        child: Icon(Icons.pets, color: Colors.amber, size: 48),
+                      ),
+                    ),
         ),
 
         const SizedBox(width: 16),
@@ -233,9 +240,12 @@ class DogPassportCard extends StatelessWidget {
               if (age != null) ...[
                 Row(
                   children: [
-                    Expanded(child: _passportField('AGE', '$age ${age == 1 ? "yr" : "yrs"}')),
+                    Expanded(
+                        child: _passportField(
+                            'AGE', '$age ${age == 1 ? "yr" : "yrs"}')),
                     if (dogYearsValue != null)
-                      Expanded(child: _passportField('DOG YRS', '$dogYearsValue')),
+                      Expanded(
+                          child: _passportField('DOG YRS', '$dogYearsValue')),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -336,7 +346,8 @@ class DogPassportCard extends StatelessWidget {
               ],
               if (breedData!.sizeCategory.isNotEmpty) ...[
                 const SizedBox(width: 12),
-                _miniStat(Icons.straighten, _sizeLabel(breedData!.sizeCategory)),
+                _miniStat(
+                    Icons.straighten, _sizeLabel(breedData!.sizeCategory)),
               ],
             ],
           ),
@@ -397,7 +408,8 @@ class DogPassportCard extends StatelessWidget {
                         ),
                         Text(
                           'Level $playerLevel  •  Since ${_formatDate(profile.createdAt)}',
-                          style: const TextStyle(color: Colors.white38, fontSize: 9),
+                          style: const TextStyle(
+                              color: Colors.white38, fontSize: 9),
                         ),
                       ],
                     ),
@@ -456,15 +468,28 @@ class DogPassportCard extends StatelessWidget {
   }
 
   static String _sizeLabel(String s) => switch (s) {
-    'small' => 'Small',
-    'medium' => 'Medium',
-    'large' => 'Large',
-    'giant' => 'Giant',
-    _ => 'Medium',
-  };
+        'small' => 'Small',
+        'medium' => 'Medium',
+        'large' => 'Large',
+        'giant' => 'Giant',
+        _ => 'Medium',
+      };
 
   String _formatDate(DateTime date) {
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 }

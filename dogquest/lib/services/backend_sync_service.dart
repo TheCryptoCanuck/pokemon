@@ -31,7 +31,6 @@ class BackendSyncService {
     return null;
   }
 
-
   /// Attempt to flush all pending syncs.
   Future<void> flushPendingSyncs() async {
     // Backend not configured for DogQuest yet

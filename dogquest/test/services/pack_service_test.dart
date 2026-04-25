@@ -9,7 +9,8 @@ void main() {
 
   setUp(() async {
     Hive.init('./test_hive_pack');
-    box = await Hive.openBox('test_pack_${DateTime.now().millisecondsSinceEpoch}');
+    box = await Hive.openBox(
+        'test_pack_${DateTime.now().millisecondsSinceEpoch}');
     service = PackService(box);
   });
 
@@ -29,7 +30,8 @@ void main() {
         inviteCode: 'ABC123',
         createdAt: DateTime(2026, 3, 1),
         members: [
-          PackMember(name: 'Alice', role: 'alpha', joinedAt: DateTime(2026, 3, 1)),
+          PackMember(
+              name: 'Alice', role: 'alpha', joinedAt: DateTime(2026, 3, 1)),
         ],
       );
       service.createPack(pack);
@@ -43,7 +45,9 @@ void main() {
         name: 'My Pack',
         inviteCode: 'XYZ789',
         createdAt: DateTime.now(),
-        members: [PackMember(name: 'Owner', role: 'alpha', joinedAt: DateTime.now())],
+        members: [
+          PackMember(name: 'Owner', role: 'alpha', joinedAt: DateTime.now())
+        ],
       ));
       service.addMember(PackMember(name: 'Bob', joinedAt: DateTime.now()));
       expect(service.pack!.members.length, 2);
@@ -82,7 +86,11 @@ void main() {
       ));
       service.updateMember(
         'Alice',
-        PackMember(name: 'Alice', role: 'alpha', avatarEmoji: '\u{1F469}', joinedAt: DateTime.now()),
+        PackMember(
+            name: 'Alice',
+            role: 'alpha',
+            avatarEmoji: '\u{1F469}',
+            joinedAt: DateTime.now()),
       );
       expect(service.pack!.members[0].avatarEmoji, '\u{1F469}');
     });
@@ -119,7 +127,8 @@ void main() {
         inviteCode: 'X',
         createdAt: DateTime.now(),
         members: [
-          PackMember(name: 'A', dogNames: ['Rex', 'Max'], joinedAt: DateTime.now()),
+          PackMember(
+              name: 'A', dogNames: ['Rex', 'Max'], joinedAt: DateTime.now()),
           PackMember(name: 'B', dogNames: ['Buddy'], joinedAt: DateTime.now()),
         ],
       );
@@ -170,7 +179,8 @@ void main() {
         weeklyBreedsFound: 5,
         weeklyXpEarned: 200,
         members: [
-          PackMember(name: 'Alice', role: 'alpha', joinedAt: DateTime(2026, 3, 1)),
+          PackMember(
+              name: 'Alice', role: 'alpha', joinedAt: DateTime(2026, 3, 1)),
         ],
       );
       final restored = Pack.fromJson(original.toJson());
@@ -201,7 +211,8 @@ void main() {
     });
 
     test('copyWith preserves joinedAt', () {
-      final original = PackMember(name: 'A', role: 'member', joinedAt: DateTime(2026, 1, 1));
+      final original =
+          PackMember(name: 'A', role: 'member', joinedAt: DateTime(2026, 1, 1));
       final updated = original.copyWith(name: 'B');
       expect(updated.name, 'B');
       expect(updated.joinedAt, DateTime(2026, 1, 1));

@@ -59,34 +59,36 @@ enum QuizDifficulty {
   expert;
 
   String get label => switch (this) {
-    QuizDifficulty.beginner => 'Beginner',
-    QuizDifficulty.normal => 'Normal',
-    QuizDifficulty.expert => 'Expert',
-  };
+        QuizDifficulty.beginner => 'Beginner',
+        QuizDifficulty.normal => 'Normal',
+        QuizDifficulty.expert => 'Expert',
+      };
 
   String get description => switch (this) {
-    QuizDifficulty.beginner => 'Common breeds only, mostly visual questions',
-    QuizDifficulty.normal => 'Adapts to your level automatically',
-    QuizDifficulty.expert => 'All breeds, all question types, fewer lifelines',
-  };
+        QuizDifficulty.beginner =>
+          'Common breeds only, mostly visual questions',
+        QuizDifficulty.normal => 'Adapts to your level automatically',
+        QuizDifficulty.expert =>
+          'All breeds, all question types, fewer lifelines',
+      };
 
   String get emoji => switch (this) {
-    QuizDifficulty.beginner => '🐶',
-    QuizDifficulty.normal => '🐕',
-    QuizDifficulty.expert => '🏆',
-  };
+        QuizDifficulty.beginner => '🐶',
+        QuizDifficulty.normal => '🐕',
+        QuizDifficulty.expert => '🏆',
+      };
 
   Color get color => switch (this) {
-    QuizDifficulty.beginner => Colors.green,
-    QuizDifficulty.normal => Colors.amber,
-    QuizDifficulty.expert => Colors.red,
-  };
+        QuizDifficulty.beginner => Colors.green,
+        QuizDifficulty.normal => Colors.amber,
+        QuizDifficulty.expert => Colors.red,
+      };
 
   double get xpMultiplier => switch (this) {
-    QuizDifficulty.beginner => 0.75,
-    QuizDifficulty.normal => 1.0,
-    QuizDifficulty.expert => 1.5,
-  };
+        QuizDifficulty.beginner => 0.75,
+        QuizDifficulty.normal => 1.0,
+        QuizDifficulty.expert => 1.5,
+      };
 }
 
 class QuizScreen extends ConsumerStatefulWidget {
@@ -146,7 +148,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           if (questionPool.length < 20) questionPool = dogSvc.all;
         } else if (kennelCount < 30 || playerState.level < 8) {
           questionPool = dogSvc.all
-              .where((b) => b.rarity == Rarity.common || b.rarity == Rarity.uncommon)
+              .where((b) =>
+                  b.rarity == Rarity.common || b.rarity == Rarity.uncommon)
               .toList();
           if (questionPool.length < 20) questionPool = dogSvc.all;
         } else {
@@ -178,7 +181,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       QuizDifficulty.expert => 20,
     };
 
-    _questions = List.generate(_totalQuestions, (_) => _makeQuestion(questionPool, effectiveLevel));
+    _questions = List.generate(
+        _totalQuestions, (_) => _makeQuestion(questionPool, effectiveLevel));
     _currentIndex = 0;
     _score = 0;
     _selectedOption = null;
@@ -340,9 +344,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     if (_currentIndex + 1 >= _totalQuestions) {
       setState(() => _quizComplete = true);
       // Award XP with seasonal + difficulty multiplier
-      final seasonalMultiplier = ref.read(seasonalEventServiceProvider).currentXpMultiplier;
+      final seasonalMultiplier =
+          ref.read(seasonalEventServiceProvider).currentXpMultiplier;
       final diffMultiplier = _selectedDifficulty?.xpMultiplier ?? 1.0;
-      final totalXp = (_totalXpEarned * seasonalMultiplier * diffMultiplier).round();
+      final totalXp =
+          (_totalXpEarned * seasonalMultiplier * diffMultiplier).round();
       if (totalXp > 0) {
         final playerNotifier = ref.read(playerProvider.notifier);
         final dummyDog = Dog(
@@ -359,7 +365,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         playerNotifier.addXpForDog(dummyDog, 0);
       }
       // Record quiz completion and check achievements
-      final quizAchievements = ref.read(playerProvider.notifier).recordQuiz(_score, _totalQuestions);
+      final quizAchievements =
+          ref.read(playerProvider.notifier).recordQuiz(_score, _totalQuestions);
       for (final key in quizAchievements) {
         final a = achievements[key];
         if (a == null || !mounted) continue;
@@ -385,7 +392,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             const Text('🧠', style: TextStyle(fontSize: 48)),
             const SizedBox(height: 12),
             const Text('Dog Quiz',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+                style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
             const SizedBox(height: 4),
             const Text('Test your dog breed knowledge!',
                 style: TextStyle(color: Colors.white54, fontSize: 14)),
@@ -393,56 +403,75 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             const Align(
               alignment: Alignment.centerLeft,
               child: Text('Choose Difficulty',
-                  style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600)),
+                  style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600)),
             ),
             const SizedBox(height: 12),
             ...QuizDifficulty.values.map((diff) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: GestureDetector(
-                onTap: () => _startQuiz(diff),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: diff.color.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: diff.color.withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
-                    children: [
-                      Text(diff.emoji, style: const TextStyle(fontSize: 32)),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: GestureDetector(
+                    onTap: () => _startQuiz(diff),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: diff.color.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                            color: diff.color.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(diff.emoji,
+                              style: const TextStyle(fontSize: 32)),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(diff.label,
-                                    style: TextStyle(color: diff.color, fontSize: 17, fontWeight: FontWeight.bold)),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: diff.color.withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text('${(diff.xpMultiplier * 100).round()}% XP',
-                                      style: TextStyle(color: diff.color, fontSize: 10, fontWeight: FontWeight.w600)),
+                                Row(
+                                  children: [
+                                    Text(diff.label,
+                                        style: TextStyle(
+                                            color: diff.color,
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            diff.color.withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                          '${(diff.xpMultiplier * 100).round()}% XP',
+                                          style: TextStyle(
+                                              color: diff.color,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w600)),
+                                    ),
+                                  ],
                                 ),
+                                const SizedBox(height: 4),
+                                Text(diff.description,
+                                    style: const TextStyle(
+                                        color: Colors.white38,
+                                        fontSize: 12,
+                                        height: 1.3)),
                               ],
                             ),
-                            const SizedBox(height: 4),
-                            Text(diff.description,
-                                style: const TextStyle(color: Colors.white38, fontSize: 12, height: 1.3)),
-                          ],
-                        ),
+                          ),
+                          Icon(Icons.arrow_forward_ios,
+                              color: diff.color.withValues(alpha: 0.5),
+                              size: 16),
+                        ],
                       ),
-                      Icon(Icons.arrow_forward_ios, color: diff.color.withValues(alpha: 0.5), size: 16),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            )),
+                )),
             const SizedBox(height: 16),
             OutlinedButton(
               onPressed: () => Navigator.pop(context),
@@ -479,7 +508,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                     value: (_currentIndex + 1) / _totalQuestions,
                     minHeight: 8,
                     backgroundColor: bgCard,
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Colors.amber),
                   ),
                 ),
               ),
@@ -495,18 +525,24 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             children: [
               const Icon(Icons.bolt, color: Colors.amber, size: 18),
               Text(' $_score correct',
-                  style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                  style: const TextStyle(
+                      color: Colors.amber, fontWeight: FontWeight.bold)),
               if (_streakCount >= 2) ...[
                 const SizedBox(width: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: Colors.orange.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                    border:
+                        Border.all(color: Colors.orange.withValues(alpha: 0.3)),
                   ),
                   child: Text('🔥 ${_streakCount}x streak',
-                      style: const TextStyle(color: Colors.orange, fontSize: 12, fontWeight: FontWeight.bold)),
+                      style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold)),
                 ),
               ],
               const SizedBox(width: 12),
@@ -515,10 +551,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                 decoration: BoxDecoration(
                   color: q.difficultyColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: q.difficultyColor.withValues(alpha: 0.3)),
+                  border: Border.all(
+                      color: q.difficultyColor.withValues(alpha: 0.3)),
                 ),
                 child: Text(q.difficultyLabel,
-                    style: TextStyle(color: q.difficultyColor, fontSize: 11, fontWeight: FontWeight.w600)),
+                    style: TextStyle(
+                        color: q.difficultyColor,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600)),
               ),
             ],
           ),
@@ -552,8 +592,15 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           // XP toast overlay
           if (_showXpToast)
             Text('+$_lastXpAwarded XP${_streakCount >= 3 ? ' (streak bonus!)' : ''}',
-                style: const TextStyle(color: Colors.amber, fontSize: 16, fontWeight: FontWeight.bold))
-                .animate().fadeIn().slideY(begin: 0.3).then().fadeOut(delay: 800.ms),
+                    style: const TextStyle(
+                        color: Colors.amber,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold))
+                .animate()
+                .fadeIn()
+                .slideY(begin: 0.3)
+                .then()
+                .fadeOut(delay: 800.ms),
 
           // Options
           ...List.generate(q.options.length, (i) => _buildOption(q, i)),
@@ -565,7 +612,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _nextQuestion,
-              child: Text(_currentIndex + 1 >= _totalQuestions ? 'See Results' : 'Next'),
+              child: Text(_currentIndex + 1 >= _totalQuestions
+                  ? 'See Results'
+                  : 'Next'),
             ).animate().fadeIn().slideY(begin: 0.2),
           ],
         ],
@@ -579,7 +628,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         return Column(
           children: [
             const Text('Which dog is this?',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
             const SizedBox(height: 12),
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
@@ -591,7 +643,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         return Column(
           children: [
             const Text('Where does this dog live?',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
             const SizedBox(height: 12),
             // Show dog image for context
             ClipRRect(
@@ -600,9 +655,15 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ),
             const SizedBox(height: 8),
             Text(q.correctDog.name,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.amber)),
+                style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber)),
             Text(q.correctDog.scientificName,
-                style: const TextStyle(color: Colors.white54, fontStyle: FontStyle.italic, fontSize: 13)),
+                style: const TextStyle(
+                    color: Colors.white54,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 13)),
           ],
         );
       case QuizType.scientificFromCommon:
@@ -618,7 +679,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ),
             const SizedBox(height: 8),
             Text(q.correctDog.name,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.amber)),
+                style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber)),
           ],
         );
     }
@@ -630,13 +694,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     String fact;
     switch (q.type) {
       case QuizType.nameFromPhoto:
-        fact = '${dog.name} is a ${dog.rarity.label.toLowerCase()} dog found in ${dog.habitat.toLowerCase()}.';
+        fact =
+            '${dog.name} is a ${dog.rarity.label.toLowerCase()} dog found in ${dog.habitat.toLowerCase()}.';
         break;
       case QuizType.habitatFromName:
-        fact = 'The ${dog.name} (${dog.scientificName}) lives in ${dog.habitat.toLowerCase()}.';
+        fact =
+            'The ${dog.name} (${dog.scientificName}) lives in ${dog.habitat.toLowerCase()}.';
         break;
       case QuizType.scientificFromCommon:
-        fact = '${dog.name} = ${dog.scientificName}. Conservation: ${dog.conservationStatus}.';
+        fact =
+            '${dog.name} = ${dog.scientificName}. Conservation: ${dog.conservationStatus}.';
         break;
     }
 
@@ -653,7 +720,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(fact,
-                style: const TextStyle(color: Colors.white70, fontSize: 12, height: 1.4)),
+                style: const TextStyle(
+                    color: Colors.white70, fontSize: 12, height: 1.4)),
           ),
         ],
       ),
@@ -734,7 +802,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: borderColor, width: isSelected || (_answered && isCorrect) ? 2 : 1.5),
+            border: Border.all(
+                color: borderColor,
+                width: isSelected || (_answered && isCorrect) ? 2 : 1.5),
           ),
           child: Row(
             children: [
@@ -744,7 +814,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      fontStyle: q.type == QuizType.scientificFromCommon ? FontStyle.italic : FontStyle.normal,
+                      fontStyle: q.type == QuizType.scientificFromCommon
+                          ? FontStyle.italic
+                          : FontStyle.normal,
                     )),
               ),
               if (trailingIcon != null)
@@ -757,9 +829,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   }
 
   Widget _buildResults() {
-    final seasonalMultiplier = ref.read(seasonalEventServiceProvider).currentXpMultiplier;
+    final seasonalMultiplier =
+        ref.read(seasonalEventServiceProvider).currentXpMultiplier;
     final diffMultiplier = _selectedDifficulty?.xpMultiplier ?? 1.0;
-    final totalXp = (_totalXpEarned * seasonalMultiplier * diffMultiplier).round();
+    final totalXp =
+        (_totalXpEarned * seasonalMultiplier * diffMultiplier).round();
     final percentage = (_score / _totalQuestions * 100).round();
     String grade;
     String emoji;
@@ -784,38 +858,63 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(emoji, style: const TextStyle(fontSize: 64))
-                .animate().fadeIn().scale(),
+                .animate()
+                .fadeIn()
+                .scale(),
             const SizedBox(height: 16),
             Text(grade,
-                style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.amber))
-                .animate().fadeIn(delay: 200.ms),
+                    style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amber))
+                .animate()
+                .fadeIn(delay: 200.ms),
             if (_selectedDifficulty != null) ...[
               const SizedBox(height: 4),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 decoration: BoxDecoration(
                   color: _selectedDifficulty!.color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: _selectedDifficulty!.color.withValues(alpha: 0.3)),
+                  border: Border.all(
+                      color: _selectedDifficulty!.color.withValues(alpha: 0.3)),
                 ),
-                child: Text('${_selectedDifficulty!.emoji} ${_selectedDifficulty!.label} Mode',
-                    style: TextStyle(color: _selectedDifficulty!.color, fontSize: 12, fontWeight: FontWeight.w600)),
+                child: Text(
+                    '${_selectedDifficulty!.emoji} ${_selectedDifficulty!.label} Mode',
+                    style: TextStyle(
+                        color: _selectedDifficulty!.color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600)),
               ),
             ],
             const SizedBox(height: 8),
             // Score prominently displayed
             Text('$_score / $_totalQuestions',
-                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w800, color: Colors.white))
-                .animate().fadeIn(delay: 300.ms),
-            const Text('correct', style: TextStyle(color: Colors.white54, fontSize: 14)),
+                    style: const TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white))
+                .animate()
+                .fadeIn(delay: 300.ms),
+            const Text('correct',
+                style: TextStyle(color: Colors.white54, fontSize: 14)),
             const SizedBox(height: 16),
             // Stats row
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _ResultStat(icon: Icons.bolt, value: '+$totalXp', label: 'XP', color: Colors.amber),
+                _ResultStat(
+                    icon: Icons.bolt,
+                    value: '+$totalXp',
+                    label: 'XP',
+                    color: Colors.amber),
                 const SizedBox(width: 24),
-                _ResultStat(icon: Icons.local_fire_department, value: '${_bestStreak}x', label: 'Best Streak', color: Colors.orange),
+                _ResultStat(
+                    icon: Icons.local_fire_department,
+                    value: '${_bestStreak}x',
+                    label: 'Best Streak',
+                    color: Colors.orange),
               ],
             ).animate().fadeIn(delay: 400.ms),
             const SizedBox(height: 24),
@@ -828,7 +927,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ).animate().fadeIn(delay: 450.ms),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => setState(() => _generateQuiz(_selectedDifficulty!)),
+              onPressed: () =>
+                  setState(() => _generateQuiz(_selectedDifficulty!)),
               child: const Text('Play Again'),
             ).animate().fadeIn(delay: 500.ms),
             const SizedBox(height: 8),
@@ -869,11 +969,18 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           children: [
             const SizedBox(height: 12),
             Container(
-              width: 40, height: 4,
-              decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2)),
             ),
             const SizedBox(height: 16),
-            const Text('Quiz Review', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Quiz Review',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             Expanded(
               child: ListView.builder(
@@ -882,7 +989,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                 itemCount: _questions!.length,
                 itemBuilder: (_, i) {
                   final q = _questions![i];
-                  final userAnswer = i < _userAnswers.length ? _userAnswers[i] : null;
+                  final userAnswer =
+                      i < _userAnswers.length ? _userAnswers[i] : null;
                   final wasCorrect = userAnswer != null &&
                       q.options[userAnswer].name == q.correctDog.name;
 
@@ -912,27 +1020,38 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text('Q${i + 1}',
-                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 1),
                               decoration: BoxDecoration(
-                                color: q.difficultyColor.withValues(alpha: 0.15),
+                                color:
+                                    q.difficultyColor.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(q.difficultyLabel,
-                                  style: TextStyle(color: q.difficultyColor, fontSize: 10)),
+                                  style: TextStyle(
+                                      color: q.difficultyColor, fontSize: 10)),
                             ),
                           ],
                         ),
                         const SizedBox(height: 6),
                         Text('Answer: ${q.correctDog.name}',
-                            style: const TextStyle(color: Colors.amber, fontSize: 13, fontWeight: FontWeight.w600)),
+                            style: const TextStyle(
+                                color: Colors.amber,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600)),
                         if (!wasCorrect && userAnswer != null)
                           Text('You chose: ${q.options[userAnswer].name}',
-                              style: const TextStyle(color: Colors.red, fontSize: 12)),
-                        Text('${q.correctDog.scientificName} — ${q.correctDog.habitat}',
-                            style: const TextStyle(color: Colors.white38, fontSize: 11)),
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 12)),
+                        Text(
+                            '${q.correctDog.scientificName} — ${q.correctDog.habitat}',
+                            style: const TextStyle(
+                                color: Colors.white38, fontSize: 11)),
                       ],
                     ),
                   );
@@ -982,7 +1101,8 @@ class _LifelineButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: enabled ? Colors.amber : Colors.white24),
+            Icon(icon,
+                size: 16, color: enabled ? Colors.amber : Colors.white24),
             const SizedBox(width: 6),
             Text('$label ($remaining)',
                 style: TextStyle(
@@ -1016,8 +1136,11 @@ class _ResultStat extends StatelessWidget {
       children: [
         Icon(icon, color: color, size: 24),
         const SizedBox(height: 4),
-        Text(value, style: TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.bold)),
-        Text(label, style: const TextStyle(color: Colors.white38, fontSize: 11)),
+        Text(value,
+            style: TextStyle(
+                color: color, fontSize: 20, fontWeight: FontWeight.bold)),
+        Text(label,
+            style: const TextStyle(color: Colors.white38, fontSize: 11)),
       ],
     );
   }

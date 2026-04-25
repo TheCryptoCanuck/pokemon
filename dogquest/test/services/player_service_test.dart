@@ -50,15 +50,18 @@ MockBox buildBox({
       .thenReturn(streakSavers);
   when(() => box.get('achievements', defaultValue: any(named: 'defaultValue')))
       .thenReturn(achievements);
-  when(() => box.get('quizzes_completed', defaultValue: any(named: 'defaultValue')))
-      .thenReturn(quizzesCompleted);
-  when(() => box.get('quiz_perfect_scores', defaultValue: any(named: 'defaultValue')))
-      .thenReturn(quizPerfectScores);
-  when(() => box.get('total_sightings', defaultValue: any(named: 'defaultValue')))
+  when(() => box.get('quizzes_completed',
+      defaultValue: any(named: 'defaultValue'))).thenReturn(quizzesCompleted);
+  when(() => box.get('quiz_perfect_scores',
+      defaultValue: any(named: 'defaultValue'))).thenReturn(quizPerfectScores);
+  when(() =>
+          box.get('total_sightings', defaultValue: any(named: 'defaultValue')))
       .thenReturn(totalSightings);
-  when(() => box.get('selected_avatar', defaultValue: any(named: 'defaultValue')))
+  when(() =>
+          box.get('selected_avatar', defaultValue: any(named: 'defaultValue')))
       .thenReturn(selectedAvatar);
-  when(() => box.get('last_active_date', defaultValue: any(named: 'defaultValue')))
+  when(() =>
+          box.get('last_active_date', defaultValue: any(named: 'defaultValue')))
       .thenReturn(lastActiveDate);
 
   // Writes are fire-and-forget; ignore them.
@@ -339,7 +342,8 @@ void main() {
     });
 
     test('can update unlockedAchievements independently', () {
-      final copy = base.copyWith(unlockedAchievements: {'first_dog', 'five_species'});
+      final copy =
+          base.copyWith(unlockedAchievements: {'first_dog', 'five_species'});
       expect(copy.unlockedAchievements, {'first_dog', 'five_species'});
       expect(copy.level, base.level);
     });
@@ -375,7 +379,8 @@ void main() {
       expect(notifier.state.streak, 4);
       expect(notifier.state.bestStreak, 8);
       expect(notifier.state.streakSavers, 2);
-      expect(notifier.state.unlockedAchievements, {'first_dog', 'five_species'});
+      expect(
+          notifier.state.unlockedAchievements, {'first_dog', 'five_species'});
       expect(notifier.state.quizzesCompleted, 3);
       expect(notifier.state.quizPerfectScores, 1);
       expect(notifier.state.totalSightings, 15);
@@ -504,7 +509,8 @@ void main() {
       final notifier = buildNotifier(xp: 0, streak: 7); // streak → 1.5x
       final dog = makeDog(baseXp: 20, rarity: Rarity.common);
       notifier.addXpForDog(
-        dog, 1,
+        dog,
+        1,
         comboMultiplier: 2.0,
         seasonalMultiplier: 1.5,
         familyBonus: 1.25,
@@ -663,7 +669,8 @@ void main() {
 
     test('rare_find unlocked for legendary dog', () {
       final notifier = buildNotifier();
-      final unlocked = notifier.addXpForDog(makeDog(rarity: Rarity.legendary), 1);
+      final unlocked =
+          notifier.addXpForDog(makeDog(rarity: Rarity.legendary), 1);
       expect(unlocked, contains('rare_find'));
     });
 
@@ -675,7 +682,8 @@ void main() {
 
     test('legendary_find unlocked for legendary dog', () {
       final notifier = buildNotifier();
-      final unlocked = notifier.addXpForDog(makeDog(rarity: Rarity.legendary), 1);
+      final unlocked =
+          notifier.addXpForDog(makeDog(rarity: Rarity.legendary), 1);
       expect(unlocked, contains('legendary_find'));
     });
 
@@ -709,7 +717,8 @@ void main() {
 
     test('five_legendary unlocked when collectedDogs has 5+ legendary', () {
       final notifier = buildNotifier();
-      final legends = List.generate(5, (_) => makeDog(rarity: Rarity.legendary));
+      final legends =
+          List.generate(5, (_) => makeDog(rarity: Rarity.legendary));
       final unlocked = notifier.addXpForDog(
         makeDog(rarity: Rarity.legendary),
         6,
@@ -852,16 +861,20 @@ void main() {
     });
 
     test('endangered_spotter unlocked for Critically Endangered', () {
-      final collectedDogs = [makeDog(conservationStatus: 'Critically Endangered')];
+      final collectedDogs = [
+        makeDog(conservationStatus: 'Critically Endangered')
+      ];
       final notifier = buildNotifier();
-      final unlocked = notifier.addXpForDog(makeDog(), 1, collectedDogs: collectedDogs);
+      final unlocked =
+          notifier.addXpForDog(makeDog(), 1, collectedDogs: collectedDogs);
       expect(unlocked, contains('endangered_spotter'));
     });
 
     test('endangered_spotter NOT unlocked for Least Concern', () {
       final collectedDogs = [makeDog(conservationStatus: 'Least Concern')];
       final notifier = buildNotifier();
-      final unlocked = notifier.addXpForDog(makeDog(), 1, collectedDogs: collectedDogs);
+      final unlocked =
+          notifier.addXpForDog(makeDog(), 1, collectedDogs: collectedDogs);
       expect(unlocked, isNot(contains('endangered_spotter')));
     });
 
@@ -871,17 +884,20 @@ void main() {
         (_) => makeDog(conservationStatus: 'Vulnerable'),
       );
       final notifier = buildNotifier();
-      final unlocked = notifier.addXpForDog(makeDog(), 1, collectedDogs: threatened);
+      final unlocked =
+          notifier.addXpForDog(makeDog(), 1, collectedDogs: threatened);
       expect(unlocked, contains('conservation_hero'));
     });
 
-    test('conservation_hero NOT unlocked with fewer than 5 threatened dogs', () {
+    test('conservation_hero NOT unlocked with fewer than 5 threatened dogs',
+        () {
       final threatened = List.generate(
         4,
         (_) => makeDog(conservationStatus: 'Vulnerable'),
       );
       final notifier = buildNotifier();
-      final unlocked = notifier.addXpForDog(makeDog(), 1, collectedDogs: threatened);
+      final unlocked =
+          notifier.addXpForDog(makeDog(), 1, collectedDogs: threatened);
       expect(unlocked, isNot(contains('conservation_hero')));
     });
   });
@@ -1128,7 +1144,8 @@ void main() {
     });
 
     test('does not include previously unlocked achievements in return', () {
-      final notifier = buildNotifier(achievements: ['first_dog', 'rare_find', 'legendary_find']);
+      final notifier = buildNotifier(
+          achievements: ['first_dog', 'rare_find', 'legendary_find']);
       final result = notifier.addXpForDog(makeDog(rarity: Rarity.legendary), 1);
       for (final key in ['first_dog', 'rare_find', 'legendary_find']) {
         expect(result, isNot(contains(key)));

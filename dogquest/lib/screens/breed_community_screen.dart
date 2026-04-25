@@ -15,7 +15,8 @@ class BreedCommunityScreen extends ConsumerStatefulWidget {
   const BreedCommunityScreen({super.key, required this.breedName});
 
   @override
-  ConsumerState<BreedCommunityScreen> createState() => _BreedCommunityScreenState();
+  ConsumerState<BreedCommunityScreen> createState() =>
+      _BreedCommunityScreenState();
 }
 
 class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
@@ -105,13 +106,19 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
           .delete()
           .eq('breed_name', widget.breedName)
           .eq('user_id', uid);
-      setState(() { _isMember = false; _memberCount--; });
+      setState(() {
+        _isMember = false;
+        _memberCount--;
+      });
     } else {
       await client.from('breed_community_memberships').insert({
         'breed_name': widget.breedName,
         'user_id': uid,
       });
-      setState(() { _isMember = true; _memberCount++; });
+      setState(() {
+        _isMember = true;
+        _memberCount++;
+      });
     }
   }
 
@@ -241,16 +248,21 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: _isMember ? accent.withValues(alpha: 0.15) : bgCard,
+                                color: _isMember
+                                    ? accent.withValues(alpha: 0.15)
+                                    : bgCard,
                                 borderRadius: BorderRadius.circular(10),
                                 border: _isMember
-                                    ? Border.all(color: accent.withValues(alpha: 0.5))
+                                    ? Border.all(
+                                        color: accent.withValues(alpha: 0.5))
                                     : null,
                               ),
                               child: Column(
                                 children: [
                                   Icon(
-                                    _isMember ? Icons.check_circle : Icons.add_circle_outline,
+                                    _isMember
+                                        ? Icons.check_circle
+                                        : Icons.add_circle_outline,
                                     color: _isMember ? accent : textSecondary,
                                     size: 20,
                                   ),
@@ -308,17 +320,20 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                         Expanded(
                           child: TextField(
                             controller: _postController,
-                            style: const TextStyle(color: textPrimary, fontSize: 14),
+                            style: const TextStyle(
+                                color: textPrimary, fontSize: 14),
                             decoration: InputDecoration(
                               hintText: 'Share with the community...',
-                              hintStyle: TextStyle(color: textSecondary.withValues(alpha: 0.5)),
+                              hintStyle: TextStyle(
+                                  color: textSecondary.withValues(alpha: 0.5)),
                               filled: true,
                               fillColor: bgCard,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide.none,
                               ),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
                             ),
                           ),
                         ),
@@ -331,17 +346,21 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                     ),
                     const SizedBox(height: 10),
                     if (_loadingCommunity)
-                      const Center(child: CircularProgressIndicator(color: accent))
+                      const Center(
+                          child: CircularProgressIndicator(color: accent))
                     else if (_communityPosts.isEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         child: Center(
                           child: Text('No posts yet — be the first!',
-                              style: TextStyle(color: textSecondary, fontSize: 13)),
+                              style: TextStyle(
+                                  color: textSecondary, fontSize: 13)),
                         ),
                       )
                     else
-                      ..._communityPosts.take(10).map((p) => _CommunityPostCard(post: p)),
+                      ..._communityPosts
+                          .take(10)
+                          .map((p) => _CommunityPostCard(post: p)),
                     const SizedBox(height: 20),
                   ],
 
@@ -391,8 +410,7 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                   _CareRow(
                       icon: Icons.scale,
                       label: 'Weight',
-                      value:
-                          dog.weight.isNotEmpty ? dog.weight : 'Unknown'),
+                      value: dog.weight.isNotEmpty ? dog.weight : 'Unknown'),
                   if (dog.dietNotes.isNotEmpty)
                     _CareRow(
                         icon: Icons.restaurant,
@@ -486,13 +504,18 @@ class _CommunityPostCard extends StatelessWidget {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(username,
-                    style: const TextStyle(color: textPrimary, fontWeight: FontWeight.w600, fontSize: 13)),
+                    style: const TextStyle(
+                        color: textPrimary,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13)),
               ),
-              Text(timeStr, style: TextStyle(color: textSecondary, fontSize: 11)),
+              Text(timeStr,
+                  style: TextStyle(color: textSecondary, fontSize: 11)),
             ],
           ),
           const SizedBox(height: 6),
-          Text(content, style: const TextStyle(color: textPrimary, fontSize: 14)),
+          Text(content,
+              style: const TextStyle(color: textPrimary, fontSize: 14)),
         ],
       ),
     );
@@ -568,8 +591,7 @@ class _StatTile extends StatelessWidget {
                     color: textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 16)),
-            Text(label,
-                style: TextStyle(color: textSecondary, fontSize: 11)),
+            Text(label, style: TextStyle(color: textSecondary, fontSize: 11)),
           ],
         ),
       ),
@@ -618,8 +640,7 @@ class _SightingTile extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration:
-                BoxDecoration(color: accent, shape: BoxShape.circle),
+            decoration: BoxDecoration(color: accent, shape: BoxShape.circle),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -635,8 +656,7 @@ class _SightingTile extends StatelessWidget {
           if (hasGps) ...[
             const SizedBox(width: 6),
             Icon(Icons.location_on,
-                size: 14,
-                color: Colors.green.withValues(alpha: 0.6)),
+                size: 14, color: Colors.green.withValues(alpha: 0.6)),
           ],
         ],
       ),

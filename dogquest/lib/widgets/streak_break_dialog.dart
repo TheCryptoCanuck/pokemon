@@ -200,7 +200,8 @@ class _StreakBreakDialogState extends State<StreakBreakDialog> {
               curve: Curves.easeOutBack,
             )
             .then()
-            .shimmer(duration: 1200.ms, color: Colors.amber.withValues(alpha: 0.3)),
+            .shimmer(
+                duration: 1200.ms, color: Colors.amber.withValues(alpha: 0.3)),
         const SizedBox(height: 20),
         const Text(
           'Streak Saved!',

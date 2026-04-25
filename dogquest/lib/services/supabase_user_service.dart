@@ -15,7 +15,9 @@ class SupabaseUserService {
   /// Reads username/display_name from auth user metadata.
   Future<Map<String, dynamic>> createProfile(User user) async {
     final metadata = user.userMetadata ?? {};
-    final username = metadata['username'] as String? ?? user.email?.split('@').first ?? 'user';
+    final username = metadata['username'] as String? ??
+        user.email?.split('@').first ??
+        'user';
     final displayName = metadata['display_name'] as String? ?? username;
 
     final profile = {
@@ -46,11 +48,8 @@ class SupabaseUserService {
   /// Fetch the user profile from Supabase by auth uid.
   Future<Map<String, dynamic>> fetchProfile(String userId) async {
     try {
-      final response = await _client
-          .from('users')
-          .select()
-          .eq('id', userId)
-          .single();
+      final response =
+          await _client.from('users').select().eq('id', userId).single();
 
       await _cacheProfile(response);
       _log.info('Profile fetched for $userId');
@@ -86,7 +85,8 @@ class SupabaseUserService {
   }
 
   /// Sync local gamification stats (XP, level, streak, kennel count) to Supabase.
-  Future<void> syncStats(String userId, {
+  Future<void> syncStats(
+    String userId, {
     required int totalXp,
     required int level,
     required int totalSightings,

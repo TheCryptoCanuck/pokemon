@@ -10,10 +10,10 @@ final _log = Logger('DogMasteryService');
 
 enum DogMasteryLevel {
   unseen,
-  spotted,   // 1 sighting
-  familiar,  // 3 sightings
-  expert,    // 5 sightings
-  master,    // 10 sightings
+  spotted, // 1 sighting
+  familiar, // 3 sightings
+  expert, // 5 sightings
+  master, // 10 sightings
 }
 
 extension DogMasteryLevelExt on DogMasteryLevel {
@@ -161,24 +161,19 @@ class DogMasteryState {
     );
   }
 
-  int get totalMastered =>
-      sightingCounts.values.where((c) => c >= 10).length;
+  int get totalMastered => sightingCounts.values.where((c) => c >= 10).length;
 
-  int get totalExpert =>
-      sightingCounts.values.where((c) => c >= 5).length;
+  int get totalExpert => sightingCounts.values.where((c) => c >= 5).length;
 
-  int get totalFamiliar =>
-      sightingCounts.values.where((c) => c >= 3).length;
+  int get totalFamiliar => sightingCounts.values.where((c) => c >= 3).length;
 
-  int get totalSpotted =>
-      sightingCounts.values.where((c) => c >= 1).length;
+  int get totalSpotted => sightingCounts.values.where((c) => c >= 1).length;
 
   /// All dogs that have reached mastery level.
-  List<String> get masteredDogs =>
-      sightingCounts.entries
-          .where((e) => e.value >= 10)
-          .map((e) => e.key)
-          .toList();
+  List<String> get masteredDogs => sightingCounts.entries
+      .where((e) => e.value >= 10)
+      .map((e) => e.key)
+      .toList();
 
   static DogMasteryLevel _levelFromCount(int count) {
     if (count >= 10) return DogMasteryLevel.master;
@@ -203,7 +198,8 @@ class DogMasteryNotifier extends StateNotifier<DogMasteryState> {
     _box = await Hive.openBox<int>(_boxName);
     _initialized = true;
     _load();
-    _log.info('Dog mastery loaded: ${state.sightingCounts.length} dogs tracked');
+    _log.info(
+        'Dog mastery loaded: ${state.sightingCounts.length} dogs tracked');
   }
 
   /// Reload mastery state from Hive. Used by demo mode to pick up

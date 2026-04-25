@@ -117,8 +117,7 @@ class FlashChallengeState {
   bool get hasActiveChallenge =>
       activeChallenge != null && activeChallenge!.isActive;
 
-  Duration get timeRemaining =>
-      activeChallenge?.timeRemaining ?? Duration.zero;
+  Duration get timeRemaining => activeChallenge?.timeRemaining ?? Duration.zero;
 
   FlashChallengeState copyWith({
     FlashChallenge? activeChallenge,
@@ -180,8 +179,7 @@ class FlashChallengeNotifier extends StateNotifier<FlashChallengeState> {
       _box.delete('active_challenge');
     }
     if (state.lastOfferedAt != null) {
-      _box.put(
-          'last_offered_at', state.lastOfferedAt!.millisecondsSinceEpoch);
+      _box.put('last_offered_at', state.lastOfferedAt!.millisecondsSinceEpoch);
     }
   }
 
@@ -227,7 +225,8 @@ class FlashChallengeNotifier extends StateNotifier<FlashChallengeState> {
     final challenge = state.activeChallenge;
     if (challenge == null || !challenge.isActive || challenge.completed) return;
 
-    final newProgress = (challenge.progress + increment).clamp(0, challenge.target);
+    final newProgress =
+        (challenge.progress + increment).clamp(0, challenge.target);
     final completed = newProgress >= challenge.target;
 
     state = state.copyWith(
@@ -247,7 +246,8 @@ class FlashChallengeNotifier extends StateNotifier<FlashChallengeState> {
   /// Returns the XP reward, or 0 if nothing to claim.
   int claimReward() {
     final challenge = state.activeChallenge;
-    if (challenge == null || !challenge.completed || challenge.claimed) return 0;
+    if (challenge == null || !challenge.completed || challenge.claimed)
+      return 0;
 
     final xp = challenge.xpReward;
     state = state.copyWith(
@@ -267,8 +267,8 @@ class FlashChallengeNotifier extends StateNotifier<FlashChallengeState> {
   // ---- Generation ----
 
   FlashChallenge _generateChallenge(DateTime now) {
-    final type =
-        FlashChallengeType.values[_rng.nextInt(FlashChallengeType.values.length)];
+    final type = FlashChallengeType
+        .values[_rng.nextInt(FlashChallengeType.values.length)];
 
     switch (type) {
       case FlashChallengeType.speedRound:

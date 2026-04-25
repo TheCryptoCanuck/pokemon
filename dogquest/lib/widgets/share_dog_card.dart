@@ -26,7 +26,8 @@ class ShareDogCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgDeep,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: dog.rarity.color.withValues(alpha: 0.6), width: 2),
+        border: Border.all(
+            color: dog.rarity.color.withValues(alpha: 0.6), width: 2),
         boxShadow: [
           BoxShadow(
             color: dog.rarity.color.withValues(alpha: 0.2),
@@ -68,7 +69,8 @@ class ShareDogCard extends StatelessWidget {
                   top: 12,
                   right: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: dog.rarity.color.withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(20),
@@ -111,7 +113,8 @@ class ShareDogCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   dog.lore,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.4),
+                  style: const TextStyle(
+                      color: Colors.white70, fontSize: 13, height: 1.4),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -127,7 +130,8 @@ class ShareDogCard extends StatelessWidget {
                 const SizedBox(height: 12),
                 // Footer with branding
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: bgCard,
                     borderRadius: BorderRadius.circular(12),
@@ -141,9 +145,13 @@ class ShareDogCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text('DogQuest',
-                              style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 12)),
+                                style: TextStyle(
+                                    color: Colors.amber,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12)),
                             Text('$playerTitle  •  Lv. $playerLevel',
-                              style: const TextStyle(color: Colors.white54, fontSize: 10)),
+                                style: const TextStyle(
+                                    color: Colors.white54, fontSize: 10)),
                           ],
                         ),
                       ),
@@ -179,7 +187,9 @@ class ShareDogCard extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 14),
           const SizedBox(width: 4),
-          Text(text, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold)),
+          Text(text,
+              style: TextStyle(
+                  color: color, fontSize: 11, fontWeight: FontWeight.bold)),
         ],
       ),
     );

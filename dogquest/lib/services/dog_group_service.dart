@@ -127,7 +127,15 @@ const families = <DogGroup>[
     emoji: '🏃',
     description: 'Retrievers, spaniels, setters, and pointers',
     color: Color(0xFF66BB6A),
-    nameKeywords: ['retriever', 'spaniel', 'setter', 'pointer', 'vizsla', 'weimaraner', 'brittany'],
+    nameKeywords: [
+      'retriever',
+      'spaniel',
+      'setter',
+      'pointer',
+      'vizsla',
+      'weimaraner',
+      'brittany'
+    ],
   ),
   DogGroup(
     id: 'hound',
@@ -135,7 +143,19 @@ const families = <DogGroup>[
     emoji: '🔍',
     description: 'Scent hounds, sight hounds, and trackers',
     color: Colors.amber,
-    nameKeywords: ['hound', 'beagle', 'dachshund', 'basset', 'greyhound', 'whippet', 'bloodhound', 'borzoi', 'saluki', 'basenji', 'rhodesian'],
+    nameKeywords: [
+      'hound',
+      'beagle',
+      'dachshund',
+      'basset',
+      'greyhound',
+      'whippet',
+      'bloodhound',
+      'borzoi',
+      'saluki',
+      'basenji',
+      'rhodesian'
+    ],
   ),
   DogGroup(
     id: 'working',
@@ -143,7 +163,23 @@ const families = <DogGroup>[
     emoji: '💪',
     description: 'Guard dogs, sled dogs, and rescue dogs',
     color: Color(0xFF42A5F5),
-    nameKeywords: ['rottweiler', 'boxer', 'great dane', 'mastiff', 'bernese', 'newfoundland', 'saint bernard', 'doberman', 'husky', 'malamute', 'akita', 'samoyed', 'leonberger', 'komondor', 'kuvasz'],
+    nameKeywords: [
+      'rottweiler',
+      'boxer',
+      'great dane',
+      'mastiff',
+      'bernese',
+      'newfoundland',
+      'saint bernard',
+      'doberman',
+      'husky',
+      'malamute',
+      'akita',
+      'samoyed',
+      'leonberger',
+      'komondor',
+      'kuvasz'
+    ],
   ),
   DogGroup(
     id: 'terrier',
@@ -159,7 +195,20 @@ const families = <DogGroup>[
     emoji: '🎀',
     description: 'Small companions with big personalities',
     color: Color(0xFFEC407A),
-    nameKeywords: ['chihuahua', 'pomeranian', 'pug', 'maltese', 'papillon', 'pekingese', 'shih tzu', 'cavalier', 'havanese', 'toy', 'affenpinscher', 'italian greyhound'],
+    nameKeywords: [
+      'chihuahua',
+      'pomeranian',
+      'pug',
+      'maltese',
+      'papillon',
+      'pekingese',
+      'shih tzu',
+      'cavalier',
+      'havanese',
+      'toy',
+      'affenpinscher',
+      'italian greyhound'
+    ],
   ),
   DogGroup(
     id: 'non_sporting',
@@ -167,7 +216,18 @@ const families = <DogGroup>[
     emoji: '🌟',
     description: 'A diverse group of sturdy companions',
     color: Color(0xFFAB47BC),
-    nameKeywords: ['bulldog', 'poodle', 'dalmatian', 'chow', 'shar pei', 'shiba', 'lhasa', 'bichon', 'keeshond', 'schipperke'],
+    nameKeywords: [
+      'bulldog',
+      'poodle',
+      'dalmatian',
+      'chow',
+      'shar pei',
+      'shiba',
+      'lhasa',
+      'bichon',
+      'keeshond',
+      'schipperke'
+    ],
   ),
   DogGroup(
     id: 'herding',
@@ -175,7 +235,17 @@ const families = <DogGroup>[
     emoji: '🐑',
     description: 'Intelligent herders and flock guardians',
     color: Color(0xFF009688),
-    nameKeywords: ['shepherd', 'collie', 'corgi', 'sheepdog', 'cattle', 'bouvier', 'briard', 'malinois', 'cardigan'],
+    nameKeywords: [
+      'shepherd',
+      'collie',
+      'corgi',
+      'sheepdog',
+      'cattle',
+      'bouvier',
+      'briard',
+      'malinois',
+      'cardigan'
+    ],
   ),
 ];
 
@@ -193,9 +263,8 @@ class DogGroupService {
   void _buildIndex() {
     _familyMembers = {};
     for (final family in families) {
-      _familyMembers[family.id] = _dogService.all
-          .where((b) => family.containsDog(b))
-          .toList();
+      _familyMembers[family.id] =
+          _dogService.all.where((b) => family.containsDog(b)).toList();
     }
   }
 
@@ -205,8 +274,10 @@ class DogGroupService {
     return families
         .map((f) {
           final members = _familyMembers[f.id] ?? [];
-          final owned = members.where((b) => collected.contains(b.name)).toList();
-          return FamilyProgress(family: f, allMembers: members, collectedMembers: owned);
+          final owned =
+              members.where((b) => collected.contains(b.name)).toList();
+          return FamilyProgress(
+              family: f, allMembers: members, collectedMembers: owned);
         })
         .where((fp) => fp.total > 0)
         .toList()
@@ -220,7 +291,8 @@ class DogGroupService {
     final members = _familyMembers[familyId] ?? [];
     final collected = _kennelService.all.toSet();
     final owned = members.where((b) => collected.contains(b.name)).toList();
-    return FamilyProgress(family: family, allMembers: members, collectedMembers: owned);
+    return FamilyProgress(
+        family: family, allMembers: members, collectedMembers: owned);
   }
 
   /// Find which family a dog belongs to (first match).

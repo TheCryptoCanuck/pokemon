@@ -15,8 +15,10 @@ class CommunityPulse extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final now = DateTime.now();
-    final daySeed = DateTime(now.year, now.month, now.day).millisecondsSinceEpoch;
-    final hourSeed = DateTime(now.year, now.month, now.day, now.hour).millisecondsSinceEpoch;
+    final daySeed =
+        DateTime(now.year, now.month, now.day).millisecondsSinceEpoch;
+    final hourSeed =
+        DateTime(now.year, now.month, now.day, now.hour).millisecondsSinceEpoch;
 
     final dayRng = Random(daySeed);
     final hourRng = Random(hourSeed);

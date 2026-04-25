@@ -142,7 +142,8 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
     final confidencePct = (widget.confidence * 100).round();
 
     return AnimatedBuilder(
-      animation: Listenable.merge([_ringController, _contentController, _dismissController]),
+      animation: Listenable.merge(
+          [_ringController, _contentController, _dismissController]),
       builder: (context, _) {
         final dismissOpacity = 1.0 - _dismissController.value;
         final contentProgress = _contentController.value;
@@ -156,7 +157,8 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
                 Container(
                   width: size.width,
                   height: size.height,
-                  color: Colors.black.withValues(alpha: 0.5 * (1.0 - _dismissController.value)),
+                  color: Colors.black.withValues(
+                      alpha: 0.5 * (1.0 - _dismissController.value)),
                 ),
 
                 // White flash on capture
@@ -213,11 +215,15 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
                           child: Transform.scale(
                             scale: 0.5 + contentProgress * 0.5,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 4),
                               decoration: BoxDecoration(
-                                color: Colors.greenAccent.withValues(alpha: 0.2),
+                                color:
+                                    Colors.greenAccent.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Colors.greenAccent.withValues(alpha: 0.8)),
+                                border: Border.all(
+                                    color: Colors.greenAccent
+                                        .withValues(alpha: 0.8)),
                               ),
                               child: const Text(
                                 'NEW!',
@@ -265,11 +271,13 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
                       Opacity(
                         opacity: contentProgress,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 3),
                           decoration: BoxDecoration(
                             color: rarityColor.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: rarityColor.withValues(alpha: 0.5)),
+                            border: Border.all(
+                                color: rarityColor.withValues(alpha: 0.5)),
                           ),
                           child: Text(
                             widget.rarity.label,
@@ -306,7 +314,8 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
                 if (_ringController.value > 0.9)
                   ...List.generate(8, (i) {
                     final angle = (i / 8) * pi * 2;
-                    final burstProgress = ((contentProgress) * 1.5).clamp(0.0, 1.0);
+                    final burstProgress =
+                        ((contentProgress) * 1.5).clamp(0.0, 1.0);
                     final distance = 90 + burstProgress * 40;
                     final cx = size.width / 2 + cos(angle) * distance;
                     final cy = size.height / 2 + sin(angle) * distance;
@@ -315,7 +324,8 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
                       left: cx - 3,
                       top: cy - 3,
                       child: Opacity(
-                        opacity: (1.0 - burstProgress).clamp(0.0, 1.0) * contentProgress,
+                        opacity: (1.0 - burstProgress).clamp(0.0, 1.0) *
+                            contentProgress,
                         child: Container(
                           width: 6,
                           height: 6,

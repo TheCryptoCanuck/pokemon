@@ -84,7 +84,8 @@ class _Decision {
   final String? rejectionReason; // 'entropy' | 'gap'
   final List<_Entry> accepted;
 
-  const _Decision({required this.rejected, this.rejectionReason, this.accepted = const []});
+  const _Decision(
+      {required this.rejected, this.rejectionReason, this.accepted = const []});
 }
 
 class _Entry {
@@ -172,7 +173,8 @@ void main() {
       expect(probs.fold(0.0, (a, b) => a + b), closeTo(1.0, 1e-9));
     });
 
-    test('preserves rank order — largest logit maps to largest probability', () {
+    test('preserves rank order — largest logit maps to largest probability',
+        () {
       final probs = _softmax([1.0, 5.0, 2.0, -3.0]);
       final maxProb = probs.reduce((a, b) => a > b ? a : b);
       expect(probs[1], closeTo(maxProb, 1e-12));
@@ -259,13 +261,27 @@ void main() {
       expect(out.rejectionReason, isNot(equals('entropy')));
     });
 
-    test('moderate 40% winner across 10 classes is NOT rejected by entropy', () {
-      final scores = [0.40, 0.20, 0.10, 0.08, 0.07, 0.05, 0.04, 0.03, 0.02, 0.01];
+    test('moderate 40% winner across 10 classes is NOT rejected by entropy',
+        () {
+      final scores = [
+        0.40,
+        0.20,
+        0.10,
+        0.08,
+        0.07,
+        0.05,
+        0.04,
+        0.03,
+        0.02,
+        0.01
+      ];
       final out = _mirrorBuildResults(scores);
       expect(out.rejectionReason, isNot(equals('entropy')));
     });
 
-    test('entropy uses natural log — uniform n-class always gives normEntropy=1.0', () {
+    test(
+        'entropy uses natural log — uniform n-class always gives normEntropy=1.0',
+        () {
       // For a uniform distribution: H=ln(n), maxH=ln(n) → normEntropy=1.0.
       // Verify for 3, 7, 50 classes.
       for (final n in [3, 7, 50]) {
@@ -316,7 +332,8 @@ void main() {
       expect(out.rejectionReason, isNot(equals('gap')));
     });
 
-    test('gate-2 boundary: topProb exactly 0.05 does NOT trigger rejection', () {
+    test('gate-2 boundary: topProb exactly 0.05 does NOT trigger rejection',
+        () {
       // topProb = 0.05 is NOT strictly < 0.05.
       final out = _mirrorBuildResults([0.050, 0.044]);
       expect(out.rejectionReason, isNot(equals('gap')));
@@ -392,7 +409,8 @@ void main() {
       expect(out.accepted.length, equals(3));
     });
 
-    test('_minConfidence boundary: prob 0.029 is excluded (breaks the loop)', () {
+    test('_minConfidence boundary: prob 0.029 is excluded (breaks the loop)',
+        () {
       // [0.90, 0.04, 0.029, 0.02]: 0.029 < 0.03 → break after 2.
       final out = _mirrorBuildResults([0.90, 0.04, 0.029, 0.02]);
       expect(out.rejected, isFalse);
@@ -412,9 +430,12 @@ void main() {
       }
     });
 
-    test('returns empty accepted list when all entries are filtered by acceptEntry', () {
+    test(
+        'returns empty accepted list when all entries are filtered by acceptEntry',
+        () {
       // Distribution is valid but no label maps to a Dog → _unrecognizedResult path.
-      final out = _mirrorBuildResults([0.70, 0.20, 0.10], acceptEntry: (_) => false);
+      final out =
+          _mirrorBuildResults([0.70, 0.20, 0.10], acceptEntry: (_) => false);
       expect(out.rejected, isFalse);
       expect(out.accepted, isEmpty);
     });
@@ -422,7 +443,8 @@ void main() {
     test('topK scan window is topK*2 (6 candidates examined)', () {
       // 7 entries all above minConfidence. The loop examines at most topK*2=6;
       // only the top 3 by probability should be accepted.
-      final out = _mirrorBuildResults([0.30, 0.28, 0.20, 0.10, 0.07, 0.04, 0.01]);
+      final out =
+          _mirrorBuildResults([0.30, 0.28, 0.20, 0.10, 0.07, 0.04, 0.01]);
       expect(out.rejected, isFalse);
       expect(out.accepted.length, equals(3));
       // Must be the top 3 by probability (indices 0, 1, 2 in this sorted order).
@@ -460,7 +482,9 @@ void main() {
       expect(out.accepted.first.prob, closeTo(0.70, 1e-9));
     });
 
-    test('logits with small differences produce near-uniform softmax — rejected by entropy', () {
+    test(
+        'logits with small differences produce near-uniform softmax — rejected by entropy',
+        () {
       // [0.1, -0.1, -0.2] → softmax ≈ [0.390, 0.320, 0.289]: nearly uniform
       // for 3 classes. normEntropy ≈ 0.99 > 0.97 → rejected by gate-1.
       // This documents the correct behavior: close-logit inputs are uncertain.
@@ -510,7 +534,8 @@ void main() {
       expect(out.accepted.first.index, equals(0));
     });
 
-    test('blurry photo — nearly uniform 151-class output — rejected by entropy', () {
+    test('blurry photo — nearly uniform 151-class output — rejected by entropy',
+        () {
       final out = _mirrorBuildResults(List<double>.filled(151, 1.0 / 151));
       expect(out.rejected, isTrue);
       expect(out.rejectionReason, equals('entropy'));
@@ -523,8 +548,11 @@ void main() {
       expect(out.accepted.length, greaterThanOrEqualTo(2));
     });
 
-    test('label-matching failure: valid distribution but no Dog matches → empty accepted', () {
-      final out = _mirrorBuildResults([0.70, 0.20, 0.10], acceptEntry: (_) => false);
+    test(
+        'label-matching failure: valid distribution but no Dog matches → empty accepted',
+        () {
+      final out =
+          _mirrorBuildResults([0.70, 0.20, 0.10], acceptEntry: (_) => false);
       expect(out.rejected, isFalse);
       expect(out.accepted, isEmpty);
     });
@@ -592,7 +620,8 @@ void main() {
           .thenReturn(null);
 
       final cache = {
-        for (final label in labels) label: mockDogService.lookupByCommonName(label),
+        for (final label in labels)
+          label: mockDogService.lookupByCommonName(label),
       };
 
       expect(cache.length, equals(labels.length));
@@ -621,14 +650,17 @@ void main() {
           .thenReturn(null);
 
       final cache = {
-        'unknown_breed_xyz': mockDogService.lookupByCommonName('unknown_breed_xyz'),
+        'unknown_breed_xyz':
+            mockDogService.lookupByCommonName('unknown_breed_xyz'),
       };
 
       expect(cache.containsKey('unknown_breed_xyz'), isTrue);
       expect(cache['unknown_breed_xyz'], isNull);
     });
 
-    test('lookupByCommonName is called exactly once per label during cache build', () {
+    test(
+        'lookupByCommonName is called exactly once per label during cache build',
+        () {
       final mockDogService = MockDogService();
       when(() => mockDogService.lookupByCommonName(any())).thenReturn(null);
 
@@ -666,7 +698,8 @@ void main() {
 
     test('confidence 0.50 yields ConfidenceTier.high', () {
       expect(
-        IdentificationResult(dog: _dog('Poodle'), confidence: 0.50, source: 'ml')
+        IdentificationResult(
+                dog: _dog('Poodle'), confidence: 0.50, source: 'ml')
             .confidenceTier,
         equals(ConfidenceTier.high),
       );
@@ -674,15 +707,19 @@ void main() {
 
     test('confidence 0.90 yields ConfidenceTier.high', () {
       expect(
-        IdentificationResult(dog: _dog('Poodle'), confidence: 0.90, source: 'ml')
+        IdentificationResult(
+                dog: _dog('Poodle'), confidence: 0.90, source: 'ml')
             .confidenceTier,
         equals(ConfidenceTier.high),
       );
     });
 
-    test('confidence 0.34 yields ConfidenceTier.medium (just below high boundary)', () {
+    test(
+        'confidence 0.34 yields ConfidenceTier.medium (just below high boundary)',
+        () {
       expect(
-        IdentificationResult(dog: _dog('Bulldog'), confidence: 0.34, source: 'ml')
+        IdentificationResult(
+                dog: _dog('Bulldog'), confidence: 0.34, source: 'ml')
             .confidenceTier,
         equals(ConfidenceTier.medium),
       );
@@ -690,7 +727,8 @@ void main() {
 
     test('confidence 0.20 yields ConfidenceTier.medium (lower boundary)', () {
       expect(
-        IdentificationResult(dog: _dog('Beagle'), confidence: 0.20, source: 'ml')
+        IdentificationResult(
+                dog: _dog('Beagle'), confidence: 0.20, source: 'ml')
             .confidenceTier,
         equals(ConfidenceTier.medium),
       );
@@ -704,9 +742,12 @@ void main() {
       );
     });
 
-    test('confidence 0.19 yields ConfidenceTier.low (just below medium boundary)', () {
+    test(
+        'confidence 0.19 yields ConfidenceTier.low (just below medium boundary)',
+        () {
       expect(
-        IdentificationResult(dog: _dog('Chihuahua'), confidence: 0.19, source: 'ml')
+        IdentificationResult(
+                dog: _dog('Chihuahua'), confidence: 0.19, source: 'ml')
             .confidenceTier,
         equals(ConfidenceTier.low),
       );
@@ -714,7 +755,8 @@ void main() {
 
     test('confidence 0.10 yields ConfidenceTier.low', () {
       expect(
-        IdentificationResult(dog: _dog('Dachshund'), confidence: 0.10, source: 'ml')
+        IdentificationResult(
+                dog: _dog('Dachshund'), confidence: 0.10, source: 'ml')
             .confidenceTier,
         equals(ConfidenceTier.low),
       );
@@ -722,7 +764,8 @@ void main() {
 
     test('confidence 0.0 yields ConfidenceTier.low', () {
       expect(
-        IdentificationResult(dog: _dog('Shih Tzu'), confidence: 0.0, source: 'ml')
+        IdentificationResult(
+                dog: _dog('Shih Tzu'), confidence: 0.0, source: 'ml')
             .confidenceTier,
         equals(ConfidenceTier.low),
       );
@@ -749,7 +792,10 @@ void main() {
 
     test('isUnrecognized is false for source "manual"', () {
       expect(
-        IdentificationResult(dog: _dog('Golden Retriever'), confidence: 0.80, source: 'manual')
+        IdentificationResult(
+                dog: _dog('Golden Retriever'),
+                confidence: 0.80,
+                source: 'manual')
             .isUnrecognized,
         isFalse,
       );
@@ -757,7 +803,8 @@ void main() {
 
     test('dog field is preserved', () {
       final dog = _dog('Rottweiler', rarity: Rarity.uncommon, baseXp: 35);
-      final result = IdentificationResult(dog: dog, confidence: 0.50, source: 'ml');
+      final result =
+          IdentificationResult(dog: dog, confidence: 0.50, source: 'ml');
       expect(result.dog.name, equals('Rottweiler'));
       expect(result.dog.rarity, equals(Rarity.uncommon));
     });
@@ -773,15 +820,18 @@ void main() {
     });
 
     test('xp is 1.5x baseXp (rounded) for uncommon rarity', () {
-      expect(_dog('Border Collie', rarity: Rarity.uncommon, baseXp: 20).xp, equals(30));
+      expect(_dog('Border Collie', rarity: Rarity.uncommon, baseXp: 20).xp,
+          equals(30));
     });
 
     test('xp is 2x baseXp for rare rarity', () {
-      expect(_dog('Afghan Hound', rarity: Rarity.rare, baseXp: 20).xp, equals(40));
+      expect(
+          _dog('Afghan Hound', rarity: Rarity.rare, baseXp: 20).xp, equals(40));
     });
 
     test('xp is 5x baseXp for legendary rarity', () {
-      expect(_dog('Tibetan Mastiff', rarity: Rarity.legendary, baseXp: 20).xp, equals(100));
+      expect(_dog('Tibetan Mastiff', rarity: Rarity.legendary, baseXp: 20).xp,
+          equals(100));
     });
 
     test('fromJson with missing rarity defaults to common', () {

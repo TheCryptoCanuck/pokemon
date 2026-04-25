@@ -25,14 +25,14 @@ void main() {
 
     test('progression through all tiers', () {
       const state = DogMasteryState(sightingCounts: {
-        'A': 1,  // spotted
-        'B': 3,  // familiar
-        'C': 5,  // expert
+        'A': 1, // spotted
+        'B': 3, // familiar
+        'C': 5, // expert
         'D': 10, // master
       });
-      expect(state.totalSpotted, 4);  // all have 1+
+      expect(state.totalSpotted, 4); // all have 1+
       expect(state.totalFamiliar, 3); // B, C, D have 3+
-      expect(state.totalExpert, 2);   // C, D have 5+
+      expect(state.totalExpert, 2); // C, D have 5+
       expect(state.totalMastered, 1); // only D has 10+
     });
 

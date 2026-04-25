@@ -100,11 +100,10 @@ class _RarityShimmerBadgeState extends State<RarityShimmerBadge>
       _ => 3000.ms,
     };
 
-    badge = badge
-        .animate(onPlay: (c) => c.repeat())
-        .shimmer(
+    badge = badge.animate(onPlay: (c) => c.repeat()).shimmer(
           duration: shimmerDuration,
-          color: color.withValues(alpha: widget.rarity == Rarity.legendary ? 0.5 : 0.3),
+          color: color.withValues(
+              alpha: widget.rarity == Rarity.legendary ? 0.5 : 0.3),
           delay: 500.ms,
         );
 

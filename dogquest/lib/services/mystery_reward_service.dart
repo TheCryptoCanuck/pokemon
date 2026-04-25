@@ -99,8 +99,7 @@ class MysteryRewardState {
   }) =>
       MysteryRewardState(
         pendingMultiplier: pendingMultiplier ?? this.pendingMultiplier,
-        rarityBoostRemaining:
-            rarityBoostRemaining ?? this.rarityBoostRemaining,
+        rarityBoostRemaining: rarityBoostRemaining ?? this.rarityBoostRemaining,
         unlockedTitles: unlockedTitles ?? this.unlockedTitles,
         pityCounter: pityCounter ?? this.pityCounter,
         streakSaverTokens: streakSaverTokens ?? this.streakSaverTokens,
@@ -135,8 +134,7 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
     _box = await Hive.openBox(_boxName);
     _initialized = true;
     _loadState();
-    _log.info(
-        'MysteryReward loaded — pity: ${state.pityCounter}, '
+    _log.info('MysteryReward loaded — pity: ${state.pityCounter}, '
         'multiplier: ${state.pendingMultiplier}, '
         'titles: ${state.unlockedTitles.length}');
   }
@@ -151,8 +149,7 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
         (_box.get('unlockedTitles', defaultValue: <dynamic>[]) as List)
             .cast<String>(),
       ),
-      pityCounter:
-          (_box.get('pityCounter', defaultValue: 0) as num).toInt(),
+      pityCounter: (_box.get('pityCounter', defaultValue: 0) as num).toInt(),
       streakSaverTokens:
           (_box.get('streakSaverTokens', defaultValue: 0) as num).toInt(),
     );
@@ -207,8 +204,8 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
   /// Consume one rarity boost charge. Returns true if a charge was available.
   bool consumeRarityBoost() {
     if (state.rarityBoostRemaining <= 0) return false;
-    state = state.copyWith(
-        rarityBoostRemaining: state.rarityBoostRemaining - 1);
+    state =
+        state.copyWith(rarityBoostRemaining: state.rarityBoostRemaining - 1);
     _saveState();
     _log.info(
         'Rarity boost consumed (${state.rarityBoostRemaining} remaining)');
@@ -218,11 +215,9 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
   /// Consume one streak saver token. Returns true if a token was available.
   bool consumeStreakSaver() {
     if (state.streakSaverTokens <= 0) return false;
-    state = state.copyWith(
-        streakSaverTokens: state.streakSaverTokens - 1);
+    state = state.copyWith(streakSaverTokens: state.streakSaverTokens - 1);
     _saveState();
-    _log.info(
-        'Streak saver consumed (${state.streakSaverTokens} remaining)');
+    _log.info('Streak saver consumed (${state.streakSaverTokens} remaining)');
     return true;
   }
 
@@ -285,19 +280,16 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
         break;
 
       case MysteryRewardType.streakSaver:
-        state = state.copyWith(
-            streakSaverTokens: state.streakSaverTokens + 1);
+        state = state.copyWith(streakSaverTokens: state.streakSaverTokens + 1);
         break;
 
       case MysteryRewardType.xpMultiplier:
-        state = state.copyWith(
-            pendingMultiplier: reward.value.toDouble());
+        state = state.copyWith(pendingMultiplier: reward.value.toDouble());
         break;
 
       case MysteryRewardType.rarityBoost:
         state = state.copyWith(
-            rarityBoostRemaining:
-                state.rarityBoostRemaining + reward.value);
+            rarityBoostRemaining: state.rarityBoostRemaining + reward.value);
         break;
 
       case MysteryRewardType.titleUnlock:

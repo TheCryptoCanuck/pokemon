@@ -45,7 +45,6 @@ class _FlashChallengeBannerState extends ConsumerState<FlashChallengeBanner> {
     return '$m:$s';
   }
 
-
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(flashChallengeProvider);
@@ -55,7 +54,8 @@ class _FlashChallengeBannerState extends ConsumerState<FlashChallengeBanner> {
     if (challenge == null) return const SizedBox.shrink();
 
     // Expired and already claimed -- hide
-    if (challenge.isExpired && challenge.claimed) return const SizedBox.shrink();
+    if (challenge.isExpired && challenge.claimed)
+      return const SizedBox.shrink();
 
     // Expired but not claimed -- show as missed (auto-dismiss)
     if (challenge.isExpired && !challenge.completed) {
@@ -205,9 +205,9 @@ class _FlashChallengeBannerState extends ConsumerState<FlashChallengeBanner> {
 
     // Pulse red when urgent (< 5 min remaining)
     if (isUrgent) {
-      banner = banner
-          .animate(onPlay: (c) => c.repeat(reverse: true))
-          .tint(color: const Color(0xFFC62828).withValues(alpha: 0.15), duration: 600.ms);
+      banner = banner.animate(onPlay: (c) => c.repeat(reverse: true)).tint(
+          color: const Color(0xFFC62828).withValues(alpha: 0.15),
+          duration: 600.ms);
     }
 
     // Entry animation

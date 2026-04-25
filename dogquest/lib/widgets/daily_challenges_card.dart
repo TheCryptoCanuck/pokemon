@@ -172,8 +172,7 @@ class _ChallengeRow extends StatelessWidget {
                     color: completed ? Colors.white54 : Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
-                    decoration:
-                        completed ? TextDecoration.lineThrough : null,
+                    decoration: completed ? TextDecoration.lineThrough : null,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -213,8 +212,7 @@ class _ChallengeRow extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: accentColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
@@ -236,9 +234,7 @@ class _ChallengeRow extends StatelessWidget {
 
     // Animate completion with a scale bounce
     if (completed) {
-      row = row
-          .animate(delay: (100 * index).ms)
-          .fadeIn(duration: 300.ms);
+      row = row.animate(delay: (100 * index).ms).fadeIn(duration: 300.ms);
     } else {
       row = row
           .animate(delay: (100 * index).ms)
@@ -303,9 +299,7 @@ class _DailySweepRow extends StatelessWidget {
               color: allDone ? null : Colors.white10,
             ),
             child: Icon(
-              claimed
-                  ? Icons.check_circle
-                  : Icons.emoji_events,
+              claimed ? Icons.check_circle : Icons.emoji_events,
               color: allDone
                   ? (claimed ? Colors.green : Colors.amber)
                   : Colors.white30,
@@ -406,14 +400,15 @@ class _DailySweepRow extends StatelessWidget {
                     ),
                   ],
                 ),
-              ).animate(
-                onPlay: (c) => c.repeat(reverse: true),
-              ).scaleXY(begin: 1.0, end: 1.05, duration: 800.ms),
+              )
+                  .animate(
+                    onPlay: (c) => c.repeat(reverse: true),
+                  )
+                  .scaleXY(begin: 1.0, end: 1.05, duration: 800.ms),
             )
           else if (claimed)
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: Colors.green.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(10),
@@ -437,8 +432,7 @@ class _DailySweepRow extends StatelessWidget {
           else
             // Locked reward preview
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(10),

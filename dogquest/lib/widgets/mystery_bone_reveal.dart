@@ -27,7 +27,8 @@ class _BonePainter extends CustomPainter {
     final shaftHalfLen = size.height * 0.34; // total length ~68% of height
     final shaftHalfW = size.width * 0.09; // shaft width ~18% of width
     final knobRadius = size.width * 0.14; // knob radius
-    final knobSpread = size.width * 0.17; // distance between knob centers (half)
+    final knobSpread =
+        size.width * 0.17; // distance between knob centers (half)
 
     // Glow behind bone.
     if (crackProgress < 1.0) {
@@ -137,15 +138,13 @@ class _BonePainter extends CustomPainter {
 
     // Top connector (fills gap between knobs at top).
     path.addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTRB(
-          tlx, tly - knobR * 0.3, trx, tly + knobR * 0.3),
+      Rect.fromLTRB(tlx, tly - knobR * 0.3, trx, tly + knobR * 0.3),
       Radius.circular(knobR * 0.2),
     ));
 
     // Bottom connector (fills gap between knobs at bottom).
     path.addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTRB(
-          blx, bly - knobR * 0.3, brx, bly + knobR * 0.3),
+      Rect.fromLTRB(blx, bly - knobR * 0.3, brx, bly + knobR * 0.3),
       Radius.circular(knobR * 0.2),
     ));
 
@@ -154,8 +153,8 @@ class _BonePainter extends CustomPainter {
     return path;
   }
 
-  void _drawFractures(Canvas canvas, double cx, double cy,
-      double shaftHalfLen, double shaftHalfW, double t) {
+  void _drawFractures(Canvas canvas, double cx, double cy, double shaftHalfLen,
+      double shaftHalfW, double t) {
     final fracturePaint = Paint()
       ..color = Colors.white.withValues(alpha: 0.85)
       ..strokeWidth = 1.5
@@ -523,8 +522,7 @@ class _MysteryBoneRevealState extends State<MysteryBoneReveal>
                   // Dim background.
                   Positioned.fill(
                     child: ColoredBox(
-                      color:
-                          Colors.black.withValues(alpha: _dimOpacity.value),
+                      color: Colors.black.withValues(alpha: _dimOpacity.value),
                     ),
                   ),
 
@@ -603,8 +601,8 @@ class _MysteryBoneRevealState extends State<MysteryBoneReveal>
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: _rewardColor()
-                                          .withValues(alpha: 0.6),
+                                      color:
+                                          _rewardColor().withValues(alpha: 0.6),
                                       blurRadius: 30,
                                       spreadRadius: 10,
                                     ),
@@ -632,8 +630,7 @@ class _MysteryBoneRevealState extends State<MysteryBoneReveal>
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
-                                  color:
-                                      Colors.white.withValues(alpha: 0.7),
+                                  color: Colors.white.withValues(alpha: 0.7),
                                   letterSpacing: 3,
                                 ),
                               ),
@@ -647,8 +644,8 @@ class _MysteryBoneRevealState extends State<MysteryBoneReveal>
                                   color: _rewardColor(),
                                   shadows: [
                                     Shadow(
-                                      color: _rewardColor()
-                                          .withValues(alpha: 0.5),
+                                      color:
+                                          _rewardColor().withValues(alpha: 0.5),
                                       blurRadius: 12,
                                     ),
                                   ],

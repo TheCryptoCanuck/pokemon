@@ -66,12 +66,12 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
   final tightW = (w * tightScale).round();
   final tightH = (h * tightScale).round();
   final tight = img.copyResize(oriented,
-      width: tightW, height: tightH,
-      interpolation: img.Interpolation.linear);
+      width: tightW, height: tightH, interpolation: img.Interpolation.linear);
   final tightCrop = img.copyCrop(tight,
       x: (tightW - _kInputSize) ~/ 2,
       y: (tightH - _kInputSize) ~/ 2,
-      width: _kInputSize, height: _kInputSize);
+      width: _kInputSize,
+      height: _kInputSize);
   tensors.add(buildFlatTensor(tightCrop));
 
   // Variant 2: horizontal flip of tight center crop
@@ -83,12 +83,12 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
   final looseW = (w * looseScale).round();
   final looseH = (h * looseScale).round();
   final loose = img.copyResize(oriented,
-      width: looseW, height: looseH,
-      interpolation: img.Interpolation.linear);
+      width: looseW, height: looseH, interpolation: img.Interpolation.linear);
   final looseCrop = img.copyCrop(loose,
       x: (looseW - _kInputSize) ~/ 2,
       y: (looseH - _kInputSize) ~/ 2,
-      width: _kInputSize, height: _kInputSize);
+      width: _kInputSize,
+      height: _kInputSize);
   tensors.add(buildFlatTensor(looseCrop));
 
   return tensors; // 3 tensors, ~600KB total
@@ -248,10 +248,12 @@ class TfliteIdentificationService implements IdentificationService {
       if (p > 0) entropy -= p * math.log(p);
     }
     final double maxEntropy = math.log(probs.length);
-    final double normalizedEntropy = maxEntropy > 0 ? entropy / maxEntropy : 0.0;
+    final double normalizedEntropy =
+        maxEntropy > 0 ? entropy / maxEntropy : 0.0;
 
     // Create indexed entries and sort by probability descending
-    final indexed = List.generate(probs.length, (i) => (index: i, prob: probs[i]));
+    final indexed =
+        List.generate(probs.length, (i) => (index: i, prob: probs[i]));
     indexed.sort((a, b) => b.prob.compareTo(a.prob));
 
     final double topProb = indexed.isNotEmpty ? indexed.first.prob : 0.0;
@@ -275,7 +277,8 @@ class TfliteIdentificationService implements IdentificationService {
       final dogName = dog?.name ?? '(no match)';
       _log.info('  [${i + 1}] ${(e.prob * 100).toStringAsFixed(2)}% — '
           'label="$label" -> "$dogName"');
-      _log.fine('DOGQUEST_ID: [${i + 1}] ${(e.prob * 100).toStringAsFixed(2)}% — '
+      _log.fine(
+          'DOGQUEST_ID: [${i + 1}] ${(e.prob * 100).toStringAsFixed(2)}% — '
           'label="$label" -> "$dogName"');
     }
 
@@ -284,7 +287,8 @@ class TfliteIdentificationService implements IdentificationService {
     // Only reject truly uniform distributions where the model has zero signal.
     // Uniform for 151 classes = ~0.66% each, entropy = 1.0.
     if (normalizedEntropy > 0.97) {
-      _log.info('Rejected: entropy ${normalizedEntropy.toStringAsFixed(3)} > 0.97 — nearly uniform');
+      _log.info(
+          'Rejected: entropy ${normalizedEntropy.toStringAsFixed(3)} > 0.97 — nearly uniform');
       return [];
     }
 
@@ -292,7 +296,8 @@ class TfliteIdentificationService implements IdentificationService {
     // can't distinguish — likely a non-dog or ambiguous photo.
     // Only apply when top-1 confidence is also very low.
     if (topProb < 0.05 && confidenceGap < 0.01) {
-      _log.info('Rejected: low confidence ${(topProb * 100).toStringAsFixed(1)}% '
+      _log.info(
+          'Rejected: low confidence ${(topProb * 100).toStringAsFixed(1)}% '
           'with tiny gap ${(confidenceGap * 100).toStringAsFixed(2)}%');
       return [];
     }
@@ -323,7 +328,8 @@ class TfliteIdentificationService implements IdentificationService {
     if (results.isNotEmpty) {
       _log.info('Returning ${results.length} result(s): '
           '${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}');
-      _log.info('DOGQUEST_ID: RESULT -> ${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}');
+      _log.info(
+          'DOGQUEST_ID: RESULT -> ${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}');
     } else {
       _log.info('No label matches — returning unrecognized sentinel');
       return _unrecognizedResult();

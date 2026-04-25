@@ -168,7 +168,8 @@ class _AchievementOverlayState extends State<_AchievementOverlay>
                             height: p.height,
                             decoration: BoxDecoration(
                               color: p.color,
-                              borderRadius: BorderRadius.circular(p.isCircle ? 10 : 2),
+                              borderRadius:
+                                  BorderRadius.circular(p.isCircle ? 10 : 2),
                             ),
                           ),
                         ),
@@ -237,11 +238,13 @@ class _AchievementOverlayState extends State<_AchievementOverlay>
                         Opacity(
                           opacity: textOpacity,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
                             decoration: BoxDecoration(
                               color: Colors.amber.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.amber.withValues(alpha: 0.4)),
+                              border: Border.all(
+                                  color: Colors.amber.withValues(alpha: 0.4)),
                             ),
                             child: Text(
                               widget.title,
@@ -318,7 +321,9 @@ class _ConfettiParticle {
         wobbleAmp = 10.0 + r.nextDouble() * 30.0,
         rotationSpeed = 0.5 + r.nextDouble() * 2.0,
         width = 4.0 + r.nextDouble() * 8.0,
-        height = r.nextBool() ? (4.0 + r.nextDouble() * 8.0) : (8.0 + r.nextDouble() * 14.0),
+        height = r.nextBool()
+            ? (4.0 + r.nextDouble() * 8.0)
+            : (8.0 + r.nextDouble() * 14.0),
         isCircle = r.nextDouble() < 0.3,
         color = [
           Colors.amber,

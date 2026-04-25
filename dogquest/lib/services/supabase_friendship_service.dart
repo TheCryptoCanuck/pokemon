@@ -138,8 +138,7 @@ class SupabaseFriendshipService {
     try {
       await _client
           .from('friendships')
-          .update({'status': 'rejected'})
-          .eq('id', friendshipId);
+          .update({'status': 'rejected'}).eq('id', friendshipId);
       _log.info('Friendship rejected: $friendshipId');
     } catch (e) {
       _log.warning('Failed to reject friendship: $e');
@@ -244,9 +243,7 @@ class SupabaseFriendshipService {
         .stream(primaryKey: ['id'])
         .eq('recipient_dog_owner_id', uid)
         .order('created_at', ascending: false)
-        .map((rows) => rows
-            .where((r) => r['status'] == 'pending')
-            .toList());
+        .map((rows) => rows.where((r) => r['status'] == 'pending').toList());
   }
 }
 

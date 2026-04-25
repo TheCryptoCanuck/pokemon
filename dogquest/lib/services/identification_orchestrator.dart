@@ -128,14 +128,14 @@ class IdentificationOrchestrator {
     // ── Log sighting (regardless of already owned) ──────────────────────
     final locationSvc = _ref.read(locationServiceProvider);
     _ref.read(sightingServiceProvider).log(Sighting(
-      dogName: dog.name,
-      timestamp: DateTime.now(),
-      confidence: confidence,
-      source: source,
-      latitude: lat ?? locationSvc.latitude,
-      longitude: lon ?? locationSvc.longitude,
-      accuracy: accuracy ?? locationSvc.accuracy,
-    ));
+          dogName: dog.name,
+          timestamp: DateTime.now(),
+          confidence: confidence,
+          source: source,
+          latitude: lat ?? locationSvc.latitude,
+          longitude: lon ?? locationSvc.longitude,
+          accuracy: accuracy ?? locationSvc.accuracy,
+        ));
     _ref.read(playerProvider.notifier).recordSighting();
 
     // ── Post to social feed ──────────────────────────────────────────────
@@ -166,10 +166,10 @@ class IdentificationOrchestrator {
     final familySvc = _ref.read(dogGroupServiceProvider);
     final dogGroupForChallenge = familySvc.familyOf(dog);
     _ref.read(dailyChallengeProvider.notifier).recordIdentification(
-      dogRarity: dog.rarity,
-      familyId: dogGroupForChallenge?.id,
-      source: source,
-    );
+          dogRarity: dog.rarity,
+          familyId: dogGroupForChallenge?.id,
+          source: source,
+        );
 
     // ── Record combo ────────────────────────────────────────────────────
     _ref.read(comboProvider.notifier).recordIdentification();
@@ -184,7 +184,8 @@ class IdentificationOrchestrator {
     _ref.read(flashChallengeProvider.notifier).recordProgress();
 
     // ── Roll for mystery reward ─────────────────────────────────────────
-    final mysteryReward = _ref.read(mysteryRewardProvider.notifier).rollForReward();
+    final mysteryReward =
+        _ref.read(mysteryRewardProvider.notifier).rollForReward();
 
     // ── Check location for data consent prompt ──────────────────────────
     final hasLocation = locationSvc.hasLocation;
@@ -250,10 +251,15 @@ class IdentificationOrchestrator {
 
     final streakMultiplier = _ref.read(playerProvider).streakXpMultiplier;
     final comboMultiplier = _ref.read(comboProvider).multiplier;
-    final mysteryMultiplier = _ref.read(mysteryRewardProvider.notifier).consumeMultiplier();
+    final mysteryMultiplier =
+        _ref.read(mysteryRewardProvider.notifier).consumeMultiplier();
     const discoveryBonus = 1.5;
-    final totalMultiplier =
-        streakMultiplier * seasonalMultiplier * familyBonus * comboMultiplier * mysteryMultiplier * discoveryBonus;
+    final totalMultiplier = streakMultiplier *
+        seasonalMultiplier *
+        familyBonus *
+        comboMultiplier *
+        mysteryMultiplier *
+        discoveryBonus;
     final effectiveXp = (dog.xp * totalMultiplier).round();
     _log.info('Discovery bonus: 1.5x XP for new breed!');
 
@@ -291,7 +297,8 @@ class IdentificationOrchestrator {
     final milestoneText = sightingSvc.encounterMilestoneText(dog.name);
 
     // ── Backend sync (fire-and-forget) ──────────────────────────────────
-    _ref.read(backendSyncProvider)
+    _ref
+        .read(backendSyncProvider)
         .syncDogToCollection(dog.name, confidence: confidence, source: source)
         .then((resp) {
       if (resp != null) {

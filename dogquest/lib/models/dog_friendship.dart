@@ -14,10 +14,14 @@ enum FriendshipLevel {
   /// XP bonus percentage for this friendship level.
   double get xpBonus {
     switch (this) {
-      case FriendshipLevel.newNeighbor: return 0;
-      case FriendshipLevel.acquaintance: return 0.05;
-      case FriendshipLevel.friend: return 0.10;
-      case FriendshipLevel.bestFriend: return 0.20;
+      case FriendshipLevel.newNeighbor:
+        return 0;
+      case FriendshipLevel.acquaintance:
+        return 0.05;
+      case FriendshipLevel.friend:
+        return 0.10;
+      case FriendshipLevel.bestFriend:
+        return 0.20;
     }
   }
 }
@@ -43,21 +47,26 @@ class DogFriendship {
   });
 
   FriendshipLevel get level {
-    if (visits >= FriendshipLevel.bestFriend.visitsRequired) return FriendshipLevel.bestFriend;
-    if (visits >= FriendshipLevel.friend.visitsRequired) return FriendshipLevel.friend;
-    if (visits >= FriendshipLevel.acquaintance.visitsRequired) return FriendshipLevel.acquaintance;
+    if (visits >= FriendshipLevel.bestFriend.visitsRequired)
+      return FriendshipLevel.bestFriend;
+    if (visits >= FriendshipLevel.friend.visitsRequired)
+      return FriendshipLevel.friend;
+    if (visits >= FriendshipLevel.acquaintance.visitsRequired)
+      return FriendshipLevel.acquaintance;
     return FriendshipLevel.newNeighbor;
   }
 
   int get visitsToNextLevel {
-    final next = FriendshipLevel.values.where((l) => l.visitsRequired > visits).toList();
+    final next =
+        FriendshipLevel.values.where((l) => l.visitsRequired > visits).toList();
     if (next.isEmpty) return 0;
     return next.first.visitsRequired - visits;
   }
 
   double get progressToNextLevel {
     final currentReq = level.visitsRequired;
-    final next = FriendshipLevel.values.where((l) => l.visitsRequired > visits).toList();
+    final next =
+        FriendshipLevel.values.where((l) => l.visitsRequired > visits).toList();
     if (next.isEmpty) return 1.0;
     final nextReq = next.first.visitsRequired;
     return (visits - currentReq) / (nextReq - currentReq);
@@ -65,38 +74,42 @@ class DogFriendship {
 
   bool get canVisitToday {
     final now = DateTime.now();
-    return lastVisit.year != now.year || lastVisit.month != now.month || lastVisit.day != now.day;
+    return lastVisit.year != now.year ||
+        lastVisit.month != now.month ||
+        lastVisit.day != now.day;
   }
 
   Map<String, dynamic> toJson() => {
-    'myDogName': myDogName,
-    'neighborDogName': neighborDogName,
-    'neighborBreed': neighborBreed,
-    'neighborEmoji': neighborEmoji,
-    'visits': visits,
-    'lastVisit': lastVisit.toIso8601String(),
-    'createdAt': createdAt.toIso8601String(),
-  };
+        'myDogName': myDogName,
+        'neighborDogName': neighborDogName,
+        'neighborBreed': neighborBreed,
+        'neighborEmoji': neighborEmoji,
+        'visits': visits,
+        'lastVisit': lastVisit.toIso8601String(),
+        'createdAt': createdAt.toIso8601String(),
+      };
 
   factory DogFriendship.fromJson(Map<String, dynamic> json) => DogFriendship(
-    myDogName: json['myDogName'] as String? ?? '',
-    neighborDogName: json['neighborDogName'] as String? ?? '',
-    neighborBreed: json['neighborBreed'] as String? ?? '',
-    neighborEmoji: json['neighborEmoji'] as String? ?? '\u{1F436}',
-    visits: json['visits'] as int? ?? 0,
-    lastVisit: DateTime.tryParse(json['lastVisit'] as String? ?? '') ?? DateTime.now(),
-    createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
-  );
+        myDogName: json['myDogName'] as String? ?? '',
+        neighborDogName: json['neighborDogName'] as String? ?? '',
+        neighborBreed: json['neighborBreed'] as String? ?? '',
+        neighborEmoji: json['neighborEmoji'] as String? ?? '\u{1F436}',
+        visits: json['visits'] as int? ?? 0,
+        lastVisit: DateTime.tryParse(json['lastVisit'] as String? ?? '') ??
+            DateTime.now(),
+        createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
+            DateTime.now(),
+      );
 
   DogFriendship copyWith({int? visits, DateTime? lastVisit}) => DogFriendship(
-    myDogName: myDogName,
-    neighborDogName: neighborDogName,
-    neighborBreed: neighborBreed,
-    neighborEmoji: neighborEmoji,
-    visits: visits ?? this.visits,
-    lastVisit: lastVisit ?? this.lastVisit,
-    createdAt: createdAt,
-  );
+        myDogName: myDogName,
+        neighborDogName: neighborDogName,
+        neighborBreed: neighborBreed,
+        neighborEmoji: neighborEmoji,
+        visits: visits ?? this.visits,
+        lastVisit: lastVisit ?? this.lastVisit,
+        createdAt: createdAt,
+      );
 }
 
 /// A dog that lives in the user's "neighborhood" — generated from the breed database.
@@ -118,22 +131,23 @@ class NeighborhoodDog {
   });
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'breed': breed,
-    'emoji': emoji,
-    'gridX': gridX,
-    'gridY': gridY,
-    'personality': personality,
-  };
+        'name': name,
+        'breed': breed,
+        'emoji': emoji,
+        'gridX': gridX,
+        'gridY': gridY,
+        'personality': personality,
+      };
 
-  factory NeighborhoodDog.fromJson(Map<String, dynamic> json) => NeighborhoodDog(
-    name: json['name'] as String? ?? '',
-    breed: json['breed'] as String? ?? '',
-    emoji: json['emoji'] as String? ?? '\u{1F436}',
-    gridX: json['gridX'] as int? ?? 0,
-    gridY: json['gridY'] as int? ?? 0,
-    personality: json['personality'] as String? ?? '',
-  );
+  factory NeighborhoodDog.fromJson(Map<String, dynamic> json) =>
+      NeighborhoodDog(
+        name: json['name'] as String? ?? '',
+        breed: json['breed'] as String? ?? '',
+        emoji: json['emoji'] as String? ?? '\u{1F436}',
+        gridX: json['gridX'] as int? ?? 0,
+        gridY: json['gridY'] as int? ?? 0,
+        personality: json['personality'] as String? ?? '',
+      );
 }
 
 /// Dog name + emoji pairs for neighborhood generation.

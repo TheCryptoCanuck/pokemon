@@ -105,8 +105,7 @@ class _ComboCounterState extends ConsumerState<ComboCounter>
     required double pulseValue,
     required double glowIntensity,
   }) {
-    final glowColor =
-        isUrgent ? Colors.red : Colors.amber;
+    final glowColor = isUrgent ? Colors.red : Colors.amber;
     final glowSpread = 4.0 + pulseValue * 12.0;
     final glowBlur = 8.0 + pulseValue * 16.0;
 

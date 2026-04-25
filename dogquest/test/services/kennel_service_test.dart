@@ -184,7 +184,8 @@ void main() {
       expect(result[1].name, 'Siberian Husky');
     });
 
-    test('silently drops names that lookup() cannot resolve (returns null)', () {
+    test('silently drops names that lookup() cannot resolve (returns null)',
+        () {
       final mockDogSvc = MockDogService();
       final golden = _makeDog('Golden Retriever');
 

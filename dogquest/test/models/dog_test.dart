@@ -23,7 +23,8 @@ void main() {
       expect(dog.scientificName, equals('Canis lupus familiaris (Sporting)'));
       expect(dog.imageUrl, equals('https://example.com/lab.jpg'));
       expect(dog.audioUrl, equals('https://example.com/lab.mp3'));
-      expect(dog.lore, equals('The world\'s most popular dog breed for over 30 years.'));
+      expect(dog.lore,
+          equals('The world\'s most popular dog breed for over 30 years.'));
       expect(dog.habitat, equals('Sporting Group | Origin: Canada'));
       expect(dog.conservationStatus, equals('Domesticated'));
       expect(dog.rarity, equals(Rarity.common));
@@ -143,7 +144,9 @@ void main() {
       expect(dog.lore, equals('No information available.'));
     });
 
-    test('applies Unknown defaults for habitat and conservationStatus when absent', () {
+    test(
+        'applies Unknown defaults for habitat and conservationStatus when absent',
+        () {
       final json = <String, dynamic>{
         'name': 'Test Dog',
         'rarity': 'common',
@@ -167,7 +170,9 @@ void main() {
       expect(dog.rarity, equals(Rarity.common));
     });
 
-    test('defaults to Rarity.common when rarity field is an unrecognised string', () {
+    test(
+        'defaults to Rarity.common when rarity field is an unrecognised string',
+        () {
       final json = <String, dynamic>{
         'name': 'Test Dog',
         'rarity': 'super_ultra_mega',
@@ -235,7 +240,8 @@ void main() {
       final json = dog.toJson();
 
       expect(json['name'], equals('Labrador Retriever'));
-      expect(json['scientificName'], equals('Canis lupus familiaris (Sporting)'));
+      expect(
+          json['scientificName'], equals('Canis lupus familiaris (Sporting)'));
       expect(json['imageUrl'], equals('https://example.com/lab.jpg'));
       expect(json['audioUrl'], equals('https://example.com/lab.mp3'));
       expect(json['lore'], equals('The world\'s most popular dog breed.'));
@@ -273,7 +279,8 @@ void main() {
       final originalJson = {
         'name': 'Afghan Hound',
         'scientificName': 'Canis lupus familiaris (Hound)',
-        'imageUrl': 'https://commons.wikimedia.org/w/thumb.php?f=Afghan_Hound.jpg&w=400',
+        'imageUrl':
+            'https://commons.wikimedia.org/w/thumb.php?f=Afghan_Hound.jpg&w=400',
         'audioUrl': '',
         'lore': 'One of the oldest dog breeds.',
         'habitat': 'Hound Group | Origin: Afghanistan',
@@ -333,12 +340,15 @@ void main() {
       expect(makeDog(rarity: Rarity.legendary, baseXp: 100).xp, equals(500));
     });
 
-    test('unknown rarity falls through to the default branch, returning baseXp', () {
+    test('unknown rarity falls through to the default branch, returning baseXp',
+        () {
       // The switch default covers Rarity.unknown (and Rarity.common).
       expect(makeDog(rarity: Rarity.unknown, baseXp: 100).xp, equals(100));
     });
 
-    test('uncommon rounding: odd-half values round to nearest even per Dart .round()', () {
+    test(
+        'uncommon rounding: odd-half values round to nearest even per Dart .round()',
+        () {
       // Dart's .round() uses half-up rounding.
       // 1 * 1.5 = 1.5 → rounds to 2
       expect(makeDog(rarity: Rarity.uncommon, baseXp: 1).xp, equals(2));

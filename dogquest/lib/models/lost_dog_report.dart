@@ -67,41 +67,44 @@ class LostDogReport {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'dogName': dogName,
-    'breed': breed,
-    'photoPath': photoPath,
-    'embedding': embedding,
-    'lastSeenLat': lastSeenLat,
-    'lastSeenLon': lastSeenLon,
-    'lastSeenLocation': lastSeenLocation,
-    'lostDate': lostDate.toIso8601String(),
-    'createdAt': createdAt.toIso8601String(),
-    'status': status.name,
-    'ownerContact': ownerContact,
-    'notes': notes,
-  };
+        'id': id,
+        'dogName': dogName,
+        'breed': breed,
+        'photoPath': photoPath,
+        'embedding': embedding,
+        'lastSeenLat': lastSeenLat,
+        'lastSeenLon': lastSeenLon,
+        'lastSeenLocation': lastSeenLocation,
+        'lostDate': lostDate.toIso8601String(),
+        'createdAt': createdAt.toIso8601String(),
+        'status': status.name,
+        'ownerContact': ownerContact,
+        'notes': notes,
+      };
 
   factory LostDogReport.fromJson(Map<String, dynamic> json) => LostDogReport(
-    id: json['id'] as String? ?? '',
-    dogName: json['dogName'] as String? ?? '',
-    breed: json['breed'] as String?,
-    photoPath: json['photoPath'] as String?,
-    embedding: (json['embedding'] as List<dynamic>?)
-        ?.map((e) => (e as num).toDouble())
-        .toList() ?? [],
-    lastSeenLat: (json['lastSeenLat'] as num?)?.toDouble(),
-    lastSeenLon: (json['lastSeenLon'] as num?)?.toDouble(),
-    lastSeenLocation: json['lastSeenLocation'] as String?,
-    lostDate: DateTime.tryParse(json['lostDate'] as String? ?? '') ?? DateTime.now(),
-    createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
-    status: LostDogStatus.values.firstWhere(
-      (s) => s.name == (json['status'] as String?),
-      orElse: () => LostDogStatus.active,
-    ),
-    ownerContact: json['ownerContact'] as String?,
-    notes: json['notes'] as String?,
-  );
+        id: json['id'] as String? ?? '',
+        dogName: json['dogName'] as String? ?? '',
+        breed: json['breed'] as String?,
+        photoPath: json['photoPath'] as String?,
+        embedding: (json['embedding'] as List<dynamic>?)
+                ?.map((e) => (e as num).toDouble())
+                .toList() ??
+            [],
+        lastSeenLat: (json['lastSeenLat'] as num?)?.toDouble(),
+        lastSeenLon: (json['lastSeenLon'] as num?)?.toDouble(),
+        lastSeenLocation: json['lastSeenLocation'] as String?,
+        lostDate: DateTime.tryParse(json['lostDate'] as String? ?? '') ??
+            DateTime.now(),
+        createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
+            DateTime.now(),
+        status: LostDogStatus.values.firstWhere(
+          (s) => s.name == (json['status'] as String?),
+          orElse: () => LostDogStatus.active,
+        ),
+        ownerContact: json['ownerContact'] as String?,
+        notes: json['notes'] as String?,
+      );
 
   LostDogReport copyWith({
     String? dogName,
@@ -115,21 +118,22 @@ class LostDogReport {
     LostDogStatus? status,
     String? ownerContact,
     String? notes,
-  }) => LostDogReport(
-    id: id,
-    dogName: dogName ?? this.dogName,
-    breed: breed ?? this.breed,
-    photoPath: photoPath ?? this.photoPath,
-    embedding: embedding ?? this.embedding,
-    lastSeenLat: lastSeenLat ?? this.lastSeenLat,
-    lastSeenLon: lastSeenLon ?? this.lastSeenLon,
-    lastSeenLocation: lastSeenLocation ?? this.lastSeenLocation,
-    lostDate: lostDate ?? this.lostDate,
-    createdAt: createdAt,
-    status: status ?? this.status,
-    ownerContact: ownerContact ?? this.ownerContact,
-    notes: notes ?? this.notes,
-  );
+  }) =>
+      LostDogReport(
+        id: id,
+        dogName: dogName ?? this.dogName,
+        breed: breed ?? this.breed,
+        photoPath: photoPath ?? this.photoPath,
+        embedding: embedding ?? this.embedding,
+        lastSeenLat: lastSeenLat ?? this.lastSeenLat,
+        lastSeenLon: lastSeenLon ?? this.lastSeenLon,
+        lastSeenLocation: lastSeenLocation ?? this.lastSeenLocation,
+        lostDate: lostDate ?? this.lostDate,
+        createdAt: createdAt,
+        status: status ?? this.status,
+        ownerContact: ownerContact ?? this.ownerContact,
+        notes: notes ?? this.notes,
+      );
 }
 
 /// A potential match between a scanned stray and a lost dog report.

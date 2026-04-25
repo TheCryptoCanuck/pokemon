@@ -44,18 +44,19 @@ class PlayerState {
     int? quizPerfectScores,
     int? totalSightings,
     String? selectedAvatar,
-  }) => PlayerState(
-    level: level ?? this.level,
-    xp: xp ?? this.xp,
-    streak: streak ?? this.streak,
-    bestStreak: bestStreak ?? this.bestStreak,
-    streakSavers: streakSavers ?? this.streakSavers,
-    unlockedAchievements: unlockedAchievements ?? this.unlockedAchievements,
-    quizzesCompleted: quizzesCompleted ?? this.quizzesCompleted,
-    quizPerfectScores: quizPerfectScores ?? this.quizPerfectScores,
-    totalSightings: totalSightings ?? this.totalSightings,
-    selectedAvatar: selectedAvatar ?? this.selectedAvatar,
-  );
+  }) =>
+      PlayerState(
+        level: level ?? this.level,
+        xp: xp ?? this.xp,
+        streak: streak ?? this.streak,
+        bestStreak: bestStreak ?? this.bestStreak,
+        streakSavers: streakSavers ?? this.streakSavers,
+        unlockedAchievements: unlockedAchievements ?? this.unlockedAchievements,
+        quizzesCompleted: quizzesCompleted ?? this.quizzesCompleted,
+        quizPerfectScores: quizPerfectScores ?? this.quizPerfectScores,
+        totalSightings: totalSightings ?? this.totalSightings,
+        selectedAvatar: selectedAvatar ?? this.selectedAvatar,
+      );
 
   String get title {
     if (level < 3) return 'Puppy';
@@ -77,7 +78,6 @@ class PlayerState {
     final bonus = (streak - 2).clamp(0, 10) * 0.10;
     return 1.0 + bonus;
   }
-
 }
 
 class PlayerNotifier extends StateNotifier<PlayerState> {
@@ -106,9 +106,11 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
         _box.get('achievements', defaultValue: <String>[]) as List,
       ),
       quizzesCompleted: _box.get('quizzes_completed', defaultValue: 0) as int,
-      quizPerfectScores: _box.get('quiz_perfect_scores', defaultValue: 0) as int,
+      quizPerfectScores:
+          _box.get('quiz_perfect_scores', defaultValue: 0) as int,
       totalSightings: _box.get('total_sightings', defaultValue: 0) as int,
-      selectedAvatar: _migrateAvatarId(_box.get('selected_avatar', defaultValue: 'default') as String),
+      selectedAvatar: _migrateAvatarId(
+          _box.get('selected_avatar', defaultValue: 'default') as String),
     );
   }
 
@@ -194,7 +196,8 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
   void _updateStreak() {
     final now = DateTime.now();
     final todayKey = _dateKey(now);
-    final lastActiveKey = _box.get('last_active_date', defaultValue: '') as String;
+    final lastActiveKey =
+        _box.get('last_active_date', defaultValue: '') as String;
 
     if (lastActiveKey == todayKey) {
       // Already logged in today — no change
@@ -207,7 +210,8 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
     if (lastActiveKey == yesterdayKey) {
       // Consecutive day — increment streak
       final newStreak = state.streak + 1;
-      final newBest = newStreak > state.bestStreak ? newStreak : state.bestStreak;
+      final newBest =
+          newStreak > state.bestStreak ? newStreak : state.bestStreak;
       state = state.copyWith(streak: newStreak, bestStreak: newBest);
       _log.info('Streak continued: $newStreak days');
       _awardStreakMilestoneXp(newStreak);
@@ -218,18 +222,21 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
     } else if (lastActiveKey == dayBeforeKey && state.streakSavers > 0) {
       // Missed exactly one day — use streak saver
       final newStreak = state.streak + 1;
-      final newBest = newStreak > state.bestStreak ? newStreak : state.bestStreak;
+      final newBest =
+          newStreak > state.bestStreak ? newStreak : state.bestStreak;
       state = state.copyWith(
         streak: newStreak,
         bestStreak: newBest,
         streakSavers: state.streakSavers - 1,
       );
       streakSaverUsed = true;
-      _log.info('Streak saved! Used 1 streak saver (${state.streakSavers} remaining)');
+      _log.info(
+          'Streak saved! Used 1 streak saver (${state.streakSavers} remaining)');
     } else {
       // Missed one or more days — capture old streak and reset to 1
       brokenStreakValue = state.streak;
-      _log.info('Streak broken at ${state.streak} days (last active: $lastActiveKey, today: $todayKey)');
+      _log.info(
+          'Streak broken at ${state.streak} days (last active: $lastActiveKey, today: $todayKey)');
       state = state.copyWith(streak: 1);
     }
 
@@ -289,7 +296,13 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
     final oldLevel = state.level;
     var newLevel = state.level;
     // Apply all XP multipliers: streak + seasonal + family + combo + mystery
-    final effectiveXp = (dog.xp * state.streakXpMultiplier * seasonalMultiplier * familyBonus * comboMultiplier * mysteryMultiplier).round();
+    final effectiveXp = (dog.xp *
+            state.streakXpMultiplier *
+            seasonalMultiplier *
+            familyBonus *
+            comboMultiplier *
+            mysteryMultiplier)
+        .round();
     var newXp = state.xp + effectiveXp;
 
     while (newXp >= (1000 * pow(newLevel, 1.4)).round()) {
@@ -328,9 +341,12 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
     if (dog.rarity == Rarity.legendary) tryUnlock('first_epic');
 
     if (collectedDogs.isNotEmpty) {
-      final uncommonCount = collectedDogs.where((b) => b.rarity == Rarity.uncommon).length;
-      final rareCount = collectedDogs.where((b) => b.rarity == Rarity.rare).length;
-      final legendaryCount = collectedDogs.where((b) => b.rarity == Rarity.legendary).length;
+      final uncommonCount =
+          collectedDogs.where((b) => b.rarity == Rarity.uncommon).length;
+      final rareCount =
+          collectedDogs.where((b) => b.rarity == Rarity.rare).length;
+      final legendaryCount =
+          collectedDogs.where((b) => b.rarity == Rarity.legendary).length;
       if (rareCount >= 5) tryUnlock('five_rare');
       if (legendaryCount >= 5) tryUnlock('five_legendary');
 
@@ -340,16 +356,23 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
 
       // "Collect all" milestones
       if (allDogs.isNotEmpty) {
-        final totalCommon = allDogs.where((b) => b.rarity == Rarity.common).length;
-        final collectedCommon = collectedDogs.where((b) => b.rarity == Rarity.common).length;
-        if (collectedCommon >= totalCommon && totalCommon > 0) tryUnlock('all_common');
+        final totalCommon =
+            allDogs.where((b) => b.rarity == Rarity.common).length;
+        final collectedCommon =
+            collectedDogs.where((b) => b.rarity == Rarity.common).length;
+        if (collectedCommon >= totalCommon && totalCommon > 0)
+          tryUnlock('all_common');
 
-        final totalUncommon = allDogs.where((b) => b.rarity == Rarity.uncommon).length;
-        final collectedUncommon = collectedDogs.where((b) => b.rarity == Rarity.uncommon).length;
-        if (collectedUncommon >= totalUncommon && totalUncommon > 0) tryUnlock('all_uncommon');
+        final totalUncommon =
+            allDogs.where((b) => b.rarity == Rarity.uncommon).length;
+        final collectedUncommon =
+            collectedDogs.where((b) => b.rarity == Rarity.uncommon).length;
+        if (collectedUncommon >= totalUncommon && totalUncommon > 0)
+          tryUnlock('all_uncommon');
 
         final totalRare = allDogs.where((b) => b.rarity == Rarity.rare).length;
-        final collectedRare = collectedDogs.where((b) => b.rarity == Rarity.rare).length;
+        final collectedRare =
+            collectedDogs.where((b) => b.rarity == Rarity.rare).length;
         if (collectedRare >= totalRare && totalRare > 0) tryUnlock('all_rare');
       }
 
@@ -359,11 +382,13 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
           b.conservationStatus == 'Critically Endangered');
       if (hasEndangered) tryUnlock('endangered_spotter');
 
-      final threatenedCount = collectedDogs.where((b) =>
-          b.conservationStatus == 'Vulnerable' ||
-          b.conservationStatus == 'Endangered' ||
-          b.conservationStatus == 'Critically Endangered' ||
-          b.conservationStatus == 'Near Threatened').length;
+      final threatenedCount = collectedDogs
+          .where((b) =>
+              b.conservationStatus == 'Vulnerable' ||
+              b.conservationStatus == 'Endangered' ||
+              b.conservationStatus == 'Critically Endangered' ||
+              b.conservationStatus == 'Near Threatened')
+          .length;
       if (threatenedCount >= 5) tryUnlock('conservation_hero');
     }
 
@@ -396,6 +421,7 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
   }
 }
 
-final playerProvider = StateNotifierProvider<PlayerNotifier, PlayerState>((ref) {
+final playerProvider =
+    StateNotifierProvider<PlayerNotifier, PlayerState>((ref) {
   throw UnimplementedError('playerProvider must be overridden after Hive init');
 });

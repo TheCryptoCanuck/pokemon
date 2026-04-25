@@ -63,12 +63,9 @@ class WeeklyMissionCard extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        completed
-                            ? Icons.check_circle
-                            : Icons.flag,
-                        color: completed
-                            ? Colors.green
-                            : const Color(0xFF7C4DFF),
+                        completed ? Icons.check_circle : Icons.flag,
+                        color:
+                            completed ? Colors.green : const Color(0xFF7C4DFF),
                         size: 14,
                       ),
                       const SizedBox(width: 4),
@@ -122,9 +119,7 @@ class WeeklyMissionCard extends ConsumerWidget {
                   ),
                   child: Icon(
                     _missionIcon(mission.id),
-                    color: completed
-                        ? Colors.green
-                        : const Color(0xFF7C4DFF),
+                    color: completed ? Colors.green : const Color(0xFF7C4DFF),
                     size: 22,
                   ),
                 ),
@@ -139,9 +134,8 @@ class WeeklyMissionCard extends ConsumerWidget {
                           color: completed ? Colors.white54 : Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
-                          decoration: completed
-                              ? TextDecoration.lineThrough
-                              : null,
+                          decoration:
+                              completed ? TextDecoration.lineThrough : null,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -175,9 +169,7 @@ class WeeklyMissionCard extends ConsumerWidget {
                           minHeight: 8,
                           backgroundColor: Colors.white10,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            completed
-                                ? Colors.green
-                                : const Color(0xFF7C4DFF),
+                            completed ? Colors.green : const Color(0xFF7C4DFF),
                           ),
                         ),
                       ),
@@ -308,9 +300,7 @@ class _DaysRemainingBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            completed
-                ? Icons.check
-                : Icons.timer,
+            completed ? Icons.check : Icons.timer,
             color: color,
             size: 12,
           ),
@@ -332,9 +322,13 @@ class _DaysRemainingBadge extends StatelessWidget {
     );
 
     if (urgent) {
-      badge = badge.animate(
-        onPlay: (c) => c.repeat(reverse: true),
-      ).fadeIn(duration: 600.ms).then().fade(
+      badge = badge
+          .animate(
+            onPlay: (c) => c.repeat(reverse: true),
+          )
+          .fadeIn(duration: 600.ms)
+          .then()
+          .fade(
             begin: 1.0,
             end: 0.7,
             duration: 800.ms,

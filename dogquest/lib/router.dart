@@ -82,7 +82,8 @@ final router = GoRouter(
     // Auth gate — check Supabase session first, then offline mode fallback
     final session = Supabase.instance.client.auth.currentSession;
     final playerBox = Hive.box('dogquest_player_stats');
-    final offlineMode = playerBox.get('offline_mode', defaultValue: false) as bool;
+    final offlineMode =
+        playerBox.get('offline_mode', defaultValue: false) as bool;
 
     if (session == null && !offlineMode) return '/login';
 
@@ -124,7 +125,8 @@ final router = GoRouter(
           GoRoute(path: '/map', builder: (_, __) => const MapTab()),
         ]),
         StatefulShellBranch(routes: [
-          GoRoute(path: '/identify', builder: (_, __) => const IdentifyScreen()),
+          GoRoute(
+              path: '/identify', builder: (_, __) => const IdentifyScreen()),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(path: '/kennel', builder: (_, __) => const KennelScreen()),
@@ -247,12 +249,11 @@ final router = GoRouter(
       parentNavigatorKey: rootNavigatorKey,
       pageBuilder: (context, state) => CustomTransitionPage(
         child: const QuizScreen(),
-        transitionsBuilder: (context, animation, _, child) =>
-            SlideTransition(
-              position: Tween(begin: const Offset(0, 1), end: Offset.zero)
-                  .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
-              child: child,
-            ),
+        transitionsBuilder: (context, animation, _, child) => SlideTransition(
+          position: Tween(begin: const Offset(0, 1), end: Offset.zero).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+          child: child,
+        ),
       ),
     ),
   ],

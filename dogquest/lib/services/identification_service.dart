@@ -9,34 +9,43 @@ import '../models/dog.dart';
 /// predictions typically produce 10-50% raw confidence. The tiers map
 /// raw model output to user-facing quality labels.
 enum ConfidenceTier {
-  high,   // >= 35% raw — model is quite sure
+  high, // >= 35% raw — model is quite sure
   medium, // >= 20% raw — decent match, worth showing
-  low;    // < 20% raw  — uncertain, hedge the language
+  low; // < 20% raw  — uncertain, hedge the language
 
   /// User-facing label for this confidence tier.
   String get label {
     switch (this) {
-      case ConfidenceTier.high:   return 'High Match';
-      case ConfidenceTier.medium: return 'Good Match';
-      case ConfidenceTier.low:    return 'Possible Match';
+      case ConfidenceTier.high:
+        return 'High Match';
+      case ConfidenceTier.medium:
+        return 'Good Match';
+      case ConfidenceTier.low:
+        return 'Possible Match';
     }
   }
 
   /// Color associated with this tier.
   Color get color {
     switch (this) {
-      case ConfidenceTier.high:   return const Color(0xFF4CAF50); // green
-      case ConfidenceTier.medium: return const Color(0xFFFFB300); // amber
-      case ConfidenceTier.low:    return const Color(0xFFFF7043); // deep orange
+      case ConfidenceTier.high:
+        return const Color(0xFF4CAF50); // green
+      case ConfidenceTier.medium:
+        return const Color(0xFFFFB300); // amber
+      case ConfidenceTier.low:
+        return const Color(0xFFFF7043); // deep orange
     }
   }
 
   /// Icon for the tier badge.
   IconData get icon {
     switch (this) {
-      case ConfidenceTier.high:   return Icons.verified_rounded;
-      case ConfidenceTier.medium: return Icons.check_circle_outline_rounded;
-      case ConfidenceTier.low:    return Icons.help_outline_rounded;
+      case ConfidenceTier.high:
+        return Icons.verified_rounded;
+      case ConfidenceTier.medium:
+        return Icons.check_circle_outline_rounded;
+      case ConfidenceTier.low:
+        return Icons.help_outline_rounded;
     }
   }
 
@@ -95,5 +104,6 @@ abstract class IdentificationService {
 }
 
 final identificationServiceProvider = Provider<IdentificationService>((ref) {
-  throw UnimplementedError('identificationServiceProvider must be overridden at startup');
+  throw UnimplementedError(
+      'identificationServiceProvider must be overridden at startup');
 });

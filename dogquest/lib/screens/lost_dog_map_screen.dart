@@ -27,6 +27,7 @@ class LostDogMapScreen extends ConsumerStatefulWidget {
 class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
   final MapController _mapController = MapController();
   String? _selectedReportId;
+
   /// Whether the selected report is a remote (cloud) report.
   bool _selectedIsRemote = false;
 
@@ -194,8 +195,7 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
             ),
             children: [
               TileLayer(
-                urlTemplate:
-                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.dogquest.app',
                 fallbackUrl: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
               ),
@@ -245,13 +245,18 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.map_outlined, color: Colors.white.withValues(alpha: 0.3), size: 48),
+                Icon(Icons.map_outlined,
+                    color: Colors.white.withValues(alpha: 0.3), size: 48),
                 const SizedBox(height: 8),
                 Text('No location data available',
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 14)),
+                    style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontSize: 14)),
                 const SizedBox(height: 4),
                 Text('Reports need GPS coordinates to appear on the map',
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 12)),
+                    style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.3),
+                        fontSize: 12)),
               ],
             ),
           ),
@@ -284,7 +289,8 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
       height: 36,
       child: GestureDetector(
         onTap: () {
-          if (report.status == LostDogStatus.found) return; // reunited — no info access
+          if (report.status == LostDogStatus.found)
+            return; // reunited — no info access
           setState(() {
             _selectedReportId = report.id;
             _selectedIsRemote = false;
@@ -310,8 +316,7 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
   }
 
   Widget _buildPopup(LostDogReport report) {
-    final daysMissing =
-        DateTime.now().difference(report.lostDate).inDays;
+    final daysMissing = DateTime.now().difference(report.lostDate).inDays;
     final statusLabel = report.status == LostDogStatus.found
         ? 'Reunited'
         : report.status == LostDogStatus.cancelled
@@ -391,9 +396,13 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                         ),
                         const Spacer(),
                         Text('Tap for details',
-                            style: TextStyle(color: textSecondary.withValues(alpha: 0.6), fontSize: 11)),
+                            style: TextStyle(
+                                color: textSecondary.withValues(alpha: 0.6),
+                                fontSize: 11)),
                         const SizedBox(width: 4),
-                        Icon(Icons.chevron_right, color: textSecondary.withValues(alpha: 0.6), size: 14),
+                        Icon(Icons.chevron_right,
+                            color: textSecondary.withValues(alpha: 0.6),
+                            size: 14),
                       ],
                     ),
                   ],
@@ -502,91 +511,91 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          // Header
-          const Text(
-            'Recovery Network Stats',
-            style: TextStyle(
-              color: textPrimary,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+            // Header
+            const Text(
+              'Recovery Network Stats',
+              style: TextStyle(
+                color: textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 14),
+            const SizedBox(height: 14),
 
-          // 2x2 stat cards
-          Row(
-            children: [
-              Expanded(
-                child: _statCard(
-                  'Total Reports',
-                  '$total',
-                  Icons.assignment,
-                  accent,
+            // 2x2 stat cards
+            Row(
+              children: [
+                Expanded(
+                  child: _statCard(
+                    'Total Reports',
+                    '$total',
+                    Icons.assignment,
+                    accent,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _statCard(
-                  'Recovery Rate',
-                  '$recoveryRate%',
-                  Icons.verified,
-                  Colors.green,
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _statCard(
+                    'Recovery Rate',
+                    '$recoveryRate%',
+                    Icons.verified,
+                    Colors.green,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: _statCard(
-                  'Avg Recovery',
-                  '${avgRecoveryDays.toStringAsFixed(1)}d',
-                  Icons.timer,
-                  const Color(0xFF42A5F5),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _statCard(
-                  'Network Scans',
-                  '$totalScans',
-                  Icons.qr_code_scanner,
-                  const Color(0xFFAB47BC),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // Recovery by Status bar chart
-          const Text(
-            'Recovery by Status',
-            style: TextStyle(
-              color: textPrimary,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+              ],
             ),
-          ),
-          const SizedBox(height: 10),
-          _statusBar('Missing', activeCount, total, Colors.redAccent),
-          const SizedBox(height: 6),
-          _statusBar('Reunited', foundCount, total, Colors.green),
-          const SizedBox(height: 6),
-          _statusBar('Cancelled', cancelledCount, total, Colors.grey),
-          const SizedBox(height: 20),
-
-          // Recent Activity
-          const Text(
-            'Recent Activity',
-            style: TextStyle(
-              color: textPrimary,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: _statCard(
+                    'Avg Recovery',
+                    '${avgRecoveryDays.toStringAsFixed(1)}d',
+                    Icons.timer,
+                    const Color(0xFF42A5F5),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _statCard(
+                    'Network Scans',
+                    '$totalScans',
+                    Icons.qr_code_scanner,
+                    const Color(0xFFAB47BC),
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 10),
-          ...recentReports.map(_recentActivityTile),
+            const SizedBox(height: 20),
+
+            // Recovery by Status bar chart
+            const Text(
+              'Recovery by Status',
+              style: TextStyle(
+                color: textPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 10),
+            _statusBar('Missing', activeCount, total, Colors.redAccent),
+            const SizedBox(height: 6),
+            _statusBar('Reunited', foundCount, total, Colors.green),
+            const SizedBox(height: 6),
+            _statusBar('Cancelled', cancelledCount, total, Colors.grey),
+            const SizedBox(height: 20),
+
+            // Recent Activity
+            const Text(
+              'Recent Activity',
+              style: TextStyle(
+                color: textPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 10),
+            ...recentReports.map(_recentActivityTile),
           ],
         ),
       ),
@@ -689,7 +698,9 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
-          onTap: report.status == LostDogStatus.found ? null : () => _showReportDetail(context, report),
+          onTap: report.status == LostDogStatus.found
+              ? null
+              : () => _showReportDetail(context, report),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
@@ -714,7 +725,10 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                   child: report.status == LostDogStatus.found
                       ? Text(
                           'Reunited | $timeLabel',
-                          style: const TextStyle(color: Colors.green, fontSize: 13, fontWeight: FontWeight.w500),
+                          style: const TextStyle(
+                              color: Colors.green,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500),
                         )
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -730,7 +744,8 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                             Text(
                               '${report.status.label} | $timeLabel',
                               style: TextStyle(
-                                color: _statusColor(report.status).withValues(alpha: 0.8),
+                                color: _statusColor(report.status)
+                                    .withValues(alpha: 0.8),
                                 fontSize: 11,
                               ),
                             ),
@@ -738,7 +753,8 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                         ),
                 ),
                 if (report.status != LostDogStatus.found)
-                  const Icon(Icons.chevron_right, color: textSecondary, size: 18),
+                  const Icon(Icons.chevron_right,
+                      color: textSecondary, size: 18),
               ],
             ),
           ),
@@ -799,15 +815,13 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
             ),
           ],
         ),
-        child:
-            const Icon(Icons.visibility, color: Colors.white, size: 14),
+        child: const Icon(Icons.visibility, color: Colors.white, size: 14),
       ),
     );
   }
 
   Widget _buildRemotePopup(LostDogReportRemote report) {
-    final daysMissing =
-        DateTime.now().difference(report.lastSeenAt).inDays;
+    final daysMissing = DateTime.now().difference(report.lastSeenAt).inDays;
     final statusLabel =
         '$daysMissing day${daysMissing == 1 ? '' : 's'} missing';
 
@@ -913,8 +927,7 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                 ),
                 // Close button
                 IconButton(
-                  icon: const Icon(Icons.close,
-                      color: textSecondary, size: 20),
+                  icon: const Icon(Icons.close, color: textSecondary, size: 20),
                   onPressed: () => setState(() {
                     _selectedReportId = null;
                     _selectedIsRemote = false;
@@ -936,8 +949,7 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                 ),
                 icon: const Icon(Icons.visibility, size: 18),
                 label: const Text(
@@ -964,12 +976,11 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
           backgroundColor: bgCard,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Row(
             children: [
-              Icon(Icons.visibility,
-                  color: Colors.orange.shade300, size: 22),
+              Icon(Icons.visibility, color: Colors.orange.shade300, size: 22),
               const SizedBox(width: 8),
               const Text('Report Sighting',
                   style: TextStyle(color: Colors.white, fontSize: 18)),
@@ -993,8 +1004,7 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                 decoration: InputDecoration(
                   hintText: 'Optional note (e.g. direction heading)...',
                   hintStyle: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.3),
-                      fontSize: 13),
+                      color: Colors.white.withValues(alpha: 0.3), fontSize: 13),
                   filled: true,
                   fillColor: bgDeep,
                   border: OutlineInputBorder(
@@ -1008,8 +1018,8 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
           actions: [
             TextButton(
               onPressed: submitting ? null : () => Navigator.pop(ctx),
-              child: const Text('Cancel',
-                  style: TextStyle(color: Colors.white38)),
+              child:
+                  const Text('Cancel', style: TextStyle(color: Colors.white38)),
             ),
             ElevatedButton(
               onPressed: submitting
@@ -1017,15 +1027,14 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                   : () async {
                       setDialogState(() => submitting = true);
                       try {
-                        final position =
-                            await Geolocator.getCurrentPosition(
+                        final position = await Geolocator.getCurrentPosition(
                           locationSettings: const LocationSettings(
                             accuracy: LocationAccuracy.high,
                             timeLimit: Duration(seconds: 10),
                           ),
                         );
-                        final remoteSvc = ref
-                            .read(supabaseLostDogServiceProvider);
+                        final remoteSvc =
+                            ref.read(supabaseLostDogServiceProvider);
                         if (remoteSvc != null) {
                           await remoteSvc.reportSighting(
                             report.id,
@@ -1043,8 +1052,7 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                               backgroundColor: bgCard,
                               content: Text(
                                 'Sighting reported for ${report.dogName}!',
-                                style: const TextStyle(
-                                    color: Colors.orange),
+                                style: const TextStyle(color: Colors.orange),
                               ),
                             ),
                           );
@@ -1057,8 +1065,7 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                               backgroundColor: bgCard,
                               content: Text(
                                 'Failed to submit sighting: $e',
-                                style: const TextStyle(
-                                    color: Colors.red),
+                                style: const TextStyle(color: Colors.red),
                               ),
                             ),
                           );
@@ -1075,8 +1082,7 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white),
                     )
-                  : const Text('Submit',
-                      style: TextStyle(color: Colors.white)),
+                  : const Text('Submit', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -1099,8 +1105,18 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
 
   String _formatDate(DateTime date) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
@@ -1150,7 +1166,8 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                   height: 220,
                   width: double.infinity,
                   child: hasPhoto
-                      ? Image.file(File(report.photoPath!), fit: BoxFit.cover,
+                      ? Image.file(File(report.photoPath!),
+                          fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => _photoPlaceholder())
                       : _photoPlaceholder(),
                 ),
@@ -1162,14 +1179,19 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                 children: [
                   Expanded(
                     child: Text(report.dogName,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24)),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24)),
                   ),
                   _statusBadge(report.status),
                 ],
               ),
               if (report.breed != null) ...[
                 const SizedBox(height: 4),
-                Text(report.breed!, style: const TextStyle(color: Colors.white54, fontSize: 15)),
+                Text(report.breed!,
+                    style:
+                        const TextStyle(color: Colors.white54, fontSize: 15)),
               ],
               const SizedBox(height: 20),
 
@@ -1177,14 +1199,17 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
               _infoRow(Icons.schedule, Colors.red.shade300, 'Missing Since',
                   '${_formatDate(report.lostDate)} ($daysAgo day${daysAgo == 1 ? '' : 's'} ago)'),
               if (report.lastSeenLocation != null)
-                _infoRow(Icons.location_on, Colors.amber, 'Last Seen', report.lastSeenLocation!),
+                _infoRow(Icons.location_on, Colors.amber, 'Last Seen',
+                    report.lastSeenLocation!),
               if (report.lastSeenLat != null && report.lastSeenLon != null)
                 _infoRow(Icons.map_outlined, Colors.blue.shade300, 'GPS',
                     '${report.lastSeenLat!.toStringAsFixed(4)}, ${report.lastSeenLon!.toStringAsFixed(4)}'),
-              _infoRow(Icons.calendar_today, Colors.white38, 'Reported', _formatDate(report.createdAt)),
+              _infoRow(Icons.calendar_today, Colors.white38, 'Reported',
+                  _formatDate(report.createdAt)),
 
               // Owner contact
-              if (report.ownerContact != null && report.ownerContact!.isNotEmpty) ...[
+              if (report.ownerContact != null &&
+                  report.ownerContact!.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Container(
                   width: double.infinity,
@@ -1192,7 +1217,8 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                   decoration: BoxDecoration(
                     color: Colors.amber.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
+                    border:
+                        Border.all(color: Colors.amber.withValues(alpha: 0.2)),
                   ),
                   child: Row(
                     children: [
@@ -1203,10 +1229,14 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text('Owner Contact',
-                                style: TextStyle(color: Colors.amber, fontSize: 11, fontWeight: FontWeight.bold)),
+                                style: TextStyle(
+                                    color: Colors.amber,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold)),
                             const SizedBox(height: 2),
                             Text(report.ownerContact!,
-                                style: const TextStyle(color: Colors.white, fontSize: 14)),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 14)),
                           ],
                         ),
                       ),
@@ -1229,9 +1259,16 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Description & Notes',
-                          style: TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold)),
+                          style: TextStyle(
+                              color: Colors.white38,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold)),
                       const SizedBox(height: 6),
-                      Text(report.notes!, style: const TextStyle(color: Colors.white70, fontSize: 14, height: 1.5)),
+                      Text(report.notes!,
+                          style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 14,
+                              height: 1.5)),
                     ],
                   ),
                 ),
@@ -1280,10 +1317,12 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.pets, color: Colors.amber.withValues(alpha: 0.4), size: 64),
+            Icon(Icons.pets,
+                color: Colors.amber.withValues(alpha: 0.4), size: 64),
             const SizedBox(height: 8),
             Text('No photo available',
-                style: TextStyle(color: Colors.amber.withValues(alpha: 0.4), fontSize: 13)),
+                style: TextStyle(
+                    color: Colors.amber.withValues(alpha: 0.4), fontSize: 13)),
           ],
         ),
       ),
@@ -1300,7 +1339,8 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
         border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Text(status.label,
-          style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+          style: TextStyle(
+              color: color, fontSize: 10, fontWeight: FontWeight.bold)),
     );
   }
 
@@ -1316,9 +1356,14 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold)),
+                Text(label,
+                    style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold)),
                 const SizedBox(height: 2),
-                Text(value, style: const TextStyle(color: Colors.white, fontSize: 14)),
+                Text(value,
+                    style: const TextStyle(color: Colors.white, fontSize: 14)),
               ],
             ),
           ),
@@ -1362,9 +1407,15 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15)),
+                    Text(label,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15)),
                     const SizedBox(height: 2),
-                    Text(subtitle, style: const TextStyle(color: Colors.white38, fontSize: 12)),
+                    Text(subtitle,
+                        style: const TextStyle(
+                            color: Colors.white38, fontSize: 12)),
                   ],
                 ),
               ),

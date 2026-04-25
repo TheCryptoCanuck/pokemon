@@ -106,9 +106,8 @@ class _RecordsTab extends ConsumerWidget {
         label: 'Highest Combo',
         value: '${combo.count}',
         unit: 'chain',
-        subtitle: combo.isActive
-            ? '${combo.multiplier}x multiplier active'
-            : null,
+        subtitle:
+            combo.isActive ? '${combo.multiplier}x multiplier active' : null,
       ),
       _RecordItem(
         icon: Icons.pets_rounded,
@@ -133,7 +132,8 @@ class _RecordsTab extends ConsumerWidget {
         return _buildRecordCard(records[index])
             .animate()
             .fadeIn(delay: Duration(milliseconds: 60 * index))
-            .slideX(begin: 0.05, end: 0, delay: Duration(milliseconds: 60 * index));
+            .slideX(
+                begin: 0.05, end: 0, delay: Duration(milliseconds: 60 * index));
       },
     );
   }
@@ -163,13 +163,13 @@ class _RecordsTab extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(item.label,
-                    style: const TextStyle(
-                        color: Colors.white70, fontSize: 13)),
+                    style:
+                        const TextStyle(color: Colors.white70, fontSize: 13)),
                 const SizedBox(height: 2),
                 if (item.subtitle != null)
                   Text(item.subtitle!,
-                      style: const TextStyle(
-                          color: Colors.white38, fontSize: 11)),
+                      style:
+                          const TextStyle(color: Colors.white38, fontSize: 11)),
               ],
             ),
           ),
@@ -182,8 +182,7 @@ class _RecordsTab extends ConsumerWidget {
                       fontSize: 24,
                       fontWeight: FontWeight.bold)),
               Text(item.unit,
-                  style: const TextStyle(
-                      color: Colors.white38, fontSize: 11)),
+                  style: const TextStyle(color: Colors.white38, fontSize: 11)),
             ],
           ),
         ],
@@ -195,8 +194,19 @@ class _RecordsTab extends ConsumerWidget {
     final parts = dateKey.split('-');
     if (parts.length != 3) return dateKey;
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     final month = int.tryParse(parts[1]) ?? 1;
     final day = int.tryParse(parts[2]) ?? 1;
@@ -272,8 +282,7 @@ class _ThisWeekTab extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('This Week',
-                        style: TextStyle(
-                            color: Colors.white70, fontSize: 13)),
+                        style: TextStyle(color: Colors.white70, fontSize: 13)),
                     const SizedBox(height: 4),
                     Text('$weekTotal',
                         style: const TextStyle(
@@ -281,16 +290,14 @@ class _ThisWeekTab extends ConsumerWidget {
                             fontSize: 32,
                             fontWeight: FontWeight.bold)),
                     const Text('sightings',
-                        style: TextStyle(
-                            color: Colors.white38, fontSize: 12)),
+                        style: TextStyle(color: Colors.white38, fontSize: 12)),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const Text('Daily Avg',
-                        style: TextStyle(
-                            color: Colors.white70, fontSize: 13)),
+                        style: TextStyle(color: Colors.white70, fontSize: 13)),
                     const SizedBox(height: 4),
                     Text((weekTotal / 7).toStringAsFixed(1),
                         style: const TextStyle(
@@ -298,8 +305,7 @@ class _ThisWeekTab extends ConsumerWidget {
                             fontSize: 24,
                             fontWeight: FontWeight.bold)),
                     const Text('per day',
-                        style: TextStyle(
-                            color: Colors.white38, fontSize: 12)),
+                        style: TextStyle(color: Colors.white38, fontSize: 12)),
                   ],
                 ),
               ],
@@ -332,9 +338,8 @@ class _ThisWeekTab extends ConsumerWidget {
                     children: days.asMap().entries.map((entry) {
                       final index = entry.key;
                       final day = entry.value;
-                      final barHeight = maxCount > 0
-                          ? (day.count / maxCount) * 140
-                          : 0.0;
+                      final barHeight =
+                          maxCount > 0 ? (day.count / maxCount) * 140 : 0.0;
 
                       return Expanded(
                         child: Padding(
@@ -365,8 +370,7 @@ class _ThisWeekTab extends ConsumerWidget {
                                           : Colors.white12,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
-                              ).animate()
-                                  .scaleY(
+                              ).animate().scaleY(
                                     begin: 0,
                                     end: 1,
                                     alignment: Alignment.bottomCenter,
@@ -485,7 +489,8 @@ class _AllTimeTab extends ConsumerWidget {
                         color: Colors.amber.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                            color: Colors.amber.withValues(alpha: 0.4), width: 1.5),
+                            color: Colors.amber.withValues(alpha: 0.4),
+                            width: 1.5),
                       ),
                       child: Center(
                         child: Text('${player.level}',
@@ -543,9 +548,8 @@ class _AllTimeTab extends ConsumerWidget {
                     label: 'Breeds',
                     value: '${kennelSvc.count}',
                     subtitle: 'of $totalBreeds',
-                    progress: totalBreeds > 0
-                        ? kennelSvc.count / totalBreeds
-                        : 0,
+                    progress:
+                        totalBreeds > 0 ? kennelSvc.count / totalBreeds : 0,
                   ),
                 ).animate().fadeIn(delay: 60.ms),
               ),
@@ -630,8 +634,8 @@ class _AllTimeTab extends ConsumerWidget {
                     icon: Icons.star_rounded,
                     iconColor: Colors.amber,
                     label: 'Total XP',
-                    value: _formatNumber(player.xp +
-                        _totalXpFromLevels(player.level)),
+                    value: _formatNumber(
+                        player.xp + _totalXpFromLevels(player.level)),
                   ),
                 ),
               ],
@@ -848,8 +852,7 @@ class _MasteryRow extends StatelessWidget {
           width: 32,
           child: Text('$count',
               textAlign: TextAlign.right,
-              style:
-                  const TextStyle(color: Colors.white54, fontSize: 12)),
+              style: const TextStyle(color: Colors.white54, fontSize: 12)),
         ),
       ],
     );

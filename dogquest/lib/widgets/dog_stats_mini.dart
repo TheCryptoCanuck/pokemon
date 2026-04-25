@@ -98,9 +98,7 @@ class DogStatsMini extends StatelessWidget {
                             letterSpacing: 0.5,
                           ),
                         ),
-                      )
-                          .animate(onPlay: (c) => c.repeat(reverse: true))
-                          .scaleXY(
+                      ).animate(onPlay: (c) => c.repeat(reverse: true)).scaleXY(
                             begin: 1.0,
                             end: 1.1,
                             duration: 800.ms,
@@ -196,9 +194,7 @@ class _MasteryDots extends StatelessWidget {
           margin: const EdgeInsets.only(right: 2),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: filled
-                ? Colors.amber
-                : Colors.white.withValues(alpha: 0.15),
+            color: filled ? Colors.amber : Colors.white.withValues(alpha: 0.15),
           ),
         );
       }),

@@ -29,7 +29,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _dailyDogAlerts = NotificationService.dailyDogAlertsEnabled;
   bool _dataSharing = DataConsentService.hasConsented;
 
-
   @override
   void initState() {
     super.initState();
@@ -118,11 +117,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
+            child:
+                const Text('Cancel', style: TextStyle(color: Colors.white54)),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Log Out', style: TextStyle(color: Colors.redAccent)),
+            child: const Text('Log Out',
+                style: TextStyle(color: Colors.redAccent)),
           ),
         ],
       ),
@@ -157,8 +158,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete',
-                style: TextStyle(color: Colors.redAccent)),
+            child:
+                const Text('Delete', style: TextStyle(color: Colors.redAccent)),
           ),
         ],
       ),
@@ -193,7 +194,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-
   Future<void> _handleSeedDemo() async {
     if (_isSeedingDemo) return;
     final confirmed = await showDialog<bool>(
@@ -213,11 +213,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
+            child:
+                const Text('Cancel', style: TextStyle(color: Colors.white54)),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Seed Demo', style: TextStyle(color: Colors.amber)),
+            child:
+                const Text('Seed Demo', style: TextStyle(color: Colors.amber)),
           ),
         ],
       ),
@@ -271,11 +273,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
+            child:
+                const Text('Cancel', style: TextStyle(color: Colors.white54)),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Clear', style: TextStyle(color: Colors.redAccent)),
+            child:
+                const Text('Clear', style: TextStyle(color: Colors.redAccent)),
           ),
         ],
       ),
@@ -382,8 +386,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final playerBox = Hive.box('dogquest_player_stats');
-    final isOffline = playerBox.get('offline_mode', defaultValue: false) as bool;
-    final hasToken = playerBox.get('has_auth_token', defaultValue: false) as bool;
+    final isOffline =
+        playerBox.get('offline_mode', defaultValue: false) as bool;
+    final hasToken =
+        playerBox.get('has_auth_token', defaultValue: false) as bool;
 
     int pendingSyncCount = 0;
     try {
@@ -569,7 +575,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         'Share anonymized sighting data with researchers',
                         style: TextStyle(color: Colors.white38, fontSize: 12)),
                     value: _dataSharing,
-                    activeTrackColor: const Color(0xFFD4874E).withValues(alpha: 0.5),
+                    activeTrackColor:
+                        const Color(0xFFD4874E).withValues(alpha: 0.5),
                     activeThumbColor: const Color(0xFFD4874E),
                     dense: true,
                     onChanged: (val) async {
@@ -653,7 +660,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: Column(
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.info_outline, color: Colors.white54, size: 22),
+                    leading: const Icon(Icons.info_outline,
+                        color: Colors.white54, size: 22),
                     title: const Text('Version',
                         style: TextStyle(color: Colors.white, fontSize: 14)),
                     subtitle: const Text('0.1.0',
@@ -743,7 +751,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       onTap: _isSeedingDemo ? null : _handleSeedDemo,
                     ),
                     if (DemoService.isDemoMode) ...[
-                      const Divider(color: Colors.white10, height: 1, indent: 56),
+                      const Divider(
+                          color: Colors.white10, height: 1, indent: 56),
                       _actionTile(
                         icon: Icons.cleaning_services_rounded,
                         title: 'Clear Demo Data',
@@ -786,11 +795,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ],
                     ),
                     child: const Center(
-                      child: Text('A', style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      )),
+                      child: Text('A',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          )),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -857,8 +867,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }) {
     return ListTile(
       leading: Icon(icon, color: iconColor, size: 22),
-      title: Text(title,
-          style: TextStyle(color: titleColor, fontSize: 14)),
+      title: Text(title, style: TextStyle(color: titleColor, fontSize: 14)),
       trailing: trailing ??
           const Icon(Icons.chevron_right, color: Colors.white24, size: 20),
       dense: true,

@@ -122,7 +122,8 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
             const Text(
               'Create a dog profile first so we can generate a visual embedding for matching.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white54, fontSize: 15, height: 1.5),
+              style:
+                  TextStyle(color: Colors.white54, fontSize: 15, height: 1.5),
             ),
             const SizedBox(height: 28),
             SizedBox(
@@ -283,7 +284,8 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
                 maxLines: 3,
                 style: const TextStyle(color: Colors.white, fontSize: 15),
                 decoration: _inputDecoration(
-                  hint: 'e.g. Red collar, scar on left ear, last seen near Central Park',
+                  hint:
+                      'e.g. Red collar, scar on left ear, last seen near Central Park',
                   icon: Icons.note_alt_outlined,
                 ),
               ),
@@ -323,7 +325,8 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
                 decoration: BoxDecoration(
                   color: Colors.amber.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
+                  border:
+                      Border.all(color: Colors.amber.withValues(alpha: 0.2)),
                 ),
                 child: Row(
                   children: [
@@ -336,7 +339,8 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
                     const Expanded(
                       child: Text(
                         'A visual fingerprint will be generated from your dog\'s photo to match against stray scans.',
-                        style: TextStyle(color: Colors.white54, fontSize: 12, height: 1.4),
+                        style: TextStyle(
+                            color: Colors.white54, fontSize: 12, height: 1.4),
                       ),
                     ),
                   ],
@@ -380,8 +384,7 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     elevation: 4,
-                    shadowColor:
-                        const Color(0xFFD84315).withValues(alpha: 0.4),
+                    shadowColor: const Color(0xFFD84315).withValues(alpha: 0.4),
                   ),
                 ),
               ),
@@ -519,9 +522,8 @@ class _DogSelectionCard extends StatelessWidget {
                         ? const Color(0xFFD84315)
                         : Colors.transparent,
                     border: Border.all(
-                      color: isSelected
-                          ? const Color(0xFFD84315)
-                          : Colors.white24,
+                      color:
+                          isSelected ? const Color(0xFFD84315) : Colors.white24,
                       width: 2,
                     ),
                   ),

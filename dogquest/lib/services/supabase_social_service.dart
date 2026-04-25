@@ -110,7 +110,9 @@ class SupabaseSocialService {
         if (cursor != null) 'p_cursor': cursor.toUtc().toIso8601String(),
       });
       final list = response as List<dynamic>;
-      return list.map((e) => SocialPost.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => SocialPost.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       _log.warning('Failed to fetch feed: $e');
       return [];
@@ -179,14 +181,11 @@ class SupabaseSocialService {
 
   /// Recount likes and update the denormalized like_count.
   Future<void> _updateLikeCount(String postId) async {
-    final likes = await _client
-        .from('post_likes')
-        .select('id')
-        .eq('post_id', postId);
+    final likes =
+        await _client.from('post_likes').select('id').eq('post_id', postId);
     await _client
         .from('social_posts')
-        .update({'like_count': (likes as List).length})
-        .eq('id', postId);
+        .update({'like_count': (likes as List).length}).eq('id', postId);
   }
 
   // ─── Comments ──────────────────────────────────────────────
@@ -202,14 +201,11 @@ class SupabaseSocialService {
       'content': content,
     });
     // Recount comments and update denormalized count
-    final comments = await _client
-        .from('post_comments')
-        .select('id')
-        .eq('post_id', postId);
+    final comments =
+        await _client.from('post_comments').select('id').eq('post_id', postId);
     await _client
         .from('social_posts')
-        .update({'comment_count': (comments as List).length})
-        .eq('id', postId);
+        .update({'comment_count': (comments as List).length}).eq('id', postId);
   }
 
   /// Get comments for a post.
@@ -283,19 +279,15 @@ class SupabaseSocialService {
 
   /// Get follower count for a user.
   Future<int> getFollowerCount(String userId) async {
-    final result = await _client
-        .from('follows')
-        .select('id')
-        .eq('following_id', userId);
+    final result =
+        await _client.from('follows').select('id').eq('following_id', userId);
     return (result as List).length;
   }
 
   /// Get following count for a user.
   Future<int> getFollowingCount(String userId) async {
-    final result = await _client
-        .from('follows')
-        .select('id')
-        .eq('follower_id', userId);
+    final result =
+        await _client.from('follows').select('id').eq('follower_id', userId);
     return (result as List).length;
   }
 
@@ -383,7 +375,6 @@ class SupabaseSocialService {
         .order('created_at', ascending: false)
         .limit(20);
   }
-
 }
 
 /// Provider that returns SupabaseSocialService when authenticated,

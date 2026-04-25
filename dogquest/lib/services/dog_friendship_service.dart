@@ -22,7 +22,9 @@ class DogFriendshipService {
     final raw = _box.get(_friendshipsKey) as String?;
     if (raw == null || raw.isEmpty) return [];
     final list = jsonDecode(raw) as List<dynamic>;
-    return list.map((e) => DogFriendship.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => DogFriendship.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   List<DogFriendship> friendshipsFor(String myDogName) {
@@ -40,7 +42,8 @@ class DogFriendshipService {
   }
 
   int get totalFriendships => friendships.length;
-  int get bestFriendCount => friendships.where((f) => f.level == FriendshipLevel.bestFriend).length;
+  int get bestFriendCount =>
+      friendships.where((f) => f.level == FriendshipLevel.bestFriend).length;
 
   /// Start a friendship between the user's dog and a neighborhood dog.
   void befriend(String myDogName, NeighborhoodDog neighbor) {
@@ -82,7 +85,8 @@ class DogFriendshipService {
   /// Remove a friendship.
   void removeFriendship(String myDogName, String neighborName) {
     final all = friendships;
-    all.removeWhere((f) => f.myDogName == myDogName && f.neighborDogName == neighborName);
+    all.removeWhere(
+        (f) => f.myDogName == myDogName && f.neighborDogName == neighborName);
     _saveFriendships(all);
   }
 
@@ -102,19 +106,23 @@ class DogFriendshipService {
       final raw = _box.get(_neighborhoodKey) as String?;
       if (raw != null && raw.isNotEmpty) {
         final list = jsonDecode(raw) as List<dynamic>;
-        return list.map((e) => NeighborhoodDog.fromJson(e as Map<String, dynamic>)).toList();
+        return list
+            .map((e) => NeighborhoodDog.fromJson(e as Map<String, dynamic>))
+            .toList();
       }
     }
 
     // Generate new neighborhood
     final dogs = _generateNeighborhood();
-    _box.put(_neighborhoodKey, jsonEncode(dogs.map((d) => d.toJson()).toList()));
+    _box.put(
+        _neighborhoodKey, jsonEncode(dogs.map((d) => d.toJson()).toList()));
     _box.put(_neighborhoodDateKey, weekKey);
     return dogs;
   }
 
   List<NeighborhoodDog> _generateNeighborhood() {
-    final rng = Random(DateTime.now().millisecondsSinceEpoch ~/ 604800000); // seed by week
+    final rng = Random(
+        DateTime.now().millisecondsSinceEpoch ~/ 604800000); // seed by week
     final allBreeds = _dogSvc.all;
     if (allBreeds.isEmpty) return [];
 
@@ -124,15 +132,25 @@ class DogFriendshipService {
 
     // Available grid positions (4x4 grid, but skip center 2x2 for "home")
     final positions = <(int, int)>[
-      (0, 0), (1, 0), (2, 0), (3, 0),
-      (0, 1),                 (3, 1),
-      (0, 2),                 (3, 2),
-      (0, 3), (1, 3), (2, 3), (3, 3),
+      (0, 0),
+      (1, 0),
+      (2, 0),
+      (3, 0),
+      (0, 1),
+      (3, 1),
+      (0, 2),
+      (3, 2),
+      (0, 3),
+      (1, 3),
+      (2, 3),
+      (3, 3),
     ];
     positions.shuffle(rng);
 
-    final shuffledNames = List<(String, String)>.from(neighborhoodDogNames)..shuffle(rng);
-    final shuffledPersonalities = List<String>.from(neighborhoodPersonalities)..shuffle(rng);
+    final shuffledNames = List<(String, String)>.from(neighborhoodDogNames)
+      ..shuffle(rng);
+    final shuffledPersonalities = List<String>.from(neighborhoodPersonalities)
+      ..shuffle(rng);
 
     return List.generate(selectedBreeds.length.clamp(0, positions.length), (i) {
       final breed = selectedBreeds[i];
@@ -156,5 +174,6 @@ class DogFriendshipService {
 }
 
 final dogFriendshipServiceProvider = Provider<DogFriendshipService>((ref) {
-  throw UnimplementedError('dogFriendshipServiceProvider must be overridden after Hive init');
+  throw UnimplementedError(
+      'dogFriendshipServiceProvider must be overridden after Hive init');
 });

@@ -29,10 +29,13 @@ class AnalyticsService {
 
     _firebase = firebaseAnalytics;
     if (_firebase != null) {
-      _firebase!.setUserProperty(name: 'session_number', value: '$_sessionNumber');
-      _log.info('Analytics initialised with Firebase (session #$_sessionNumber)');
+      _firebase!
+          .setUserProperty(name: 'session_number', value: '$_sessionNumber');
+      _log.info(
+          'Analytics initialised with Firebase (session #$_sessionNumber)');
     } else {
-      _log.info('Analytics initialised local-only (session #$_sessionNumber, ${_box.length} stored events)');
+      _log.info(
+          'Analytics initialised local-only (session #$_sessionNumber, ${_box.length} stored events)');
     }
   }
 
@@ -70,15 +73,18 @@ class AnalyticsService {
           }
         }
       }
-      _firebase!.logEvent(name: fbEvent, parameters: fbParams.isEmpty ? null : fbParams);
+      _firebase!.logEvent(
+          name: fbEvent, parameters: fbParams.isEmpty ? null : fbParams);
     }
 
     _log.fine('Event: $event ${properties ?? ''}');
   }
 
   /// Get all stored events (for debugging / export).
-  List<Map> get events =>
-      _box.values.whereType<Map>().where((e) => e.containsKey('event')).toList();
+  List<Map> get events => _box.values
+      .whereType<Map>()
+      .where((e) => e.containsKey('event'))
+      .toList();
 
   /// Number of stored events.
   int get eventCount => events.length;

@@ -186,9 +186,8 @@ class _CornerBrackets extends StatelessWidget {
       width: size,
       height: size,
       child: CustomPaint(painter: _CornerPainter()),
-    )
-        .animate(onPlay: (c) => c.repeat(reverse: true))
-        .scaleXY(begin: 1.0, end: 1.02, duration: 1800.ms, curve: Curves.easeInOut);
+    ).animate(onPlay: (c) => c.repeat(reverse: true)).scaleXY(
+        begin: 1.0, end: 1.02, duration: 1800.ms, curve: Curves.easeInOut);
   }
 }
 
@@ -206,21 +205,27 @@ class _CornerPainter extends CustomPainter {
 
     // Top-left
     canvas.drawLine(const Offset(0, len), const Offset(0, r), paint);
-    canvas.drawArc(const Rect.fromLTWH(0, 0, r * 2, r * 2), pi, pi / 2, false, paint);
+    canvas.drawArc(
+        const Rect.fromLTWH(0, 0, r * 2, r * 2), pi, pi / 2, false, paint);
     canvas.drawLine(const Offset(r, 0), Offset(len, 0), paint);
 
     // Top-right
     canvas.drawLine(Offset(size.width, len), Offset(size.width, r), paint);
-    canvas.drawArc(Rect.fromLTWH(size.width - r * 2, 0, r * 2, r * 2), 0, -pi / 2, false, paint);
-    canvas.drawLine(Offset(size.width - r, 0), Offset(size.width - len, 0), paint);
+    canvas.drawArc(Rect.fromLTWH(size.width - r * 2, 0, r * 2, r * 2), 0,
+        -pi / 2, false, paint);
+    canvas.drawLine(
+        Offset(size.width - r, 0), Offset(size.width - len, 0), paint);
 
     // Bottom-left
-    canvas.drawLine(Offset(0, size.height - len), Offset(0, size.height - r), paint);
-    canvas.drawArc(Rect.fromLTWH(0, size.height - r * 2, r * 2, r * 2), pi, -pi / 2, false, paint);
+    canvas.drawLine(
+        Offset(0, size.height - len), Offset(0, size.height - r), paint);
+    canvas.drawArc(Rect.fromLTWH(0, size.height - r * 2, r * 2, r * 2), pi,
+        -pi / 2, false, paint);
     canvas.drawLine(Offset(r, size.height), Offset(len, size.height), paint);
 
     // Bottom-right
-    canvas.drawLine(Offset(size.width, size.height - len), Offset(size.width, size.height - r), paint);
+    canvas.drawLine(Offset(size.width, size.height - len),
+        Offset(size.width, size.height - r), paint);
     canvas.drawArc(
       Rect.fromLTWH(size.width - r * 2, size.height - r * 2, r * 2, r * 2),
       0,
@@ -228,7 +233,8 @@ class _CornerPainter extends CustomPainter {
       false,
       paint,
     );
-    canvas.drawLine(Offset(size.width - r, size.height), Offset(size.width - len, size.height), paint);
+    canvas.drawLine(Offset(size.width - r, size.height),
+        Offset(size.width - len, size.height), paint);
   }
 
   @override
@@ -315,10 +321,7 @@ class _TopBar extends StatelessWidget {
                 ),
               ],
             ),
-          )
-              .animate()
-              .fadeIn(duration: 400.ms)
-              .slideX(begin: -0.2, end: 0),
+          ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2, end: 0),
         const Spacer(),
         // Daily challenge progress
         Container(

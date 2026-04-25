@@ -121,7 +121,8 @@ class DemoService {
       playerBox.put('achievements', _demoAchievements.toList());
       playerBox.put('quizzes_completed', 4);
       playerBox.put('quiz_perfect_scores', 1);
-      playerBox.put('total_sightings', _demoBreeds.fold<int>(0, (sum, b) => sum + b.$2));
+      playerBox.put(
+          'total_sightings', _demoBreeds.fold<int>(0, (sum, b) => sum + b.$2));
       playerBox.put('selected_avatar', 'bloodhound'); // 20+ breeds avatar
       playerBox.put('cached_username', 'DogLover');
       playerBox.put('offline_mode', true);
@@ -134,7 +135,8 @@ class DemoService {
       // ── 2. Seed kennel (collected breeds) ─────────────────────
       final kennelBox = Hive.box<String>('dogquest_kennel');
       for (final (breedName, _) in _demoBreeds) {
-        final dog = dogSvc.lookup(breedName) ?? dogSvc.lookupByCommonName(breedName);
+        final dog =
+            dogSvc.lookup(breedName) ?? dogSvc.lookupByCommonName(breedName);
         if (dog != null) {
           kennelBox.put(dog.name, dog.name);
         } else {
@@ -148,7 +150,8 @@ class DemoService {
       // Spread sightings over the past 18 days
       int locationIdx = 0;
       for (final (breedName, count) in _demoBreeds) {
-        final dog = dogSvc.lookup(breedName) ?? dogSvc.lookupByCommonName(breedName);
+        final dog =
+            dogSvc.lookup(breedName) ?? dogSvc.lookupByCommonName(breedName);
         if (dog == null) continue;
 
         for (int i = 0; i < count; i++) {
@@ -187,7 +190,8 @@ class DemoService {
       try {
         final masteryBox = await Hive.openBox<int>('dogquest_mastery');
         for (final (breedName, count) in _demoBreeds) {
-          final dog = dogSvc.lookup(breedName) ?? dogSvc.lookupByCommonName(breedName);
+          final dog =
+              dogSvc.lookup(breedName) ?? dogSvc.lookupByCommonName(breedName);
           if (dog != null) {
             masteryBox.put(dog.name, count);
           }
@@ -229,8 +233,10 @@ class DemoService {
       emb[spikeIdx] = 0.65 + rng.nextDouble() * 0.15;
       // Add minor noise to a few neighboring indices for realism
       for (int i = 1; i <= 3; i++) {
-        if (spikeIdx + i < 150) emb[spikeIdx + i] = 0.02 + rng.nextDouble() * 0.05;
-        if (spikeIdx - i >= 0) emb[spikeIdx - i] = 0.02 + rng.nextDouble() * 0.05;
+        if (spikeIdx + i < 150)
+          emb[spikeIdx + i] = 0.02 + rng.nextDouble() * 0.05;
+        if (spikeIdx - i >= 0)
+          emb[spikeIdx - i] = 0.02 + rng.nextDouble() * 0.05;
       }
       return emb;
     }
@@ -247,7 +253,8 @@ class DemoService {
         lostDate: now.subtract(const Duration(days: 3)),
         createdAt: now.subtract(const Duration(days: 3)),
         ownerContact: 'Sarah M. — (212) 555-0147',
-        notes: 'Red collar with bone-shaped tag. Very friendly, responds to "Buddy".',
+        notes:
+            'Red collar with bone-shaped tag. Very friendly, responds to "Buddy".',
       ),
       LostDogReport(
         id: 'demo-lost-002',
@@ -273,7 +280,8 @@ class DemoService {
         lostDate: now.subtract(const Duration(days: 5)),
         createdAt: now.subtract(const Duration(days: 5)),
         ownerContact: 'Alex K. — (917) 555-0391',
-        notes: 'Black and tan, 3 years old. Wearing GPS collar (battery may be dead).',
+        notes:
+            'Black and tan, 3 years old. Wearing GPS collar (battery may be dead).',
       ),
       LostDogReport(
         id: 'demo-lost-004',
@@ -286,7 +294,8 @@ class DemoService {
         lostDate: now.subtract(const Duration(days: 2)),
         createdAt: now.subtract(const Duration(days: 2)),
         ownerContact: 'Jennifer L. — (718) 555-0512',
-        notes: 'Chocolate lab, pink bandana. Loves treats — very food motivated.',
+        notes:
+            'Chocolate lab, pink bandana. Loves treats — very food motivated.',
       ),
     ];
 

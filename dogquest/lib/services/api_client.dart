@@ -11,10 +11,16 @@ class ApiClient {
   late final Dio dio;
   final FlutterSecureStorage _storage;
 
-  static const String _baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'https://10.0.2.2:8000/api/v1', // override via --dart-define=API_BASE_URL=...
-  );
+  static const String _baseUrl = String.fromEnvironment('API_BASE_URL');
+
+  static void assertBaseUrl() {
+    assert(
+      _baseUrl.isNotEmpty,
+      'API_BASE_URL must be set via --dart-define=API_BASE_URL=https://... '
+      'The old 10.0.2.2 default has been removed; it only worked on Android '
+      'emulators and would silently fail on iOS and physical devices.',
+    );
+  }
 
   ApiClient({
     String? baseUrl,

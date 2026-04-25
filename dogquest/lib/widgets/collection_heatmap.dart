@@ -80,8 +80,18 @@ class _CollectionHeatmapState extends State<CollectionHeatmap> {
     final labels = <(int, String)>[];
     int? lastMonth;
     const monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
 
     for (int w = 0; w < grid.length; w++) {
@@ -98,8 +108,18 @@ class _CollectionHeatmapState extends State<CollectionHeatmap> {
 
   String _formatTooltipDate(DateTime d) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[d.month - 1]} ${d.day}';
   }
@@ -148,7 +168,8 @@ class _CollectionHeatmapState extends State<CollectionHeatmap> {
                   children: [
                     for (final (weekIdx, label) in monthLabels)
                       Positioned(
-                        left: _leftLabelWidth + weekIdx * (_cellSize + _cellGap),
+                        left:
+                            _leftLabelWidth + weekIdx * (_cellSize + _cellGap),
                         child: Text(
                           label,
                           style: const TextStyle(

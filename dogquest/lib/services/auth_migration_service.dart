@@ -128,7 +128,8 @@ class AuthMigrationService {
       final playerData = box.get('player');
       if (playerData == null) return;
 
-      final player = playerData is Map ? Map<String, dynamic>.from(playerData) : {};
+      final player =
+          playerData is Map ? Map<String, dynamic>.from(playerData) : {};
 
       await _userService.syncStats(
         userId,
