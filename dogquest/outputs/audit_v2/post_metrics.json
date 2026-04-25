@@ -1,0 +1,420 @@
+{
+  "measured_at": "2026-04-25T02:53:59.697498Z",
+  "seeds": [
+    43,
+    100,
+    200
+  ],
+  "per_seed": [
+    {
+      "seed": 43,
+      "n_total": 20,
+      "n_scored": 13,
+      "rejected": 7,
+      "top1_correct": 6,
+      "top3_correct": 9,
+      "top1_pct": 46.15384615384615,
+      "top3_pct": 69.23076923076923,
+      "per_image": [
+        {
+          "image": "australian_cattle_dog_162.jpg",
+          "truth": "Australian Cattle Dog",
+          "displayed_top1": "Australian Cattle Dog",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "kishu_ken_028.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "chippiparai_228.jpg",
+          "rejected": "gap"
+        },
+        {
+          "image": "sheepadoodle_027.jpg",
+          "truth": "Sheepadoodle",
+          "displayed_top1": "Sheepadoodle",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "peruvian_inca_orchid_106.jpg",
+          "truth": "Peruvian Inca Orchid",
+          "displayed_top1": "Xoloitzcuintli",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "bulldog_308.jpg",
+          "rejected": "gap"
+        },
+        {
+          "image": "schapendoes_250.jpg",
+          "truth": "Schapendoes",
+          "displayed_top1": "Tibetan Terrier",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "stabyhoun_230.jpg",
+          "truth": "Stabyhoun",
+          "displayed_top1": "Stabyhoun",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "american_foxhound_093.jpg",
+          "truth": "American Foxhound",
+          "displayed_top1": "American Foxhound",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "thai_ridgeback_199.jpg",
+          "truth": "Thai Ridgeback",
+          "displayed_top1": "American Hairless Terrier",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "rough_collie_217.jpg",
+          "truth": "Rough Collie",
+          "displayed_top1": "Shetland Sheepdog",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "petit_basset_griffon_vendeen_079.jpg",
+          "truth": "Petit Basset Griffon Vendeen",
+          "displayed_top1": "Sealyham Terrier",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "wirehaired_vizsla_177.jpg",
+          "truth": "Wirehaired Vizsla",
+          "displayed_top1": "Vizsla",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "russell_terrier_086.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "pont-audemer_spaniel_068.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "dutch_shepherd_094.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "bergamasco_sheepdog_073.jpg",
+          "truth": "Bergamasco Sheepdog",
+          "displayed_top1": "Bergamasco Sheepdog",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "carolina_dog_038.jpg",
+          "truth": "Carolina Dog",
+          "displayed_top1": "Pembroke Welsh Corgi",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "cavalier_king_charles_spaniel_209.jpg",
+          "truth": "Cavalier King Charles Spaniel",
+          "displayed_top1": "Cavalier King Charles Spaniel",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "pharaoh_hound_168.jpg",
+          "rejected": "gap"
+        }
+      ]
+    },
+    {
+      "seed": 100,
+      "n_total": 20,
+      "n_scored": 15,
+      "rejected": 5,
+      "top1_correct": 3,
+      "top3_correct": 9,
+      "top1_pct": 20.0,
+      "top3_pct": 60.0,
+      "per_image": [
+        {
+          "image": "cirneco_dell'etna_122.jpg",
+          "truth": "Cirneco dell'Etna",
+          "displayed_top1": "Pharaoh Hound",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "shar_pei_042.jpg",
+          "truth": "Shar Pei",
+          "displayed_top1": "Dogue de Bordeaux",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "schnoodle_139.jpg",
+          "truth": "Schnoodle",
+          "displayed_top1": "Miniature Schnauzer",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "dogue_de_bordeaux_227.jpg",
+          "truth": "Dogue de Bordeaux",
+          "displayed_top1": "Tosa Inu",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "pont-audemer_spaniel_007.jpg",
+          "truth": "Pont-Audemer Spaniel",
+          "displayed_top1": "American Water Spaniel",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "neapolitan_mastiff_073.jpg",
+          "truth": "Neapolitan Mastiff",
+          "displayed_top1": "Dogue de Bordeaux",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "russell_terrier_046.jpg",
+          "truth": "Russell Terrier",
+          "displayed_top1": "Wire Fox Terrier",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "telomian_131.jpg",
+          "truth": "Telomian",
+          "displayed_top1": "German Shepherd",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "carpathian_shepherd_079.jpg",
+          "truth": "Carpathian Shepherd",
+          "displayed_top1": "Estrela Mountain Dog",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "treeing_tennessee_brindle_192.jpg",
+          "truth": "Treeing Tennessee Brindle",
+          "displayed_top1": "Fila Brasileiro",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "caucasian_shepherd_dog_093.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "bolognese_002.jpg",
+          "truth": "Bolognese",
+          "displayed_top1": "Bolognese",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "segugio_italiano_003.jpg",
+          "truth": "Segugio Italiano",
+          "displayed_top1": "Saluki",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "jindo_gae_115.jpg",
+          "truth": "Jindo Gae",
+          "displayed_top1": "Samoyed",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "azores_cattle_dog_110.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "finnish_spitz_224.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "morkie_175.jpg",
+          "truth": "Morkie",
+          "displayed_top1": "Morkie",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "greyhound_213.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "lancashire_heeler_250.jpg",
+          "truth": "Lancashire Heeler",
+          "displayed_top1": "Lancashire Heeler",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "finnish_spitz_183.jpg",
+          "rejected": "entropy"
+        }
+      ]
+    },
+    {
+      "seed": 200,
+      "n_total": 20,
+      "n_scored": 15,
+      "rejected": 5,
+      "top1_correct": 3,
+      "top3_correct": 9,
+      "top1_pct": 20.0,
+      "top3_pct": 60.0,
+      "per_image": [
+        {
+          "image": "azawakh_267.jpg",
+          "truth": "Azawakh",
+          "displayed_top1": "Whippet",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "finnish_spitz_155.jpg",
+          "truth": "Finnish Spitz",
+          "displayed_top1": "Chow Chow",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "anatolian_shepherd_dog_094.jpg",
+          "truth": "Anatolian Shepherd Dog",
+          "displayed_top1": "Kangal Shepherd Dog",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "chippiparai_154.jpg",
+          "truth": "Chippiparai",
+          "displayed_top1": "Whippet",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "jonangi_100.jpg",
+          "rejected": "gap"
+        },
+        {
+          "image": "alaskan_klee_kai_063.jpg",
+          "truth": "Alaskan Klee Kai",
+          "displayed_top1": "American Eskimo Dog",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "saarloos_wolfdog_028.jpg",
+          "truth": "Saarloos Wolfdog",
+          "displayed_top1": "Tamaskan",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "dalmatian_195.jpg",
+          "truth": "Dalmatian",
+          "displayed_top1": "Dalmatian",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "american_eskimo_dog_232.jpg",
+          "truth": "American Eskimo Dog",
+          "displayed_top1": "Samoyed",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "russian_toy_179.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "kangal_shepherd_dog_190.jpg",
+          "truth": "Kangal Shepherd Dog",
+          "displayed_top1": "Estrela Mountain Dog",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "russian_toy_241.jpg",
+          "truth": "Russian Toy",
+          "displayed_top1": "Miniature Pinscher",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "shar_pei_061.jpg",
+          "truth": "Shar Pei",
+          "displayed_top1": "Shar Pei",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "harrier_124.jpg",
+          "truth": "Harrier",
+          "displayed_top1": "English Foxhound",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "field_spaniel_150.jpg",
+          "truth": "Field Spaniel",
+          "displayed_top1": "Sussex Spaniel",
+          "top1_hit": false,
+          "top3_hit": true
+        },
+        {
+          "image": "caucasian_shepherd_dog_076.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "labsky_019.jpg",
+          "rejected": "entropy"
+        },
+        {
+          "image": "polish_lowland_sheepdog_034.jpg",
+          "truth": "Polish Lowland Sheepdog",
+          "displayed_top1": "Polish Lowland Sheepdog",
+          "top1_hit": true,
+          "top3_hit": true
+        },
+        {
+          "image": "neapolitan_mastiff_155.jpg",
+          "truth": "Neapolitan Mastiff",
+          "displayed_top1": "Fila Brasileiro",
+          "top1_hit": false,
+          "top3_hit": false
+        },
+        {
+          "image": "canaan_dog_077.jpg",
+          "rejected": "gap"
+        }
+      ]
+    }
+  ],
+  "average": {
+    "top1_pct": 28.71794871794872,
+    "top3_pct": 63.07692307692307,
+    "n_seeds": 3
+  }
+}
