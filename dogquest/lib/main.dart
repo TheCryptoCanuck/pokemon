@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -273,6 +274,12 @@ class _AppBootstrapState extends State<AppBootstrap> {
       }
     } catch (e, st) {
       _log.severe('Fatal startup error', e, st);
+      // Best-effort report to Crashlytics. Firebase may not have init'd yet
+      // if the failure happened early, so swallow Crashlytics errors.
+      try {
+        await FirebaseCrashlytics.instance
+            .recordError(e, st, fatal: true, reason: 'Fatal startup error');
+      } catch (_) {}
       if (_sentryDsn.isNotEmpty) {
         await Sentry.captureException(e, stackTrace: st);
       }
@@ -556,6 +563,18 @@ Future<_InitResult> _initializeServices(
     await Firebase.initializeApp();
     firebaseAnalytics = FirebaseAnalytics.instance;
     _log.info('Firebase initialized');
+
+    // Crashlytics: take over the Flutter and platform error handlers so
+    // unhandled errors get reported to the Firebase console. Disabled in
+    // debug to avoid polluting reports during development.
+    await FirebaseCrashlytics.instance
+        .setCrashlyticsCollectionEnabled(!kDebugMode);
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true; // prevent crash in release mode
+    };
+    _log.info('Crashlytics handlers installed');
   } catch (e) {
     _log.info('Firebase not available: $e');
   }
