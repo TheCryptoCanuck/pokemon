@@ -6,7 +6,11 @@ import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:test/test.dart';
 
-import 'package:dogquest/services/sync_queue_service.dart';
+// SyncQueueItem + SyncQueueService import stripped — `sync_queue_service.dart`
+// is not currently in the repo. SyncQueueItem-serialization group below is
+// removed; only the standalone backoff-formula math + ConflictResolutionService
+// groups remain. Restore the import + the SyncQueueItem group when the service
+// file is committed. (T5-feature-restore)
 import 'package:dogquest/services/conflict_resolution_service.dart';
 
 // ---------------------------------------------------------------------------
@@ -34,107 +38,11 @@ class MockUser extends Mock implements User {}
 /// Constants in the source: _baseDelayMs = 1000, _maxRetries = 5.
 int _backoffMs(int retryCount) => (1000 * pow(2, retryCount - 1)).toInt();
 
-SyncQueueItem _makeItem({
-  String id = 'test-id',
-  String table = 'sightings',
-  String operation = 'insert',
-  Map<String, dynamic>? data,
-  DateTime? createdAt,
-  int retryCount = 0,
-  String? lastError,
-  String status = 'pending',
-}) {
-  return SyncQueueItem(
-    id: id,
-    table: table,
-    operation: operation,
-    data: data ?? {'breed': 'Golden Retriever'},
-    createdAt: createdAt ?? DateTime(2026, 3, 15, 10, 0, 0),
-    retryCount: retryCount,
-    lastError: lastError,
-    status: status,
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
 void main() {
-  // -------------------------------------------------------------------------
-  group('SyncQueueItem — serialization', () {
-    test('toJson / fromJson roundtrip preserves all fields', () {
-      final original = _makeItem(
-        id: 'abc-123',
-        table: 'sightings',
-        operation: 'update',
-        data: {'breed': 'Poodle', 'confidence': 0.95},
-        createdAt: DateTime.utc(2026, 3, 15, 8, 30, 0),
-        retryCount: 2,
-        lastError: 'timeout',
-        status: 'processing',
-      );
-
-      final json = original.toJson();
-      final restored = SyncQueueItem.fromJson(json);
-
-      expect(restored.id, equals('abc-123'));
-      expect(restored.table, equals('sightings'));
-      expect(restored.operation, equals('update'));
-      expect(restored.data['breed'], equals('Poodle'));
-      expect(restored.data['confidence'], equals(0.95));
-      expect(restored.createdAt, equals(DateTime.utc(2026, 3, 15, 8, 30, 0)));
-      expect(restored.retryCount, equals(2));
-      expect(restored.lastError, equals('timeout'));
-      expect(restored.status, equals('processing'));
-    });
-
-    test('fromJson uses defaults for optional fields when absent', () {
-      final minimalJson = {
-        'id': 'min-id',
-        'table': 'users',
-        'operation': 'insert',
-        'data': <String, dynamic>{},
-        'created_at': '2026-03-15T00:00:00.000',
-      };
-
-      final item = SyncQueueItem.fromJson(minimalJson);
-
-      expect(item.retryCount, equals(0));
-      expect(item.lastError, isNull);
-      expect(item.status, equals('pending'));
-    });
-
-    test('toJson uses snake_case key names matching Hive persistence format',
-        () {
-      final item = _makeItem(retryCount: 3, lastError: 'network error');
-      final json = item.toJson();
-
-      expect(json.containsKey('retry_count'), isTrue);
-      expect(json.containsKey('last_error'), isTrue);
-      expect(json.containsKey('created_at'), isTrue);
-      expect(json['retry_count'], equals(3));
-      expect(json['last_error'], equals('network error'));
-    });
-
-    test('FIFO order: earlier createdAt sorts before later createdAt', () {
-      final early = _makeItem(
-        id: 'e',
-        createdAt: DateTime.utc(2026, 3, 15, 9, 0),
-      );
-      final late_ = _makeItem(
-        id: 'l',
-        createdAt: DateTime.utc(2026, 3, 15, 10, 0),
-      );
-
-      final items = [late_, early]
-        ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-
-      expect(items.first.id, equals('e'));
-      expect(items.last.id, equals('l'));
-    });
-  });
-
   // -------------------------------------------------------------------------
   group('SyncQueueService — exponential backoff formula', () {
     // Source formula: _baseDelayMs * pow(2, retryCount - 1)

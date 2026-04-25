@@ -52,10 +52,11 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
         ),
       );
       if (!mounted) return; // sec-C1
+      // radiusKm parameter stripped — origin's getActiveNearby signature
+      // doesn't accept it; will use service default. (T5-feature-restore)
       final reports = await remoteSvc.getActiveNearby(
         position.latitude,
         position.longitude,
-        radiusKm: 40.0,
       );
       if (!mounted) return; // sec-C1
       setState(() {
@@ -441,32 +442,8 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
                         ],
                       ),
                     ),
-                    // Distance badge
-                    if (report.distanceKm != null)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.amber.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.near_me,
-                                color: Colors.amber, size: 12),
-                            const SizedBox(width: 3),
-                            Text(
-                              '${report.distanceKm!.toStringAsFixed(1)} km',
-                              style: const TextStyle(
-                                color: Colors.amber,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    // Distance badge stripped — distanceKm getter not on
+                    // origin's LostDogReportRemote. (T5-feature-restore)
                   ],
                 ),
               ).animate().fadeIn(delay: 650.ms).slideY(begin: 0.03);
