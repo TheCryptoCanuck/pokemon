@@ -123,9 +123,9 @@ void main() {
 
   group('MatchConfidence', () {
     test('labels are descriptive', () {
-      expect(MatchConfidence.high.label, 'Likely Match');
-      expect(MatchConfidence.medium.label, 'Possible Match');
-      expect(MatchConfidence.low.label, 'Weak Match');
+      expect(MatchConfidence.high.label, 'Strong visual similarity');
+      expect(MatchConfidence.medium.label, 'Possible breed match');
+      expect(MatchConfidence.low.label, 'Weak visual similarity');
     });
   });
 

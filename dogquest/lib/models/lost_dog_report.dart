@@ -1,3 +1,10 @@
+/// Sync status for lost dog reports (offline-first queue).
+enum SyncStatus {
+  pending,
+  synced,
+  failed;
+}
+
 /// Status of a lost dog report.
 enum LostDogStatus {
   active,
@@ -25,11 +32,11 @@ enum MatchConfidence {
   String get label {
     switch (this) {
       case MatchConfidence.high:
-        return 'Likely Match';
+        return 'Strong visual similarity';
       case MatchConfidence.medium:
-        return 'Possible Match';
+        return 'Possible breed match';
       case MatchConfidence.low:
-        return 'Weak Match';
+        return 'Weak visual similarity';
     }
   }
 }
@@ -49,6 +56,8 @@ class LostDogReport {
   final LostDogStatus status;
   final String? ownerContact;
   final String? notes;
+  final DateTime? gdprConsentAt;
+  final SyncStatus syncStatus;
 
   const LostDogReport({
     required this.id,
@@ -64,6 +73,8 @@ class LostDogReport {
     this.status = LostDogStatus.active,
     this.ownerContact,
     this.notes,
+    this.gdprConsentAt,
+    this.syncStatus = SyncStatus.synced,
   });
 
   Map<String, dynamic> toJson() => {
@@ -80,6 +91,8 @@ class LostDogReport {
         'status': status.name,
         'ownerContact': ownerContact,
         'notes': notes,
+        'gdprConsentAt': gdprConsentAt?.toIso8601String(),
+        'syncStatus': syncStatus.name,
       };
 
   factory LostDogReport.fromJson(Map<String, dynamic> json) => LostDogReport(
@@ -104,6 +117,13 @@ class LostDogReport {
         ),
         ownerContact: json['ownerContact'] as String?,
         notes: json['notes'] as String?,
+        gdprConsentAt: json['gdprConsentAt'] != null
+            ? DateTime.tryParse(json['gdprConsentAt'] as String)
+            : null,
+        syncStatus: SyncStatus.values.firstWhere(
+          (s) => s.name == (json['syncStatus'] as String?),
+          orElse: () => SyncStatus.synced,
+        ),
       );
 
   LostDogReport copyWith({
@@ -118,6 +138,8 @@ class LostDogReport {
     LostDogStatus? status,
     String? ownerContact,
     String? notes,
+    DateTime? gdprConsentAt,
+    SyncStatus? syncStatus,
   }) =>
       LostDogReport(
         id: id,
@@ -133,6 +155,8 @@ class LostDogReport {
         status: status ?? this.status,
         ownerContact: ownerContact ?? this.ownerContact,
         notes: notes ?? this.notes,
+        gdprConsentAt: gdprConsentAt ?? this.gdprConsentAt,
+        syncStatus: syncStatus ?? this.syncStatus,
       );
 }
 

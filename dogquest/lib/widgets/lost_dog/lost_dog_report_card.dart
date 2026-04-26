@@ -489,14 +489,8 @@ class LostDogReportCard extends StatelessWidget {
                     lostDogSvc.markFound(report.id);
                     Navigator.pop(ctx);
                     onChanged();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: bgCard,
-                        content: Text(
-                          '${report.dogName} has been reunited!',
-                          style: const TextStyle(color: Colors.green),
-                        ),
-                      ),
+                    context.push(
+                      '/reunion-celebration?dogName=${Uri.encodeComponent(report.dogName)}&reportId=${report.id}',
                     );
                   },
                 ),

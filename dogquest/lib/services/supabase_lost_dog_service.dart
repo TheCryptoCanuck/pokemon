@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
@@ -24,15 +25,18 @@ class LostDogReportRemote {
   final double lastSeenLat;
   final double lastSeenLon;
   final DateTime lastSeenAt;
-  final String contactInfo;
+  final String? contactInfo;
   final String status; // 'active' | 'found' | 'cancelled'
   final double alertRadiusMiles;
   final DateTime createdAt;
   final DateTime? resolvedAt;
+  final DateTime? expiresAt;
 
   /// Only populated by the `get_active_lost_dogs` RPC.
-  final double? distanceMiles;
+  final double? distanceKm;
   final int? sightingCount;
+  final List<double> embedding;
+  final DateTime? gdprConsentAt;
 
   const LostDogReportRemote({
     required this.id,
@@ -45,13 +49,16 @@ class LostDogReportRemote {
     required this.lastSeenLat,
     required this.lastSeenLon,
     required this.lastSeenAt,
-    required this.contactInfo,
+    this.contactInfo,
     required this.status,
     this.alertRadiusMiles = 10.0,
     required this.createdAt,
     this.resolvedAt,
-    this.distanceMiles,
+    this.expiresAt,
+    this.distanceKm,
     this.sightingCount,
+    this.embedding = const [],
+    this.gdprConsentAt,
   });
 
   factory LostDogReportRemote.fromJson(Map<String, dynamic> json) {
@@ -66,7 +73,7 @@ class LostDogReportRemote {
       lastSeenLat: (json['last_seen_lat'] as num).toDouble(),
       lastSeenLon: (json['last_seen_lon'] as num).toDouble(),
       lastSeenAt: DateTime.parse(json['last_seen_at'] as String),
-      contactInfo: json['contact_info'] as String? ?? '',
+      contactInfo: json['contact_info'] as String?,
       status: json['status'] as String? ?? 'active',
       alertRadiusMiles:
           (json['alert_radius_miles'] as num?)?.toDouble() ?? 10.0,
@@ -74,8 +81,20 @@ class LostDogReportRemote {
       resolvedAt: json['resolved_at'] != null
           ? DateTime.parse(json['resolved_at'] as String)
           : null,
-      distanceMiles: (json['distance_miles'] as num?)?.toDouble(),
+      expiresAt: json['expires_at'] != null
+          ? DateTime.parse(json['expires_at'] as String)
+          : null,
+      distanceKm: (json['distance_miles'] as num?) != null
+          ? (json['distance_miles'] as num).toDouble() * 1.60934
+          : null,
       sightingCount: json['sighting_count'] as int?,
+      embedding: (json['embedding'] as List<dynamic>?)
+              ?.map((e) => (e as num).toDouble())
+              .toList() ??
+          const [],
+      gdprConsentAt: json['gdpr_consent_at'] != null
+          ? DateTime.parse(json['gdpr_consent_at'] as String)
+          : null,
     );
   }
 
@@ -123,6 +142,7 @@ class LostDogSightingRemote {
 /// updates. Complements the local [LostDogService] (Hive-based).
 class SupabaseLostDogService {
   final SupabaseClient _client;
+  static final _rng = Random();
 
   SupabaseLostDogService(this._client);
 
@@ -159,6 +179,23 @@ class SupabaseLostDogService {
     }
   }
 
+  /// Apply random jitter to a coordinate (latitude or longitude).
+  /// Returns `coord + (_rng.nextDouble() * 2 - 1) * maxDeltaDeg`.
+  double _fuzzCoord(double coord, double maxDeltaDeg) {
+    return coord + (_rng.nextDouble() * 2 - 1) * maxDeltaDeg;
+  }
+
+  /// Extract storage object path from a Supabase public URL.
+  /// Supabase format: `https://<project>.supabase.co/storage/v1/object/public/lost-dog-photos/<path>`
+  /// Returns everything after `/lost-dog-photos/`, or `null` if not found.
+  String? _storagePathFromUrl(String? url) {
+    if (url == null) return null;
+    const marker = '/lost-dog-photos/';
+    final idx = url.indexOf(marker);
+    if (idx < 0) return null;
+    return url.substring(idx + marker.length);
+  }
+
   // ─── Report lost ───────────────────────────────────────────────────────
 
   /// Create a new lost dog report. Optionally uploads a photo first.
@@ -173,6 +210,8 @@ class SupabaseLostDogService {
     required String contactInfo,
     String? dogProfileId,
     double alertRadiusMiles = 10.0,
+    List<double> embedding = const [],
+    DateTime? gdprConsentAt,
   }) async {
     final uid = _userId;
     if (uid == null) {
@@ -200,7 +239,14 @@ class SupabaseLostDogService {
             'contact_info': contactInfo,
             'status': 'active',
             'alert_radius_miles': alertRadiusMiles,
+            'expires_at': DateTime.now()
+                .toUtc()
+                .add(const Duration(days: 90))
+                .toIso8601String(),
             if (dogProfileId != null) 'dog_profile_id': dogProfileId,
+            if (embedding.isNotEmpty) 'embedding': embedding,
+            if (gdprConsentAt != null)
+              'gdpr_consent_at': gdprConsentAt.toUtc().toIso8601String(),
           })
           .select()
           .single();
@@ -217,25 +263,66 @@ class SupabaseLostDogService {
 
   /// Fetch active lost dog reports near a location using the
   /// `get_active_lost_dogs` RPC (server-side distance calculation).
+  /// The RPC already filters by `status = 'active'`. We additionally filter
+  /// expired reports client-side after the RPC returns (since we can't yet
+  /// guarantee the RPC respects `expires_at`).
+  ///
+  /// GPS coordinates are fuzzy (±500m) for reporter privacy. The server
+  /// calculates distance using precise coordinates; we display fuzzy ones.
   Future<List<LostDogReportRemote>> getActiveNearby(
     double lat,
     double lon, {
-    double radiusMiles = 10.0,
+    double radiusKm = 16.0,
   }) async {
     try {
       final response = await _client.rpc('get_active_lost_dogs', params: {
         'p_lat': lat,
         'p_lon': lon,
-        'p_radius_miles': radiusMiles,
+        // RPC expects miles; convert from km at the boundary.
+        'p_radius_miles': radiusKm / 1.60934,
       });
 
       final list = response as List<dynamic>;
+      final now = DateTime.now().toUtc();
+      const maxDeltaDeg = 0.0045; // ≈500m at all latitudes
       return list
-          .map((e) => LostDogReportRemote.fromJson(e as Map<String, dynamic>))
+          .map((e) {
+            final map = e as Map<String, dynamic>;
+            final fuzzedMap = Map<String, dynamic>.from(map)
+              ..['last_seen_lat'] = _fuzzCoord(
+                  (map['last_seen_lat'] as num).toDouble(), maxDeltaDeg)
+              ..['last_seen_lon'] = _fuzzCoord(
+                  (map['last_seen_lon'] as num).toDouble(), maxDeltaDeg);
+            return LostDogReportRemote.fromJson(fuzzedMap);
+          })
+          .where((r) => r.expiresAt == null || r.expiresAt!.isAfter(now))
           .toList();
     } catch (e) {
       _log.warning('Failed to fetch nearby lost dogs: $e');
       return [];
+    }
+  }
+
+  /// Fetch contact info for a specific report — only called when the user
+  /// explicitly taps "Request Contact". Never included in bulk nearby queries.
+  ///
+  /// Returns null if not authenticated, not found, or the report is not active.
+  Future<String?> getContactInfo(String reportId) async {
+    final uid = _userId;
+    if (uid == null) return null;
+
+    try {
+      final response = await _client
+          .from('lost_dog_reports')
+          .select('contact_info')
+          .eq('id', reportId)
+          .eq('status', 'active')
+          .single();
+
+      return response['contact_info'] as String?;
+    } catch (e) {
+      _log.warning('Failed to fetch contact info for report $reportId: $e');
+      return null;
     }
   }
 
@@ -309,8 +396,34 @@ class SupabaseLostDogService {
   // ─── Report lifecycle ──────────────────────────────────────────────────
 
   /// Mark a lost dog report as found.
+  /// Deletes the associated photo from storage before updating the status.
   Future<bool> markFound(String reportId) async {
     try {
+      // Fetch the photo_url first.
+      final reportRow = await _client
+          .from('lost_dog_reports')
+          .select('photo_url')
+          .eq('id', reportId)
+          .maybeSingle();
+
+      if (reportRow != null) {
+        final photoUrl = reportRow['photo_url'] as String?;
+        final storagePath = _storagePathFromUrl(photoUrl);
+
+        if (storagePath != null) {
+          try {
+            await _client.storage.from('lost-dog-photos').remove([storagePath]);
+            _log.info('Deleted photo for report $reportId: $storagePath');
+          } catch (e) {
+            _log.warning(
+              'Failed to delete photo for report $reportId: $e. '
+              'Proceeding with status update.',
+            );
+          }
+        }
+      }
+
+      // Update status.
       await _client.from('lost_dog_reports').update({
         'status': 'found',
         'resolved_at': DateTime.now().toUtc().toIso8601String(),
@@ -325,8 +438,34 @@ class SupabaseLostDogService {
   }
 
   /// Cancel a lost dog report.
+  /// Deletes the associated photo from storage before updating the status.
   Future<bool> cancelReport(String reportId) async {
     try {
+      // Fetch the photo_url first.
+      final reportRow = await _client
+          .from('lost_dog_reports')
+          .select('photo_url')
+          .eq('id', reportId)
+          .maybeSingle();
+
+      if (reportRow != null) {
+        final photoUrl = reportRow['photo_url'] as String?;
+        final storagePath = _storagePathFromUrl(photoUrl);
+
+        if (storagePath != null) {
+          try {
+            await _client.storage.from('lost-dog-photos').remove([storagePath]);
+            _log.info('Deleted photo for report $reportId: $storagePath');
+          } catch (e) {
+            _log.warning(
+              'Failed to delete photo for report $reportId: $e. '
+              'Proceeding with status update.',
+            );
+          }
+        }
+      }
+
+      // Update status.
       await _client.from('lost_dog_reports').update({
         'status': 'cancelled',
         'resolved_at': DateTime.now().toUtc().toIso8601String(),

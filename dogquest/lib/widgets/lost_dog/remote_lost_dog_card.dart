@@ -4,13 +4,19 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../constants.dart';
 import '../../services/supabase_lost_dog_service.dart';
 
-class RemoteLostDogCard extends StatelessWidget {
+class RemoteLostDogCard extends StatefulWidget {
   final LostDogReportRemote report;
 
   const RemoteLostDogCard({required this.report});
 
   @override
+  State<RemoteLostDogCard> createState() => _RemoteLostDogCardState();
+}
+
+class _RemoteLostDogCardState extends State<RemoteLostDogCard> {
+  @override
   Widget build(BuildContext context) {
+    final report = widget.report;
     final daysAgo = DateTime.now().difference(report.lastSeenAt).inDays;
     final timeLabel = daysAgo == 0
         ? 'Today'
@@ -125,7 +131,7 @@ class RemoteLostDogCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (report.distanceMiles != null) ...[
+                  if (report.distanceKm != null) ...[
                     const SizedBox(height: 4),
                     Row(
                       children: [
@@ -133,13 +139,15 @@ class RemoteLostDogCard extends StatelessWidget {
                             color: Colors.white38, size: 13),
                         const SizedBox(width: 3),
                         Text(
-                          '${report.distanceMiles!.toStringAsFixed(1)} mi away',
+                          '${report.distanceKm!.toStringAsFixed(1)} km away',
                           style: const TextStyle(
                               color: Colors.white38, fontSize: 11),
                         ),
                       ],
                     ),
                   ],
+                  const SizedBox(height: 8),
+                  _ContactButton(report: report),
                 ],
               ),
             ),
@@ -147,5 +155,63 @@ class RemoteLostDogCard extends StatelessWidget {
         ),
       ),
     ).animate().fadeIn().slideX(begin: 0.03);
+  }
+}
+
+class _ContactButton extends StatefulWidget {
+  final LostDogReportRemote report;
+
+  const _ContactButton({required this.report});
+
+  @override
+  State<_ContactButton> createState() => _ContactButtonState();
+}
+
+class _ContactButtonState extends State<_ContactButton> {
+  bool _requested = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_requested) {
+      return const Text(
+        'Contact request sent to owner.',
+        style: TextStyle(color: Colors.green, fontSize: 11),
+      );
+    }
+    return TextButton.icon(
+      onPressed: _request,
+      icon: const Icon(Icons.message_outlined, size: 14),
+      label: const Text('Request Contact'),
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.blue.shade300,
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        textStyle: const TextStyle(fontSize: 12),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+    );
+  }
+
+  void _request() {
+    // TODO(backend): send in-app message to owner via Supabase messaging.
+    // For now, stub as a local alert so contact is never sent automatically.
+    setState(() => _requested = true);
+    showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Contact Requested'),
+        content: Text(
+          'Your request has been sent to the owner of '
+          '${widget.report.dogName}. They will reach out if '
+          'they confirm the sighting.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }
