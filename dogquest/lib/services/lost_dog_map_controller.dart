@@ -41,11 +41,10 @@ class LostDogMapController extends ChangeNotifier {
           timeLimit: Duration(seconds: 10),
         ),
       );
-      // radiusKm parameter stripped — origin's getActiveNearby signature
-      // doesn't accept it; will use service default. (T5-feature-restore)
       final reports = await remoteSvc.getActiveNearby(
         position.latitude,
         position.longitude,
+        radiusKm: 80.0,
       );
       _remoteReports = reports;
       _loadingRemote = false;

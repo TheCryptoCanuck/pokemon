@@ -52,11 +52,10 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
         ),
       );
       if (!mounted) return; // sec-C1
-      // radiusKm parameter stripped — origin's getActiveNearby signature
-      // doesn't accept it; will use service default. (T5-feature-restore)
       final reports = await remoteSvc.getActiveNearby(
         position.latitude,
         position.longitude,
+        radiusKm: 40.0,
       );
       if (!mounted) return; // sec-C1
       setState(() {
@@ -442,8 +441,22 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
                         ],
                       ),
                     ),
-                    // Distance badge stripped — distanceKm getter not on
-                    // origin's LostDogReportRemote. (T5-feature-restore)
+                    if (report.distanceKm != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${report.distanceKm!.toStringAsFixed(1)} km',
+                          style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
                   ],
                 ),
               ).animate().fadeIn(delay: 650.ms).slideY(begin: 0.03);
