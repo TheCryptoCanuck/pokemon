@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
 import '../models/my_dog_profile.dart';
 import '../services/my_dog_service.dart';
@@ -21,6 +24,8 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
   final _contactController = TextEditingController();
   bool _isSubmitting = false;
   bool _submitted = false;
+  final List<File> _additionalPhotos = [];
+  bool _gdprConsent = false;
 
   @override
   void dispose() {
@@ -32,6 +37,15 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
   Future<void> _submitReport() async {
     if (_selectedDog == null) return;
     if (!_formKey.currentState!.validate()) return;
+    if (!_gdprConsent) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please accept the privacy terms to continue.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     setState(() => _isSubmitting = true);
 
@@ -45,6 +59,8 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
         ownerContact: _contactController.text.trim().isEmpty
             ? null
             : _contactController.text.trim(),
+        additionalPhotos: _additionalPhotos,
+        gdprConsentAt: _gdprConsent ? DateTime.now() : null,
       );
       if (mounted) {
         setState(() {
@@ -63,6 +79,19 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
         );
       }
     }
+  }
+
+  Future<void> _pickAdditionalPhoto() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (picked == null) return;
+    if (!mounted) return;
+    setState(() {
+      _additionalPhotos.add(File(picked.path));
+    });
   }
 
   @override
@@ -347,6 +376,69 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
                 ),
               ),
 
+              const SizedBox(height: 20),
+
+              // Additional photos section
+              _AdditionalPhotosSection(
+                photos: _additionalPhotos,
+                onAdd: _pickAdditionalPhoto,
+                onRemove: (i) => setState(() => _additionalPhotos.removeAt(i)),
+              ),
+
+              const SizedBox(height: 24),
+
+              // GDPR consent checkbox
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Checkbox(
+                    value: _gdprConsent,
+                    onChanged: (newValue) {
+                      setState(() => _gdprConsent = newValue ?? false);
+                    },
+                    activeColor: const Color(0xFFD84315),
+                    fillColor: WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return const Color(0xFFD84315);
+                      }
+                      return Colors.white24;
+                    }),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                              text:
+                                  'I agree my contact details may be shared with verified users who report a sighting. ',
+                              style: TextStyle(
+                                  color: Colors.white70, fontSize: 14),
+                            ),
+                            TextSpan(
+                              text: 'Privacy Policy',
+                              style: const TextStyle(
+                                color: Colors.amber,
+                                fontSize: 14,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  launchUrl(
+                                    Uri.parse('https://dogquest.app/privacy'),
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
               const SizedBox(height: 24),
 
               // Submit button
@@ -367,7 +459,7 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
                       : const Icon(Icons.warning_amber_rounded, size: 24),
                   label: Text(
                     _isSubmitting
-                        ? 'Generating visual fingerprint...'
+                        ? 'Generating visual fingerprint${_additionalPhotos.isEmpty ? '' : ' (${_additionalPhotos.length + 1} photos)'}...'
                         : 'Report as Lost',
                     style: const TextStyle(
                       fontSize: 17,
@@ -534,6 +626,139 @@ class _DogSelectionCard extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AdditionalPhotosSection extends StatelessWidget {
+  final List<File> photos;
+  final VoidCallback onAdd;
+  final ValueChanged<int> onRemove;
+
+  const _AdditionalPhotosSection({
+    required this.photos,
+    required this.onAdd,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text(
+              'More Photos',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '(${photos.length}/2 — optional)',
+              style: const TextStyle(color: Colors.white38, fontSize: 12),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'More photos = better fingerprint. Add up to 2 extra shots.',
+          style: TextStyle(color: Colors.white38, fontSize: 13),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            // Existing additional photo thumbnails
+            for (int i = 0; i < photos.length; i++) ...[
+              _PhotoThumb(file: photos[i], onRemove: () => onRemove(i)),
+              const SizedBox(width: 8),
+            ],
+
+            // Add button (only if < 2 additional photos)
+            if (photos.length < 2) _AddPhotoButton(onTap: onAdd),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _PhotoThumb extends StatelessWidget {
+  final File file;
+  final VoidCallback onRemove;
+
+  const _PhotoThumb({required this.file, required this.onRemove});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.file(
+            file,
+            width: 72,
+            height: 72,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Positioned(
+          top: 2,
+          right: 2,
+          child: GestureDetector(
+            onTap: onRemove,
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: const BoxDecoration(
+                color: Colors.black54,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.close, color: Colors.white, size: 14),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AddPhotoButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _AddPhotoButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 72,
+        height: 72,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.white24,
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add_photo_alternate_outlined,
+                color: Colors.white38, size: 24),
+            SizedBox(height: 4),
+            Text(
+              'Add',
+              style: TextStyle(color: Colors.white38, fontSize: 11),
+            ),
+          ],
         ),
       ),
     );
