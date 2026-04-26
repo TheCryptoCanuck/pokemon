@@ -12,3 +12,9 @@ build-output/
 .claude/
 .full-review/
 .swarm/
+
+# Cowork / Claude Code workflow scratch
+.claude-flow/
+.claude/
+.full-review/
+.swarm/
