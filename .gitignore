@@ -1,2 +1,8 @@
 # Build output
 build-output/
+
+# Cowork / Claude Code workflow scratch
+.claude-flow/
+.claude/
+.full-review/
+.swarm/
