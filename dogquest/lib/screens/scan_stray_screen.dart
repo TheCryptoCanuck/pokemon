@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../constants.dart';
 import '../models/lost_dog_report.dart';
 import '../services/lost_dog_service.dart';
+import '../services/supabase_lost_dog_service.dart';
 
 class ScanStrayScreen extends ConsumerStatefulWidget {
   const ScanStrayScreen({super.key});
@@ -89,7 +90,11 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
 
     try {
       final lostDogSvc = ref.read(lostDogServiceProvider);
-      final result = await lostDogSvc.scanStray(photo);
+      final supabaseSvc = ref.read(supabaseLostDogServiceProvider);
+      final result = await lostDogSvc.scanStray(
+        photo,
+        supabaseSvc: supabaseSvc,
+      );
       if (!mounted) return;
       setState(() {
         _result = result;
