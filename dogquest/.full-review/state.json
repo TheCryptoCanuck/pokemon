@@ -1,15 +1,17 @@
 {
-  "target": "whole-dogquest",
-  "status": "complete",
+  "target": "whole-dogquest-2026-04-25-evening",
+  "status": "in_progress",
   "flags": {
-    "security_focus": false,
+    "security_focus": true,
     "performance_critical": false,
     "strict_mode": true,
-    "framework": "auto"
+    "framework": "flutter-dart"
   },
-  "current_step": 5,
+  "current_step": "complete",
   "current_phase": 5,
-  "completed_steps": [0, "1A", "1B", "1-consolidated", "2A", "2B", "2-consolidated", "checkpoint-1-resolved", "3A", "3B", "3-consolidated", "4A", "4B", "4-consolidated", "5-final-report"],
+  "status": "complete",
+  "completed_steps": [0, "1A", "1B", "1-consolidated", "2A", "2B", "2-consolidated", "checkpoint-1-continue", "3A", "3B", "3-consolidated", "4A", "4B", "4-consolidated", "5-final-report"],
+  "completed_at": "2026-04-25T23:30:00Z",
   "files_created": [
     "00-scope.md",
     "state.json",
@@ -27,19 +29,67 @@
     "04-best-practices.md",
     "05-final-report.md"
   ],
-  "checkpoint_1_status": "criticals-resolved-2026-04-25",
-  "criticals_resolved": [
-    "C1 sync ownership: commits 4da92cf (router redirect) + f8eae20 (sync-service guards). Server-side RLS sightings_own (auth.uid() = user_id) verified via Supabase dashboard.",
-    "C2 SightingSync UUID: commit f8eae20 reduced-scope close — class marked DORMANT, init() throws StateError to prevent accidental wiring without the fix.",
-    "C3 backend/ archive: commit aaebc5d. Directory removed from working tree and git history; .gitignore line 35-39 ignores the path."
-  ],
-  "phase_3_4_findings_summary": {
-    "critical": 5,
-    "high": 15,
-    "medium": 18,
-    "low": 6
+  "final_summary": {
+    "total_findings_distinct": 70,
+    "critical": 9,
+    "drift_findings": 3,
+    "high": 26,
+    "medium": 30,
+    "low": 12,
+    "closed_beta_effort_hr": "9-11",
+    "public_launch_hard_gates_hr": "30-40",
+    "public_launch_comfortable_hr": "70-90"
   },
-  "started_at": "2026-04-25T01:30:00Z",
-  "last_updated": "2026-04-25T09:35:00Z",
-  "completed_at": "2026-04-25T09:35:00Z"
+  "phase_4_summary": {
+    "framework_high": 3,
+    "framework_medium": 2,
+    "framework_low": 3,
+    "ops_critical": 3,
+    "ops_high": 5,
+    "ops_medium": 4,
+    "ops_low": 2,
+    "drift_findings": 3,
+    "key_drift": "DRIFT-1: .github/workflows/ does not exist on disk despite OPS-001 closure claim; DRIFT-2 (positive): supabase/*.sql schema actually exists; DRIFT-3: key.properties mtime predates OPS-002 closure claim"
+  },
+  "phase_3_summary": {
+    "test_critical": 2,
+    "test_high": 5,
+    "test_medium": 3,
+    "doc_critical": 1,
+    "doc_high": 5,
+    "doc_medium": 5,
+    "doc_low": 2,
+    "test_plan_total_hours": 25,
+    "doc_close_all_hours": "15-20"
+  },
+  "checkpoint_1_decision": "continue-to-phase-3 (user chose to defer all 5 Criticals, will schedule from final report)",
+  "files_created": [
+    "00-scope.md",
+    "state.json",
+    "01a-code-quality-findings.md",
+    "01b-architecture-findings.md",
+    "01-quality-architecture.md",
+    "02a-security-findings.md",
+    "02b-performance-findings.md",
+    "02-security-performance.md"
+  ],
+  "phase_1_summary": {
+    "critical": 2,
+    "high": 4,
+    "medium": 7,
+    "low": 3
+  },
+  "phase_2_summary": {
+    "critical_distinct": 5,
+    "high": 10,
+    "medium": 12,
+    "low": 5,
+    "gdpr_blockers_for_public_launch": 5
+  },
+  "checkpoint_1_status": "awaiting_user_decision",
+  "checkpoint_1_recommendation": "Strict-mode + 5 Criticals → recommend Option 2 (fix critical issues first). At minimum the 2 quick-fix Criticals (FW-001 dual TFLite load, stream-leak refactor) are <2 hr combined. The 2 GDPR Criticals are not blockers for closed beta but are blockers for public Play Store.",
+  "supersedes": ".full-review-archive-2026-04-25/",
+  "supersedes_reason": "13 commits landed since prior review completed; fresh pass against current tree",
+  "started_at": "2026-04-25T22:00:00Z",
+  "last_updated": "2026-04-25T23:00:00Z"
 }
