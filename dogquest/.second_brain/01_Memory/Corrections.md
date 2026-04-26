@@ -1,0 +1,109 @@
+# Corrections
+
+Tags: #memory #corrections
+
+Use when the user corrects Claude.
+
+## Format
+
+- Date:
+- Correction:
+- What to do differently next time:
+- Score:
+
+## Entries
+
+- Date: 2026-04-25
+  Correction: Wrote `@claude-flow/cli@1.x.y` as a pin-syntax example. Claude Code (correctly) noted the example version doesn't exist — current claude-flow major is 3.x and the actual pin landed at 3.5.80.
+  What to do differently: When suggesting version-pin syntax, either look up the current major first OR explicitly mark the version as illustrative ("e.g. `@pkg@CURRENT-MAJOR.x.y`") so the agent doesn't act on an invalid string.
+  Score: 0.7
+
+- Date: 2026-04-25
+  Correction: Asserted `.mcp.json` was probably leftover/unused from the AviQuest fork without checking. Claude Code (correctly) found evidence claude-flow IS active: `package.json` declares it, `node_modules/@claude-flow/*` is installed, `.claude-flow/plugins/dogquest-ml/` exists, active `mcp__ruflo__*` tools route through it.
+  What to do differently: Before declaring inherited config "leftover," grep for it in `package.json`, `node_modules/`, plugin folders, AND check for active tool calls in the live session. Apply the same rule to ANY inherited tooling — vestigial-looking is not the same as actually-vestigial. Logged in Failure_Patterns.md as well.
+  Score: 0.85
+
+- Date: 2026-04-25
+  Correction: Wall-time projection for the GPU audit was off by ~6× — I said 15–25 min, actual was ~1.9h (and pre-batching CPU TFLite would have been ~3.7h). I was thinking inference-bound (50–80ms/batch on RTX 3060 Ti); the actual bottleneck was PIL preprocessing + EXIF bake on single-threaded Python (~161ms/img end-to-end).
+  What to do differently: When estimating wall time for a pipeline, separate inference cost from data-loading/preprocessing/serialization cost. End-to-end throughput is gated by the slowest stage, not the headline op. For Python image pipelines, assume preprocessing dominates unless multiprocessing or tf.data is in play.
+  Score: 0.8
+
+- Date: 2026-04-25
+  Correction: Claimed the 20-image test harness lived at `outputs/test_20_images.py` in the project repo. It actually lived in Cowork's session-only sandbox `/sessions/.../mnt/outputs/`, which is invisible to Claude Code. Caused a HALT during the agentic audit task.
+  What to do differently: Persistent project artifacts (scripts, harnesses, reports) MUST be written into the user's workspace folder (`C:\...\dogquest\`), not the Cowork sandbox. The sandbox is for ephemeral work-in-progress only. When the vault references a file path, that path must resolve in the user's actual environment, not just Cowork's.
+  Score: 1.0
+
+- Date: 2026-04-25
+  Correction: Reported `lib/services/sighting_sync_service.dart` was truncated mid-`syncSingle` at line 222 with no closing braces, and proposed Jesse run `git checkout HEAD -- ...` to restore. The file was actually fine at 302 lines on Windows-side disk; what I saw was a virtiofs-mount cache artifact in the bash sandbox where post-Edit state hadn't propagated. The "restore" .bat that ran on Windows confirmed the file was already whole.
+  What to do differently: When bash sandbox `wc -l` / `tail` / `sed` show a file as truncated/corrupt right after an Edit-tool write, do not panic. The Cowork bash mount has cache lag relative to actual Windows-side disk state. Re-read the file via the Read tool (which goes through a different path) before declaring data loss. Better: write out a `.bat` that does `find /c /v "" < FILE` on Windows side and read the log — that's the source of truth.
+  Score: 0.85
+
+- Date: 2026-04-25
+  Correction: Logged "C1 mostly committed in code" earlier in the session based on grep finding `sec-C1` markers in `lib/services/sighting_sync_service.dart`. The file was actually UNTRACKED (`??` in git status) — markers existed in the working tree but were never in any commit. The router-side change (`lib/router.dart`) WAS modified-tracked (`M`), so half of C1 was committable; the other half wasn't yet in git at all.
+  What to do differently: Before claiming any sec-finding is "mostly committed in code," run a full `git status --short` on the relevant files and distinguish between (a) tracked-and-modified (M), (b) tracked-and-clean (no marker = already committed), (c) untracked-but-edited (??). Only (b) is "committed". (a) and (c) are working-tree state and need explicit `git add` + `git commit` to land. Drove the surgical commit fix later in the same session.
+  Score: 0.9
+
+- Date: 2026-04-25
+  Correction: Said the comprehensive review's Phase 1+2 final report would have findings counts "5 Critical, 15 High, 18 Medium, 6 Low" but those numbers reflected Phase 3+4 only — I summarized the new agent outputs without re-counting Phase 1+2 findings into the cross-phase totals. The final report in `.full-review/05-final-report.md` notes this ("Total findings (Phase 3+4 only, prior phases not re-counted here)") so the leak was caught, but my session summary to Jesse implied total-across-all-phases.
+  What to do differently: When summarizing multi-phase outputs, either explicitly re-count cross-phase totals OR clearly label per-phase counts as "this phase only". Don't let "total" do double duty.
+  Score: 0.7
+
+- Date: 2026-04-25
+  Correction: Treated Sentry as default observability for TASK-050 without flagging the trial-banner UX upfront. Jesse pointed out the signup page foregrounds a 14-day trial; he found the messaging off-putting before realizing the Developer plan stays free. Cost: ~5 min of back-and-forth before pivoting to Crashlytics.
+  What to do differently: For any "wire in vendor X" task, surface free-tier limits AND any prominent paid-tier UX in the same message that proposes the wiring. Better: when vendor pricing has a known sharp edge (trial banners, low free-tier caps, hard rate limits), proactively offer 1-2 alternatives in the initial recommendation, not after the user pushes back. Saves a round-trip.
+  Score: 0.7
+
+- Date: 2026-04-25
+  Correction: Generated a new release keystore via `keytool` without checking whether one already existed at the canonical project path. A working March keystore was already at `android/dogquest-release.jks`, already wired in `android/key.properties` with password `dogquest2026`. My fresh keystore at `C:\Users\Administrator\dogquest-release.jks` was a duplicate, and would have silently displaced the existing one if Jesse had said "use new" without my catching it mid-flight. Same pattern played out earlier in the session when I overwrote `.github/workflows/ci.yml` (which was an AviQuest workflow) without checking — caught only via the 49-line deletion in the commit diff stat.
+  What to do differently: Before any create-artifact task (signing keys, CI yml, README, license, config), run `ls`/`Test-Path`/grep for the canonical location AND for references in adjacent config files (`pubspec.yaml`, `build.gradle`, `*.properties`, `.gitignore`). If found, present the existing-vs-new tradeoff to the user. For credentials specifically, never auto-replace — the cost of a wrong call (lost Play Store update path) is irreversible. Logged in Failure_Patterns.md as "existing-artifact discovery" pattern, score 0.85.
+  Score: 0.85
+
+- Date: 2026-04-25
+  Correction: Briefed Phase 4B of the comprehensive review with the vault claim "5 yml files in `.github/workflows/`" as a known fact. The 4B agent then reported the directory was empty, contradicting my brief. Bash check after the fact: `.github/` doesn't exist on the working tree at all. The vault's OPS-001 closure claim ("commits `c949c92` + `d859f81`") had not been verified against disk before I propagated it into the agent context. Result: ~30 min of agent time spent on a brief that started from a false premise; agent had to course-correct mid-report. The agent's read was correct; my brief was wrong.
+  What to do differently: Before propagating ANY vault closure claim into agent briefs, run a 30-second bash existence check on the artifact (file/directory/commit). The pattern: vault attestation ≠ disk truth. For "OPS-XXX closed" / "DOC-XXX closed" / "TASK-XXX closed" specifically, the brief should say "vault claims X is at PATH; verify before relying on" if the bash check hasn't run yet. Also: surface this to Jesse so future "closed" claims in Active_Tasks get commit-hash-verified rather than vault-attested. Logged in Failure_Patterns.md as "vault-claim-trust-without-disk-verification" pattern, score 0.9.
+  Score: 0.9
+
+- Date: 2026-04-25
+  Correction: When briefing Phase 4B I told the agent that "supabase/ schema files don't exist in repo" without verifying. The agent then flagged OPS-M-003 ("No infrastructure-as-code for Supabase migrations") at Medium severity, which I caught after a follow-up bash check showed `supabase/00_foundation_schema.sql`, `01_social_schema.sql`, `02_social_rls_policies.sql`, `03_rpc_functions.sql` all exist on disk. The schema IS version-controlled; what's missing is just CI automation to apply migrations. The error was symmetric to the other vault-trust failure but in the opposite direction — I propagated a negative absence claim without verification.
+  What to do differently: Symmetric to the prior correction. Don't claim "X doesn't exist in repo" without a bash check OR a glob. Especially when the brief is going into 30+ min of agent reasoning that builds on the assumption. The fix is the same as the previous entry: before propagating any positive OR negative claim about repo state, verify via bash/glob/Read.
+  Score: 0.85
+
+- Date: 2026-04-25 (evening)
+  Correction: Audited the T5-B sub-agent's `_AwaitableFilterBuilderWrapper` and concluded "should pass for all 7 tests under current service code paths" with "medium-confidence" runtime expectation. Flagged the dual `Future<List<dynamic>>, PostgrestFilterBuilder<dynamic>` interface risk as a "D-tier hypothetical concern (if the SDK migrates...)". Reality: the SDK ALREADY had `PostgrestBuilder extends Future<dynamic>` in supabase_flutter 2.10.2, so the wrapper failed analyze immediately on next CI push. My audit was too optimistic — the fundamental compile-time conflict was the actual blocker, not a hypothetical.
+  What to do differently: When a wrapper or proxy class implements multiple interfaces with overlapping method signatures, do a targeted analyzer check (or read the dependency's interface source) BEFORE declaring the audit done. Specifically: if `class X implements A, B`, and A and B have any methods/fields with the same name, those signatures must reconcile or analyze fails. The `D-tier hypothetical` framing was a hedge that should have triggered a verification step instead.
+  Score: 0.85
+
+- Date: 2026-04-25 (evening)
+  Correction: DRIFT-1 went through 4 verification passes and I updated the same Active_Tasks block 3 times with progressively-corrected conclusions, each based on partial evidence. Pass 1: trusted vault closure. Pass 2: ran `git log --all -- .github/` from `dogquest/` (cwd-relative path issue), got empty, declared closure phantom. Pass 3: GitHub UI screenshot showed `.github/workflows/` IS tracked, partially walked back. Pass 4: ran `git log origin..HEAD` from `AviQuest-/`, confirmed commits ARE real on local-ahead-of-origin queue. Net cost: ~3 corrections to the same vault entry, ~30 min of session time on a state that was always coherent — just queried wrong.
+  What to do differently: When verifying repo-state claims, ALWAYS run the diagnostic from the repo root (`git rev-parse --show-toplevel` first if uncertain). Use absolute paths in `git log -- PATH` arguments OR `cd` to root. Don't update the vault until verification is COMPLETE, not partial — partial corrections compound and require re-correction. Logged in Failure_Patterns as `git-log-cwd-relative-path-arguments` (score 0.85).
+  Score: 0.9
+
+- Date: 2026-04-25 (evening)
+  Correction: Concluded `.github/` doesn't exist on disk because the directory wasn't in Jesse's pasted `git status` untracked listing. The listing was ~150 visible entries (paginated/scrolled output of ~350 total). The directory DID exist with a 95-line working CI yml — I'd just scrolled past it OR it was beyond the paste boundary. The Read tool only saved me because Write's "file already exists" error surfaced when I tried to overwrite it with my misplaced duplicate.
+  What to do differently: Negative existence claims about disk state require independent positive verification. Don't infer "X doesn't exist" from absence in a long listing pasted by the user. Use `Glob`/`Read`/`Test-Path` against the canonical filesystem path instead. Paginated output is unreliable as a negative-existence proof. Logged in Failure_Patterns as `dont-infer-absence-from-partial-listings` (score 0.85).
+  Score: 0.85
+
+- Date: 2026-04-25 (evening)
+  Correction: Wrote that Jesse "scrolled past in the ~350-item untracked listing" as the explanation for why `.github/` wasn't visible in the git status output. Jesse pushed back: "this you being funny :)" — pointing out that I was anthropomorphizing (Jesse hadn't done anything wrong; I had read a partial listing and inferred absence). The "scrolled past" framing was me reaching for a charitable explanation that put the gap on the user instead of acknowledging my own incomplete read.
+  What to do differently: When reasoning about why a piece of evidence didn't surface, distinguish between (a) my own incomplete read of the data, (b) genuine truncation in the source, and (c) actual user behavior. Default to (a) when the evidence is in something I parsed myself. Don't displace responsibility onto the user with charitable-sounding inferences.
+  Score: 0.8
+
+- Date: 2026-04-25 (evening)
+  Correction: Wrote a duplicate `dogquest-ci.yml` at `dogquest/.github/workflows/` (one level too deep) before checking the canonical path. Git root is `AviQuest-/`, so GitHub Actions only reads `.github/workflows/*.yml` at `AviQuest-/.github/workflows/`. My misplaced duplicate would have been invisible to GitHub. The canonical file at `AviQuest-/.github/workflows/dogquest-ci.yml` already existed; the Write tool's "file already exists, must Read first" error was the only thing that surfaced this — otherwise I'd have written a new file at the wrong path AND assumed the canonical didn't exist (since the partial git status didn't show it; see prior correction).
+  What to do differently: Before writing CI workflow files in a multi-project monorepo, run `git rev-parse --show-toplevel` to confirm the repo root, then `Glob '.github/workflows/*'` from that root to inventory existing workflows. Never assume the cwd is the repo root in a Flutter-subproject layout. Logged in Failure_Patterns as `create-artifact-without-existence-check` (score 0.85).
+  Score: 0.8
+
+- Date: 2026-04-25 (evening)
+  Correction: Pushed Sprint 1 commits to origin without first simulating origin's tree to catch tracked-file dependency gaps. Each push surfaced a new dangling reference that local analyze didn't see because Jesse's working tree had unstaged modifications providing the missing symbols. Cost: 5 successive failed CI runs, each 1-2 minutes wall time + push/wait overhead. Pattern: tracked files in working tree had unstaged additions (radiusKm parameter, distanceKm getter, etc.) that newly-committed files depended on; origin lacked those additions; CI failed.
+  What to do differently: Before pushing to a CI-gated branch, run `git stash push -m diagnostic && dart analyze && git stash pop` (or use `git worktree add`) to simulate origin's tree. Errors that surface are the dependencies origin will be missing. Either commit the necessary unstaged modifications OR strip the dependent code from the about-to-push commits BEFORE the push. Iteration cost on CI is high — each push is 3-5 min minimum. Logged in Failure_Patterns as `working-tree-vs-origin-drift-on-tracked-files` (score 0.85).
+  Score: 0.85
+
+- Date: 2026-04-25 (evening)
+  Correction: Ran `git stash push -u` on Windows with `.second_brain/` and many other deeply-nested untracked dirs in working tree. The command appeared to succeed but `git stash pop` ("Already up to date") didn't restore most untracked files. `.second_brain/` was lost from disk. Suspected cause: the CRLF normalization warning flood interrupted partial completion of stash content capture. Recovery via `git stash apply 2` later worked for some files but stash@{2} was consumed in the process, losing access to original versions of 4 files (which I rebuilt from chat history).
+  What to do differently: For diagnostic "what does CI see" comparisons, use `git worktree add ../diagnostic origin/branch-name` instead of `git stash -u`. The worktree approach: (a) gives a clean origin checkout in a separate dir; (b) doesn't touch the active working tree; (c) is reliably cleanable via `git worktree remove`; (d) doesn't interact with untracked file capture at all. Reserve `git stash` for tracked-modified work that needs temporary parking. Logged in Failure_Patterns as `git-stash-u-loses-deeply-nested-untracked` (score 0.7).
+  Score: 0.85
+
+## Related Notes
+
+- [[Failure_Patterns]]
+- [[Memory]]
