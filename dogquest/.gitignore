@@ -58,3 +58,7 @@ android/local.properties
 # Android Gradle build cache + machine-local SDK paths
 android/.gradle/
 android/local.properties
+
+# Android Gradle build cache + machine-local SDK paths
+android/.gradle/
+android/local.properties
