@@ -78,8 +78,8 @@ class SyncQueueService {
 
   Future<void> init() async {
     _box = await Hive.openBox(_boxName);
-    _log.info('SyncQueueService initialised – ${pendingCount} pending, '
-        '${failedCount} failed items in queue');
+    _log.info('SyncQueueService initialised – $pendingCount pending, '
+        '$failedCount failed items in queue');
   }
 
   // ---- Public getters ------------------------------------------------------

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/dog.dart';
-import 'dog_service.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/dog_service.dart';
 
 class KennelService {
   final Box<String> _box;
@@ -39,5 +39,6 @@ class KennelService {
 
 final kennelServiceProvider = Provider<KennelService>((ref) {
   throw UnimplementedError(
-      'kennelServiceProvider must be overridden after Hive init');
+    'kennelServiceProvider must be overridden after Hive init',
+  );
 });

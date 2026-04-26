@@ -44,8 +44,13 @@ class AvatarOption {
   final Color bgColor;
 
   /// Unlock condition check: takes (level, kennelCount, achievements, streak, totalSightings).
-  final bool Function(int level, int kennelCount, Set<String> achievements,
-      int streak, int totalSightings) isUnlocked;
+  final bool Function(
+    int level,
+    int kennelCount,
+    Set<String> achievements,
+    int streak,
+    int totalSightings,
+  ) isUnlocked;
 
   const AvatarOption({
     required this.id,

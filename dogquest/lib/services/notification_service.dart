@@ -65,7 +65,7 @@ class NotificationService {
       "Don't break your streak!",
       'Open DogQuest to keep your identifying streak alive!',
       _nextInstanceOfTime(20, 0), // 8:00 PM
-      NotificationDetails(
+      const NotificationDetails(
         android: AndroidNotificationDetails(
           _streakChannelId,
           _streakChannelName,
@@ -100,7 +100,7 @@ class NotificationService {
       'New Dog of the Day!',
       'A new daily dog challenge is waiting. 3x XP bonus!',
       _nextInstanceOfTime(9, 0), // 9:00 AM
-      NotificationDetails(
+      const NotificationDetails(
         android: AndroidNotificationDetails(
           _dailyDogChannelId,
           _dailyDogChannelName,
@@ -117,7 +117,8 @@ class NotificationService {
       payload: 'daily_dog',
     );
     debugPrint(
-        '[Notifications] Daily dog reminder scheduled for 9:00 AM daily');
+      '[Notifications] Daily dog reminder scheduled for 9:00 AM daily',
+    );
   }
 
   /// Cancel the daily dog alert.

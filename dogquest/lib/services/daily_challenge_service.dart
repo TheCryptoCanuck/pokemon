@@ -2,8 +2,8 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
-import '../constants.dart';
-import '../helpers/date_helpers.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/helpers/date_helpers.dart';
 
 final _log = Logger('DailyChallengeService');
 
@@ -201,7 +201,8 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
     _ensureFreshChallenges();
     _ensureFreshWeeklyMission();
     _log.info(
-        'Daily challenges loaded for ${state.dateKey}: ${state.challenges.length} challenges');
+      'Daily challenges loaded for ${state.dateKey}: ${state.challenges.length} challenges',
+    );
   }
 
   // ─── Daily Challenge Rotation ────────────────────────────────────────
@@ -215,8 +216,9 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
       final stored =
           _box.get('daily_challenges', defaultValue: <dynamic>[]) as List;
       final challenges = stored
-          .map((e) =>
-              DailyChallenge.fromMap(Map<dynamic, dynamic>.from(e as Map)))
+          .map(
+            (e) => DailyChallenge.fromMap(Map<dynamic, dynamic>.from(e as Map)),
+          )
           .toList();
       final swept =
           _box.get('daily_sweep_claimed', defaultValue: false) as bool;
@@ -501,7 +503,8 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
         if (nowComplete && !c.completed) {
           xpEarned += c.xpReward;
           _log.info(
-              'Daily challenge completed: ${c.title} (+${c.xpReward} XP)');
+            'Daily challenge completed: ${c.title} (+${c.xpReward} XP)',
+          );
         }
       }
     }
@@ -549,7 +552,8 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
         if (nowComplete && !c.completed) {
           xpEarned += c.xpReward;
           _log.info(
-              'Daily challenge completed: ${c.title} (+${c.xpReward} XP)');
+            'Daily challenge completed: ${c.title} (+${c.xpReward} XP)',
+          );
         }
       }
     }
@@ -569,7 +573,8 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
     state = state.copyWith(dailySweepClaimed: true);
     _saveDailyChallenges();
     _log.info(
-        'Daily Sweep claimed! +${DailyChallengeState.dailySweepBonus} XP + streak saver');
+      'Daily Sweep claimed! +${DailyChallengeState.dailySweepBonus} XP + streak saver',
+    );
     return DailyChallengeState.dailySweepBonus;
   }
 
@@ -606,7 +611,8 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
       _saveWeeklyMission();
       if (nowComplete) {
         _log.info(
-            'Weekly mission completed: ${mission.title} (+${mission.xpReward} XP)');
+          'Weekly mission completed: ${mission.title} (+${mission.xpReward} XP)',
+        );
       }
     }
   }
@@ -627,7 +633,8 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
       _saveWeeklyMission();
       if (nowComplete) {
         _log.info(
-            'Weekly mission completed: ${mission.title} (+${mission.xpReward} XP)');
+          'Weekly mission completed: ${mission.title} (+${mission.xpReward} XP)',
+        );
       }
     }
   }
@@ -659,7 +666,8 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
     // Mark as claimed by setting progress beyond target (or just return the XP)
     // The mission stays completed — it won't reset until next week.
     _log.info(
-        'Weekly mission claimed: ${mission.title} (+${mission.xpReward} XP)');
+      'Weekly mission claimed: ${mission.title} (+${mission.xpReward} XP)',
+    );
     return mission.xpReward;
   }
 
@@ -697,5 +705,6 @@ class DailyChallengeNotifier extends StateNotifier<DailyChallengeState> {
 final dailyChallengeProvider =
     StateNotifierProvider<DailyChallengeNotifier, DailyChallengeState>((ref) {
   throw UnimplementedError(
-      'dailyChallengeProvider must be overridden after Hive init');
+    'dailyChallengeProvider must be overridden after Hive init',
+  );
 });

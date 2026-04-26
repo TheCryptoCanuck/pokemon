@@ -3,10 +3,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../constants.dart';
-import '../services/dog_service.dart';
-import '../services/sighting_service.dart';
-import '../services/kennel_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/sighting_service.dart';
+import 'package:dogquest/services/kennel_service.dart';
 
 /// Community page for a specific breed — stats, sightings, breed info,
 /// and Supabase-backed community membership + posts.
@@ -149,9 +149,12 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
       return Scaffold(
         backgroundColor: bgDeep,
         appBar: AppBar(title: Text(widget.breedName), backgroundColor: bgCard),
-        body: Center(
-            child: Text('Breed not found',
-                style: TextStyle(color: textSecondary))),
+        body: const Center(
+          child: Text(
+            'Breed not found',
+            style: TextStyle(color: textSecondary),
+          ),
+        ),
       );
     }
 
@@ -172,8 +175,10 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
             pinned: true,
             backgroundColor: bgCard,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(dog.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(
+                dog.name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               background: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -215,10 +220,11 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                         color: dog.rarity.color,
                       ),
                       if (isOwned)
-                        _Badge(label: 'IN KENNEL', color: Colors.green),
+                        const _Badge(label: 'IN KENNEL', color: Colors.green),
                       _Badge(
-                          label: dog.sizeCategory.toUpperCase(),
-                          color: Colors.blueGrey),
+                        label: dog.sizeCategory.toUpperCase(),
+                        color: Colors.blueGrey,
+                      ),
                     ],
                   ).animate().fadeIn(),
 
@@ -226,7 +232,7 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
 
                   // Community membership section (Supabase)
                   if (isOnline) ...[
-                    _SectionHeader(title: 'Breed Community'),
+                    const _SectionHeader(title: 'Breed Community'),
                     const SizedBox(height: 10),
                     Row(
                       children: [
@@ -254,7 +260,8 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                                 borderRadius: BorderRadius.circular(10),
                                 border: _isMember
                                     ? Border.all(
-                                        color: accent.withValues(alpha: 0.5))
+                                        color: accent.withValues(alpha: 0.5),
+                                      )
                                     : null,
                               ),
                               child: Column(
@@ -286,19 +293,21 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                   ],
 
                   // Community Stats
-                  _SectionHeader(title: 'Your Stats'),
+                  const _SectionHeader(title: 'Your Stats'),
                   const SizedBox(height: 10),
                   Row(
                     children: [
                       _StatTile(
-                          value: '$totalSightings',
-                          label: 'Sightings',
-                          icon: Icons.visibility),
+                        value: '$totalSightings',
+                        label: 'Sightings',
+                        icon: Icons.visibility,
+                      ),
                       const SizedBox(width: 10),
                       _StatTile(
-                          value: '${dog.xp}',
-                          label: 'XP Value',
-                          icon: Icons.star),
+                        value: '${dog.xp}',
+                        label: 'XP Value',
+                        icon: Icons.star,
+                      ),
                       const SizedBox(width: 10),
                       _StatTile(
                         value: dog.lifespan.isNotEmpty ? dog.lifespan : '?',
@@ -312,7 +321,7 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
 
                   // Community posts (Supabase)
                   if (isOnline && _isMember) ...[
-                    _SectionHeader(title: 'Community Posts'),
+                    const _SectionHeader(title: 'Community Posts'),
                     const SizedBox(height: 10),
                     // Post composer
                     Row(
@@ -321,11 +330,14 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                           child: TextField(
                             controller: _postController,
                             style: const TextStyle(
-                                color: textPrimary, fontSize: 14),
+                              color: textPrimary,
+                              fontSize: 14,
+                            ),
                             decoration: InputDecoration(
                               hintText: 'Share with the community...',
                               hintStyle: TextStyle(
-                                  color: textSecondary.withValues(alpha: 0.5)),
+                                color: textSecondary.withValues(alpha: 0.5),
+                              ),
                               filled: true,
                               fillColor: bgCard,
                               border: OutlineInputBorder(
@@ -333,7 +345,9 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                                 borderSide: BorderSide.none,
                               ),
                               contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 10),
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
                             ),
                           ),
                         ),
@@ -347,14 +361,19 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                     const SizedBox(height: 10),
                     if (_loadingCommunity)
                       const Center(
-                          child: CircularProgressIndicator(color: accent))
+                        child: CircularProgressIndicator(color: accent),
+                      )
                     else if (_communityPosts.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
                         child: Center(
-                          child: Text('No posts yet — be the first!',
-                              style: TextStyle(
-                                  color: textSecondary, fontSize: 13)),
+                          child: Text(
+                            'No posts yet — be the first!',
+                            style: TextStyle(
+                              color: textSecondary,
+                              fontSize: 13,
+                            ),
+                          ),
                         ),
                       )
                     else
@@ -365,73 +384,89 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                   ],
 
                   // Breed Info
-                  _SectionHeader(title: 'About'),
+                  const _SectionHeader(title: 'About'),
                   const SizedBox(height: 10),
                   Text(
                     dog.lore,
                     style: const TextStyle(
-                        color: textPrimary, fontSize: 14, height: 1.5),
+                      color: textPrimary,
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
                   ).animate().fadeIn(delay: 200.ms),
 
                   const SizedBox(height: 16),
 
                   // Traits
                   if (dog.temperamentTraits.isNotEmpty) ...[
-                    _SectionHeader(title: 'Temperament'),
+                    const _SectionHeader(title: 'Temperament'),
                     const SizedBox(height: 10),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
                       children: dog.temperamentTraits
-                          .map((t) => Chip(
-                                label: Text(t,
-                                    style: const TextStyle(
-                                        color: textPrimary, fontSize: 12)),
-                                backgroundColor: bgCard,
-                                side: BorderSide(
-                                    color: accent.withValues(alpha: 0.3)),
-                              ))
+                          .map(
+                            (t) => Chip(
+                              label: Text(
+                                t,
+                                style: const TextStyle(
+                                  color: textPrimary,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              backgroundColor: bgCard,
+                              side: BorderSide(
+                                color: accent.withValues(alpha: 0.3),
+                              ),
+                            ),
+                          )
                           .toList(),
                     ).animate().fadeIn(delay: 300.ms),
                     const SizedBox(height: 16),
                   ],
 
                   // Care Info
-                  _SectionHeader(title: 'Care Guide'),
+                  const _SectionHeader(title: 'Care Guide'),
                   const SizedBox(height: 10),
                   _CareRow(
-                      icon: Icons.fitness_center,
-                      label: 'Exercise',
-                      value: dog.exerciseNeeds),
+                    icon: Icons.fitness_center,
+                    label: 'Exercise',
+                    value: dog.exerciseNeeds,
+                  ),
                   _CareRow(
-                      icon: Icons.cut,
-                      label: 'Grooming',
-                      value: dog.groomingNeeds),
+                    icon: Icons.cut,
+                    label: 'Grooming',
+                    value: dog.groomingNeeds,
+                  ),
                   _CareRow(
-                      icon: Icons.scale,
-                      label: 'Weight',
-                      value: dog.weight.isNotEmpty ? dog.weight : 'Unknown'),
+                    icon: Icons.scale,
+                    label: 'Weight',
+                    value: dog.weight.isNotEmpty ? dog.weight : 'Unknown',
+                  ),
                   if (dog.dietNotes.isNotEmpty)
                     _CareRow(
-                        icon: Icons.restaurant,
-                        label: 'Diet',
-                        value: dog.dietNotes),
+                      icon: Icons.restaurant,
+                      label: 'Diet',
+                      value: dog.dietNotes,
+                    ),
 
                   const SizedBox(height: 20),
 
                   // Recent Sightings Timeline
                   if (sightings.isNotEmpty) ...[
-                    _SectionHeader(title: 'Sighting History'),
+                    const _SectionHeader(title: 'Sighting History'),
                     const SizedBox(height: 10),
                     if (firstSeen != null)
                       Text(
                         'First seen: ${_formatDate(firstSeen)}',
-                        style: TextStyle(color: textSecondary, fontSize: 13),
+                        style:
+                            const TextStyle(color: textSecondary, fontSize: 13),
                       ),
                     if (lastSeen != null)
                       Text(
                         'Last seen: ${_formatDate(lastSeen)}',
-                        style: TextStyle(color: textSecondary, fontSize: 13),
+                        style:
+                            const TextStyle(color: textSecondary, fontSize: 13),
                       ),
                     const SizedBox(height: 10),
                     ...sightings
@@ -442,24 +477,33 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
                   // Health predispositions
                   if (dog.healthPredispositions.isNotEmpty) ...[
                     const SizedBox(height: 20),
-                    _SectionHeader(title: 'Health Notes'),
+                    const _SectionHeader(title: 'Health Notes'),
                     const SizedBox(height: 10),
-                    ...dog.healthPredispositions.map((h) => Padding(
-                          padding: const EdgeInsets.only(bottom: 6),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(Icons.info_outline,
-                                  size: 16, color: Colors.amber),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(h,
-                                    style: const TextStyle(
-                                        color: textPrimary, fontSize: 13)),
+                    ...dog.healthPredispositions.map(
+                      (h) => Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.info_outline,
+                              size: 16,
+                              color: Colors.amber,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                h,
+                                style: const TextStyle(
+                                  color: textPrimary,
+                                  fontSize: 13,
+                                ),
                               ),
-                            ],
-                          ),
-                        )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
 
                   const SizedBox(height: 40),
@@ -500,22 +544,29 @@ class _CommunityPostCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.person, size: 16, color: textSecondary),
+              const Icon(Icons.person, size: 16, color: textSecondary),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(username,
-                    style: const TextStyle(
-                        color: textPrimary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13)),
+                child: Text(
+                  username,
+                  style: const TextStyle(
+                    color: textPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
               ),
-              Text(timeStr,
-                  style: TextStyle(color: textSecondary, fontSize: 11)),
+              Text(
+                timeStr,
+                style: const TextStyle(color: textSecondary, fontSize: 11),
+              ),
             ],
           ),
           const SizedBox(height: 6),
-          Text(content,
-              style: const TextStyle(color: textPrimary, fontSize: 14)),
+          Text(
+            content,
+            style: const TextStyle(color: textPrimary, fontSize: 14),
+          ),
         ],
       ),
     );
@@ -540,7 +591,10 @@ class _SectionHeader extends StatelessWidget {
     return Text(
       title,
       style: const TextStyle(
-          color: accent, fontWeight: FontWeight.bold, fontSize: 16),
+        color: accent,
+        fontWeight: FontWeight.bold,
+        fontSize: 16,
+      ),
     );
   }
 }
@@ -559,9 +613,14 @@ class _Badge extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
-      child: Text(label,
-          style: TextStyle(
-              color: color, fontSize: 11, fontWeight: FontWeight.bold)),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }
@@ -570,8 +629,11 @@ class _StatTile extends StatelessWidget {
   final String value;
   final String label;
   final IconData icon;
-  const _StatTile(
-      {required this.value, required this.label, required this.icon});
+  const _StatTile({
+    required this.value,
+    required this.label,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -586,12 +648,16 @@ class _StatTile extends StatelessWidget {
           children: [
             Icon(icon, color: accent, size: 20),
             const SizedBox(height: 6),
-            Text(value,
-                style: const TextStyle(
-                    color: textPrimary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16)),
-            Text(label, style: TextStyle(color: textSecondary, fontSize: 11)),
+            Text(
+              value,
+              style: const TextStyle(
+                color: textPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            Text(label,
+                style: const TextStyle(color: textSecondary, fontSize: 11)),
           ],
         ),
       ),
@@ -603,8 +669,11 @@ class _CareRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  const _CareRow(
-      {required this.icon, required this.label, required this.value});
+  const _CareRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -614,11 +683,15 @@ class _CareRow extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: textSecondary),
           const SizedBox(width: 8),
-          Text('$label: ',
-              style: TextStyle(color: textSecondary, fontSize: 13)),
+          Text(
+            '$label: ',
+            style: const TextStyle(color: textSecondary, fontSize: 13),
+          ),
           Expanded(
-            child: Text(value,
-                style: const TextStyle(color: textPrimary, fontSize: 13)),
+            child: Text(
+              value,
+              style: const TextStyle(color: textPrimary, fontSize: 13),
+            ),
           ),
         ],
       ),
@@ -640,7 +713,8 @@ class _SightingTile extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: BoxDecoration(color: accent, shape: BoxShape.circle),
+            decoration:
+                const BoxDecoration(color: accent, shape: BoxShape.circle),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -651,12 +725,15 @@ class _SightingTile extends StatelessWidget {
           ),
           Text(
             '${(sighting.confidence * 100).toStringAsFixed(0)}%',
-            style: TextStyle(color: textSecondary, fontSize: 12),
+            style: const TextStyle(color: textSecondary, fontSize: 12),
           ),
           if (hasGps) ...[
             const SizedBox(width: 6),
-            Icon(Icons.location_on,
-                size: 14, color: Colors.green.withValues(alpha: 0.6)),
+            Icon(
+              Icons.location_on,
+              size: 14,
+              color: Colors.green.withValues(alpha: 0.6),
+            ),
           ],
         ],
       ),

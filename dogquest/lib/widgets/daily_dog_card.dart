@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import '../services/daily_dog_service.dart';
-import 'dog_detail_sheet.dart';
-import 'network_dog_image.dart';
+import 'package:dogquest/services/daily_dog_service.dart';
+import 'package:dogquest/widgets/dog_detail_sheet.dart';
+import 'package:dogquest/widgets/network_dog_image.dart';
 
 class DailyDogCard extends ConsumerWidget {
   const DailyDogCard({super.key});
@@ -54,11 +54,14 @@ class DailyDogCard extends ConsumerWidget {
                       children: [
                         Icon(Icons.wb_sunny, color: Colors.amber, size: 14),
                         SizedBox(width: 4),
-                        Text('Dog of the Day',
-                            style: TextStyle(
-                                color: Colors.amber,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12)),
+                        Text(
+                          'Dog of the Day',
+                          style: TextStyle(
+                            color: Colors.amber,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -66,7 +69,9 @@ class DailyDogCard extends ConsumerWidget {
                   if (claimed)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.green.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(10),
@@ -74,28 +79,37 @@ class DailyDogCard extends ConsumerWidget {
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.check_circle,
-                              color: Colors.green, size: 12),
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 12,
+                          ),
                           SizedBox(width: 4),
-                          Text('Claimed',
-                              style:
-                                  TextStyle(color: Colors.green, fontSize: 11)),
+                          Text(
+                            'Claimed',
+                            style: TextStyle(color: Colors.green, fontSize: 11),
+                          ),
                         ],
                       ),
                     )
                   else
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.amber.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text('${DailyDogService.bonusMultiplier}x XP',
-                          style: const TextStyle(
-                              color: Colors.amber,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 11)),
+                      child: const Text(
+                        '${DailyDogService.bonusMultiplier}x XP',
+                        style: TextStyle(
+                          color: Colors.amber,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 11,
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -111,10 +125,11 @@ class DailyDogCard extends ConsumerWidget {
                       width: 64,
                       height: 64,
                       child: NetworkDogImage(
-                          url: dog.imageUrl,
-                          height: 64,
-                          width: 64,
-                          fit: BoxFit.cover),
+                        url: dog.imageUrl,
+                        height: 64,
+                        width: 64,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -122,20 +137,30 @@ class DailyDogCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(dog.name,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16)),
-                        Text(dog.scientificName,
-                            style: const TextStyle(
-                                color: Colors.white54,
-                                fontStyle: FontStyle.italic,
-                                fontSize: 12)),
+                        Text(
+                          dog.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          dog.scientificName,
+                          style: const TextStyle(
+                            color: Colors.white54,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 12,
+                          ),
+                        ),
                         const SizedBox(height: 4),
-                        Text(dailySvc.dailyChallenge,
-                            style: const TextStyle(
-                                color: Colors.amber, fontSize: 11)),
+                        Text(
+                          dailySvc.dailyChallenge,
+                          style: const TextStyle(
+                            color: Colors.amber,
+                            fontSize: 11,
+                          ),
+                        ),
                       ],
                     ),
                   ),

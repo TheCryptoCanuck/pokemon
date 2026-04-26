@@ -7,8 +7,7 @@ import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-import 'sighting_service.dart';
-import 'supabase_connection_service.dart';
+import 'package:dogquest/services/sighting_service.dart';
 
 final _log = Logger('SightingSyncService');
 const _uuid = Uuid();
@@ -231,7 +230,7 @@ class SightingSyncService {
       await Supabase.instance.client.rpc(
         'sync_sightings',
         params: {
-          'p_sightings': [payload]
+          'p_sightings': [payload],
         },
       );
 

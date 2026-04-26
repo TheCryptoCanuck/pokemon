@@ -4,23 +4,18 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../constants.dart';
-import '../models/pack.dart';
-import '../services/kennel_service.dart';
-import '../services/my_dog_service.dart';
-import '../services/pack_service.dart';
-import '../services/player_service.dart';
-import '../services/supabase_pack_service.dart';
-import '../widgets/weekly_pack_report.dart';
-import '../widgets/pack/create_pack_view.dart';
-import '../widgets/pack/member_card.dart';
-import '../widgets/pack/members_section.dart';
-import '../widgets/pack/pack_header.dart';
-import '../widgets/pack/pack_stats.dart';
-import '../widgets/pack/remote_dogs_section.dart';
-import '../widgets/pack/remote_members_section.dart';
-import '../widgets/pack/remote_pack_header.dart';
-import '../widgets/pack/remote_pack_stats.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/pack.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/my_dog_service.dart';
+import 'package:dogquest/services/pack_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/services/supabase_pack_service.dart';
+import 'package:dogquest/widgets/weekly_pack_report.dart';
+import 'package:dogquest/widgets/pack/remote_dogs_section.dart';
+import 'package:dogquest/widgets/pack/remote_members_section.dart';
+import 'package:dogquest/widgets/pack/remote_pack_header.dart';
+import 'package:dogquest/widgets/pack/remote_pack_stats.dart';
 
 class PackScreen extends ConsumerStatefulWidget {
   const PackScreen({super.key});
@@ -92,11 +87,14 @@ class _PackScreenState extends ConsumerState<PackScreen> {
       appBar: AppBar(
         backgroundColor: bgDeep,
         title: Text(
-            _useRemote && _remotePacks.isNotEmpty
-                ? _remotePacks.first.name
-                : localPack?.name ?? 'My Pack',
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold)),
+          _useRemote && _remotePacks.isNotEmpty
+              ? _remotePacks.first.name
+              : localPack?.name ?? 'My Pack',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -171,13 +169,17 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                 children: [
                   TextButton(
                     onPressed: () => _confirmLeaveRemotePack(pack),
-                    child: const Text('Leave Pack',
-                        style: TextStyle(color: Colors.orange, fontSize: 12)),
+                    child: const Text(
+                      'Leave Pack',
+                      style: TextStyle(color: Colors.orange, fontSize: 12),
+                    ),
                   ),
                   TextButton(
                     onPressed: () => _confirmDeleteRemotePack(pack),
-                    child: const Text('Disband Pack',
-                        style: TextStyle(color: Colors.red, fontSize: 12)),
+                    child: const Text(
+                      'Disband Pack',
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    ),
                   ),
                 ],
               ),
@@ -204,11 +206,14 @@ class _PackScreenState extends ConsumerState<PackScreen> {
           children: [
             Icon(Icons.group_add, color: Colors.amber, size: 18),
             SizedBox(width: 8),
-            Text('Join Another Pack',
-                style: TextStyle(
-                    color: Colors.amber,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14)),
+            Text(
+              'Join Another Pack',
+              style: TextStyle(
+                color: Colors.amber,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
           ],
         ),
       ),
@@ -226,16 +231,19 @@ class _PackScreenState extends ConsumerState<PackScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Enter the invite code shared by the pack leader.',
-                style: TextStyle(color: textSecondary, fontSize: 13)),
+            const Text(
+              'Enter the invite code shared by the pack leader.',
+              style: TextStyle(color: textSecondary, fontSize: 13),
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: codeCtrl,
               style: const TextStyle(
-                  color: textPrimary,
-                  fontFamily: 'monospace',
-                  fontSize: 20,
-                  letterSpacing: 3),
+                color: textPrimary,
+                fontFamily: 'monospace',
+                fontSize: 20,
+                letterSpacing: 3,
+              ),
               textAlign: TextAlign.center,
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
@@ -305,8 +313,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: bgCard,
-          content: Text('Register a dog first to add it to the pack!',
-              style: TextStyle(color: Colors.amber)),
+          content: Text(
+            'Register a dog first to add it to the pack!',
+            style: TextStyle(color: Colors.amber),
+          ),
         ),
       );
       return;
@@ -317,8 +327,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: bgCard,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Add Dog to Pack',
-            style: TextStyle(color: Colors.amber)),
+        title: const Text(
+          'Add Dog to Pack',
+          style: TextStyle(color: Colors.amber),
+        ),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
@@ -328,12 +340,16 @@ class _PackScreenState extends ConsumerState<PackScreen> {
               final dog = allDogs[i];
               return ListTile(
                 leading: const Icon(Icons.pets, color: Colors.amber),
-                title: Text(dog.name,
-                    style: const TextStyle(color: textPrimary, fontSize: 14)),
+                title: Text(
+                  dog.name,
+                  style: const TextStyle(color: textPrimary, fontSize: 14),
+                ),
                 subtitle: dog.breed != null
-                    ? Text(dog.breed!,
+                    ? Text(
+                        dog.breed!,
                         style:
-                            const TextStyle(color: textSecondary, fontSize: 11))
+                            const TextStyle(color: textSecondary, fontSize: 11),
+                      )
                     : null,
                 onTap: () {
                   Navigator.pop(ctx);
@@ -355,7 +371,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
   }
 
   Future<void> _addDogToPack(
-      String packId, String dogName, String breed) async {
+    String packId,
+    String dogName,
+    String breed,
+  ) async {
     final remoteSvc = ref.read(supabasePackServiceProvider);
     if (remoteSvc == null) return;
     try {
@@ -364,8 +383,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: bgCard,
-            content: Text('$dogName added to the pack!',
-                style: const TextStyle(color: Colors.amber)),
+            content: Text(
+              '$dogName added to the pack!',
+              style: const TextStyle(color: Colors.amber),
+            ),
           ),
         );
         _loadRemotePacks();
@@ -391,8 +412,9 @@ class _PackScreenState extends ConsumerState<PackScreen> {
         title:
             const Text('Leave Pack?', style: TextStyle(color: Colors.orange)),
         content: Text(
-            'Leave "${pack.name}"? You can rejoin with the invite code.',
-            style: const TextStyle(color: Colors.white70)),
+          'Leave "${pack.name}"? You can rejoin with the invite code.',
+          style: const TextStyle(color: Colors.white70),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -429,8 +451,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Keep Pack',
-                style: TextStyle(color: Colors.white54)),
+            child: const Text(
+              'Keep Pack',
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -460,11 +484,14 @@ class _PackScreenState extends ConsumerState<PackScreen> {
           children: [
             const Text('\u{1F43E}', style: TextStyle(fontSize: 72)),
             const SizedBox(height: 20),
-            const Text('Start Your Pack',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
+            const Text(
+              'Start Your Pack',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
             const SizedBox(height: 8),
             const Text(
               'Create a family pack to share your dogs, track combined stats, and see weekly reports together.',
@@ -489,7 +516,8 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                   foregroundColor: Colors.amber,
                   side: BorderSide(color: Colors.amber.withValues(alpha: 0.4)),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
           ],
@@ -509,8 +537,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
           backgroundColor: bgCard,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Name Your Pack',
-              style: TextStyle(color: Colors.amber)),
+          title: const Text(
+            'Name Your Pack',
+            style: TextStyle(color: Colors.amber),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -519,29 +549,34 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                 spacing: 8,
                 runSpacing: 8,
                 children: packEmojiOptions
-                    .map((emoji) => GestureDetector(
-                          onTap: () =>
-                              setDialogState(() => selectedEmoji = emoji),
-                          child: Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
+                    .map(
+                      (emoji) => GestureDetector(
+                        onTap: () =>
+                            setDialogState(() => selectedEmoji = emoji),
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: selectedEmoji == emoji
+                                ? Colors.amber.withValues(alpha: 0.2)
+                                : Colors.white.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
                               color: selectedEmoji == emoji
-                                  ? Colors.amber.withValues(alpha: 0.2)
-                                  : Colors.white.withValues(alpha: 0.05),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: selectedEmoji == emoji
-                                    ? Colors.amber
-                                    : Colors.transparent,
-                                width: 2,
-                              ),
+                                  ? Colors.amber
+                                  : Colors.transparent,
+                              width: 2,
                             ),
-                            child: Center(
-                                child: Text(emoji,
-                                    style: const TextStyle(fontSize: 22))),
                           ),
-                        ))
+                          child: Center(
+                            child: Text(
+                              emoji,
+                              style: const TextStyle(fontSize: 22),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
               const SizedBox(height: 16),
@@ -593,8 +628,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: bgCard,
-              content: Text('Pack created! Invite code: ${created.inviteCode}',
-                  style: const TextStyle(color: Colors.amber)),
+              content: Text(
+                'Pack created! Invite code: ${created.inviteCode}',
+                style: const TextStyle(color: Colors.amber),
+              ),
               duration: const Duration(seconds: 5),
             ),
           );
@@ -635,8 +672,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: bgCard,
-          content: Text('Pack created! +25 XP',
-              style: TextStyle(color: Colors.amber)),
+          content: Text(
+            'Pack created! +25 XP',
+            style: TextStyle(color: Colors.amber),
+          ),
         ),
       );
     }
@@ -670,8 +709,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
           Center(
             child: TextButton(
               onPressed: () => _confirmDeletePack(),
-              child: const Text('Disband Pack',
-                  style: TextStyle(color: Colors.red, fontSize: 12)),
+              child: const Text(
+                'Disband Pack',
+                style: TextStyle(color: Colors.red, fontSize: 12),
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -684,10 +725,12 @@ class _PackScreenState extends ConsumerState<PackScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          Colors.amber.withValues(alpha: 0.12),
-          Colors.orange.withValues(alpha: 0.06),
-        ]),
+        gradient: LinearGradient(
+          colors: [
+            Colors.amber.withValues(alpha: 0.12),
+            Colors.orange.withValues(alpha: 0.06),
+          ],
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
       ),
@@ -695,15 +738,19 @@ class _PackScreenState extends ConsumerState<PackScreen> {
         children: [
           Text(pack.emoji, style: const TextStyle(fontSize: 48)),
           const SizedBox(height: 8),
-          Text(pack.name,
-              style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
+          Text(
+            pack.name,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
           const SizedBox(height: 4),
           Text(
-              '${pack.members.length} member${pack.members.length == 1 ? '' : 's'} \u2022 ${pack.totalDogs} dog${pack.totalDogs == 1 ? '' : 's'}',
-              style: const TextStyle(color: Colors.white54, fontSize: 13)),
+            '${pack.members.length} member${pack.members.length == 1 ? '' : 's'} \u2022 ${pack.totalDogs} dog${pack.totalDogs == 1 ? '' : 's'}',
+            style: const TextStyle(color: Colors.white54, fontSize: 13),
+          ),
           const SizedBox(height: 16),
 
           // Invite code
@@ -719,14 +766,16 @@ class _PackScreenState extends ConsumerState<PackScreen> {
               children: [
                 const Icon(Icons.vpn_key, color: Colors.amber, size: 16),
                 const SizedBox(width: 10),
-                Text(pack.inviteCode,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      letterSpacing: 3,
-                      fontFamily: 'monospace',
-                    )),
+                Text(
+                  pack.inviteCode,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    letterSpacing: 3,
+                    fontFamily: 'monospace',
+                  ),
+                ),
                 const SizedBox(width: 12),
                 GestureDetector(
                   onTap: () {
@@ -736,8 +785,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                       const SnackBar(
                         backgroundColor: bgCard,
                         duration: Duration(seconds: 2),
-                        content: Text('Invite code copied!',
-                            style: TextStyle(color: Colors.amber)),
+                        content: Text(
+                          'Invite code copied!',
+                          style: TextStyle(color: Colors.amber),
+                        ),
                       ),
                     );
                   },
@@ -768,11 +819,14 @@ class _PackScreenState extends ConsumerState<PackScreen> {
       children: [
         Row(
           children: [
-            const Text('Pack Members',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amber)),
+            const Text(
+              'Pack Members',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.amber,
+              ),
+            ),
             const Spacer(),
             if (pack.members.length < 8)
               GestureDetector(
@@ -786,15 +840,21 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                     border:
                         Border.all(color: Colors.amber.withValues(alpha: 0.3)),
                   ),
-                  child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.person_add, color: Colors.amber, size: 14),
-                    SizedBox(width: 4),
-                    Text('Add',
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.person_add, color: Colors.amber, size: 14),
+                      SizedBox(width: 4),
+                      Text(
+                        'Add',
                         style: TextStyle(
-                            color: Colors.amber,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600)),
-                  ]),
+                          color: Colors.amber,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],
@@ -838,43 +898,59 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
-                  child: Text(member.avatarEmoji ?? '\u{1F9D1}',
-                      style: const TextStyle(fontSize: 22)),
+                  child: Text(
+                    member.avatarEmoji ?? '\u{1F9D1}',
+                    style: const TextStyle(fontSize: 22),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        Text(member.name,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14)),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          member.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
                         if (member.isAlpha) ...[
                           const SizedBox(width: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 1),
+                              horizontal: 6,
+                              vertical: 1,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.amber.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(6),
                             ),
-                            child: const Text('Alpha',
-                                style: TextStyle(
-                                    color: Colors.amber,
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold)),
+                            child: const Text(
+                              'Alpha',
+                              style: TextStyle(
+                                color: Colors.amber,
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ],
-                      ]),
-                      Text(
-                          '${member.dogNames.length} dog${member.dogNames.length == 1 ? '' : 's'}',
-                          style: const TextStyle(
-                              color: Colors.white38, fontSize: 12)),
-                    ]),
+                      ],
+                    ),
+                    Text(
+                      '${member.dogNames.length} dog${member.dogNames.length == 1 ? '' : 's'}',
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               if (!member.isAlpha)
                 IconButton(
@@ -900,21 +976,33 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                     color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.pets, size: 12, color: Colors.amber),
-                    const SizedBox(width: 4),
-                    Text(name,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.pets, size: 12, color: Colors.amber),
+                      const SizedBox(width: 4),
+                      Text(
+                        name,
                         style: const TextStyle(
-                            color: Colors.white70, fontSize: 11)),
-                    if (dogProfile?.breed != null) ...[
-                      const Text(' \u2022 ',
-                          style:
-                              TextStyle(color: Colors.white24, fontSize: 11)),
-                      Text(dogProfile!.breed!,
+                          color: Colors.white70,
+                          fontSize: 11,
+                        ),
+                      ),
+                      if (dogProfile?.breed != null) ...[
+                        const Text(
+                          ' \u2022 ',
+                          style: TextStyle(color: Colors.white24, fontSize: 11),
+                        ),
+                        Text(
+                          dogProfile!.breed!,
                           style: const TextStyle(
-                              color: Colors.white38, fontSize: 11)),
+                            color: Colors.white38,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
                     ],
-                  ]),
+                  ),
                 );
               }).toList(),
             ),
@@ -931,22 +1019,37 @@ class _PackScreenState extends ConsumerState<PackScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Pack Stats',
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.amber)),
+        const Text(
+          'Pack Stats',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.amber,
+          ),
+        ),
         const SizedBox(height: 12),
         Row(
           children: [
             _packStatCard(
-                '\u{1F43E}', '${pack.totalDogs}', 'Pack Dogs', Colors.amber),
+              '\u{1F43E}',
+              '${pack.totalDogs}',
+              'Pack Dogs',
+              Colors.amber,
+            ),
             const SizedBox(width: 10),
-            _packStatCard('\u{1F4DA}', '${kennelSvc.count}', 'Breeds Found',
-                const Color(0xFFD4874E)),
+            _packStatCard(
+              '\u{1F4DA}',
+              '${kennelSvc.count}',
+              'Breeds Found',
+              const Color(0xFFD4874E),
+            ),
             const SizedBox(width: 10),
-            _packStatCard('\u{26A1}', '${playerState.level}', 'Pack Level',
-                const Color(0xFF7C4DFF)),
+            _packStatCard(
+              '\u{26A1}',
+              '${playerState.level}',
+              'Pack Level',
+              const Color(0xFF7C4DFF),
+            ),
           ],
         ).animate().fadeIn(delay: 100.ms),
       ],
@@ -966,11 +1069,18 @@ class _PackScreenState extends ConsumerState<PackScreen> {
           children: [
             Text(emoji, style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 6),
-            Text(value,
-                style: TextStyle(
-                    color: color, fontWeight: FontWeight.bold, fontSize: 18)),
-            Text(label,
-                style: const TextStyle(color: Colors.white38, fontSize: 10)),
+            Text(
+              value,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            Text(
+              label,
+              style: const TextStyle(color: Colors.white38, fontSize: 10),
+            ),
           ],
         ),
       ),
@@ -996,8 +1106,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
           backgroundColor: bgCard,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Add Pack Member',
-              style: TextStyle(color: Colors.amber)),
+          title: const Text(
+            'Add Pack Member',
+            style: TextStyle(color: Colors.amber),
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1007,28 +1119,33 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                 Wrap(
                   spacing: 6,
                   children: memberAvatarOptions
-                      .map((emoji) => GestureDetector(
-                            onTap: () =>
-                                setDialogState(() => selectedEmoji = emoji),
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
+                      .map(
+                        (emoji) => GestureDetector(
+                          onTap: () =>
+                              setDialogState(() => selectedEmoji = emoji),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: selectedEmoji == emoji
+                                  ? Colors.amber.withValues(alpha: 0.2)
+                                  : Colors.white.withValues(alpha: 0.05),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
                                 color: selectedEmoji == emoji
-                                    ? Colors.amber.withValues(alpha: 0.2)
-                                    : Colors.white.withValues(alpha: 0.05),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: selectedEmoji == emoji
-                                      ? Colors.amber
-                                      : Colors.transparent,
-                                ),
+                                    ? Colors.amber
+                                    : Colors.transparent,
                               ),
-                              child: Center(
-                                  child: Text(emoji,
-                                      style: const TextStyle(fontSize: 20))),
                             ),
-                          ))
+                            child: Center(
+                              child: Text(
+                                emoji,
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
                       .toList(),
                 ),
                 const SizedBox(height: 12),
@@ -1049,31 +1166,43 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                 ),
                 if (availableDogs.isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  const Text('Assign dogs:',
-                      style: TextStyle(color: Colors.white54, fontSize: 12)),
+                  const Text(
+                    'Assign dogs:',
+                    style: TextStyle(color: Colors.white54, fontSize: 12),
+                  ),
                   const SizedBox(height: 6),
-                  ...availableDogs.map((dog) => CheckboxListTile(
-                        title: Text(dog.name,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 13)),
-                        subtitle: dog.breed != null
-                            ? Text(dog.breed!,
-                                style: const TextStyle(
-                                    color: Colors.white38, fontSize: 11))
-                            : null,
-                        value: selectedDogs.contains(dog.name),
-                        onChanged: (v) => setDialogState(() {
-                          if (v == true) {
-                            selectedDogs.add(dog.name);
-                          } else {
-                            selectedDogs.remove(dog.name);
-                          }
-                        }),
-                        activeColor: Colors.amber,
-                        dense: true,
-                        controlAffinity: ListTileControlAffinity.leading,
-                        contentPadding: EdgeInsets.zero,
-                      )),
+                  ...availableDogs.map(
+                    (dog) => CheckboxListTile(
+                      title: Text(
+                        dog.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                      ),
+                      subtitle: dog.breed != null
+                          ? Text(
+                              dog.breed!,
+                              style: const TextStyle(
+                                color: Colors.white38,
+                                fontSize: 11,
+                              ),
+                            )
+                          : null,
+                      value: selectedDogs.contains(dog.name),
+                      onChanged: (v) => setDialogState(() {
+                        if (v == true) {
+                          selectedDogs.add(dog.name);
+                        } else {
+                          selectedDogs.remove(dog.name);
+                        }
+                      }),
+                      activeColor: Colors.amber,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
                 ],
               ],
             ),
@@ -1089,12 +1218,14 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                 final name = nameCtrl.text.trim();
                 if (name.isEmpty) return;
                 final packSvc = ref.read(packServiceProvider);
-                packSvc.addMember(PackMember(
-                  name: name,
-                  avatarEmoji: selectedEmoji,
-                  dogNames: selectedDogs.toList(),
-                  joinedAt: DateTime.now(),
-                ));
+                packSvc.addMember(
+                  PackMember(
+                    name: name,
+                    avatarEmoji: selectedEmoji,
+                    dogNames: selectedDogs.toList(),
+                    joinedAt: DateTime.now(),
+                  ),
+                );
                 Navigator.pop(ctx);
                 setState(() {});
               },
@@ -1114,8 +1245,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title:
             const Text('Remove Member?', style: TextStyle(color: Colors.white)),
-        content: Text('Remove ${member.name} from the pack?',
-            style: const TextStyle(color: Colors.white70)),
+        content: Text(
+          'Remove ${member.name} from the pack?',
+          style: const TextStyle(color: Colors.white70),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -1154,29 +1287,34 @@ class _PackScreenState extends ConsumerState<PackScreen> {
                 spacing: 8,
                 runSpacing: 8,
                 children: packEmojiOptions
-                    .map((emoji) => GestureDetector(
-                          onTap: () =>
-                              setDialogState(() => selectedEmoji = emoji),
-                          child: Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
+                    .map(
+                      (emoji) => GestureDetector(
+                        onTap: () =>
+                            setDialogState(() => selectedEmoji = emoji),
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: selectedEmoji == emoji
+                                ? Colors.amber.withValues(alpha: 0.2)
+                                : Colors.white.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
                               color: selectedEmoji == emoji
-                                  ? Colors.amber.withValues(alpha: 0.2)
-                                  : Colors.white.withValues(alpha: 0.05),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: selectedEmoji == emoji
-                                    ? Colors.amber
-                                    : Colors.transparent,
-                                width: 2,
-                              ),
+                                  ? Colors.amber
+                                  : Colors.transparent,
+                              width: 2,
                             ),
-                            child: Center(
-                                child: Text(emoji,
-                                    style: const TextStyle(fontSize: 22))),
                           ),
-                        ))
+                          child: Center(
+                            child: Text(
+                              emoji,
+                              style: const TextStyle(fontSize: 22),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
               const SizedBox(height: 16),
@@ -1235,8 +1373,10 @@ class _PackScreenState extends ConsumerState<PackScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Keep Pack',
-                style: TextStyle(color: Colors.white54)),
+            child: const Text(
+              'Keep Pack',
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           TextButton(
             onPressed: () {

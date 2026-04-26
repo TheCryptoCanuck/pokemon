@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/lost_dog_report.dart';
 
-import '../../constants.dart';
-import '../../models/lost_dog_report.dart';
-
-class StatsDashboard extends StatelessWidget {
+/// Stats dashboard showing recovery metrics and recent activity.
+class LostDogStatsPanel extends StatelessWidget {
   final List<LostDogReport> reports;
   final int totalScans;
+  final void Function(LostDogReport report)? onReportTap;
 
-  const StatsDashboard({
+  const LostDogStatsPanel({
     required this.reports,
     required this.totalScans,
+    this.onReportTap,
+    super.key,
   });
 
   @override
@@ -25,8 +28,6 @@ class StatsDashboard extends StatelessWidget {
     final recoveryRate =
         total > 0 ? (foundCount / total * 100).toStringAsFixed(0) : '0';
 
-    // Average recovery time: difference between lostDate and now for found reports.
-    // In production this would use a "foundDate" field; for demo we estimate.
     double avgRecoveryDays = 0;
     if (foundCount > 0) {
       final foundReports =
@@ -38,7 +39,6 @@ class StatsDashboard extends StatelessWidget {
       avgRecoveryDays = totalDays / foundCount;
     }
 
-    // Sort reports by date for recent activity.
     final sortedReports = List<LostDogReport>.from(reports)
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     final recentReports = sortedReports.take(5).toList();
@@ -72,7 +72,7 @@ class StatsDashboard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: _statCard(
+                  child: _StatCard(
                     'Total Reports',
                     '$total',
                     Icons.assignment,
@@ -81,7 +81,7 @@ class StatsDashboard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: _statCard(
+                  child: _StatCard(
                     'Recovery Rate',
                     '$recoveryRate%',
                     Icons.verified,
@@ -94,7 +94,7 @@ class StatsDashboard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: _statCard(
+                  child: _StatCard(
                     'Avg Recovery',
                     '${avgRecoveryDays.toStringAsFixed(1)}d',
                     Icons.timer,
@@ -103,7 +103,7 @@ class StatsDashboard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: _statCard(
+                  child: _StatCard(
                     'Network Scans',
                     '$totalScans',
                     Icons.qr_code_scanner,
@@ -124,11 +124,11 @@ class StatsDashboard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            _statusBar('Missing', activeCount, total, Colors.redAccent),
+            _StatusBar('Missing', activeCount, total, Colors.redAccent),
             const SizedBox(height: 6),
-            _statusBar('Reunited', foundCount, total, Colors.green),
+            _StatusBar('Reunited', foundCount, total, Colors.green),
             const SizedBox(height: 6),
-            _statusBar('Cancelled', cancelledCount, total, Colors.grey),
+            _StatusBar('Cancelled', cancelledCount, total, Colors.grey),
             const SizedBox(height: 20),
 
             // Recent Activity
@@ -141,14 +141,36 @@ class StatsDashboard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            ...recentReports.map(_recentActivityTile),
+            ...recentReports.map(
+              (r) => _ActivityTile(
+                report: r,
+                onTap: onReportTap != null && r.status != LostDogStatus.found
+                    ? () => onReportTap!(r)
+                    : null,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _statCard(String label, String value, IconData icon, Color color) {
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _StatCard(
+    this.label,
+    this.value,
+    this.icon,
+    this.color,
+  );
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
       decoration: BoxDecoration(
@@ -185,8 +207,18 @@ class StatsDashboard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _statusBar(String label, int count, int total, Color color) {
+class _StatusBar extends StatelessWidget {
+  final String label;
+  final int count;
+  final int total;
+  final Color color;
+
+  const _StatusBar(this.label, this.count, this.total, this.color);
+
+  @override
+  Widget build(BuildContext context) {
     final fraction = total > 0 ? count / total : 0.0;
 
     return Row(
@@ -207,7 +239,7 @@ class StatsDashboard extends StatelessWidget {
             ),
             child: FractionallySizedBox(
               alignment: Alignment.centerLeft,
-              widthFactor: fraction.clamp(0.04, 1.0), // min 4% for visibility
+              widthFactor: fraction.clamp(0.04, 1.0),
               child: Container(
                 decoration: BoxDecoration(
                   color: color,
@@ -229,8 +261,19 @@ class StatsDashboard extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _recentActivityTile(LostDogReport report) {
+class _ActivityTile extends StatelessWidget {
+  final LostDogReport report;
+  final VoidCallback? onTap;
+
+  const _ActivityTile({
+    required this.report,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final daysAgo = DateTime.now().difference(report.createdAt).inDays;
     final timeLabel = daysAgo == 0
         ? 'Today'
@@ -238,20 +281,22 @@ class StatsDashboard extends StatelessWidget {
             ? 'Yesterday'
             : '$daysAgo days ago';
 
+    final statusColor = _statusColor(report.status);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
-          onTap: report.status == LostDogStatus.found ? null : () {},
+          onTap: onTap,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: bgDeep,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: _statusColor(report.status).withValues(alpha: 0.25),
+                color: statusColor.withValues(alpha: 0.25),
               ),
             ),
             child: Row(
@@ -260,7 +305,7 @@ class StatsDashboard extends StatelessWidget {
                   width: 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: _statusColor(report.status),
+                    color: statusColor,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -270,9 +315,10 @@ class StatsDashboard extends StatelessWidget {
                       ? Text(
                           'Reunited | $timeLabel',
                           style: const TextStyle(
-                              color: Colors.green,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500),
+                            color: Colors.green,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
                         )
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,8 +334,7 @@ class StatsDashboard extends StatelessWidget {
                             Text(
                               '${report.status.label} | $timeLabel',
                               style: TextStyle(
-                                color: _statusColor(report.status)
-                                    .withValues(alpha: 0.8),
+                                color: statusColor.withValues(alpha: 0.8),
                                 fontSize: 11,
                               ),
                             ),
@@ -297,8 +342,11 @@ class StatsDashboard extends StatelessWidget {
                         ),
                 ),
                 if (report.status != LostDogStatus.found)
-                  const Icon(Icons.chevron_right,
-                      color: textSecondary, size: 18),
+                  const Icon(
+                    Icons.chevron_right,
+                    color: textSecondary,
+                    size: 18,
+                  ),
               ],
             ),
           ),

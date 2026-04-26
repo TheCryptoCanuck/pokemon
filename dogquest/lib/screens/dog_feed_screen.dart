@@ -3,9 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../constants.dart';
-import '../services/dog_social_service.dart';
-import '../services/supabase_social_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/dog_social_service.dart';
+import 'package:dogquest/services/supabase_social_service.dart';
 
 class DogFeedScreen extends ConsumerStatefulWidget {
   const DogFeedScreen({super.key});
@@ -49,11 +49,12 @@ class _DogFeedScreenState extends ConsumerState<DogFeedScreen> {
     }
     setState(() => _isLoading = true);
     final posts = await social.getFeed(limit: 20);
-    if (mounted)
+    if (mounted) {
       setState(() {
         _remotePosts = posts;
         _isLoading = false;
       });
+    }
   }
 
   Future<void> _loadMore() async {
@@ -180,7 +181,9 @@ class _DogFeedScreenState extends ConsumerState<DogFeedScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
       ).animate(onPlay: (c) => c.repeat()).shimmer(
-          duration: 1200.ms, color: Colors.white.withValues(alpha: 0.05)),
+            duration: 1200.ms,
+            color: Colors.white.withValues(alpha: 0.05),
+          ),
     );
   }
 
@@ -192,20 +195,25 @@ class _DogFeedScreenState extends ConsumerState<DogFeedScreen> {
         Center(
           child: Column(
             children: [
-              Icon(Icons.pets,
-                  size: 64, color: textSecondary.withValues(alpha: 0.3)),
+              Icon(
+                Icons.pets,
+                size: 64,
+                color: textSecondary.withValues(alpha: 0.3),
+              ),
               const SizedBox(height: 16),
               Text(
                 _followedOnly
                     ? 'No activity from followed dogs yet'
                     : 'No dog activity yet',
-                style: TextStyle(color: textSecondary, fontSize: 16),
+                style: const TextStyle(color: textSecondary, fontSize: 16),
               ),
               const SizedBox(height: 8),
               Text(
                 'Start identifying dogs to see their activity here!',
                 style: TextStyle(
-                    color: textSecondary.withValues(alpha: 0.6), fontSize: 14),
+                  color: textSecondary.withValues(alpha: 0.6),
+                  fontSize: 14,
+                ),
               ),
             ],
           ),
@@ -308,8 +316,11 @@ class _RemoteFeedCard extends ConsumerWidget {
                     color: typeColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(_iconForType(post.postType),
-                      color: typeColor, size: 20),
+                  child: Icon(
+                    _iconForType(post.postType),
+                    color: typeColor,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -327,14 +338,15 @@ class _RemoteFeedCard extends ConsumerWidget {
                       if (post.breedName != null)
                         Text(
                           post.breedName!,
-                          style: TextStyle(color: textSecondary, fontSize: 12),
+                          style: const TextStyle(
+                              color: textSecondary, fontSize: 12),
                         ),
                     ],
                   ),
                 ),
                 Text(
                   _timeAgo(post.createdAt),
-                  style: TextStyle(color: textSecondary, fontSize: 12),
+                  style: const TextStyle(color: textSecondary, fontSize: 12),
                 ),
               ],
             ),
@@ -360,13 +372,15 @@ class _RemoteFeedCard extends ConsumerWidget {
                     height: 180,
                     color: bgDeep,
                     child: const Center(
-                        child: CircularProgressIndicator(color: accent)),
+                      child: CircularProgressIndicator(color: accent),
+                    ),
                   ),
                   errorWidget: (_, __, ___) => Container(
                     height: 100,
                     color: bgDeep,
-                    child: Center(
-                        child: Icon(Icons.broken_image, color: textSecondary)),
+                    child: const Center(
+                      child: Icon(Icons.broken_image, color: textSecondary),
+                    ),
                   ),
                 ),
               ),
@@ -382,11 +396,12 @@ class _RemoteFeedCard extends ConsumerWidget {
                   onToggled: onLikeToggled,
                 ),
                 const SizedBox(width: 16),
-                Icon(Icons.comment_outlined, color: textSecondary, size: 18),
+                const Icon(Icons.comment_outlined,
+                    color: textSecondary, size: 18),
                 const SizedBox(width: 4),
                 Text(
                   '${post.commentCount}',
-                  style: TextStyle(color: textSecondary, fontSize: 13),
+                  style: const TextStyle(color: textSecondary, fontSize: 13),
                 ),
               ],
             ),
@@ -466,7 +481,7 @@ class _LikeButtonState extends ConsumerState<_LikeButton> {
           const SizedBox(width: 4),
           Text(
             '$_count',
-            style: TextStyle(color: textSecondary, fontSize: 13),
+            style: const TextStyle(color: textSecondary, fontSize: 13),
           ),
         ],
       ),
@@ -554,18 +569,26 @@ class _LocalFeedCard extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.dogName,
-                          style: const TextStyle(
-                              color: textPrimary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15)),
-                      Text(item.breed,
-                          style: TextStyle(color: textSecondary, fontSize: 12)),
+                      Text(
+                        item.dogName,
+                        style: const TextStyle(
+                          color: textPrimary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      Text(
+                        item.breed,
+                        style:
+                            const TextStyle(color: textSecondary, fontSize: 12),
+                      ),
                     ],
                   ),
                 ),
-                Text(_timeAgo(item.timestamp),
-                    style: TextStyle(color: textSecondary, fontSize: 12)),
+                Text(
+                  _timeAgo(item.timestamp),
+                  style: const TextStyle(color: textSecondary, fontSize: 12),
+                ),
                 const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () {
@@ -585,8 +608,10 @@ class _LocalFeedCard extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 10),
-            Text(item.text,
-                style: const TextStyle(color: textPrimary, fontSize: 14)),
+            Text(
+              item.text,
+              style: const TextStyle(color: textPrimary, fontSize: 14),
+            ),
             if (item.photoPath != null) ...[
               const SizedBox(height: 10),
               ClipRRect(
@@ -599,8 +624,9 @@ class _LocalFeedCard extends ConsumerWidget {
                   errorBuilder: (_, __, ___) => Container(
                     height: 100,
                     color: bgDeep,
-                    child: Center(
-                        child: Icon(Icons.broken_image, color: textSecondary)),
+                    child: const Center(
+                      child: Icon(Icons.broken_image, color: textSecondary),
+                    ),
                   ),
                 ),
               ),
@@ -609,11 +635,11 @@ class _LocalFeedCard extends ConsumerWidget {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Icon(Icons.location_on, color: textSecondary, size: 14),
+                  const Icon(Icons.location_on, color: textSecondary, size: 14),
                   const SizedBox(width: 4),
                   Text(
                     '${item.latitude!.toStringAsFixed(3)}, ${item.longitude!.toStringAsFixed(3)}',
-                    style: TextStyle(color: textSecondary, fontSize: 12),
+                    style: const TextStyle(color: textSecondary, fontSize: 12),
                   ),
                 ],
               ),

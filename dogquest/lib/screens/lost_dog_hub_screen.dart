@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../constants.dart';
-import '../services/lost_dog_service.dart';
-import '../widgets/lost_dog/help_find_tab.dart';
-import '../widgets/lost_dog/missing_dogs_tab.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
+import 'package:dogquest/widgets/lost_dog/help_find_tab.dart';
+import 'package:dogquest/widgets/lost_dog/missing_dogs_tab.dart';
 
 class LostDogHubScreen extends ConsumerStatefulWidget {
   const LostDogHubScreen({super.key});

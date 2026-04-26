@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/dog.dart';
-import '../models/dog_friendship.dart';
-import 'dog_service.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/models/dog_friendship.dart';
+import 'package:dogquest/services/dog_service.dart';
 
 /// Manages dog friendships and neighborhood dog generation.
 class DogFriendshipService {
@@ -51,15 +51,17 @@ class DogFriendshipService {
     if (existing != null) return;
 
     final all = friendships;
-    all.add(DogFriendship(
-      myDogName: myDogName,
-      neighborDogName: neighbor.name,
-      neighborBreed: neighbor.breed,
-      neighborEmoji: neighbor.emoji,
-      visits: 1,
-      lastVisit: DateTime.now(),
-      createdAt: DateTime.now(),
-    ));
+    all.add(
+      DogFriendship(
+        myDogName: myDogName,
+        neighborDogName: neighbor.name,
+        neighborBreed: neighbor.breed,
+        neighborEmoji: neighbor.emoji,
+        visits: 1,
+        lastVisit: DateTime.now(),
+        createdAt: DateTime.now(),
+      ),
+    );
     _saveFriendships(all);
   }
 
@@ -86,7 +88,8 @@ class DogFriendshipService {
   void removeFriendship(String myDogName, String neighborName) {
     final all = friendships;
     all.removeWhere(
-        (f) => f.myDogName == myDogName && f.neighborDogName == neighborName);
+      (f) => f.myDogName == myDogName && f.neighborDogName == neighborName,
+    );
     _saveFriendships(all);
   }
 
@@ -115,14 +118,17 @@ class DogFriendshipService {
     // Generate new neighborhood
     final dogs = _generateNeighborhood();
     _box.put(
-        _neighborhoodKey, jsonEncode(dogs.map((d) => d.toJson()).toList()));
+      _neighborhoodKey,
+      jsonEncode(dogs.map((d) => d.toJson()).toList()),
+    );
     _box.put(_neighborhoodDateKey, weekKey);
     return dogs;
   }
 
   List<NeighborhoodDog> _generateNeighborhood() {
     final rng = Random(
-        DateTime.now().millisecondsSinceEpoch ~/ 604800000); // seed by week
+      DateTime.now().millisecondsSinceEpoch ~/ 604800000,
+    ); // seed by week
     final allBreeds = _dogSvc.all;
     if (allBreeds.isEmpty) return [];
 
@@ -175,5 +181,6 @@ class DogFriendshipService {
 
 final dogFriendshipServiceProvider = Provider<DogFriendshipService>((ref) {
   throw UnimplementedError(
-      'dogFriendshipServiceProvider must be overridden after Hive init');
+    'dogFriendshipServiceProvider must be overridden after Hive init',
+  );
 });

@@ -5,12 +5,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import '../constants.dart';
-import '../models/my_dog_profile.dart';
-import '../services/dog_service.dart';
-import '../services/identification_service.dart';
-import '../services/my_dog_service.dart';
-import '../services/player_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/my_dog_profile.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/identification_service.dart';
+import 'package:dogquest/services/my_dog_service.dart';
+import 'package:dogquest/services/player_service.dart';
 
 class MyDogWizardScreen extends ConsumerStatefulWidget {
   const MyDogWizardScreen({super.key});
@@ -50,16 +50,22 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
   void _nextStep() {
     if (_currentStep < 4) {
       setState(() => _currentStep++);
-      _pageController.animateToPage(_currentStep,
-          duration: 300.ms, curve: Curves.easeOutCubic);
+      _pageController.animateToPage(
+        _currentStep,
+        duration: 300.ms,
+        curve: Curves.easeOutCubic,
+      );
     }
   }
 
   void _prevStep() {
     if (_currentStep > 0) {
       setState(() => _currentStep--);
-      _pageController.animateToPage(_currentStep,
-          duration: 300.ms, curve: Curves.easeOutCubic);
+      _pageController.animateToPage(
+        _currentStep,
+        duration: 300.ms,
+        curve: Curves.easeOutCubic,
+      );
     }
   }
 
@@ -218,8 +224,11 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
     if (mounted) {
       // Show celebration, then pop
       setState(() => _currentStep = 4);
-      _pageController.animateToPage(4,
-          duration: 400.ms, curve: Curves.easeOutCubic);
+      _pageController.animateToPage(
+        4,
+        duration: 400.ms,
+        curve: Curves.easeOutCubic,
+      );
     }
   }
 
@@ -240,8 +249,10 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
                 onPressed: () => Navigator.pop(context),
               ),
         title: _currentStep < 4
-            ? Text('Step ${_currentStep + 1} of 4',
-                style: const TextStyle(color: Colors.white54, fontSize: 14))
+            ? Text(
+                'Step ${_currentStep + 1} of 4',
+                style: const TextStyle(color: Colors.white54, fontSize: 14),
+              )
             : null,
       ),
       body: Column(
@@ -294,7 +305,10 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
           const Text(
             "What's their name?",
             style: TextStyle(
-                color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
           ).animate().fadeIn(delay: 100.ms),
           const SizedBox(height: 32),
           TextField(
@@ -303,11 +317,16 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
             textCapitalization: TextCapitalization.words,
             textAlign: TextAlign.center,
             style: const TextStyle(
-                color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600),
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+            ),
             decoration: InputDecoration(
               hintText: 'e.g. Biscuit',
               hintStyle: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.2), fontSize: 24),
+                color: Colors.white.withValues(alpha: 0.2),
+                fontSize: 24,
+              ),
               filled: true,
               fillColor: bgCard,
               border: OutlineInputBorder(
@@ -339,7 +358,10 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
           Text(
             'Show us ${_nameController.text.trim().isNotEmpty ? _nameController.text.trim() : 'your dog'}!',
             style: const TextStyle(
-                color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(),
           const SizedBox(height: 8),
@@ -359,24 +381,35 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
                 color: bgCard,
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                    color: Colors.amber.withValues(alpha: 0.3), width: 2),
+                  color: Colors.amber.withValues(alpha: 0.3),
+                  width: 2,
+                ),
                 image: _photoPath != null
                     ? DecorationImage(
-                        image: FileImage(File(_photoPath!)), fit: BoxFit.cover)
+                        image: FileImage(File(_photoPath!)),
+                        fit: BoxFit.cover,
+                      )
                     : null,
               ),
               child: _photoPath == null
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                          Icon(Icons.add_a_photo,
-                              color: Colors.amber.withValues(alpha: 0.5),
-                              size: 48),
-                          const SizedBox(height: 8),
-                          const Text('Tap to add photo',
-                              style: TextStyle(
-                                  color: Colors.white38, fontSize: 13)),
-                        ])
+                        Icon(
+                          Icons.add_a_photo,
+                          color: Colors.amber.withValues(alpha: 0.5),
+                          size: 48,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Tap to add photo',
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    )
                   : null,
             ),
           ).animate().fadeIn(delay: 100.ms),
@@ -385,16 +418,24 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
 
           // Breed detection result
           if (_detectingBreed)
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const SizedBox(
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Colors.amber)),
-              const SizedBox(width: 8),
-              const Text('Detecting breed...',
-                  style: TextStyle(color: Colors.amber, fontSize: 13)),
-            ]).animate().fadeIn()
+                    strokeWidth: 2,
+                    color: Colors.amber,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Text(
+                  'Detecting breed...',
+                  style: TextStyle(color: Colors.amber, fontSize: 13),
+                ),
+              ],
+            ).animate().fadeIn()
           else if (_detectedBreed != null)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -403,34 +444,44 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
               ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.check_circle, color: Colors.green, size: 16),
-                const SizedBox(width: 8),
-                Text('Looks like a $_detectedBreed!',
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.green, size: 16),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Looks like a $_detectedBreed!',
                     style: const TextStyle(
-                        color: Colors.green,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600)),
-              ]),
+                      color: Colors.green,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ).animate().fadeIn().scale(begin: const Offset(0.9, 0.9)),
 
           const SizedBox(height: 32),
 
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            TextButton(
-              onPressed: _nextStep,
-              child: Text(
-                _photoPath == null ? 'Skip for now' : 'Next',
-                style: TextStyle(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: _nextStep,
+                child: Text(
+                  _photoPath == null ? 'Skip for now' : 'Next',
+                  style: TextStyle(
                     color: _photoPath == null ? Colors.white54 : Colors.amber,
-                    fontSize: 16),
+                    fontSize: 16,
+                  ),
+                ),
               ),
-            ),
-            if (_photoPath != null) ...[
-              const SizedBox(width: 16),
-              _buildNextButton(),
+              if (_photoPath != null) ...[
+                const SizedBox(width: 16),
+                _buildNextButton(),
+              ],
             ],
-          ]),
+          ),
         ],
       ),
     );
@@ -441,36 +492,46 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
       context: context,
       backgroundColor: bgCard,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (ctx) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const SizedBox(height: 12),
-          Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            Container(
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(2))),
-          ListTile(
-            leading: const Icon(Icons.camera_alt, color: Colors.amber),
-            title: const Text('Take a photo',
-                style: TextStyle(color: Colors.white)),
-            onTap: () {
-              Navigator.pop(ctx);
-              _pickPhoto(ImageSource.camera);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.photo_library, color: Colors.amber),
-            title: const Text('Choose from gallery',
-                style: TextStyle(color: Colors.white)),
-            onTap: () {
-              Navigator.pop(ctx);
-              _pickPhoto(ImageSource.gallery);
-            },
-          ),
-          const SizedBox(height: 8),
-        ]),
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Colors.amber),
+              title: const Text(
+                'Take a photo',
+                style: TextStyle(color: Colors.white),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                _pickPhoto(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.amber),
+              title: const Text(
+                'Choose from gallery',
+                style: TextStyle(color: Colors.white),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                _pickPhoto(ImageSource.gallery);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -487,27 +548,41 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "When was $dogName born?",
+            'When was $dogName born?',
             style: const TextStyle(
-                color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(),
           const SizedBox(height: 24),
 
           // Toggle: Birthday vs Gotcha Day
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            _dateTypeChip('Birthday', !_usesGotchaDay,
-                () => setState(() => _usesGotchaDay = false)),
-            const SizedBox(width: 12),
-            _dateTypeChip('Gotcha Day', _usesGotchaDay,
-                () => setState(() => _usesGotchaDay = true)),
-          ]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _dateTypeChip(
+                'Birthday',
+                !_usesGotchaDay,
+                () => setState(() => _usesGotchaDay = false),
+              ),
+              const SizedBox(width: 12),
+              _dateTypeChip(
+                'Gotcha Day',
+                _usesGotchaDay,
+                () => setState(() => _usesGotchaDay = true),
+              ),
+            ],
+          ),
 
           if (_usesGotchaDay)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: const Text("The day you adopted them",
-                  style: TextStyle(color: Colors.white38, fontSize: 12)),
+            const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text(
+                'The day you adopted them',
+                style: TextStyle(color: Colors.white38, fontSize: 12),
+              ),
             ),
 
           const SizedBox(height: 24),
@@ -524,7 +599,9 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
                 builder: (ctx, child) => Theme(
                   data: ThemeData.dark().copyWith(
                     colorScheme: const ColorScheme.dark(
-                        primary: Colors.amber, surface: Color(0xFF2A1F1A)),
+                      primary: Colors.amber,
+                      surface: Color(0xFF2A1F1A),
+                    ),
                   ),
                   child: child!,
                 ),
@@ -546,39 +623,50 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
               ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.calendar_today,
-                    color: Colors.amber.withValues(alpha: 0.7), size: 20),
-                const SizedBox(width: 12),
-                Text(
-                  _getDateText(),
-                  style: TextStyle(
-                    color: _hasDate ? Colors.white : Colors.white38,
-                    fontSize: 18,
-                    fontWeight: _hasDate ? FontWeight.w600 : FontWeight.normal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.calendar_today,
+                    color: Colors.amber.withValues(alpha: 0.7),
+                    size: 20,
                   ),
-                ),
-              ]),
+                  const SizedBox(width: 12),
+                  Text(
+                    _getDateText(),
+                    style: TextStyle(
+                      color: _hasDate ? Colors.white : Colors.white38,
+                      fontSize: 18,
+                      fontWeight:
+                          _hasDate ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ).animate().fadeIn(delay: 100.ms),
 
           const SizedBox(height: 32),
 
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            TextButton(
-              onPressed: _nextStep,
-              child: Text(
-                _hasDate ? 'Next' : 'Skip for now',
-                style: TextStyle(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: _nextStep,
+                child: Text(
+                  _hasDate ? 'Next' : 'Skip for now',
+                  style: TextStyle(
                     color: _hasDate ? Colors.amber : Colors.white54,
-                    fontSize: 16),
+                    fontSize: 16,
+                  ),
+                ),
               ),
-            ),
-            if (_hasDate) ...[
-              const SizedBox(width: 16),
-              _buildNextButton(),
+              if (_hasDate) ...[
+                const SizedBox(width: 16),
+                _buildNextButton(),
+              ],
             ],
-          ]),
+          ),
         ],
       ),
     );
@@ -601,7 +689,7 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
@@ -641,12 +729,17 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
           Text(
             "What's $dogName like?",
             style: const TextStyle(
-                color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(),
           const SizedBox(height: 8),
-          const Text('Pick as many as you like',
-              style: TextStyle(color: Colors.white54, fontSize: 14)),
+          const Text(
+            'Pick as many as you like',
+            style: TextStyle(color: Colors.white54, fontSize: 14),
+          ),
           if (_traitsPreSelected && _detectedBreed != null) ...[
             const SizedBox(height: 10),
             Container(
@@ -660,9 +753,10 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
               child: Text(
                 'Suggested for $_detectedBreed',
                 style: const TextStyle(
-                    color: Colors.deepPurpleAccent,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500),
+                  color: Colors.deepPurpleAccent,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ).animate().fadeIn(),
           ],
@@ -689,7 +783,9 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
                     child: AnimatedContainer(
                       duration: 200.ms,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: selected
                             ? Colors.amber.withValues(alpha: 0.15)
@@ -711,8 +807,9 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
                       ),
                     ),
                   ).animate().fadeIn(
-                      delay:
-                          Duration(milliseconds: (e.key * 30).clamp(0, 300)));
+                        delay:
+                            Duration(milliseconds: (e.key * 30).clamp(0, 300)),
+                      );
                 }).toList(),
               ),
             ),
@@ -742,7 +839,10 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
           const Text(
             'Welcome to DogQuest!',
             style: TextStyle(
-                color: Colors.amber, fontSize: 16, fontWeight: FontWeight.w600),
+              color: Colors.amber,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
           ).animate().fadeIn(),
           const SizedBox(height: 16),
 
@@ -754,72 +854,97 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
               color: bgCard,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                  color: Colors.amber.withValues(alpha: 0.5), width: 2),
+                color: Colors.amber.withValues(alpha: 0.5),
+                width: 2,
+              ),
               boxShadow: [
                 BoxShadow(
-                    color: Colors.amber.withValues(alpha: 0.15), blurRadius: 30)
+                  color: Colors.amber.withValues(alpha: 0.15),
+                  blurRadius: 30,
+                ),
               ],
             ),
-            child: Column(children: [
-              if (_photoPath != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.file(File(_photoPath!),
-                      width: 160, height: 160, fit: BoxFit.cover),
-                )
-              else
-                Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.amber.withValues(alpha: 0.1),
+            child: Column(
+              children: [
+                if (_photoPath != null)
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(16),
+                    child: Image.file(
+                      File(_photoPath!),
+                      width: 160,
+                      height: 160,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                else
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child:
+                        const Icon(Icons.pets, color: Colors.amber, size: 56),
                   ),
-                  child: const Icon(Icons.pets, color: Colors.amber, size: 56),
-                ),
-              const SizedBox(height: 16),
-              Text(
-                dogName,
-                style: const TextStyle(
+                const SizedBox(height: 16),
+                Text(
+                  dogName,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
-                    fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              if (_detectedBreed != null) ...[
-                const SizedBox(height: 4),
-                Text(_detectedBreed!,
-                    style: const TextStyle(color: Colors.amber, fontSize: 14)),
-              ],
-              if (_selectedTraits.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 4,
-                  runSpacing: 4,
-                  alignment: WrapAlignment.center,
-                  children: _selectedTraits
-                      .take(4)
-                      .map((t) => Container(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                if (_detectedBreed != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    _detectedBreed!,
+                    style: const TextStyle(color: Colors.amber, fontSize: 14),
+                  ),
+                ],
+                if (_selectedTraits.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 4,
+                    runSpacing: 4,
+                    alignment: WrapAlignment.center,
+                    children: _selectedTraits
+                        .take(4)
+                        .map(
+                          (t) => Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: 0.06),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Text(t,
-                                style: const TextStyle(
-                                    color: Colors.white54, fontSize: 10)),
-                          ))
-                      .toList(),
+                            child: Text(
+                              t,
+                              style: const TextStyle(
+                                color: Colors.white54,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+                const SizedBox(height: 12),
+                const Text(
+                  '+50 XP',
+                  style: TextStyle(
+                    color: Colors.amber,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ],
-              const SizedBox(height: 12),
-              const Text('+50 XP',
-                  style: TextStyle(
-                      color: Colors.amber,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16)),
-            ]),
+            ),
           )
               .animate()
               .fadeIn(delay: 200.ms)

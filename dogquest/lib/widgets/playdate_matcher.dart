@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../constants.dart';
-import '../models/dog_friendship.dart';
-import '../models/my_dog_profile.dart';
-import '../services/dog_friendship_service.dart';
-import '../services/dog_service.dart';
-import '../services/location_service.dart';
-import '../services/my_dog_service.dart';
-import '../services/playdate_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog_friendship.dart';
+import 'package:dogquest/services/dog_friendship_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/location_service.dart';
+import 'package:dogquest/services/my_dog_service.dart';
+import 'package:dogquest/services/playdate_service.dart';
 
 /// Playdate match result with compatibility score.
 class PlaydateMatch {
@@ -160,13 +159,15 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                   ? '\u{1F43E}' // paw
                   : '\u{1F914}'; // thinking
 
-      matches.add(PlaydateMatch(
-        neighbor: neighbor,
-        breedName: breedDog.name,
-        compatibility: score,
-        reasons: reasons,
-        matchEmoji: emoji,
-      ));
+      matches.add(
+        PlaydateMatch(
+          neighbor: neighbor,
+          breedName: breedDog.name,
+          compatibility: score,
+          reasons: reasons,
+          matchEmoji: emoji,
+        ),
+      );
     }
 
     matches.sort((a, b) => b.compatibility.compareTo(a.compatibility));
@@ -205,10 +206,11 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                       style: const TextStyle(color: textPrimary),
                       decoration: InputDecoration(
                         labelText: 'Location name',
-                        labelStyle: TextStyle(color: textSecondary),
+                        labelStyle: const TextStyle(color: textSecondary),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                              color: textSecondary.withValues(alpha: 0.3)),
+                            color: textSecondary.withValues(alpha: 0.3),
+                          ),
                         ),
                         focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: accent),
@@ -224,8 +226,11 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                         style:
                             const TextStyle(color: textPrimary, fontSize: 14),
                       ),
-                      trailing: const Icon(Icons.calendar_today,
-                          color: accent, size: 20),
+                      trailing: const Icon(
+                        Icons.calendar_today,
+                        color: accent,
+                        size: 20,
+                      ),
                       onTap: () async {
                         final picked = await showDatePicker(
                           context: ctx,
@@ -247,8 +252,11 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                         style:
                             const TextStyle(color: textPrimary, fontSize: 14),
                       ),
-                      trailing: const Icon(Icons.access_time,
-                          color: accent, size: 20),
+                      trailing: const Icon(
+                        Icons.access_time,
+                        color: accent,
+                        size: 20,
+                      ),
                       onTap: () async {
                         final picked = await showTimePicker(
                           context: ctx,
@@ -263,7 +271,8 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                     // Max dogs slider
                     Text(
                       'Max dogs: $maxDogs',
-                      style: TextStyle(color: textSecondary, fontSize: 13),
+                      style:
+                          const TextStyle(color: textSecondary, fontSize: 13),
                     ),
                     Slider(
                       value: maxDogs.toDouble(),
@@ -285,10 +294,11 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                       maxLines: 3,
                       decoration: InputDecoration(
                         labelText: 'Description (optional)',
-                        labelStyle: TextStyle(color: textSecondary),
+                        labelStyle: const TextStyle(color: textSecondary),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: textSecondary.withValues(alpha: 0.3)),
+                            color: textSecondary.withValues(alpha: 0.3),
+                          ),
                         ),
                         focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: accent),
@@ -301,7 +311,8 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx, false),
-                  child: Text('Cancel', style: TextStyle(color: textSecondary)),
+                  child: const Text('Cancel',
+                      style: TextStyle(color: textSecondary)),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: accent),
@@ -400,9 +411,10 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
               const Text(
                 'Playdate Matches',
                 style: TextStyle(
-                    color: textPrimary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
+                  color: textPrimary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
               const Spacer(),
               if (isOnline)
@@ -424,9 +436,10 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
                         Text(
                           'Create',
                           style: TextStyle(
-                              color: accent,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600),
+                            color: accent,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
@@ -435,7 +448,7 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
               if (!isOnline)
                 Text(
                   '${matches.length} dogs',
-                  style: TextStyle(color: textSecondary, fontSize: 12),
+                  style: const TextStyle(color: textSecondary, fontSize: 12),
                 ),
             ],
           ),
@@ -460,7 +473,7 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Text(
                 _remoteError!,
-                style: TextStyle(color: textSecondary, fontSize: 12),
+                style: const TextStyle(color: textSecondary, fontSize: 12),
               ),
             )
           else if (_nearbyPlaydates.isNotEmpty) ...[
@@ -468,10 +481,11 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
               padding: const EdgeInsets.only(left: 16, bottom: 4),
               child: Text(
                 'Nearby Playdates (${_nearbyPlaydates.length})',
-                style: TextStyle(
-                    color: textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  color: textSecondary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             SizedBox(
@@ -494,8 +508,8 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
             ),
             const SizedBox(height: 8),
           ] else
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Text(
                 'No upcoming playdates nearby -- create one!',
                 style: TextStyle(color: textSecondary, fontSize: 12),
@@ -507,7 +521,7 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
         if (matches.isEmpty && !isOnline)
           Container(
             padding: const EdgeInsets.all(20),
-            child: Center(
+            child: const Center(
               child: Text(
                 'No neighborhood dogs available for playdates',
                 style: TextStyle(color: textSecondary),
@@ -520,10 +534,11 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
               padding: const EdgeInsets.only(left: 16, bottom: 4),
               child: Text(
                 'Local Matches (${matches.length})',
-                style: TextStyle(
-                    color: textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  color: textSecondary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           SizedBox(
@@ -580,14 +595,17 @@ class _RemotePlaydateCard extends StatelessWidget {
           Text(
             playdate.organizerDogName ?? playdate.organizerUsername,
             style: const TextStyle(
-                color: textPrimary, fontWeight: FontWeight.bold, fontSize: 13),
+              color: textPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           if (playdate.organizerDogBreed != null)
             Text(
               playdate.organizerDogBreed!,
-              style: TextStyle(color: textSecondary, fontSize: 11),
+              style: const TextStyle(color: textSecondary, fontSize: 11),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -600,7 +618,7 @@ class _RemotePlaydateCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   playdate.locationName,
-                  style: TextStyle(color: textSecondary, fontSize: 11),
+                  style: const TextStyle(color: textSecondary, fontSize: 11),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -615,7 +633,7 @@ class _RemotePlaydateCard extends StatelessWidget {
               const SizedBox(width: 3),
               Text(
                 '$dateStr $timeStr',
-                style: TextStyle(color: textSecondary, fontSize: 11),
+                style: const TextStyle(color: textSecondary, fontSize: 11),
               ),
             ],
           ),
@@ -635,7 +653,7 @@ class _RemotePlaydateCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   distStr,
-                  style: TextStyle(color: textSecondary, fontSize: 10),
+                  style: const TextStyle(color: textSecondary, fontSize: 10),
                 ),
               ],
               const Spacer(),
@@ -652,15 +670,18 @@ class _RemotePlaydateCard extends StatelessWidget {
                     child: const Text(
                       'RSVP',
                       style: TextStyle(
-                          color: bgDeep,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold),
+                        color: bgDeep,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 )
               else
-                Text('Full',
-                    style: TextStyle(color: Colors.redAccent, fontSize: 11)),
+                const Text(
+                  'Full',
+                  style: TextStyle(color: Colors.redAccent, fontSize: 11),
+                ),
             ],
           ),
         ],
@@ -713,9 +734,10 @@ class _PlaydateCard extends StatelessWidget {
                 child: Text(
                   '${(match.compatibility * 100).toStringAsFixed(0)}%',
                   style: TextStyle(
-                      color: _compatColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13),
+                    color: _compatColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
               ),
             ],
@@ -725,14 +747,17 @@ class _PlaydateCard extends StatelessWidget {
           Text(
             match.neighbor.name,
             style: const TextStyle(
-                color: textPrimary, fontWeight: FontWeight.bold, fontSize: 14),
+              color: textPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 2),
           Text(
             match.breedName,
-            style: TextStyle(color: textSecondary, fontSize: 11),
+            style: const TextStyle(color: textSecondary, fontSize: 11),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -741,7 +766,7 @@ class _PlaydateCard extends StatelessWidget {
           if (match.reasons.isNotEmpty)
             Text(
               '${match.matchEmoji} ${match.reasons.first}',
-              style: TextStyle(color: accent, fontSize: 11),
+              style: const TextStyle(color: accent, fontSize: 11),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

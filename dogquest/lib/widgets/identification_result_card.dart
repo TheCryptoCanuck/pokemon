@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../constants.dart';
-import '../services/identification_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/identification_service.dart';
 
 /// Beautiful identification result card with circular confidence gauge,
 /// rarity badge, and animated entrance.
@@ -202,9 +202,15 @@ class IdentificationResultCard extends StatelessWidget {
     )
         .animate()
         .slideY(
-            begin: 0.3, end: 0, duration: 450.ms, curve: Curves.easeOutCubic)
+          begin: 0.3,
+          end: 0,
+          duration: 450.ms,
+          curve: Curves.easeOutCubic,
+        )
         .fadeIn(
-            duration: 400.ms, delay: Duration(milliseconds: (rank - 1) * 120));
+          duration: 400.ms,
+          delay: Duration(milliseconds: (rank - 1) * 120),
+        );
   }
 }
 

@@ -54,11 +54,3 @@ supplemental_dogs_quarantine_v2/
 # Android Gradle build cache + machine-local paths
 android/.gradle/
 android/local.properties
-
-# Android Gradle build cache + machine-local SDK paths
-android/.gradle/
-android/local.properties
-
-# Android Gradle build cache + machine-local SDK paths
-android/.gradle/
-android/local.properties

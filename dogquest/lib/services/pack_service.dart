@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/pack.dart';
+import 'package:dogquest/models/pack.dart';
 
 /// Persists the user's Pack (family group) to Hive.
 class PackService {
@@ -64,17 +64,21 @@ class PackService {
 
     // Reset weekly stats if new week
     if (p.weeklyStartDate != weekStart) {
-      _save(p.copyWith(
-        weeklyBreedsFound: breeds,
-        weeklyXpEarned: xp,
-        weeklyActiveDays: 1,
-        weeklyStartDate: weekStart,
-      ));
+      _save(
+        p.copyWith(
+          weeklyBreedsFound: breeds,
+          weeklyXpEarned: xp,
+          weeklyActiveDays: 1,
+          weeklyStartDate: weekStart,
+        ),
+      );
     } else {
-      _save(p.copyWith(
-        weeklyBreedsFound: p.weeklyBreedsFound + breeds,
-        weeklyXpEarned: p.weeklyXpEarned + xp,
-      ));
+      _save(
+        p.copyWith(
+          weeklyBreedsFound: p.weeklyBreedsFound + breeds,
+          weeklyXpEarned: p.weeklyXpEarned + xp,
+        ),
+      );
     }
   }
 
@@ -94,10 +98,12 @@ class PackService {
     _box.put('pack_last_active_day', todayKey);
 
     if (p.weeklyStartDate != weekStart) {
-      _save(p.copyWith(
-        weeklyActiveDays: 1,
-        weeklyStartDate: weekStart,
-      ));
+      _save(
+        p.copyWith(
+          weeklyActiveDays: 1,
+          weeklyStartDate: weekStart,
+        ),
+      );
     } else {
       _save(p.copyWith(weeklyActiveDays: p.weeklyActiveDays + 1));
     }
@@ -122,5 +128,6 @@ class PackService {
 
 final packServiceProvider = Provider<PackService>((ref) {
   throw UnimplementedError(
-      'packServiceProvider must be overridden after Hive init');
+    'packServiceProvider must be overridden after Hive init',
+  );
 });

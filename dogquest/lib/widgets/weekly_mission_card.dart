@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../constants.dart';
-import '../services/daily_challenge_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/daily_challenge_service.dart';
 
 /// A prominent card displaying the current weekly mission with countdown timer,
 /// progress bar, and percentage indicator.

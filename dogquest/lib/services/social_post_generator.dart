@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
-import 'supabase_social_service.dart';
+import 'package:dogquest/services/supabase_social_service.dart';
 
 final _log = Logger('SocialPostGenerator');
 
@@ -45,7 +45,7 @@ class SocialPostGenerator {
           content: 'Found a $rarity breed: $breedName!',
           breedName: breedName,
           metadata: {
-            'rarity': rarity!,
+            'rarity': rarity,
             if (xpEarned != null) 'xp_earned': xpEarned,
           },
         );

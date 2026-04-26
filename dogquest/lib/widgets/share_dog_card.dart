@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../constants.dart';
-import '../models/dog.dart';
-import 'network_dog_image.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/widgets/network_dog_image.dart';
 
 /// A visually rich dog card designed for sharing/screenshots.
 ///
@@ -27,7 +27,9 @@ class ShareDogCard extends StatelessWidget {
         color: bgDeep,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-            color: dog.rarity.color.withValues(alpha: 0.6), width: 2),
+          color: dog.rarity.color.withValues(alpha: 0.6),
+          width: 2,
+        ),
         boxShadow: [
           BoxShadow(
             color: dog.rarity.color.withValues(alpha: 0.2),
@@ -55,7 +57,7 @@ class ShareDogCard extends StatelessWidget {
                   right: 0,
                   child: Container(
                     height: 80,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -114,7 +116,10 @@ class ShareDogCard extends StatelessWidget {
                 Text(
                   dog.lore,
                   style: const TextStyle(
-                      color: Colors.white70, fontSize: 13, height: 1.4),
+                    color: Colors.white70,
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -144,14 +149,21 @@ class ShareDogCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('DogQuest',
-                                style: TextStyle(
-                                    color: Colors.amber,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12)),
-                            Text('$playerTitle  •  Lv. $playerLevel',
-                                style: const TextStyle(
-                                    color: Colors.white54, fontSize: 10)),
+                            const Text(
+                              'DogQuest',
+                              style: TextStyle(
+                                color: Colors.amber,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              '$playerTitle  •  Lv. $playerLevel',
+                              style: const TextStyle(
+                                color: Colors.white54,
+                                fontSize: 10,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -187,9 +199,14 @@ class ShareDogCard extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 14),
           const SizedBox(width: 4),
-          Text(text,
-              style: TextStyle(
-                  color: color, fontSize: 11, fontWeight: FontWeight.bold)),
+          Text(
+            text,
+            style: TextStyle(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );

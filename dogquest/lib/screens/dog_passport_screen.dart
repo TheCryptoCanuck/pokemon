@@ -6,12 +6,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import '../constants.dart';
-import '../models/dog.dart';
-import '../services/dog_service.dart';
-import '../services/my_dog_service.dart';
-import '../services/player_service.dart';
-import '../widgets/dog_passport_card.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/my_dog_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/widgets/dog_passport_card.dart';
 
 /// Full-screen view of the dog passport card, with share/save functionality.
 class DogPassportScreen extends ConsumerStatefulWidget {
@@ -50,8 +50,10 @@ class _DogPassportScreenState extends ConsumerState<DogPassportScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Dog Passport',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Dog Passport',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -60,7 +62,10 @@ class _DogPassportScreenState extends ConsumerState<DogPassportScreen> {
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.amber))
+                      strokeWidth: 2,
+                      color: Colors.amber,
+                    ),
+                  )
                 : const Icon(Icons.share, color: Colors.amber),
             onPressed: _sharing ? null : () => _sharePassport(context),
           ),
@@ -81,7 +86,9 @@ class _DogPassportScreenState extends ConsumerState<DogPassportScreen> {
                   playerTitle: _playerTitle(playerState.level),
                 ),
               ).animate().fadeIn(duration: 500.ms).scale(
-                  begin: const Offset(0.95, 0.95), curve: Curves.easeOutBack),
+                    begin: const Offset(0.95, 0.95),
+                    curve: Curves.easeOutBack,
+                  ),
 
               const SizedBox(height: 32),
 
@@ -92,9 +99,10 @@ class _DogPassportScreenState extends ConsumerState<DogPassportScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _sharing ? null : () => _sharePassport(context),
                   icon: const Icon(Icons.share, size: 20),
-                  label: const Text('Share Passport',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  label: const Text(
+                    'Share Passport',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD4874E),
                     foregroundColor: Colors.white,
@@ -112,7 +120,9 @@ class _DogPassportScreenState extends ConsumerState<DogPassportScreen> {
               Text(
                 'Scan the QR code to verify your pup!',
                 style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.3), fontSize: 12),
+                  color: Colors.white.withValues(alpha: 0.3),
+                  fontSize: 12,
+                ),
               ).animate().fadeIn(delay: 500.ms),
             ],
           ),
@@ -136,7 +146,8 @@ class _DogPassportScreenState extends ConsumerState<DogPassportScreen> {
 
       final tempDir = await getTemporaryDirectory();
       final file = File(
-          '${tempDir.path}/dogquest_passport_${widget.dogName.replaceAll(' ', '_')}.png');
+        '${tempDir.path}/dogquest_passport_${widget.dogName.replaceAll(' ', '_')}.png',
+      );
       await file.writeAsBytes(byteData.buffer.asUint8List());
 
       if (!mounted) return;
@@ -149,8 +160,9 @@ class _DogPassportScreenState extends ConsumerState<DogPassportScreen> {
       if (mounted) {
         messenger.showSnackBar(
           SnackBar(
-              content: Text('Could not share: $e'),
-              backgroundColor: Colors.red),
+            content: Text('Could not share: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {

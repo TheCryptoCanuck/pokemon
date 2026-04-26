@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../services/dog_mastery_service.dart';
+import 'package:dogquest/services/dog_mastery_service.dart';
 
 class MasterySummary extends StatelessWidget {
   final DogMasteryState mastery;
   final int totalDogs;
 
-  const MasterySummary(
-      {required this.mastery, required this.totalDogs, super.key});
+  const MasterySummary({
+    required this.mastery,
+    required this.totalDogs,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +24,14 @@ class MasterySummary extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Mastery',
-            style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white)),
+        const Text(
+          'Mastery',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         const SizedBox(height: 10),
         ...levels.map((entry) {
           final (level, count) = entry;
@@ -43,16 +49,22 @@ class MasterySummary extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(level.label,
-                              style: TextStyle(
-                                  color: level.color,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600)),
-                          Text('$count',
-                              style: TextStyle(
-                                  color: level.color,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold)),
+                          Text(
+                            level.label,
+                            style: TextStyle(
+                              color: level.color,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            '$count',
+                            style: TextStyle(
+                              color: level.color,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 3),

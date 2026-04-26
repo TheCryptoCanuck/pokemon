@@ -5,8 +5,12 @@ class SectionHeader extends StatelessWidget {
   final IconData icon;
   final String? subtitle;
 
-  const SectionHeader(
-      {required this.title, required this.icon, this.subtitle, super.key});
+  const SectionHeader({
+    required this.title,
+    required this.icon,
+    this.subtitle,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +18,14 @@ class SectionHeader extends StatelessWidget {
       children: [
         Icon(icon, color: Colors.amber, size: 18),
         const SizedBox(width: 8),
-        Text(title,
-            style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white)),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         if (subtitle != null) ...[
           const SizedBox(width: 8),
           Container(
@@ -27,8 +34,10 @@ class SectionHeader extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.06),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text(subtitle!,
-                style: const TextStyle(color: Colors.white38, fontSize: 11)),
+            child: Text(
+              subtitle!,
+              style: const TextStyle(color: Colors.white38, fontSize: 11),
+            ),
           ),
         ],
         const Spacer(),

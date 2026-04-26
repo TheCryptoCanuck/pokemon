@@ -47,12 +47,15 @@ class DogFriendship {
   });
 
   FriendshipLevel get level {
-    if (visits >= FriendshipLevel.bestFriend.visitsRequired)
+    if (visits >= FriendshipLevel.bestFriend.visitsRequired) {
       return FriendshipLevel.bestFriend;
-    if (visits >= FriendshipLevel.friend.visitsRequired)
+    }
+    if (visits >= FriendshipLevel.friend.visitsRequired) {
       return FriendshipLevel.friend;
-    if (visits >= FriendshipLevel.acquaintance.visitsRequired)
+    }
+    if (visits >= FriendshipLevel.acquaintance.visitsRequired) {
       return FriendshipLevel.acquaintance;
+    }
     return FriendshipLevel.newNeighbor;
   }
 

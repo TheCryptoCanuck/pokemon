@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 class SplashScreen extends StatefulWidget {
   final Stream<String> statusStream;
@@ -138,7 +138,8 @@ class _SplashScreenState extends State<SplashScreen> {
                                 backgroundColor:
                                     Colors.white.withValues(alpha: 0.06),
                                 valueColor: const AlwaysStoppedAnimation<Color>(
-                                    Colors.amber),
+                                  Colors.amber,
+                                ),
                               );
                             },
                           );

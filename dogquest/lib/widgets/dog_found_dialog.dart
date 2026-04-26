@@ -9,17 +9,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../constants.dart';
-import '../models/dog.dart';
-import '../services/analytics_service.dart';
-import '../services/dog_mastery_service.dart';
-import '../services/kennel_service.dart';
-import '../services/dog_service.dart';
-import '../services/identification_service.dart';
-import '../services/player_service.dart';
-import 'network_dog_image.dart';
-import 'rarity_discovery_badge.dart';
-import 'share_dog_card.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/analytics_service.dart';
+import 'package:dogquest/services/dog_mastery_service.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/identification_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/widgets/network_dog_image.dart';
+import 'package:dogquest/widgets/rarity_discovery_badge.dart';
+import 'package:dogquest/widgets/share_dog_card.dart';
 
 class DogFoundDialog extends ConsumerStatefulWidget {
   final Dog dog;
@@ -214,14 +214,17 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
               borderRadius: BorderRadius.circular(24),
               border: _isSpecial
                   ? Border.all(
-                      color: dog.rarity.color.withValues(alpha: 0.8), width: 2)
+                      color: dog.rarity.color.withValues(alpha: 0.8),
+                      width: 2,
+                    )
                   : null,
               boxShadow: _isSpecial
                   ? [
                       BoxShadow(
-                          color: dog.rarity.color.withValues(alpha: 0.3),
-                          blurRadius: 30,
-                          spreadRadius: 5)
+                        color: dog.rarity.color.withValues(alpha: 0.3),
+                        blurRadius: 30,
+                        spreadRadius: 5,
+                      ),
                     ]
                   : null,
             ),
@@ -236,15 +239,17 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.amber,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
+                          children: [
                             Icon(Icons.star, color: Colors.white, size: 20),
                             SizedBox(width: 8),
                             Text(
@@ -264,13 +269,15 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                           .animate()
                           .fadeIn(duration: 300.ms)
                           .scale(
-                              begin: const Offset(0.8, 0.8),
-                              curve: Curves.elasticOut,
-                              duration: 500.ms)
+                            begin: const Offset(0.8, 0.8),
+                            curve: Curves.elasticOut,
+                            duration: 500.ms,
+                          )
                           .then()
                           .shimmer(
-                              duration: 1200.ms,
-                              color: Colors.white.withValues(alpha: 0.4)),
+                            duration: 1200.ms,
+                            color: Colors.white.withValues(alpha: 0.4),
+                          ),
                       const SizedBox(height: 12),
                     ],
 
@@ -295,12 +302,15 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                       ),
                       textAlign: TextAlign.center,
                     ).animate().fadeIn(delay: 100.ms).then().shimmer(
-                        duration: _isSpecial ? 1500.ms : 0.ms,
-                        color: dog.rarity.color.withValues(alpha: 0.3)),
+                          duration: _isSpecial ? 1500.ms : 0.ms,
+                          color: dog.rarity.color.withValues(alpha: 0.3),
+                        ),
                     Text(
                       dog.scientificName,
                       style: const TextStyle(
-                          color: Colors.white54, fontStyle: FontStyle.italic),
+                        color: Colors.white54,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                     const SizedBox(height: 12),
 
@@ -312,19 +322,27 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                           color: dog.rarity.color.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                              color: dog.rarity.color.withValues(alpha: 0.4)),
+                            color: dog.rarity.color.withValues(alpha: 0.4),
+                          ),
                         ),
                         child: Center(
-                          child:
-                              Column(mainAxisSize: MainAxisSize.min, children: [
-                            const Text('\u2753',
-                                style: TextStyle(fontSize: 56)),
-                            const SizedBox(height: 6),
-                            Text('Not in our database yet',
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                '\u2753',
+                                style: TextStyle(fontSize: 56),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                'Not in our database yet',
                                 style: TextStyle(
-                                    color: dog.rarity.color,
-                                    fontWeight: FontWeight.bold)),
-                          ]),
+                                  color: dog.rarity.color,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ).animate().fadeIn(delay: 200.ms)
                     else
@@ -342,9 +360,11 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                     const SizedBox(height: 12),
 
                     // Lore
-                    Text(dog.lore,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.white70)),
+                    Text(
+                      dog.lore,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.white70),
+                    ),
                     const SizedBox(height: 8),
 
                     // XP display -- bigger for special dogs
@@ -358,15 +378,19 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                               color: Colors.amber.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                  color: Colors.amber.withValues(alpha: 0.3)),
+                                color: Colors.amber.withValues(alpha: 0.3),
+                              ),
                             )
                           : null,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.bolt,
-                              color: Colors.amber, size: _isSpecial ? 22 : 16),
+                          Icon(
+                            Icons.bolt,
+                            color: Colors.amber,
+                            size: _isSpecial ? 22 : 16,
+                          ),
                           Text(
                             ' +${dog.xp} XP',
                             style: TextStyle(
@@ -385,7 +409,9 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                       child: Text(
                         'Breeds ${ref.read(kennelServiceProvider).count + (widget.alreadyOwned ? 0 : 1)} / ${ref.read(dogServiceProvider).all.length} in your kennel',
                         style: const TextStyle(
-                            color: Colors.white38, fontSize: 11),
+                          color: Colors.white38,
+                          fontSize: 11,
+                        ),
                       ),
                     ),
 
@@ -409,25 +435,33 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                       const SizedBox(height: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color:
                               const Color(0xFFFF7043).withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                              color: const Color(0xFFFF7043)
-                                  .withValues(alpha: 0.3)),
+                            color:
+                                const Color(0xFFFF7043).withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.help_outline_rounded,
-                                color: Color(0xFFFF7043), size: 18),
+                            const Icon(
+                              Icons.help_outline_rounded,
+                              color: Color(0xFFFF7043),
+                              size: 18,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 "We're not sure, but it might be a ${dog.name}. Check the alternatives or search manually.",
                                 style: const TextStyle(
-                                    color: Color(0xFFFFAB91), fontSize: 12),
+                                  color: Color(0xFFFFAB91),
+                                  fontSize: 12,
+                                ),
                               ),
                             ),
                           ],
@@ -475,10 +509,12 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                       ...((_showComparison && widget.alternatives.length > 1)
                               ? widget.alternatives.sublist(1)
                               : widget.alternatives)
-                          .map((alt) => _AlternativeChip(
-                                result: alt,
-                                onTap: () => _v1HandleAlt(alt),
-                              )),
+                          .map(
+                        (alt) => _AlternativeChip(
+                          result: alt,
+                          onTap: () => _v1HandleAlt(alt),
+                        ),
+                      ),
                     ],
 
                     // ── Manual search fallback ──
@@ -491,16 +527,21 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                         InkWell(
                           onTap: _v1HandleManualSearch,
                           borderRadius: BorderRadius.circular(8),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 6, horizontal: 4),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 6,
+                              horizontal: 4,
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.search,
-                                    color: Colors.white38, size: 15),
-                                const SizedBox(width: 6),
+                                Icon(
+                                  Icons.search,
+                                  color: Colors.white38,
+                                  size: 15,
+                                ),
+                                SizedBox(width: 6),
                                 Text(
                                   'Not the right breed? Search manually',
                                   style: TextStyle(
@@ -534,8 +575,11 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                                       color: Colors.white54,
                                     ),
                                   )
-                                : const Icon(Icons.share,
-                                    color: Colors.white54, size: 20),
+                                : const Icon(
+                                    Icons.share,
+                                    color: Colors.white54,
+                                    size: 20,
+                                  ),
                             tooltip: 'Share',
                             style: IconButton.styleFrom(
                               backgroundColor:
@@ -550,7 +594,8 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                           child: OutlinedButton(
                             onPressed: () => Navigator.pop(context),
                             style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.white54),
+                              foregroundColor: Colors.white54,
+                            ),
                             child: Text(widget.alreadyOwned ? 'OK' : 'Skip'),
                           ),
                         ),
@@ -567,8 +612,9 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                                     style: OutlinedButton.styleFrom(
                                       foregroundColor: const Color(0xFFFFAB91),
                                       side: BorderSide(
-                                          color: const Color(0xFFFF7043)
-                                              .withValues(alpha: 0.5)),
+                                        color: const Color(0xFFFF7043)
+                                            .withValues(alpha: 0.5),
+                                      ),
                                     ),
                                     child: const Text('Add Anyway'),
                                   )
@@ -603,13 +649,15 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                                 )
                               : const Icon(Icons.share, size: 18),
                           label: Text(
-                              _isSharing ? 'Sharing...' : 'Share this catch!'),
+                            _isSharing ? 'Sharing...' : 'Share this catch!',
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 dog.rarity.color.withValues(alpha: 0.25),
                             foregroundColor: dog.rarity.color,
                             side: BorderSide(
-                                color: dog.rarity.color.withValues(alpha: 0.5)),
+                              color: dog.rarity.color.withValues(alpha: 0.5),
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -670,9 +718,10 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
               Text(
                 'Sighting logged',
                 style: TextStyle(
-                    color: Colors.green.shade300,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600),
+                  color: Colors.green.shade300,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -717,9 +766,10 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
             Text(
               'Max mastery reached!',
               style: TextStyle(
-                  color: Colors.amber.shade300,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600),
+                color: Colors.amber.shade300,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ],
@@ -733,7 +783,9 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
         const Text('\u2728\u{1F3C6}\u2728', style: TextStyle(fontSize: 32))
             .animate(onPlay: (c) => c.repeat())
             .shimmer(
-                duration: 2000.ms, color: Colors.amber.withValues(alpha: 0.8)),
+              duration: 2000.ms,
+              color: Colors.amber.withValues(alpha: 0.8),
+            ),
         const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -741,26 +793,30 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Colors.amber.withValues(alpha: 0.3),
-                  Colors.orange.withValues(alpha: 0.2),
-                  Colors.amber.withValues(alpha: 0.3),
-                ]),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.amber.withValues(alpha: 0.3),
+                    Colors.orange.withValues(alpha: 0.2),
+                    Colors.amber.withValues(alpha: 0.3),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: Colors.amber),
               ),
               child: const Text(
                 'LEGENDARY!',
                 style: TextStyle(
-                    color: Colors.amber,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    letterSpacing: 1.5),
+                  color: Colors.amber,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  letterSpacing: 1.5,
+                ),
               ),
             ).animate().fadeIn().scale().then().shimmer(
-                delay: 500.ms,
-                duration: 1500.ms,
-                color: Colors.amber.withValues(alpha: 0.4)),
+                  delay: 500.ms,
+                  duration: 1500.ms,
+                  color: Colors.amber.withValues(alpha: 0.4),
+                ),
             if (!isMock) ...[
               const SizedBox(width: 8),
               _confidenceBadge(),
@@ -792,10 +848,11 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
               child: const Text(
                 'RARE FIND!',
                 style: TextStyle(
-                    color: Color(0xFF2196F3),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                    letterSpacing: 1.2),
+                  color: Color(0xFF2196F3),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  letterSpacing: 1.2,
+                ),
               ),
             ).animate().fadeIn().scale(),
             if (!isMock) ...[
@@ -822,9 +879,10 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
           child: Text(
             dog.rarity.label,
             style: TextStyle(
-                color: dog.rarity.color,
-                fontWeight: FontWeight.bold,
-                fontSize: 12),
+              color: dog.rarity.color,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
           ),
         ),
         if (!isMock) ...[
@@ -853,7 +911,10 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
           Text(
             tier.label,
             style: TextStyle(
-                color: color, fontWeight: FontWeight.bold, fontSize: 12),
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
           ),
         ],
       ),
@@ -940,12 +1001,15 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
+          const Row(
             children: [
-              const Icon(Icons.compare_arrows_rounded,
-                  color: Colors.amber, size: 18),
-              const SizedBox(width: 8),
-              const Text(
+              Icon(
+                Icons.compare_arrows_rounded,
+                color: Colors.amber,
+                size: 18,
+              ),
+              SizedBox(width: 8),
+              Text(
                 'Could be either breed',
                 style: TextStyle(
                   color: Colors.amber,
@@ -970,8 +1034,10 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Text('or',
-                    style: TextStyle(color: Colors.white38, fontSize: 12)),
+                child: Text(
+                  'or',
+                  style: TextStyle(color: Colors.white38, fontSize: 12),
+                ),
               ),
               // Alternative
               Expanded(
@@ -1051,10 +1117,11 @@ class _AlternativeChip extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: NetworkDogImage(
-                      url: result.dog.imageUrl,
-                      height: 36,
-                      width: 36,
-                      fit: BoxFit.cover),
+                    url: result.dog.imageUrl,
+                    height: 36,
+                    width: 36,
+                    fit: BoxFit.cover,
+                  ),
                 )
               else
                 Container(
@@ -1065,7 +1132,8 @@ class _AlternativeChip extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Center(
-                      child: Text('\u{1F436}', style: TextStyle(fontSize: 18))),
+                    child: Text('\u{1F436}', style: TextStyle(fontSize: 18)),
+                  ),
                 ),
               const SizedBox(width: 10),
               Expanded(
@@ -1075,16 +1143,18 @@ class _AlternativeChip extends StatelessWidget {
                     Text(
                       result.dog.name,
                       style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500),
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     Text(
                       result.dog.scientificName,
                       style: const TextStyle(
-                          color: Colors.white38,
-                          fontSize: 11,
-                          fontStyle: FontStyle.italic),
+                        color: Colors.white38,
+                        fontSize: 11,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ],
                 ),
@@ -1099,9 +1169,10 @@ class _AlternativeChip extends StatelessWidget {
                 child: Text(
                   _altLabel,
                   style: TextStyle(
-                      color: _altColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600),
+                    color: _altColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -1158,7 +1229,11 @@ class _ComparisonBreedTile extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: NetworkDogImage(
-                    url: imageUrl, height: 64, width: 64, fit: BoxFit.cover),
+                  url: imageUrl,
+                  height: 64,
+                  width: 64,
+                  fit: BoxFit.cover,
+                ),
               )
             else
               Container(
@@ -1169,7 +1244,8 @@ class _ComparisonBreedTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Center(
-                    child: Text('\u{1F436}', style: TextStyle(fontSize: 28))),
+                  child: Text('\u{1F436}', style: TextStyle(fontSize: 28)),
+                ),
               ),
             const SizedBox(height: 8),
             // Breed name
@@ -1195,9 +1271,10 @@ class _ComparisonBreedTile extends StatelessWidget {
               child: Text(
                 tier.label,
                 style: TextStyle(
-                    color: tier.color,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600),
+                  color: tier.color,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             // "Current pick" / "Tap to switch" label

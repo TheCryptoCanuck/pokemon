@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../services/mystery_reward_service.dart';
+import 'package:dogquest/services/mystery_reward_service.dart';
 
 // --- Bone Painter ---------------------------------------------------------------
 
@@ -47,7 +47,13 @@ class _BonePainter extends CustomPainter {
 
     // Build bone path: shaft + four knobs (two on each end).
     final bonePath = _buildBonePath(
-        cx, cy, shaftHalfLen, shaftHalfW, knobRadius, knobSpread);
+      cx,
+      cy,
+      shaftHalfLen,
+      shaftHalfW,
+      knobRadius,
+      knobSpread,
+    );
 
     // Bone fill with warm brown/cream gradient.
     final boneGradient = LinearGradient(
@@ -88,10 +94,15 @@ class _BonePainter extends CustomPainter {
         ],
       ).createShader(
         Rect.fromCircle(
-            center: Offset(shimmerX, shimmerY), radius: shaftHalfW * 1.8),
+          center: Offset(shimmerX, shimmerY),
+          radius: shaftHalfW * 1.8,
+        ),
       );
     canvas.drawCircle(
-        Offset(shimmerX, shimmerY), shaftHalfW * 1.8, shimmerPaint);
+      Offset(shimmerX, shimmerY),
+      shaftHalfW * 1.8,
+      shimmerPaint,
+    );
 
     // Fracture lines along the bone shaft.
     if (crackProgress > 0.0) {
@@ -100,8 +111,14 @@ class _BonePainter extends CustomPainter {
   }
 
   /// Builds a classic dog-bone silhouette path (vertical orientation).
-  Path _buildBonePath(double cx, double cy, double shaftHalfLen,
-      double shaftHalfW, double knobR, double knobSpread) {
+  Path _buildBonePath(
+    double cx,
+    double cy,
+    double shaftHalfLen,
+    double shaftHalfW,
+    double knobR,
+    double knobSpread,
+  ) {
     final path = Path();
 
     // Top-left knob center.
@@ -127,34 +144,46 @@ class _BonePainter extends CustomPainter {
     path.addOval(Rect.fromCircle(center: Offset(brx, bry), radius: knobR));
 
     // Shaft rectangle.
-    path.addRRect(RRect.fromRectAndRadius(
-      Rect.fromCenter(
-        center: Offset(cx, cy),
-        width: shaftHalfW * 2,
-        height: shaftHalfLen * 2 + knobR * 0.5,
+    path.addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: Offset(cx, cy),
+          width: shaftHalfW * 2,
+          height: shaftHalfLen * 2 + knobR * 0.5,
+        ),
+        Radius.circular(shaftHalfW * 0.3),
       ),
-      Radius.circular(shaftHalfW * 0.3),
-    ));
+    );
 
     // Top connector (fills gap between knobs at top).
-    path.addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTRB(tlx, tly - knobR * 0.3, trx, tly + knobR * 0.3),
-      Radius.circular(knobR * 0.2),
-    ));
+    path.addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTRB(tlx, tly - knobR * 0.3, trx, tly + knobR * 0.3),
+        Radius.circular(knobR * 0.2),
+      ),
+    );
 
     // Bottom connector (fills gap between knobs at bottom).
-    path.addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTRB(blx, bly - knobR * 0.3, brx, bly + knobR * 0.3),
-      Radius.circular(knobR * 0.2),
-    ));
+    path.addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTRB(blx, bly - knobR * 0.3, brx, bly + knobR * 0.3),
+        Radius.circular(knobR * 0.2),
+      ),
+    );
 
     // Use PathFillType.evenOdd inverted — we want union, so keep default nonZero.
     path.fillType = PathFillType.nonZero;
     return path;
   }
 
-  void _drawFractures(Canvas canvas, double cx, double cy, double shaftHalfLen,
-      double shaftHalfW, double t) {
+  void _drawFractures(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double shaftHalfLen,
+    double shaftHalfW,
+    double t,
+  ) {
     final fracturePaint = Paint()
       ..color = Colors.white.withValues(alpha: 0.85)
       ..strokeWidth = 1.5

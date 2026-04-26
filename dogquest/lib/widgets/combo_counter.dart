@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/combo_service.dart';
+import 'package:dogquest/services/combo_service.dart';
 
 /// Compact animated combo counter that appears when combo >= 2.
 ///

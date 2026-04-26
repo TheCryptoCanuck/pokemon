@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// Data for a single rarity segment in the collection wheel.
 class RaritySegment {

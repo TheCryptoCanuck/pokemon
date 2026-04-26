@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
-import '../helpers/date_helpers.dart';
+import 'package:dogquest/helpers/date_helpers.dart';
 
 final _log = Logger('ActivityTrackerService');
 

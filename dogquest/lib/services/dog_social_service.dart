@@ -189,13 +189,17 @@ class DogSocialService {
     final raw = _box.get(_profilesKey) as String?;
     if (raw == null || raw.isEmpty) return {};
     final map = jsonDecode(raw) as Map<String, dynamic>;
-    return map.map((k, v) =>
-        MapEntry(k, DogSocialProfile.fromJson(v as Map<String, dynamic>)));
+    return map.map(
+      (k, v) =>
+          MapEntry(k, DogSocialProfile.fromJson(v as Map<String, dynamic>)),
+    );
   }
 
   void _saveProfiles(Map<String, DogSocialProfile> profiles) {
-    _box.put(_profilesKey,
-        jsonEncode(profiles.map((k, v) => MapEntry(k, v.toJson()))));
+    _box.put(
+      _profilesKey,
+      jsonEncode(profiles.map((k, v) => MapEntry(k, v.toJson()))),
+    );
   }
 
   // ─── Following ──────────────────────────────────────────────
@@ -290,5 +294,6 @@ class DogSocialService {
 
 final dogSocialServiceProvider = Provider<DogSocialService>((ref) {
   throw UnimplementedError(
-      'dogSocialServiceProvider must be overridden after Hive init');
+    'dogSocialServiceProvider must be overridden after Hive init',
+  );
 });

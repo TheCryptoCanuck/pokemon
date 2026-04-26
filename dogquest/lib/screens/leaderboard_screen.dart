@@ -3,15 +3,15 @@ import 'dart:math' show pow;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../constants.dart';
-import '../helpers/date_helpers.dart';
-import '../helpers/game_helpers.dart';
-import '../services/player_service.dart';
-import '../services/sighting_service.dart';
-import '../services/kennel_service.dart';
-import '../services/dog_mastery_service.dart';
-import '../services/dog_service.dart';
-import '../services/combo_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/helpers/date_helpers.dart';
+import 'package:dogquest/helpers/game_helpers.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/services/sighting_service.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/dog_mastery_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/combo_service.dart';
 
 class LeaderboardScreen extends ConsumerStatefulWidget {
   const LeaderboardScreen({super.key});
@@ -42,8 +42,10 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
       backgroundColor: bgDeep,
       appBar: AppBar(
         backgroundColor: bgNav,
-        title: const Text('My Records',
-            style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'My Records',
+          style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
+        ),
         iconTheme: const IconThemeData(color: Colors.white70),
         bottom: TabBar(
           controller: _tabController,
@@ -133,7 +135,10 @@ class _RecordsTab extends ConsumerWidget {
             .animate()
             .fadeIn(delay: Duration(milliseconds: 60 * index))
             .slideX(
-                begin: 0.05, end: 0, delay: Duration(milliseconds: 60 * index));
+              begin: 0.05,
+              end: 0,
+              delay: Duration(milliseconds: 60 * index),
+            );
       },
     );
   }
@@ -162,27 +167,34 @@ class _RecordsTab extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.label,
-                    style:
-                        const TextStyle(color: Colors.white70, fontSize: 13)),
+                Text(
+                  item.label,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
+                ),
                 const SizedBox(height: 2),
                 if (item.subtitle != null)
-                  Text(item.subtitle!,
-                      style:
-                          const TextStyle(color: Colors.white38, fontSize: 11)),
+                  Text(
+                    item.subtitle!,
+                    style: const TextStyle(color: Colors.white38, fontSize: 11),
+                  ),
               ],
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(item.value,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold)),
-              Text(item.unit,
-                  style: const TextStyle(color: Colors.white38, fontSize: 11)),
+              Text(
+                item.value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                item.unit,
+                style: const TextStyle(color: Colors.white38, fontSize: 11),
+              ),
             ],
           ),
         ],
@@ -255,11 +267,13 @@ class _ThisWeekTab extends ConsumerWidget {
           .length;
       if (sightings > maxCount) maxCount = sightings;
       weekTotal += sightings;
-      days.add(_DayData(
-        dayName: _shortDayName(date.weekday),
-        count: sightings,
-        isToday: i == 0,
-      ));
+      days.add(
+        _DayData(
+          dayName: _shortDayName(date.weekday),
+          count: sightings,
+          isToday: i == 0,
+        ),
+      );
     }
 
     return SingleChildScrollView(
@@ -281,31 +295,45 @@ class _ThisWeekTab extends ConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('This Week',
-                        style: TextStyle(color: Colors.white70, fontSize: 13)),
+                    const Text(
+                      'This Week',
+                      style: TextStyle(color: Colors.white70, fontSize: 13),
+                    ),
                     const SizedBox(height: 4),
-                    Text('$weekTotal',
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold)),
-                    const Text('sightings',
-                        style: TextStyle(color: Colors.white38, fontSize: 12)),
+                    Text(
+                      '$weekTotal',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Text(
+                      'sightings',
+                      style: TextStyle(color: Colors.white38, fontSize: 12),
+                    ),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Text('Daily Avg',
-                        style: TextStyle(color: Colors.white70, fontSize: 13)),
+                    const Text(
+                      'Daily Avg',
+                      style: TextStyle(color: Colors.white70, fontSize: 13),
+                    ),
                     const SizedBox(height: 4),
-                    Text((weekTotal / 7).toStringAsFixed(1),
-                        style: const TextStyle(
-                            color: Colors.amber,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold)),
-                    const Text('per day',
-                        style: TextStyle(color: Colors.white38, fontSize: 12)),
+                    Text(
+                      (weekTotal / 7).toStringAsFixed(1),
+                      style: const TextStyle(
+                        color: Colors.amber,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Text(
+                      'per day',
+                      style: TextStyle(color: Colors.white38, fontSize: 12),
+                    ),
                   ],
                 ),
               ],
@@ -325,11 +353,14 @@ class _ThisWeekTab extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Daily Sightings',
-                    style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600)),
+                const Text(
+                  'Daily Sightings',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 SizedBox(
                   height: 180,
@@ -418,11 +449,15 @@ class _ThisWeekTab extends ConsumerWidget {
                 children: [
                   Icon(Icons.pets, color: Colors.white24, size: 40),
                   SizedBox(height: 12),
-                  Text('No sightings this week',
-                      style: TextStyle(color: Colors.white54, fontSize: 15)),
+                  Text(
+                    'No sightings this week',
+                    style: TextStyle(color: Colors.white54, fontSize: 15),
+                  ),
                   SizedBox(height: 4),
-                  Text('Go spot some dogs to fill up your chart!',
-                      style: TextStyle(color: Colors.white38, fontSize: 13)),
+                  Text(
+                    'Go spot some dogs to fill up your chart!',
+                    style: TextStyle(color: Colors.white38, fontSize: 13),
+                  ),
                 ],
               ),
             ).animate().fadeIn(delay: 200.ms),
@@ -489,15 +524,19 @@ class _AllTimeTab extends ConsumerWidget {
                         color: Colors.amber.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                            color: Colors.amber.withValues(alpha: 0.4),
-                            width: 1.5),
+                          color: Colors.amber.withValues(alpha: 0.4),
+                          width: 1.5,
+                        ),
                       ),
                       child: Center(
-                        child: Text('${player.level}',
-                            style: const TextStyle(
-                                color: Colors.amber,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold)),
+                        child: Text(
+                          '${player.level}',
+                          style: const TextStyle(
+                            color: Colors.amber,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -505,16 +544,22 @@ class _AllTimeTab extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(player.title,
-                              style: const TextStyle(
-                                  color: Colors.amber,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold)),
+                          Text(
+                            player.title,
+                            style: const TextStyle(
+                              color: Colors.amber,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(height: 4),
                           Text(
-                              '${player.xp} / ${player.xpForNextLevel} XP to next level',
-                              style: const TextStyle(
-                                  color: Colors.white54, fontSize: 12)),
+                            '${player.xp} / ${player.xpForNextLevel} XP to next level',
+                            style: const TextStyle(
+                              color: Colors.white54,
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -635,7 +680,8 @@ class _AllTimeTab extends ConsumerWidget {
                     iconColor: Colors.amber,
                     label: 'Total XP',
                     value: _formatNumber(
-                        player.xp + _totalXpFromLevels(player.level)),
+                      player.xp + _totalXpFromLevels(player.level),
+                    ),
                   ),
                 ),
               ],
@@ -649,11 +695,14 @@ class _AllTimeTab extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Mastery Breakdown',
-                    style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600)),
+                const Text(
+                  'Mastery Breakdown',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 16),
                 _MasteryRow(
                   level: DogMasteryLevel.master,
@@ -751,16 +800,23 @@ class _StatTile extends StatelessWidget {
       children: [
         Icon(icon, color: iconColor, size: 24),
         const SizedBox(height: 8),
-        Text(value,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.bold)),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 2),
-        Text(subtitle,
-            style: const TextStyle(color: Colors.white38, fontSize: 12)),
-        Text(label,
-            style: const TextStyle(color: Colors.white54, fontSize: 12)),
+        Text(
+          subtitle,
+          style: const TextStyle(color: Colors.white38, fontSize: 12),
+        ),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white54, fontSize: 12),
+        ),
         if (progress != null) ...[
           const SizedBox(height: 8),
           ClipRRect(
@@ -797,15 +853,20 @@ class _MiniStat extends StatelessWidget {
       children: [
         Icon(icon, color: iconColor, size: 20),
         const SizedBox(height: 6),
-        Text(value,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold)),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 2),
-        Text(label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.white38, fontSize: 10)),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: Colors.white38, fontSize: 10),
+        ),
       ],
     );
   }
@@ -832,8 +893,10 @@ class _MasteryRow extends StatelessWidget {
         const SizedBox(width: 8),
         SizedBox(
           width: 64,
-          child: Text(level.label,
-              style: TextStyle(color: level.color, fontSize: 12)),
+          child: Text(
+            level.label,
+            style: TextStyle(color: level.color, fontSize: 12),
+          ),
         ),
         Expanded(
           child: ClipRRect(
@@ -842,7 +905,8 @@ class _MasteryRow extends StatelessWidget {
               value: fraction.clamp(0.0, 1.0),
               backgroundColor: Colors.white12,
               valueColor: AlwaysStoppedAnimation<Color>(
-                  level.color.withValues(alpha: 0.7)),
+                level.color.withValues(alpha: 0.7),
+              ),
               minHeight: 6,
             ),
           ),
@@ -850,9 +914,11 @@ class _MasteryRow extends StatelessWidget {
         const SizedBox(width: 8),
         SizedBox(
           width: 32,
-          child: Text('$count',
-              textAlign: TextAlign.right,
-              style: const TextStyle(color: Colors.white54, fontSize: 12)),
+          child: Text(
+            '$count',
+            textAlign: TextAlign.right,
+            style: const TextStyle(color: Colors.white54, fontSize: 12),
+          ),
         ),
       ],
     );

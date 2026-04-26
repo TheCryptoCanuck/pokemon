@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import '../constants.dart';
-import '../models/lost_dog_report.dart';
-import '../services/lost_dog_service.dart';
-import '../services/supabase_lost_dog_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/lost_dog_report.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
+import 'package:dogquest/services/supabase_lost_dog_service.dart';
 
 class ScanStrayScreen extends ConsumerStatefulWidget {
   const ScanStrayScreen({super.key});
@@ -126,8 +126,11 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            const Icon(Icons.phone_in_talk_rounded,
-                color: Colors.amber, size: 22),
+            const Icon(
+              Icons.phone_in_talk_rounded,
+              color: Colors.amber,
+              size: 22,
+            ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
@@ -189,7 +192,8 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
                 SnackBar(
                   backgroundColor: Colors.green.shade800,
                   content: const Text(
-                      'Owner has been notified! Thank you for helping.'),
+                    'Owner has been notified! Thank you for helping.',
+                  ),
                 ),
               );
             },
@@ -492,8 +496,11 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded,
-                color: Colors.redAccent, size: 56),
+            const Icon(
+              Icons.error_outline_rounded,
+              color: Colors.redAccent,
+              size: 56,
+            ),
             const SizedBox(height: 16),
             Text(
               _error ?? 'Something went wrong',
@@ -571,15 +578,20 @@ class _ScanStrayScreenState extends ConsumerState<ScanStrayScreen>
                             ? 'Review matches below'
                             : 'This dog may not be reported missing',
                         style: const TextStyle(
-                            color: Colors.white38, fontSize: 12),
+                          color: Colors.white38,
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 IconButton(
                   onPressed: _reset,
-                  icon: const Icon(Icons.close_rounded,
-                      color: Colors.white38, size: 20),
+                  icon: const Icon(
+                    Icons.close_rounded,
+                    color: Colors.white38,
+                    size: 20,
+                  ),
                   tooltip: 'New scan',
                 ),
               ],
@@ -747,8 +759,11 @@ class _LostDogMatchCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.favorite_rounded,
-                      color: Colors.amber, size: 18),
+                  const Icon(
+                    Icons.favorite_rounded,
+                    color: Colors.amber,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'This could be ${match.dogName}!',
@@ -772,7 +787,8 @@ class _LostDogMatchCard extends StatelessWidget {
                   children: [
                     // Scanned photo
                     Expanded(
-                        child: _photoFrame('Scanned Dog', scannedPhoto, null)),
+                      child: _photoFrame('Scanned Dog', scannedPhoto, null),
+                    ),
                     const SizedBox(width: 10),
                     // Similarity arrow
                     Column(

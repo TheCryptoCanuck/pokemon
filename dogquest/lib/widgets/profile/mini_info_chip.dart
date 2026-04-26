@@ -5,8 +5,12 @@ class MiniInfoChip extends StatelessWidget {
   final String text;
   final Color color;
 
-  const MiniInfoChip(
-      {required this.icon, required this.text, required this.color, super.key});
+  const MiniInfoChip({
+    required this.icon,
+    required this.text,
+    required this.color,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +22,23 @@ class MiniInfoChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
-        child: Row(children: [
-          Icon(icon, color: color, size: 14),
-          const SizedBox(width: 6),
-          Flexible(
-            child: Text(text,
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 14),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                text,
                 style: TextStyle(
-                    color: color, fontSize: 11, fontWeight: FontWeight.w600),
-                overflow: TextOverflow.ellipsis),
-          ),
-        ]),
+                  color: color,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

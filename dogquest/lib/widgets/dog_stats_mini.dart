@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// Compact horizontal dog info widget for use in overlays and bottom sheets.
 /// Displays dog name, rarity pill, mastery level, sighting count, and NEW badge.
@@ -47,10 +47,10 @@ class DogStatsMini extends StatelessWidget {
                 color: rarity.color.withValues(alpha: 0.3),
               ),
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 '\u{1F436}',
-                style: const TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20),
               ),
             ),
           ),

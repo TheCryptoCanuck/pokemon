@@ -9,12 +9,12 @@ class NeighborhoodEmptyState extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
-        child: Column(
+        child: const Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('\u{1F3D8}', style: TextStyle(fontSize: 64)),
-            const SizedBox(height: 16),
-            const Text(
+            Text('\u{1F3D8}', style: TextStyle(fontSize: 64)),
+            SizedBox(height: 16),
+            Text(
               'Your Neighborhood',
               style: TextStyle(
                 fontSize: 20,
@@ -22,8 +22,8 @@ class NeighborhoodEmptyState extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
+            SizedBox(height: 8),
+            Text(
               'Add your dog in the Profile tab to explore the neighborhood and make friends!',
               style: TextStyle(
                 color: Colors.white54,

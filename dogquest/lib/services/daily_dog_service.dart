@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../helpers/date_helpers.dart';
-import '../models/dog.dart';
-import 'dog_service.dart';
+import 'package:dogquest/helpers/date_helpers.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/dog_service.dart';
 
 /// Provides a deterministic "Dog of the Day" based on the current date.
 ///

@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 
-import 'supabase_auth_service.dart';
-import 'supabase_user_service.dart';
+import 'package:dogquest/services/supabase_auth_service.dart';
+import 'package:dogquest/services/supabase_user_service.dart';
 
 final _log = Logger('AuthMigrationService');
 

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import '../constants.dart';
-import '../models/lost_dog_report.dart';
-import '../services/lost_dog_map_controller.dart';
-import '../services/lost_dog_service.dart';
-import '../services/supabase_lost_dog_service.dart';
-import '../widgets/lost_dog/lost_dog_detail_sheet.dart';
-import '../widgets/lost_dog/lost_dog_stats_panel.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/lost_dog_report.dart';
+import 'package:dogquest/services/lost_dog_map_controller.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
+import 'package:dogquest/services/supabase_lost_dog_service.dart';
+import 'package:dogquest/widgets/lost_dog/lost_dog_detail_sheet.dart';
+import 'package:dogquest/widgets/lost_dog/lost_dog_stats_panel.dart';
 
 class LostDogMapScreen extends ConsumerStatefulWidget {
   const LostDogMapScreen({super.key});
@@ -752,8 +752,11 @@ class _LostDogMap extends StatelessWidget {
                           if (report.sightingCount != null &&
                               report.sightingCount! > 0) ...[
                             const Spacer(),
-                            Icon(Icons.visibility,
-                                color: Colors.orange.shade300, size: 14),
+                            Icon(
+                              Icons.visibility,
+                              color: Colors.orange.shade300,
+                              size: 14,
+                            ),
                             const SizedBox(width: 3),
                             Text(
                               '${report.sightingCount} sighting'

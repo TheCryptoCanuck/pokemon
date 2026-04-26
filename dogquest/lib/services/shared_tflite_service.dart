@@ -68,5 +68,6 @@ class SharedTfliteService {
 ///   sharedTfliteServiceProvider.overrideWithValue(sharedTflite)
 final sharedTfliteServiceProvider = Provider<SharedTfliteService>((ref) {
   throw UnimplementedError(
-      'sharedTfliteServiceProvider must be overridden at startup');
+    'sharedTfliteServiceProvider must be overridden at startup',
+  );
 });

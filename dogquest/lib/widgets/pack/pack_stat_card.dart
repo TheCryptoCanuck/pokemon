@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
-
 class PackStatCard extends StatelessWidget {
   final String emoji;
   final String value;
@@ -30,11 +28,18 @@ class PackStatCard extends StatelessWidget {
           children: [
             Text(emoji, style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 6),
-            Text(value,
-                style: TextStyle(
-                    color: color, fontWeight: FontWeight.bold, fontSize: 18)),
-            Text(label,
-                style: const TextStyle(color: Colors.white38, fontSize: 10)),
+            Text(
+              value,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            Text(
+              label,
+              style: const TextStyle(color: Colors.white38, fontSize: 10),
+            ),
           ],
         ),
       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../constants.dart';
+import 'package:dogquest/constants.dart';
 
 class LiveMapFilterChip extends StatelessWidget {
   final String label;

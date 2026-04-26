@@ -275,12 +275,15 @@ class SupabaseLostDogService {
     double radiusKm = 16.0,
   }) async {
     try {
-      final response = await _client.rpc('get_active_lost_dogs', params: {
-        'p_lat': lat,
-        'p_lon': lon,
-        // RPC expects miles; convert from km at the boundary.
-        'p_radius_miles': radiusKm / 1.60934,
-      });
+      final response = await _client.rpc(
+        'get_active_lost_dogs',
+        params: {
+          'p_lat': lat,
+          'p_lon': lon,
+          // RPC expects miles; convert from km at the boundary.
+          'p_radius_miles': radiusKm / 1.60934,
+        },
+      );
 
       final list = response as List<dynamic>;
       final now = DateTime.now().toUtc();
@@ -290,9 +293,13 @@ class SupabaseLostDogService {
             final map = e as Map<String, dynamic>;
             final fuzzedMap = Map<String, dynamic>.from(map)
               ..['last_seen_lat'] = _fuzzCoord(
-                  (map['last_seen_lat'] as num).toDouble(), maxDeltaDeg)
+                (map['last_seen_lat'] as num).toDouble(),
+                maxDeltaDeg,
+              )
               ..['last_seen_lon'] = _fuzzCoord(
-                  (map['last_seen_lon'] as num).toDouble(), maxDeltaDeg);
+                (map['last_seen_lon'] as num).toDouble(),
+                maxDeltaDeg,
+              );
             return LostDogReportRemote.fromJson(fuzzedMap);
           })
           .where((r) => r.expiresAt == null || r.expiresAt!.isAfter(now))
@@ -389,8 +396,9 @@ class SupabaseLostDogService {
         .stream(primaryKey: ['id'])
         .eq('report_id', reportId)
         .order('created_at')
-        .map((rows) =>
-            rows.map((e) => LostDogSightingRemote.fromJson(e)).toList());
+        .map(
+          (rows) => rows.map((e) => LostDogSightingRemote.fromJson(e)).toList(),
+        );
   }
 
   // ─── Report lifecycle ──────────────────────────────────────────────────

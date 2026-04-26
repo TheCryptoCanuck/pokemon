@@ -5,9 +5,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
-import '../models/lost_dog_report.dart';
-import 'lost_dog_service.dart';
-import 'supabase_lost_dog_service.dart';
+import 'package:dogquest/models/lost_dog_report.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
+import 'package:dogquest/services/supabase_lost_dog_service.dart';
 
 final _log = Logger('LostDogSyncService');
 

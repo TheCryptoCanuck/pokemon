@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../constants.dart';
-import '../services/auth_service.dart';
-import '../services/backend_sync_service.dart';
-import '../services/data_consent_service.dart';
-import '../services/demo_service.dart';
-import '../services/notification_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/auth_service.dart';
+import 'package:dogquest/services/backend_sync_service.dart';
+import 'package:dogquest/services/data_consent_service.dart';
+import 'package:dogquest/services/demo_service.dart';
+import 'package:dogquest/services/notification_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -122,8 +122,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Log Out',
-                style: TextStyle(color: Colors.redAccent)),
+            child: const Text(
+              'Log Out',
+              style: TextStyle(color: Colors.redAccent),
+            ),
           ),
         ],
       ),
@@ -143,8 +145,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: bgCard,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Delete Sighting History',
-            style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Delete Sighting History',
+          style: TextStyle(color: Colors.white),
+        ),
         content: const Text(
           'This will permanently delete all your sighting and location history. '
           'This action cannot be undone.',
@@ -201,8 +205,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: bgCard,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Activate Demo Mode',
-            style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Activate Demo Mode',
+          style: TextStyle(color: Colors.white),
+        ),
         content: const Text(
           'This will replace your current data with pre-seeded demo data '
           '(25+ breeds, sightings, achievements, stats). '
@@ -263,8 +269,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: bgCard,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Clear Demo Data',
-            style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Clear Demo Data',
+          style: TextStyle(color: Colors.white),
+        ),
         content: const Text(
           'This will clear all demo data and reset the app to a fresh state. '
           'This cannot be undone.',
@@ -290,9 +298,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(success
-                ? 'Demo data cleared. App reset to fresh state.'
-                : 'Failed to clear demo data.'),
+            content: Text(
+              success
+                  ? 'Demo data cleared. App reset to fresh state.'
+                  : 'Failed to clear demo data.',
+            ),
             backgroundColor: success ? const Color(0xFFD4874E) : Colors.red,
             behavior: SnackBarBehavior.floating,
           ),
@@ -310,8 +320,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: bgCard,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Delete All App Data',
-            style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Delete All App Data',
+          style: TextStyle(color: Colors.white),
+        ),
         content: const Text(
           'This will permanently delete ALL app data including your collection, '
           'sightings, stats, challenges, and preferences. '
@@ -326,8 +338,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete Everything',
-                style: TextStyle(color: Colors.redAccent)),
+            child: const Text(
+              'Delete Everything',
+              style: TextStyle(color: Colors.redAccent),
+            ),
           ),
         ],
       ),
@@ -482,7 +496,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         : pendingSyncCount > 0
                             ? Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.amber.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(10),
@@ -499,7 +515,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             : const Text(
                                 'All synced',
                                 style: TextStyle(
-                                    color: Colors.white38, fontSize: 12),
+                                  color: Colors.white38,
+                                  fontSize: 12,
+                                ),
                               ),
                     onTap: _isSyncing ? null : _handleSync,
                   ),
@@ -519,12 +537,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: Column(
                 children: [
                   SwitchListTile(
-                    secondary: const Icon(Icons.local_fire_department_outlined,
-                        color: Colors.orangeAccent, size: 22),
-                    title: const Text('Streak Reminders',
-                        style: TextStyle(color: Colors.white, fontSize: 14)),
-                    subtitle: const Text('Daily at 8:00 PM',
-                        style: TextStyle(color: Colors.white38, fontSize: 12)),
+                    secondary: const Icon(
+                      Icons.local_fire_department_outlined,
+                      color: Colors.orangeAccent,
+                      size: 22,
+                    ),
+                    title: const Text(
+                      'Streak Reminders',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                    subtitle: const Text(
+                      'Daily at 8:00 PM',
+                      style: TextStyle(color: Colors.white38, fontSize: 12),
+                    ),
                     value: _streakReminders,
                     activeTrackColor: Colors.amber.withValues(alpha: 0.5),
                     activeThumbColor: Colors.amber,
@@ -536,12 +561,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   const Divider(color: Colors.white10, height: 1, indent: 56),
                   SwitchListTile(
-                    secondary: const Icon(Icons.sunny,
-                        color: Colors.amberAccent, size: 22),
-                    title: const Text('Daily Dog Alerts',
-                        style: TextStyle(color: Colors.white, fontSize: 14)),
-                    subtitle: const Text('Daily at 9:00 AM',
-                        style: TextStyle(color: Colors.white38, fontSize: 12)),
+                    secondary: const Icon(
+                      Icons.sunny,
+                      color: Colors.amberAccent,
+                      size: 22,
+                    ),
+                    title: const Text(
+                      'Daily Dog Alerts',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                    subtitle: const Text(
+                      'Daily at 9:00 AM',
+                      style: TextStyle(color: Colors.white38, fontSize: 12),
+                    ),
                     value: _dailyDogAlerts,
                     activeTrackColor: Colors.amber.withValues(alpha: 0.5),
                     activeThumbColor: Colors.amber,
@@ -567,13 +599,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: Column(
                 children: [
                   SwitchListTile(
-                    secondary: const Icon(Icons.science_outlined,
-                        color: Color(0xFFD4874E), size: 22),
-                    title: const Text('Contribute to Science',
-                        style: TextStyle(color: Colors.white, fontSize: 14)),
+                    secondary: const Icon(
+                      Icons.science_outlined,
+                      color: Color(0xFFD4874E),
+                      size: 22,
+                    ),
+                    title: const Text(
+                      'Contribute to Science',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
                     subtitle: const Text(
-                        'Share anonymized sighting data with researchers',
-                        style: TextStyle(color: Colors.white38, fontSize: 12)),
+                      'Share anonymized sighting data with researchers',
+                      style: TextStyle(color: Colors.white38, fontSize: 12),
+                    ),
                     value: _dataSharing,
                     activeTrackColor:
                         const Color(0xFFD4874E).withValues(alpha: 0.5),
@@ -604,8 +642,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   _actionTile(
                     icon: Icons.privacy_tip_outlined,
                     title: 'Privacy Policy',
-                    trailing: const Icon(Icons.chevron_right,
-                        color: Colors.white24, size: 20),
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.white24,
+                      size: 20,
+                    ),
                     onTap: () => context.push('/privacy'),
                   ),
                   const Divider(color: Colors.white10, height: 1, indent: 56),
@@ -659,13 +700,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               child: Column(
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.info_outline,
-                        color: Colors.white54, size: 22),
-                    title: const Text('Version',
-                        style: TextStyle(color: Colors.white, fontSize: 14)),
-                    subtitle: const Text('0.1.0',
-                        style: TextStyle(color: Colors.white54, fontSize: 13)),
+                  const ListTile(
+                    leading: Icon(
+                      Icons.info_outline,
+                      color: Colors.white54,
+                      size: 22,
+                    ),
+                    title: Text(
+                      'Version',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                    subtitle: Text(
+                      '0.1.0',
+                      style: TextStyle(color: Colors.white54, fontSize: 13),
+                    ),
                     dense: true,
                   ),
                   const Divider(color: Colors.white10, height: 1, indent: 56),
@@ -752,7 +800,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                     if (DemoService.isDemoMode) ...[
                       const Divider(
-                          color: Colors.white10, height: 1, indent: 56),
+                        color: Colors.white10,
+                        height: 1,
+                        indent: 56,
+                      ),
                       _actionTile(
                         icon: Icons.cleaning_services_rounded,
                         title: 'Clear Demo Data',
@@ -785,22 +836,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: const LinearGradient(
-                          colors: [Colors.amber, Color(0xFFD4874E)]),
+                        colors: [Colors.amber, Color(0xFFD4874E)],
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.amber.withValues(alpha: 0.3),
                           blurRadius: 12,
                           spreadRadius: 2,
-                        )
+                        ),
                       ],
                     ),
                     child: const Center(
-                      child: Text('A',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          )),
+                      child: Text(
+                        'A',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -849,10 +903,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }) {
     return ListTile(
       leading: Icon(icon, color: Colors.white54, size: 22),
-      title: Text(title,
-          style: const TextStyle(color: Colors.white, fontSize: 14)),
-      subtitle: Text(subtitle,
-          style: const TextStyle(color: Colors.white54, fontSize: 13)),
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(color: Colors.white54, fontSize: 13),
+      ),
       dense: true,
     );
   }

@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// Post-identification celebration with a capture ring animation,
 /// rarity-colored ring, optional "NEW!" badge, and confidence display.
@@ -143,7 +143,8 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
 
     return AnimatedBuilder(
       animation: Listenable.merge(
-          [_ringController, _contentController, _dismissController]),
+        [_ringController, _contentController, _dismissController],
+      ),
       builder: (context, _) {
         final dismissOpacity = 1.0 - _dismissController.value;
         final contentProgress = _contentController.value;
@@ -158,7 +159,8 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
                   width: size.width,
                   height: size.height,
                   color: Colors.black.withValues(
-                      alpha: 0.5 * (1.0 - _dismissController.value)),
+                    alpha: 0.5 * (1.0 - _dismissController.value),
+                  ),
                 ),
 
                 // White flash on capture
@@ -216,14 +218,17 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
                             scale: 0.5 + contentProgress * 0.5,
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 4),
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color:
                                     Colors.greenAccent.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                    color: Colors.greenAccent
-                                        .withValues(alpha: 0.8)),
+                                  color:
+                                      Colors.greenAccent.withValues(alpha: 0.8),
+                                ),
                               ),
                               child: const Text(
                                 'NEW!',
@@ -272,12 +277,15 @@ class _DogCatchOverlayState extends State<_DogCatchOverlay>
                         opacity: contentProgress,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 3),
+                            horizontal: 12,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: rarityColor.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                                color: rarityColor.withValues(alpha: 0.5)),
+                              color: rarityColor.withValues(alpha: 0.5),
+                            ),
                           ),
                           child: Text(
                             widget.rarity.label,

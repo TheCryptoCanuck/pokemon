@@ -41,8 +41,10 @@ class PlaydateRemote {
     this.distanceMiles,
   });
 
-  factory PlaydateRemote.fromJson(Map<String, dynamic> json,
-      {double? distanceMiles}) {
+  factory PlaydateRemote.fromJson(
+    Map<String, dynamic> json, {
+    double? distanceMiles,
+  }) {
     // Organizer user info may be nested under 'users' join
     final user = json['users'] as Map<String, dynamic>? ?? {};
     // Organizer dog info may be nested under 'dog_profiles' join
@@ -189,15 +191,18 @@ class PlaydateService {
           final mapped = Map<String, dynamic>.from(row);
           mapped['rsvp_count'] = rsvpCount;
           mapped.remove('rsvp_count'); // remove list version
-          results.add(PlaydateRemote.fromJson(
-            {...row, 'rsvp_count': rsvpCount},
-            distanceMiles: dist,
-          ));
+          results.add(
+            PlaydateRemote.fromJson(
+              {...row, 'rsvp_count': rsvpCount},
+              distanceMiles: dist,
+            ),
+          );
         }
       }
 
       results.sort(
-          (a, b) => (a.distanceMiles ?? 999).compareTo(b.distanceMiles ?? 999));
+        (a, b) => (a.distanceMiles ?? 999).compareTo(b.distanceMiles ?? 999),
+      );
       _log.info('Found ${results.length} nearby playdates');
       return results;
     } catch (e, st) {
@@ -340,7 +345,11 @@ class PlaydateService {
 
   /// Haversine distance in miles between two lat/lon points.
   static double _haversineDistance(
-      double lat1, double lon1, double lat2, double lon2) {
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     const earthRadiusMiles = 3958.8;
     final dLat = _toRadians(lat2 - lat1);
     final dLon = _toRadians(lon2 - lon1);

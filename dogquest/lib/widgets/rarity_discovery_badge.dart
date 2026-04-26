@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shimmer/shimmer.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// A compact badge showing how exclusive a dog discovery is,
 /// creating FOMO through simulated rarity percentages.

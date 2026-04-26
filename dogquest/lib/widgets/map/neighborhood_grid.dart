@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../constants.dart';
-import '../../models/dog_friendship.dart';
-import '../../services/dog_friendship_service.dart';
+import 'package:dogquest/models/dog_friendship.dart';
+import 'package:dogquest/services/dog_friendship_service.dart';
 
 class NeighborhoodGrid extends StatefulWidget {
   final List<NeighborhoodDog> neighborDogs;
@@ -90,8 +89,11 @@ class _NeighborhoodGridState extends State<NeighborhoodGrid> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.home,
-                                    color: Colors.amber, size: 20),
+                                const Icon(
+                                  Icons.home,
+                                  color: Colors.amber,
+                                  size: 20,
+                                ),
                                 const SizedBox(height: 2),
                                 Text(
                                   'Home',
@@ -128,8 +130,10 @@ class _NeighborhoodGridState extends State<NeighborhoodGrid> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('\u{1F436}',
-                                  style: TextStyle(fontSize: 18)),
+                              const Text(
+                                '\u{1F436}',
+                                style: TextStyle(fontSize: 18),
+                              ),
                               Text(
                                 dog.name,
                                 style: const TextStyle(
@@ -174,7 +178,7 @@ class _NeighborhoodGridState extends State<NeighborhoodGrid> {
                             [
                               Icons.park,
                               Icons.nature,
-                              Icons.grass
+                              Icons.grass,
                             ][((row * 4 + col) % 3)],
                             color: Colors.green.withValues(alpha: 0.08),
                             size: 20,
@@ -223,8 +227,10 @@ class _NeighborhoodGridState extends State<NeighborhoodGrid> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(dog.emoji,
-                                style: const TextStyle(fontSize: 20)),
+                            Text(
+                              dog.emoji,
+                              style: const TextStyle(fontSize: 20),
+                            ),
                             const SizedBox(height: 1),
                             Text(
                               dog.name,

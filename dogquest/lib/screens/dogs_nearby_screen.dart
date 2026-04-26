@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../constants.dart';
-import '../services/sighting_service.dart';
-import '../services/dog_service.dart';
-import '../services/location_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/sighting_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/location_service.dart';
 
 /// "Dogs Nearby" — when authenticated, calls the get_dogs_nearby RPC.
 /// Falls back to local sighting data when offline.
@@ -81,14 +81,16 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
         return;
       }
 
-      final response =
-          await Supabase.instance.client.rpc('get_dogs_nearby', params: {
-        'p_user_id': uid,
-        'p_lat': _refLat,
-        'p_lon': _refLon,
-        'p_radius_miles': _radiusMiles,
-        'p_limit': 50,
-      });
+      final response = await Supabase.instance.client.rpc(
+        'get_dogs_nearby',
+        params: {
+          'p_user_id': uid,
+          'p_lat': _refLat,
+          'p_lon': _refLon,
+          'p_radius_miles': _radiusMiles,
+          'p_limit': 50,
+        },
+      );
 
       final list = response as List<dynamic>;
       if (mounted) {
@@ -151,7 +153,8 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
                               return _RemoteNearbyCard(dog: dog)
                                   .animate()
                                   .fadeIn(
-                                      delay: Duration(milliseconds: index * 40))
+                                    delay: Duration(milliseconds: index * 40),
+                                  )
                                   .slideX(begin: 0.05, end: 0);
                             },
                           ),
@@ -270,13 +273,15 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
         children: [
           _StatChip(icon: Icons.pets, label: '$count', subtitle: 'dogs nearby'),
           _StatChip(
-              icon: Icons.radar,
-              label: '${_radiusMiles.toStringAsFixed(0)} mi',
-              subtitle: 'radius'),
+            icon: Icons.radar,
+            label: '${_radiusMiles.toStringAsFixed(0)} mi',
+            subtitle: 'radius',
+          ),
           _StatChip(
-              icon: Icons.location_on,
-              label: _hasLocation ? 'Active' : 'No GPS',
-              subtitle: 'location'),
+            icon: Icons.location_on,
+            label: _hasLocation ? 'Active' : 'No GPS',
+            subtitle: 'location',
+          ),
         ],
       ),
     );
@@ -290,18 +295,25 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
         Center(
           child: Column(
             children: [
-              Icon(Icons.explore_off,
-                  size: 64, color: textSecondary.withValues(alpha: 0.3)),
+              Icon(
+                Icons.explore_off,
+                size: 64,
+                color: textSecondary.withValues(alpha: 0.3),
+              ),
               const SizedBox(height: 16),
-              Text('No dogs spotted nearby yet',
-                  style: TextStyle(color: textSecondary, fontSize: 16)),
+              const Text(
+                'No dogs spotted nearby yet',
+                style: TextStyle(color: textSecondary, fontSize: 16),
+              ),
               const SizedBox(height: 8),
               Text(
                 _hasLocation
                     ? 'Try expanding your search radius!'
                     : 'Enable location to find nearby dogs.',
                 style: TextStyle(
-                    color: textSecondary.withValues(alpha: 0.6), fontSize: 14),
+                  color: textSecondary.withValues(alpha: 0.6),
+                  fontSize: 14,
+                ),
               ),
             ],
           ),
@@ -390,35 +402,38 @@ class _RemoteNearbyCard extends StatelessWidget {
                   Text(
                     dog.dogName,
                     style: const TextStyle(
-                        color: textPrimary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
+                      color: textPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     dog.breed,
-                    style: TextStyle(color: textSecondary, fontSize: 12),
+                    style: const TextStyle(color: textSecondary, fontSize: 12),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(Icons.near_me, size: 12, color: accent),
+                      const Icon(Icons.near_me, size: 12, color: accent),
                       const SizedBox(width: 4),
                       Text(
                         dog.distanceMiles < 0.5
                             ? '${(dog.distanceMiles * 5280).toStringAsFixed(0)} ft away'
                             : '${dog.distanceMiles.toStringAsFixed(1)} mi away',
-                        style: TextStyle(
-                            color: accent,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500),
+                        style: const TextStyle(
+                          color: accent,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const SizedBox(width: 12),
-                      Icon(Icons.person, size: 12, color: textSecondary),
+                      const Icon(Icons.person, size: 12, color: textSecondary),
                       const SizedBox(width: 4),
                       Text(
                         dog.ownerDisplayName ?? dog.ownerUsername,
-                        style: TextStyle(color: textSecondary, fontSize: 12),
+                        style:
+                            const TextStyle(color: textSecondary, fontSize: 12),
                       ),
                     ],
                   ),
@@ -501,25 +516,33 @@ class _LocalNearbyCard extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(breed,
-                            style: const TextStyle(
-                                color: textPrimary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15)),
+                        child: Text(
+                          breed,
+                          style: const TextStyle(
+                            color: textPrimary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
                       ),
                       if (rarity != Rarity.common)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: _rarityColor.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          child: Text(rarity.name.toUpperCase(),
-                              style: TextStyle(
-                                  color: _rarityColor,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold)),
+                          child: Text(
+                            rarity.name.toUpperCase(),
+                            style: TextStyle(
+                              color: _rarityColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                     ],
                   ),
@@ -527,29 +550,37 @@ class _LocalNearbyCard extends StatelessWidget {
                   Row(
                     children: [
                       if (hasLocation) ...[
-                        Icon(Icons.near_me, size: 12, color: accent),
+                        const Icon(Icons.near_me, size: 12, color: accent),
                         const SizedBox(width: 4),
                         Text(
                           distanceKm < 1
                               ? '${(distanceKm * 1000).toStringAsFixed(0)}m away'
                               : '${distanceKm.toStringAsFixed(1)}km away',
-                          style: TextStyle(
-                              color: accent,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500),
+                          style: const TextStyle(
+                            color: accent,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                         const SizedBox(width: 12),
                       ],
-                      Icon(Icons.visibility, size: 12, color: textSecondary),
+                      const Icon(Icons.visibility,
+                          size: 12, color: textSecondary),
                       const SizedBox(width: 4),
                       Text(
-                          '$sightingCount sighting${sightingCount != 1 ? "s" : ""}',
-                          style: TextStyle(color: textSecondary, fontSize: 12)),
+                        '$sightingCount sighting${sightingCount != 1 ? "s" : ""}',
+                        style:
+                            const TextStyle(color: textSecondary, fontSize: 12),
+                      ),
                       const SizedBox(width: 12),
-                      Icon(Icons.access_time, size: 12, color: textSecondary),
+                      const Icon(Icons.access_time,
+                          size: 12, color: textSecondary),
                       const SizedBox(width: 4),
-                      Text(_timeAgo(lastSeen),
-                          style: TextStyle(color: textSecondary, fontSize: 12)),
+                      Text(
+                        _timeAgo(lastSeen),
+                        style:
+                            const TextStyle(color: textSecondary, fontSize: 12),
+                      ),
                     ],
                   ),
                 ],
@@ -569,8 +600,11 @@ class _StatChip extends StatelessWidget {
   final String label;
   final String subtitle;
 
-  const _StatChip(
-      {required this.icon, required this.label, required this.subtitle});
+  const _StatChip({
+    required this.icon,
+    required this.label,
+    required this.subtitle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -578,10 +612,16 @@ class _StatChip extends StatelessWidget {
       children: [
         Icon(icon, color: accent, size: 20),
         const SizedBox(height: 4),
-        Text(label,
-            style: const TextStyle(
-                color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
-        Text(subtitle, style: TextStyle(color: textSecondary, fontSize: 11)),
+        Text(
+          label,
+          style: const TextStyle(
+            color: textPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        Text(subtitle,
+            style: const TextStyle(color: textSecondary, fontSize: 11)),
       ],
     );
   }

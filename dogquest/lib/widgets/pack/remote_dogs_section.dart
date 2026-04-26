@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
-import '../../services/supabase_pack_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/supabase_pack_service.dart';
 
 class RemoteDogsSection extends StatelessWidget {
   final PackRemote pack;
@@ -22,11 +22,14 @@ class RemoteDogsSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Text('Pack Dogs',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amber)),
+            const Text(
+              'Pack Dogs',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.amber,
+              ),
+            ),
             const Spacer(),
             GestureDetector(
               onTap: onAddDog,
@@ -39,15 +42,21 @@ class RemoteDogsSection extends StatelessWidget {
                   border:
                       Border.all(color: Colors.amber.withValues(alpha: 0.3)),
                 ),
-                child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.pets, color: Colors.amber, size: 14),
-                  SizedBox(width: 4),
-                  Text('Add Dog',
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.pets, color: Colors.amber, size: 14),
+                    SizedBox(width: 4),
+                    Text(
+                      'Add Dog',
                       style: TextStyle(
-                          color: Colors.amber,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600)),
-                ]),
+                        color: Colors.amber,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -61,8 +70,10 @@ class RemoteDogsSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Center(
-              child: Text('No dogs added yet. Tap "Add Dog" above!',
-                  style: TextStyle(color: Colors.white54, fontSize: 13)),
+              child: Text(
+                'No dogs added yet. Tap "Add Dog" above!',
+                style: TextStyle(color: Colors.white54, fontSize: 13),
+              ),
             ),
           )
         else
@@ -93,14 +104,21 @@ class RemoteDogsSection extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(dog.dogName,
-                            style: const TextStyle(
-                                color: textPrimary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12)),
-                        Text(dog.breed ?? '',
-                            style: const TextStyle(
-                                color: textSecondary, fontSize: 10)),
+                        Text(
+                          dog.dogName,
+                          style: const TextStyle(
+                            color: textPrimary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          dog.breed ?? '',
+                          style: const TextStyle(
+                            color: textSecondary,
+                            fontSize: 10,
+                          ),
+                        ),
                       ],
                     ),
                   ],

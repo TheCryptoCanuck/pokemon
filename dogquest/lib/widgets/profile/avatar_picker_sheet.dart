@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
-import '../../services/player_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/player_service.dart';
 
 class AvatarPickerSheet extends StatelessWidget {
   final ScrollController scrollController;
@@ -45,7 +45,10 @@ class AvatarPickerSheet extends StatelessWidget {
         const Text(
           'Choose Avatar',
           style: TextStyle(
-              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 4),
         const Text(
@@ -93,16 +96,19 @@ class AvatarPickerSheet extends StatelessWidget {
                             backgroundImage: FileImage(File(customPhotoPath)),
                           )
                         else
-                          Icon(Icons.add_a_photo_rounded,
-                              color: Colors.white.withValues(alpha: 0.4),
-                              size: 28),
+                          Icon(
+                            Icons.add_a_photo_rounded,
+                            color: Colors.white.withValues(alpha: 0.4),
+                            size: 28,
+                          ),
                         const SizedBox(height: 6),
                         Text(
                           hasCustomPhoto ? 'My Photo' : 'Upload Photo',
                           style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600),
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
@@ -111,8 +117,9 @@ class AvatarPickerSheet extends StatelessWidget {
                               : 'Use your own photo',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.38),
-                              fontSize: 9),
+                            color: Colors.white.withValues(alpha: 0.38),
+                            fontSize: 9,
+                          ),
                         ),
                       ],
                     ),
@@ -154,9 +161,11 @@ class AvatarPickerSheet extends StatelessWidget {
                       if (unlocked)
                         Text(avatar.emoji, style: const TextStyle(fontSize: 32))
                       else
-                        Icon(Icons.lock_rounded,
-                            color: Colors.white.withValues(alpha: 0.15),
-                            size: 32),
+                        Icon(
+                          Icons.lock_rounded,
+                          color: Colors.white.withValues(alpha: 0.15),
+                          size: 32,
+                        ),
                       const SizedBox(height: 6),
                       Text(
                         avatar.name,

@@ -9,13 +9,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../constants.dart';
-import '../models/dog.dart';
-import '../services/analytics_service.dart';
-import '../services/kennel_service.dart';
-import '../services/dog_service.dart';
-import '../services/player_service.dart';
-import 'breed_share_card.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/analytics_service.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/widgets/breed_share_card.dart';
 
 /// Shows a bottom sheet with a breed card preview and one-tap share buttons.
 class BreedShareSheet {
@@ -135,11 +135,13 @@ class _BreedShareSheetContentState
         children: [
           const SizedBox(height: 12),
           Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(2))),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
           const SizedBox(height: 16),
 
           // Title
@@ -217,7 +219,9 @@ class _BreedShareSheetContentState
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
-                  strokeWidth: 2, color: Colors.amber),
+                strokeWidth: 2,
+                color: Colors.amber,
+              ),
             ),
           ],
 
@@ -229,7 +233,9 @@ class _BreedShareSheetContentState
             child: Text(
               _shared ? 'Done' : 'Not now',
               style: TextStyle(
-                  color: _shared ? Colors.green : Colors.white38, fontSize: 14),
+                color: _shared ? Colors.green : Colors.white38,
+                fontSize: 14,
+              ),
             ),
           ),
 
@@ -246,11 +252,12 @@ class _ShareButton extends StatelessWidget {
   final Color color;
   final VoidCallback? onTap;
 
-  const _ShareButton(
-      {required this.icon,
-      required this.label,
-      required this.color,
-      this.onTap});
+  const _ShareButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -264,13 +271,21 @@ class _ShareButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: color.withValues(alpha: 0.3)),
           ),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 6),
-            Text(label,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: color, size: 24),
+              const SizedBox(height: 6),
+              Text(
+                label,
                 style: TextStyle(
-                    color: color, fontSize: 12, fontWeight: FontWeight.w600)),
-          ]),
+                  color: color,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

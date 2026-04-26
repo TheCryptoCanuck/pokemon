@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// Circular XP progress indicator with level number, player title,
 /// animated gradient ring, sparkle particles, and streak multiplier badge.

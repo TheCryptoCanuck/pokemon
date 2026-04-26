@@ -32,10 +32,12 @@ class AnalyticsService {
       _firebase!
           .setUserProperty(name: 'session_number', value: '$_sessionNumber');
       _log.info(
-          'Analytics initialised with Firebase (session #$_sessionNumber)');
+        'Analytics initialised with Firebase (session #$_sessionNumber)',
+      );
     } else {
       _log.info(
-          'Analytics initialised local-only (session #$_sessionNumber, ${_box.length} stored events)');
+        'Analytics initialised local-only (session #$_sessionNumber, ${_box.length} stored events)',
+      );
     }
   }
 
@@ -74,7 +76,9 @@ class AnalyticsService {
         }
       }
       _firebase!.logEvent(
-          name: fbEvent, parameters: fbParams.isEmpty ? null : fbParams);
+        name: fbEvent,
+        parameters: fbParams.isEmpty ? null : fbParams,
+      );
     }
 
     _log.fine('Event: $event ${properties ?? ''}');

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../models/dog.dart';
-import '../services/dog_group_service.dart' show families;
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/dog_group_service.dart' show families;
 
 // ─── Quiz Types ──────────────────────────────────────────────────────────────
 
@@ -180,8 +180,9 @@ class QuizEngine {
     if (aLow.contains(bLow) || bLow.contains(aLow)) return true;
     final aWords = aLow.split(' ');
     final bWords = bLow.split(' ');
-    if (aWords.length > 1 && bWords.length > 1 && aWords.last == bWords.last)
+    if (aWords.length > 1 && bWords.length > 1 && aWords.last == bWords.last) {
       return true;
+    }
     return false;
   }
 
@@ -213,11 +214,13 @@ class QuizEngine {
   List<Dog> pickDistractors(List<Dog> pool, Dog correct, int count) {
     final distractors = <Dog>[];
     final similar = pool
-        .where((b) =>
-            b.name != correct.name &&
-            !tooSimilar(b.name, correct.name) &&
-            b.imageUrl != correct.imageUrl &&
-            b.habitat == correct.habitat)
+        .where(
+          (b) =>
+              b.name != correct.name &&
+              !tooSimilar(b.name, correct.name) &&
+              b.imageUrl != correct.imageUrl &&
+              b.habitat == correct.habitat,
+        )
         .toList();
     similar.shuffle(rng);
     for (final b in similar.take(count ~/ 2 + 1)) {
@@ -422,7 +425,7 @@ class QuizEngine {
       '10-20 kg',
       '20-35 kg',
       '35-55 kg',
-      'Over 55 kg'
+      'Over 55 kg',
     ];
     final correctBucket = w < 10
         ? buckets[0]
@@ -599,7 +602,11 @@ class QuizEngine {
   }
 
   QuizQuestion makeQuestionOfType(
-      QuizType type, List<Dog> pool, int level, QuizDifficulty diff) {
+    QuizType type,
+    List<Dog> pool,
+    int level,
+    QuizDifficulty diff,
+  ) {
     switch (type) {
       case QuizType.nameFromPhoto:
         return makeNameFromPhoto(pool);
@@ -650,8 +657,9 @@ class QuizEngine {
             '${dog.name} owners should watch for ${dog.healthPredispositions.take(2).join(' and ')}. Regular vet checkups are key!',
           if (dog.dietNotes.isNotEmpty) dog.dietNotes,
         ];
-        if (variants.isEmpty)
+        if (variants.isEmpty) {
           return '${dog.name} is a ${dog.sizeCategory} ${dog.rarity.label.toLowerCase()} breed.';
+        }
         return variants[rng.nextInt(variants.length)];
 
       case QuizType.sizeFromPhoto:
@@ -732,16 +740,17 @@ class QuizEngine {
             : 'Think about this breed\'s personality';
       case QuizType.oddOneOut:
         final matchingDog = q.photoDogs?.firstWhere(
-            (d) => d.name != q.correctDog.name,
-            orElse: () => q.correctDog);
+          (d) => d.name != q.correctDog.name,
+          orElse: () => q.correctDog,
+        );
         return 'Three of these are ${matchingDog?.sizeCategory ?? "similar"}-sized';
       case QuizType.groupFromBreed:
         return 'Think about what this breed was originally bred for';
       case QuizType.lifespanGuess:
-        return q.correctDog.sizeCategory == "giant" ||
-                q.correctDog.sizeCategory == "large"
-            ? "Larger breeds tend to live shorter"
-            : "Smaller breeds tend to live longer";
+        return q.correctDog.sizeCategory == 'giant' ||
+                q.correctDog.sizeCategory == 'large'
+            ? 'Larger breeds tend to live shorter'
+            : 'Smaller breeds tend to live longer';
       case QuizType.exerciseFromPhoto:
         return '${q.correctDog.name} is a ${q.correctDog.sizeCategory} breed from the ${parseOrigin(q.correctDog.habitat)}';
       case QuizType.weightGuess:

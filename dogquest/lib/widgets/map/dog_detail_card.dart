@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../constants.dart';
-import '../../models/dog.dart';
-import '../../models/dog_friendship.dart';
-import '../../services/dog_friendship_service.dart';
-import '../../services/dog_service.dart';
-import '../../services/player_service.dart';
-import '../network_dog_image.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog_friendship.dart';
+import 'package:dogquest/services/dog_friendship_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/widgets/network_dog_image.dart';
 
 class DogDetailCard extends ConsumerWidget {
   final NeighborhoodDog dog;
@@ -92,8 +91,10 @@ class DogDetailCard extends ConsumerWidget {
                   ),
                   child: Column(
                     children: [
-                      Text(friendship.level.emoji,
-                          style: const TextStyle(fontSize: 16)),
+                      Text(
+                        friendship.level.emoji,
+                        style: const TextStyle(fontSize: 16),
+                      ),
                       Text(
                         friendship.level.label,
                         style: const TextStyle(
@@ -158,14 +159,18 @@ class DogDetailCard extends ConsumerWidget {
                           Text(
                             'Visits: ${friendship.visits}',
                             style: const TextStyle(
-                                color: Colors.white54, fontSize: 12),
+                              color: Colors.white54,
+                              fontSize: 12,
+                            ),
                           ),
                           if (friendship.visitsToNextLevel > 0) ...[
                             const SizedBox(width: 8),
                             Text(
                               '${friendship.visitsToNextLevel} to ${_nextLevelLabel(friendship)}',
                               style: const TextStyle(
-                                  color: Colors.white30, fontSize: 11),
+                                color: Colors.white30,
+                                fontSize: 11,
+                              ),
                             ),
                           ],
                         ],
@@ -215,7 +220,9 @@ class DogDetailCard extends ConsumerWidget {
                         ? Colors.white
                         : Colors.white38,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
                   ),
                   child: Text(friendship.canVisitToday ? 'Visit!' : 'Visited'),
                 ),

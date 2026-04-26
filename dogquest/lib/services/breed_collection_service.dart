@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'kennel_service.dart';
+import 'package:dogquest/services/kennel_service.dart';
 
 /// A themed collection of dog breeds the player can complete for XP.
 class BreedCollection {

@@ -6,10 +6,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../constants.dart';
-import '../../services/kennel_service.dart';
-import '../../services/player_service.dart';
-import 'avatar_picker_sheet.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/widgets/profile/avatar_picker_sheet.dart';
 
 class UserGreeting extends ConsumerWidget {
   const UserGreeting({super.key});
@@ -46,8 +46,10 @@ class UserGreeting extends ConsumerWidget {
                   : CircleAvatar(
                       radius: 22,
                       backgroundColor: avatar.bgColor.withValues(alpha: 0.25),
-                      child: Text(avatar.emoji,
-                          style: const TextStyle(fontSize: 24)),
+                      child: Text(
+                        avatar.emoji,
+                        style: const TextStyle(fontSize: 24),
+                      ),
                     ),
               Positioned(
                 right: -2,

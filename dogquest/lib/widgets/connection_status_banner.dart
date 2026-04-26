@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../services/supabase_connection_service.dart';
+import 'package:dogquest/services/supabase_connection_service.dart';
 
 /// A slim banner that slides in at the top when the device is offline.
 /// Shows "Offline — local mode" and auto-hides when reconnected.
@@ -29,15 +29,18 @@ class ConnectionStatusBanner extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
       color: Colors.orange.shade800,
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.cloud_off, size: 14, color: Colors.white),
-          const SizedBox(width: 8),
-          const Text(
+          Icon(Icons.cloud_off, size: 14, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
             'Offline — local mode',
             style: TextStyle(
-                color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import '../constants.dart';
-import '../models/dog.dart';
-import '../models/my_dog_profile.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/models/my_dog_profile.dart';
 
 /// A beautiful passport-style card for a user's personal dog.
 ///
@@ -184,10 +184,14 @@ class DogPassportCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-                color: const Color(0xFFD4874E).withValues(alpha: 0.3)),
+              color: const Color(0xFFD4874E).withValues(alpha: 0.3),
+            ),
           ),
-          child: Icon(Icons.memory,
-              color: const Color(0xFFD4874E).withValues(alpha: 0.5), size: 20),
+          child: Icon(
+            Icons.memory,
+            color: const Color(0xFFD4874E).withValues(alpha: 0.5),
+            size: 20,
+          ),
         ),
       ],
     );
@@ -204,8 +208,9 @@ class DogPassportCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-                color: const Color(0xFFD4874E).withValues(alpha: 0.5),
-                width: 2),
+              color: const Color(0xFFD4874E).withValues(alpha: 0.5),
+              width: 2,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.4),
@@ -241,11 +246,15 @@ class DogPassportCard extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                        child: _passportField(
-                            'AGE', '$age ${age == 1 ? "yr" : "yrs"}')),
+                      child: _passportField(
+                        'AGE',
+                        '$age ${age == 1 ? "yr" : "yrs"}',
+                      ),
+                    ),
                     if (dogYearsValue != null)
                       Expanded(
-                          child: _passportField('DOG YRS', '$dogYearsValue')),
+                        child: _passportField('DOG YRS', '$dogYearsValue'),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -347,7 +356,9 @@ class DogPassportCard extends StatelessWidget {
               if (breedData!.sizeCategory.isNotEmpty) ...[
                 const SizedBox(width: 12),
                 _miniStat(
-                    Icons.straighten, _sizeLabel(breedData!.sizeCategory)),
+                  Icons.straighten,
+                  _sizeLabel(breedData!.sizeCategory),
+                ),
               ],
             ],
           ),
@@ -409,7 +420,9 @@ class DogPassportCard extends StatelessWidget {
                         Text(
                           'Level $playerLevel  •  Since ${_formatDate(profile.createdAt)}',
                           style: const TextStyle(
-                              color: Colors.white38, fontSize: 9),
+                            color: Colors.white38,
+                            fontSize: 9,
+                          ),
                         ),
                       ],
                     ),
@@ -488,7 +501,7 @@ class DogPassportCard extends StatelessWidget {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }

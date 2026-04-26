@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// A compact pill-shaped badge that displays a rarity name with a
 /// moving shimmer/shine effect. Color matches the Rarity enum.
@@ -103,7 +103,8 @@ class _RarityShimmerBadgeState extends State<RarityShimmerBadge>
     badge = badge.animate(onPlay: (c) => c.repeat()).shimmer(
           duration: shimmerDuration,
           color: color.withValues(
-              alpha: widget.rarity == Rarity.legendary ? 0.5 : 0.3),
+            alpha: widget.rarity == Rarity.legendary ? 0.5 : 0.3,
+          ),
           delay: 500.ms,
         );
 

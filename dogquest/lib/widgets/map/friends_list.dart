@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
-import '../../models/dog_friendship.dart';
-import '../../services/dog_friendship_service.dart';
+import 'package:dogquest/models/dog_friendship.dart';
+import 'package:dogquest/services/dog_friendship_service.dart';
 
 class FriendsList extends StatelessWidget {
   final DogFriendshipService friendSvc;
@@ -24,9 +23,11 @@ class FriendsList extends StatelessWidget {
     final friends =
         friendships.where((f) => f.level == FriendshipLevel.friend).toList();
     final others = friendships
-        .where((f) =>
-            f.level == FriendshipLevel.acquaintance ||
-            f.level == FriendshipLevel.newNeighbor)
+        .where(
+          (f) =>
+              f.level == FriendshipLevel.acquaintance ||
+              f.level == FriendshipLevel.newNeighbor,
+        )
         .toList();
 
     return Column(
@@ -113,8 +114,10 @@ class _FriendshipGroup extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(f.neighborEmoji,
-                          style: const TextStyle(fontSize: 14)),
+                      Text(
+                        f.neighborEmoji,
+                        style: const TextStyle(fontSize: 14),
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         f.neighborDogName,

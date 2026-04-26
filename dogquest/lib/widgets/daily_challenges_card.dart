@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../constants.dart';
-import '../services/daily_challenge_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/daily_challenge_service.dart';
 
 /// A card displaying the 3 daily challenges with progress bars and
 /// an animated "Daily Sweep" indicator.
@@ -291,10 +291,12 @@ class _DailySweepRow extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: allDone
-                  ? LinearGradient(colors: [
-                      Colors.amber.withValues(alpha: 0.3),
-                      Colors.orange.withValues(alpha: 0.3),
-                    ])
+                  ? LinearGradient(
+                      colors: [
+                        Colors.amber.withValues(alpha: 0.3),
+                        Colors.orange.withValues(alpha: 0.3),
+                      ],
+                    )
                   : null,
               color: allDone ? null : Colors.white10,
             ),

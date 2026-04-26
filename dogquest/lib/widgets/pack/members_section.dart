@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
-import '../../models/pack.dart';
-import 'member_card.dart';
+import 'package:dogquest/models/pack.dart';
+import 'package:dogquest/widgets/pack/member_card.dart';
 
 class MembersSection extends StatelessWidget {
   final Pack pack;
@@ -23,11 +22,14 @@ class MembersSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Text('Pack Members',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amber)),
+            const Text(
+              'Pack Members',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.amber,
+              ),
+            ),
             const Spacer(),
             if (pack.members.length < 8)
               GestureDetector(
@@ -41,15 +43,21 @@ class MembersSection extends StatelessWidget {
                     border:
                         Border.all(color: Colors.amber.withValues(alpha: 0.3)),
                   ),
-                  child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.person_add, color: Colors.amber, size: 14),
-                    SizedBox(width: 4),
-                    Text('Add',
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.person_add, color: Colors.amber, size: 14),
+                      SizedBox(width: 4),
+                      Text(
+                        'Add',
                         style: TextStyle(
-                            color: Colors.amber,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600)),
-                  ]),
+                          color: Colors.amber,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],

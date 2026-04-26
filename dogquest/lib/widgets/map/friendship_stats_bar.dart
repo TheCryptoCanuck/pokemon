@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../constants.dart';
-import '../../services/dog_friendship_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/dog_friendship_service.dart';
 
 class FriendshipStatsBar extends StatelessWidget {
   final DogFriendshipService friendSvc;
@@ -27,10 +27,16 @@ class FriendshipStatsBar extends StatelessWidget {
         _MiniStat(emoji: '\u{1F43E}', value: '$total', label: 'Friends'),
         const SizedBox(width: 8),
         _MiniStat(
-            emoji: '\u{1F31F}', value: '$bestFriends', label: 'Best Friends'),
+          emoji: '\u{1F31F}',
+          value: '$bestFriends',
+          label: 'Best Friends',
+        ),
         const SizedBox(width: 8),
         _MiniStat(
-            emoji: '\u{1F3D8}', value: 'Wk ${_weekNumber()}', label: 'Season'),
+          emoji: '\u{1F3D8}',
+          value: 'Wk ${_weekNumber()}',
+          label: 'Season',
+        ),
       ],
     ).animate().fadeIn();
   }

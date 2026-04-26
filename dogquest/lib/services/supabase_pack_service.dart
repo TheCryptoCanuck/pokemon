@@ -290,14 +290,16 @@ class SupabasePackService {
             .select('id')
             .eq('pack_id', pack['id'] as String);
 
-        results.add(PackRemote(
-          id: pack['id'] as String,
-          name: pack['name'] as String,
-          inviteCode: pack['invite_code'] as String,
-          createdBy: pack['created_by'] as String,
-          createdAt: DateTime.parse(pack['created_at'] as String),
-          memberCount: (members as List).length,
-        ));
+        results.add(
+          PackRemote(
+            id: pack['id'] as String,
+            name: pack['name'] as String,
+            inviteCode: pack['invite_code'] as String,
+            createdBy: pack['created_by'] as String,
+            createdAt: DateTime.parse(pack['created_at'] as String),
+            memberCount: (members as List).length,
+          ),
+        );
       }
 
       return results;

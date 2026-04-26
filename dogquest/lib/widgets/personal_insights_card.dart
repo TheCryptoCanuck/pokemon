@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../constants.dart';
-import '../services/kennel_service.dart';
-import '../services/dog_mastery_service.dart';
-import '../services/dog_service.dart';
-import '../services/player_service.dart';
-import '../services/recommendation_service.dart';
-import '../services/sighting_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/dog_mastery_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/services/recommendation_service.dart';
+import 'package:dogquest/services/sighting_service.dart';
 
 /// Displays 2-3 personalized insights about the player's journey,
 /// with staggered fade-in animations.

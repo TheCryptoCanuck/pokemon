@@ -1,4 +1,4 @@
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// Breed-specific dog years calculation.
 /// Small dogs age slower than large dogs.

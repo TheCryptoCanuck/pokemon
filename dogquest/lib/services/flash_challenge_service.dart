@@ -97,9 +97,11 @@ class FlashChallenge {
         completed: map['completed'] as bool? ?? false,
         claimed: map['claimed'] as bool? ?? false,
         createdAt: DateTime.fromMillisecondsSinceEpoch(
-            (map['createdAt'] as num?)?.toInt() ?? 0),
+          (map['createdAt'] as num?)?.toInt() ?? 0,
+        ),
         expiresAt: DateTime.fromMillisecondsSinceEpoch(
-            (map['expiresAt'] as num?)?.toInt() ?? 0),
+          (map['expiresAt'] as num?)?.toInt() ?? 0,
+        ),
       );
 }
 
@@ -246,8 +248,9 @@ class FlashChallengeNotifier extends StateNotifier<FlashChallengeState> {
   /// Returns the XP reward, or 0 if nothing to claim.
   int claimReward() {
     final challenge = state.activeChallenge;
-    if (challenge == null || !challenge.completed || challenge.claimed)
+    if (challenge == null || !challenge.completed || challenge.claimed) {
       return 0;
+    }
 
     final xp = challenge.xpReward;
     state = state.copyWith(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/flash_challenge_service.dart';
+import 'package:dogquest/services/flash_challenge_service.dart';
 
 /// Animated banner displaying the active flash challenge with a live countdown.
 ///
@@ -54,8 +54,9 @@ class _FlashChallengeBannerState extends ConsumerState<FlashChallengeBanner> {
     if (challenge == null) return const SizedBox.shrink();
 
     // Expired and already claimed -- hide
-    if (challenge.isExpired && challenge.claimed)
+    if (challenge.isExpired && challenge.claimed) {
       return const SizedBox.shrink();
+    }
 
     // Expired but not claimed -- show as missed (auto-dismiss)
     if (challenge.isExpired && !challenge.completed) {
@@ -206,8 +207,9 @@ class _FlashChallengeBannerState extends ConsumerState<FlashChallengeBanner> {
     // Pulse red when urgent (< 5 min remaining)
     if (isUrgent) {
       banner = banner.animate(onPlay: (c) => c.repeat(reverse: true)).tint(
-          color: const Color(0xFFC62828).withValues(alpha: 0.15),
-          duration: 600.ms);
+            color: const Color(0xFFC62828).withValues(alpha: 0.15),
+            duration: 600.ms,
+          );
     }
 
     // Entry animation

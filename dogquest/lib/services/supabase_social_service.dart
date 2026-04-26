@@ -104,11 +104,14 @@ class SupabaseSocialService {
     if (uid == null) return [];
 
     try {
-      final response = await _client.rpc('get_feed', params: {
-        'p_user_id': uid,
-        'p_limit': limit,
-        if (cursor != null) 'p_cursor': cursor.toUtc().toIso8601String(),
-      });
+      final response = await _client.rpc(
+        'get_feed',
+        params: {
+          'p_user_id': uid,
+          'p_limit': limit,
+          if (cursor != null) 'p_cursor': cursor.toUtc().toIso8601String(),
+        },
+      );
       final list = response as List<dynamic>;
       return list
           .map((e) => SocialPost.fromJson(e as Map<String, dynamic>))
@@ -355,9 +358,12 @@ class SupabaseSocialService {
   /// Get the XP leaderboard.
   Future<List<Map<String, dynamic>>> getLeaderboard({int limit = 50}) async {
     try {
-      final response = await _client.rpc('get_leaderboard', params: {
-        'p_limit': limit,
-      });
+      final response = await _client.rpc(
+        'get_leaderboard',
+        params: {
+          'p_limit': limit,
+        },
+      );
       return (response as List<dynamic>).cast<Map<String, dynamic>>();
     } catch (e) {
       _log.warning('Failed to fetch leaderboard: $e');

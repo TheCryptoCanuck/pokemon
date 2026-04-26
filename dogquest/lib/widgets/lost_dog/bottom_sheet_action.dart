@@ -8,6 +8,7 @@ class BottomSheetAction extends StatelessWidget {
   final VoidCallback onTap;
 
   const BottomSheetAction({
+    super.key,
     required this.icon,
     required this.iconColor,
     required this.label,

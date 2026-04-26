@@ -3,7 +3,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart' as geolocator;
 import 'package:logging/logging.dart';
-import 'supabase_lost_dog_service.dart';
+import 'package:dogquest/services/supabase_lost_dog_service.dart';
 
 final _log = Logger('LostDogMapController');
 
@@ -67,7 +67,9 @@ class LostDogMapController extends ChangeNotifier {
 
   /// Subscribe to real-time sightings for a specific report.
   void subscribeToSightings(
-      String reportId, SupabaseLostDogService? remoteSvc) {
+    String reportId,
+    SupabaseLostDogService? remoteSvc,
+  ) {
     _sightingSub?.cancel();
     if (remoteSvc == null) return;
 

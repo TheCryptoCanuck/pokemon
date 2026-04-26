@@ -6,10 +6,10 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:image/image.dart' as img;
 import 'package:logging/logging.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
-import '../models/dog.dart';
-import 'dog_service.dart';
-import 'identification_service.dart';
-import 'shared_tflite_service.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/identification_service.dart';
+import 'package:dogquest/services/shared_tflite_service.dart';
 
 /// Input size constant accessible to the top-level preprocessing function.
 /// v5: 260x260 for EfficientNetB2 (was 224 for B0).
@@ -66,13 +66,19 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
   final tightScale = _kInputSize / shortEdge;
   final tightW = (w * tightScale).round();
   final tightH = (h * tightScale).round();
-  final tight = img.copyResize(oriented,
-      width: tightW, height: tightH, interpolation: img.Interpolation.linear);
-  final tightCrop = img.copyCrop(tight,
-      x: (tightW - _kInputSize) ~/ 2,
-      y: (tightH - _kInputSize) ~/ 2,
-      width: _kInputSize,
-      height: _kInputSize);
+  final tight = img.copyResize(
+    oriented,
+    width: tightW,
+    height: tightH,
+    interpolation: img.Interpolation.linear,
+  );
+  final tightCrop = img.copyCrop(
+    tight,
+    x: (tightW - _kInputSize) ~/ 2,
+    y: (tightH - _kInputSize) ~/ 2,
+    width: _kInputSize,
+    height: _kInputSize,
+  );
   tensors.add(buildFlatTensor(tightCrop));
 
   // Variant 2: horizontal flip of tight center crop
@@ -83,13 +89,19 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
   final looseScale = looseTarget / shortEdge;
   final looseW = (w * looseScale).round();
   final looseH = (h * looseScale).round();
-  final loose = img.copyResize(oriented,
-      width: looseW, height: looseH, interpolation: img.Interpolation.linear);
-  final looseCrop = img.copyCrop(loose,
-      x: (looseW - _kInputSize) ~/ 2,
-      y: (looseH - _kInputSize) ~/ 2,
-      width: _kInputSize,
-      height: _kInputSize);
+  final loose = img.copyResize(
+    oriented,
+    width: looseW,
+    height: looseH,
+    interpolation: img.Interpolation.linear,
+  );
+  final looseCrop = img.copyCrop(
+    loose,
+    x: (looseW - _kInputSize) ~/ 2,
+    y: (looseH - _kInputSize) ~/ 2,
+    width: _kInputSize,
+    height: _kInputSize,
+  );
   tensors.add(buildFlatTensor(looseCrop));
 
   return tensors; // 3 tensors, ~600KB total
@@ -300,7 +312,8 @@ class TfliteIdentificationService implements IdentificationService {
     // Uniform for 151 classes = ~0.66% each, entropy = 1.0.
     if (normalizedEntropy > 0.97) {
       _log.info(
-          'Rejected: entropy ${normalizedEntropy.toStringAsFixed(3)} > 0.97 — nearly uniform');
+        'Rejected: entropy ${normalizedEntropy.toStringAsFixed(3)} > 0.97 — nearly uniform',
+      );
       return [];
     }
 
@@ -328,11 +341,13 @@ class TfliteIdentificationService implements IdentificationService {
       if (seen.contains(dog.name)) continue;
       seen.add(dog.name);
 
-      results.add(IdentificationResult(
-        dog: dog,
-        confidence: entry.prob,
-        source: 'ml',
-      ));
+      results.add(
+        IdentificationResult(
+          dog: dog,
+          confidence: entry.prob,
+          source: 'ml',
+        ),
+      );
 
       if (results.length >= _topK) break;
     }
@@ -341,7 +356,8 @@ class TfliteIdentificationService implements IdentificationService {
       _log.info('Returning ${results.length} result(s): '
           '${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}');
       _log.info(
-          'DOGQUEST_ID: RESULT -> ${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}');
+        'DOGQUEST_ID: RESULT -> ${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}',
+      );
     } else {
       _log.info('No label matches — returning unrecognized sentinel');
       return _unrecognizedResult();

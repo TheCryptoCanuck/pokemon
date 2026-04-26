@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import '../constants.dart';
-import '../models/dog.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
 
 final _log = Logger('DogService');
 
@@ -174,7 +174,9 @@ class DogService {
         final lower = b.name.toLowerCase();
         _commonIndex.putIfAbsent(lower, () => b);
         _normalizedCommonIndex.putIfAbsent(
-            _normalizeCommonName(b.name), () => b);
+          _normalizeCommonName(b.name),
+          () => b,
+        );
       }
 
       // Register name aliases in the common name index
@@ -184,7 +186,9 @@ class DogService {
         if (target != null) {
           _commonIndex.putIfAbsent(entry.key, () => target);
           _normalizedCommonIndex.putIfAbsent(
-              _normalizeCommonName(entry.key), () => target);
+            _normalizeCommonName(entry.key),
+            () => target,
+          );
         }
       }
 
@@ -337,5 +341,6 @@ class DogService {
 
 final dogServiceProvider = Provider<DogService>((ref) {
   throw UnimplementedError(
-      'dogServiceProvider must be overridden after loading');
+    'dogServiceProvider must be overridden after loading',
+  );
 });

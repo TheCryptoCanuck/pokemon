@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../constants.dart';
-import '../models/my_dog_profile.dart';
-import '../services/my_dog_service.dart';
-import '../services/lost_dog_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/my_dog_profile.dart';
+import 'package:dogquest/services/my_dog_service.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
 
 class ReportLostScreen extends ConsumerStatefulWidget {
   const ReportLostScreen({super.key});
@@ -132,7 +132,7 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
             Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: bgCard,
                 shape: BoxShape.circle,
               ),
@@ -283,11 +283,13 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
             const SizedBox(height: 16),
 
             // Dog selection cards
-            ...dogs.map((dog) => _DogSelectionCard(
-                  dog: dog,
-                  isSelected: _selectedDog?.name == dog.name,
-                  onTap: () => setState(() => _selectedDog = dog),
-                )),
+            ...dogs.map(
+              (dog) => _DogSelectionCard(
+                dog: dog,
+                isSelected: _selectedDog?.name == dog.name,
+                onTap: () => setState(() => _selectedDog = dog),
+              ),
+            ),
 
             // Selected dog detail + form fields
             if (_selectedDog != null) ...[
@@ -369,7 +371,10 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
                       child: Text(
                         'A visual fingerprint will be generated from your dog\'s photo to match against stray scans.',
                         style: TextStyle(
-                            color: Colors.white54, fontSize: 12, height: 1.4),
+                          color: Colors.white54,
+                          fontSize: 12,
+                          height: 1.4,
+                        ),
                       ),
                     ),
                   ],
@@ -414,7 +419,9 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
                               text:
                                   'I agree my contact details may be shared with verified users who report a sighting. ',
                               style: TextStyle(
-                                  color: Colors.white70, fontSize: 14),
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
                             ),
                             TextSpan(
                               text: 'Privacy Policy',
@@ -751,8 +758,11 @@ class _AddPhotoButton extends StatelessWidget {
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_photo_alternate_outlined,
-                color: Colors.white38, size: 24),
+            Icon(
+              Icons.add_photo_alternate_outlined,
+              color: Colors.white38,
+              size: 24,
+            ),
             SizedBox(height: 4),
             Text(
               'Add',

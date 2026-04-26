@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/my_dog_profile.dart';
+import 'package:dogquest/models/my_dog_profile.dart';
 
 /// Persists the user's personal dog profiles to Hive.
 class MyDogService {
@@ -63,5 +63,6 @@ class MyDogService {
 
 final myDogServiceProvider = Provider<MyDogService>((ref) {
   throw UnimplementedError(
-      'myDogServiceProvider must be overridden after Hive init');
+    'myDogServiceProvider must be overridden after Hive init',
+  );
 });

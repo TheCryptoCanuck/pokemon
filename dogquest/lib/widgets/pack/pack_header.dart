@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../constants.dart';
-import '../../models/pack.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/pack.dart';
 
 class PackHeader extends StatelessWidget {
   final Pack pack;
@@ -16,10 +16,12 @@ class PackHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          Colors.amber.withValues(alpha: 0.12),
-          Colors.orange.withValues(alpha: 0.06),
-        ]),
+        gradient: LinearGradient(
+          colors: [
+            Colors.amber.withValues(alpha: 0.12),
+            Colors.orange.withValues(alpha: 0.06),
+          ],
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
       ),
@@ -27,15 +29,19 @@ class PackHeader extends StatelessWidget {
         children: [
           Text(pack.emoji, style: const TextStyle(fontSize: 48)),
           const SizedBox(height: 8),
-          Text(pack.name,
-              style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
+          Text(
+            pack.name,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
           const SizedBox(height: 4),
           Text(
-              '${pack.members.length} member${pack.members.length == 1 ? '' : 's'} • ${pack.totalDogs} dog${pack.totalDogs == 1 ? '' : 's'}',
-              style: const TextStyle(color: Colors.white54, fontSize: 13)),
+            '${pack.members.length} member${pack.members.length == 1 ? '' : 's'} • ${pack.totalDogs} dog${pack.totalDogs == 1 ? '' : 's'}',
+            style: const TextStyle(color: Colors.white54, fontSize: 13),
+          ),
           const SizedBox(height: 16),
 
           // Invite code
@@ -51,14 +57,16 @@ class PackHeader extends StatelessWidget {
               children: [
                 const Icon(Icons.vpn_key, color: Colors.amber, size: 16),
                 const SizedBox(width: 10),
-                Text(pack.inviteCode,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      letterSpacing: 3,
-                      fontFamily: 'monospace',
-                    )),
+                Text(
+                  pack.inviteCode,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    letterSpacing: 3,
+                    fontFamily: 'monospace',
+                  ),
+                ),
                 const SizedBox(width: 12),
                 GestureDetector(
                   onTap: () {
@@ -68,8 +76,10 @@ class PackHeader extends StatelessWidget {
                       const SnackBar(
                         backgroundColor: bgCard,
                         duration: Duration(seconds: 2),
-                        content: Text('Invite code copied!',
-                            style: TextStyle(color: Colors.amber)),
+                        content: Text(
+                          'Invite code copied!',
+                          style: TextStyle(color: Colors.amber),
+                        ),
                       ),
                     );
                   },

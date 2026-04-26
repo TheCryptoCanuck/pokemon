@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
-import 'api_client.dart';
+import 'package:dogquest/services/api_client.dart';
 
 final _log = Logger('SocialService');
 

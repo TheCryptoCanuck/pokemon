@@ -1,26 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
-import '../helpers/game_helpers.dart';
-import '../models/dog.dart';
-import 'analytics_service.dart';
-import 'activity_tracker_service.dart';
-import 'backend_sync_service.dart';
-import 'combo_service.dart';
-import 'daily_challenge_service.dart';
-import 'daily_dog_service.dart';
-import 'dog_group_service.dart';
-import 'dog_mastery_service.dart';
-import 'dog_service.dart';
-import 'flash_challenge_service.dart';
-import 'haptic_service.dart';
-import 'kennel_service.dart';
-import 'location_service.dart';
-import 'mystery_reward_service.dart';
-import 'player_service.dart';
-import 'seasonal_event_service.dart';
-import 'sighting_service.dart';
-import 'dog_social_service.dart';
+import 'package:dogquest/helpers/game_helpers.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/analytics_service.dart';
+import 'package:dogquest/services/activity_tracker_service.dart';
+import 'package:dogquest/services/backend_sync_service.dart';
+import 'package:dogquest/services/combo_service.dart';
+import 'package:dogquest/services/daily_challenge_service.dart';
+import 'package:dogquest/services/daily_dog_service.dart';
+import 'package:dogquest/services/dog_group_service.dart';
+import 'package:dogquest/services/dog_mastery_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/flash_challenge_service.dart';
+import 'package:dogquest/services/haptic_service.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/location_service.dart';
+import 'package:dogquest/services/mystery_reward_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/services/seasonal_event_service.dart';
+import 'package:dogquest/services/sighting_service.dart';
+import 'package:dogquest/services/dog_social_service.dart';
 
 final _log = Logger('IdentificationOrchestrator');
 
@@ -127,33 +127,37 @@ class IdentificationOrchestrator {
 
     // ── Log sighting (regardless of already owned) ──────────────────────
     final locationSvc = _ref.read(locationServiceProvider);
-    _ref.read(sightingServiceProvider).log(Sighting(
-          dogName: dog.name,
-          timestamp: DateTime.now(),
-          confidence: confidence,
-          source: source,
-          latitude: lat ?? locationSvc.latitude,
-          longitude: lon ?? locationSvc.longitude,
-          accuracy: accuracy ?? locationSvc.accuracy,
-        ));
+    _ref.read(sightingServiceProvider).log(
+          Sighting(
+            dogName: dog.name,
+            timestamp: DateTime.now(),
+            confidence: confidence,
+            source: source,
+            latitude: lat ?? locationSvc.latitude,
+            longitude: lon ?? locationSvc.longitude,
+            accuracy: accuracy ?? locationSvc.accuracy,
+          ),
+        );
     _ref.read(playerProvider.notifier).recordSighting();
 
     // ── Post to social feed ──────────────────────────────────────────────
     try {
       final socialSvc = _ref.read(dogSocialServiceProvider);
       final isNew = !alreadyOwned;
-      socialSvc.addFeedItem(FeedItem(
-        id: '${dog.name}-${DateTime.now().millisecondsSinceEpoch}',
-        dogName: dog.name,
-        breed: dog.name,
-        type: isNew ? 'sighting' : 'photo',
-        text: isNew
-            ? 'Discovered a ${dog.name}! ${(confidence * 100).toStringAsFixed(0)}% confidence'
-            : 'Spotted a ${dog.name} again',
-        timestamp: DateTime.now(),
-        latitude: lat ?? locationSvc.latitude,
-        longitude: lon ?? locationSvc.longitude,
-      ));
+      socialSvc.addFeedItem(
+        FeedItem(
+          id: '${dog.name}-${DateTime.now().millisecondsSinceEpoch}',
+          dogName: dog.name,
+          breed: dog.name,
+          type: isNew ? 'sighting' : 'photo',
+          text: isNew
+              ? 'Discovered a ${dog.name}! ${(confidence * 100).toStringAsFixed(0)}% confidence'
+              : 'Spotted a ${dog.name} again',
+          timestamp: DateTime.now(),
+          latitude: lat ?? locationSvc.latitude,
+          longitude: lon ?? locationSvc.longitude,
+        ),
+      );
     } catch (_) {} // social service may not be initialized in tests
 
     // ── Record activity for heatmap ─────────────────────────────────────

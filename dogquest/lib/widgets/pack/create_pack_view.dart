@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../constants.dart';
-import '../../services/supabase_pack_service.dart';
+import 'package:dogquest/services/supabase_pack_service.dart';
 
 class CreatePackView extends ConsumerWidget {
   final VoidCallback onCreatePack;
@@ -27,11 +26,14 @@ class CreatePackView extends ConsumerWidget {
           children: [
             const Text('\u{1F43E}', style: TextStyle(fontSize: 72)),
             const SizedBox(height: 20),
-            const Text('Start Your Pack',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
+            const Text(
+              'Start Your Pack',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
             const SizedBox(height: 8),
             const Text(
               'Create a family pack to share your dogs, track combined stats, and see weekly reports together.',
@@ -56,7 +58,8 @@ class CreatePackView extends ConsumerWidget {
                   foregroundColor: Colors.amber,
                   side: BorderSide(color: Colors.amber.withValues(alpha: 0.4)),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
           ],

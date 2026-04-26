@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../constants.dart';
-import '../services/analytics_service.dart';
-import '../widgets/connection_status_banner.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/analytics_service.dart';
+import 'package:dogquest/widgets/connection_status_banner.dart';
 
 const _tabLabels = ['Sightings', 'Identify', 'Kennel', 'Field Guide', 'Me'];
 
@@ -48,12 +48,16 @@ class HomeShell extends ConsumerWidget {
               'to_tab': toTab,
             });
           }
-          navigationShell.goBranch(i,
-              initialLocation: i == navigationShell.currentIndex);
+          navigationShell.goBranch(
+            i,
+            initialLocation: i == navigationShell.currentIndex,
+          );
         },
         items: [
           const BottomNavigationBarItem(
-              icon: Icon(Icons.location_on_outlined), label: 'Sightings'),
+            icon: Icon(Icons.location_on_outlined),
+            label: 'Sightings',
+          ),
           BottomNavigationBarItem(
             icon: Container(
               padding: const EdgeInsets.all(10),
@@ -75,9 +79,13 @@ class HomeShell extends ConsumerWidget {
             label: 'Identify',
           ),
           const BottomNavigationBarItem(
-              icon: Icon(Icons.collections), label: 'Kennel'),
+            icon: Icon(Icons.collections),
+            label: 'Kennel',
+          ),
           const BottomNavigationBarItem(
-              icon: Icon(Icons.menu_book), label: 'Field Guide'),
+            icon: Icon(Icons.menu_book),
+            label: 'Field Guide',
+          ),
           const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
         ],
       ),

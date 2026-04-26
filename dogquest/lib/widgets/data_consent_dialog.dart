@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../constants.dart';
-import '../services/data_consent_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/data_consent_service.dart';
 
 /// One-time dialog asking the user to opt-in to aggregated data sharing.
 ///

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../constants.dart';
-import '../models/dog.dart';
-import 'kennel_service.dart';
-import 'dog_mastery_service.dart';
-import 'dog_service.dart';
-import 'player_service.dart';
-import 'sighting_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/dog_mastery_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/services/sighting_service.dart';
 
 // ─── Personal Insight ─────────────────────────────────────────────────────────
 
@@ -74,13 +74,15 @@ class RecommendationService {
     for (final m in milestones) {
       final remaining = m - kennelCount;
       if (remaining > 0 && remaining <= 3) {
-        insights.add(PersonalInsight(
-          text:
-              "You're $remaining species away from the '$m Species' milestone!",
-          icon: Icons.emoji_events,
-          color: Colors.amber,
-          actionLabel: 'View Collection',
-        ));
+        insights.add(
+          PersonalInsight(
+            text:
+                "You're $remaining species away from the '$m Species' milestone!",
+            icon: Icons.emoji_events,
+            color: Colors.amber,
+            actionLabel: 'View Collection',
+          ),
+        );
         break;
       }
     }
@@ -89,20 +91,24 @@ class RecommendationService {
     if (player.streak > 1 && player.bestStreak > player.streak) {
       final gap = player.bestStreak - player.streak;
       if (gap <= 3) {
-        insights.add(PersonalInsight(
-          text:
-              "Your best streak was ${player.bestStreak} days — you're at ${player.streak} now. Keep going!",
-          icon: Icons.local_fire_department,
-          color: Colors.deepOrange,
-        ));
+        insights.add(
+          PersonalInsight(
+            text:
+                "Your best streak was ${player.bestStreak} days — you're at ${player.streak} now. Keep going!",
+            icon: Icons.local_fire_department,
+            color: Colors.deepOrange,
+          ),
+        );
       }
     } else if (player.streak >= 3) {
-      insights.add(PersonalInsight(
-        text:
-            "${player.streak}-day streak! You're on fire! Keep identifying dogs daily.",
-        icon: Icons.local_fire_department,
-        color: Colors.deepOrange,
-      ));
+      insights.add(
+        PersonalInsight(
+          text:
+              "${player.streak}-day streak! You're on fire! Keep identifying dogs daily.",
+          icon: Icons.local_fire_department,
+          color: Colors.deepOrange,
+        ),
+      );
     }
 
     // ── Mastery insight ─────────────────────────────────────────────────
@@ -111,32 +117,38 @@ class RecommendationService {
     if (totalMastered > 0 && totalMastered < 10) {
       final toNext = _nextMasteryMilestone(totalMastered) - totalMastered;
       if (toNext > 0) {
-        insights.add(PersonalInsight(
-          text:
-              "You've mastered $totalMastered dog${totalMastered == 1 ? '' : 's'}. Master $toNext more to reach the next tier!",
-          icon: Icons.workspace_premium,
-          color: Colors.blue,
-          actionLabel: 'View Mastery',
-        ));
+        insights.add(
+          PersonalInsight(
+            text:
+                "You've mastered $totalMastered dog${totalMastered == 1 ? '' : 's'}. Master $toNext more to reach the next tier!",
+            icon: Icons.workspace_premium,
+            color: Colors.blue,
+            actionLabel: 'View Mastery',
+          ),
+        );
       }
     } else if (totalExpert > 0 && totalMastered == 0) {
-      insights.add(PersonalInsight(
-        text:
-            "You have $totalExpert dog${totalExpert == 1 ? '' : 's'} at Expert level. Keep sighting them to reach Master!",
-        icon: Icons.star,
-        color: Colors.blue,
-      ));
+      insights.add(
+        PersonalInsight(
+          text:
+              "You have $totalExpert dog${totalExpert == 1 ? '' : 's'} at Expert level. Keep sighting them to reach Master!",
+          icon: Icons.star,
+          color: Colors.blue,
+        ),
+      );
     }
 
     // ── Sighting activity ───────────────────────────────────────────────
     final totalSightings = sightingSvc.totalSightings;
     if (totalSightings >= 10 && insights.length < 3) {
-      insights.add(PersonalInsight(
-        text:
-            "You've logged $totalSightings total sightings. Every observation counts!",
-        icon: Icons.visibility,
-        color: const Color(0xFFD4874E),
-      ));
+      insights.add(
+        PersonalInsight(
+          text:
+              "You've logged $totalSightings total sightings. Every observation counts!",
+          icon: Icons.visibility,
+          color: const Color(0xFFD4874E),
+        ),
+      );
     }
 
     // ── Habitat insight ─────────────────────────────────────────────────
@@ -146,12 +158,14 @@ class RecommendationService {
         final topHabitat =
             habitatCounts.entries.reduce((a, b) => a.value >= b.value ? a : b);
         if (topHabitat.value >= 3) {
-          insights.add(PersonalInsight(
-            text:
-                "Try looking for dogs in ${topHabitat.key} habitats — you've found ${topHabitat.value} there already!",
-            icon: Icons.forest,
-            color: const Color(0xFFD4874E),
-          ));
+          insights.add(
+            PersonalInsight(
+              text:
+                  "Try looking for dogs in ${topHabitat.key} habitats — you've found ${topHabitat.value} there already!",
+              icon: Icons.forest,
+              color: const Color(0xFFD4874E),
+            ),
+          );
         }
       }
     }
@@ -160,22 +174,26 @@ class RecommendationService {
     if (kennelCount >= 15 && insights.length < 3) {
       // Simulated percentile based on collection size
       final percentile = (100 - (kennelCount * 0.6).clamp(5, 85)).round();
-      insights.add(PersonalInsight(
-        text: "You're in the top $percentile% of collectors!",
-        icon: Icons.leaderboard,
-        color: Colors.amber,
-      ));
+      insights.add(
+        PersonalInsight(
+          text: "You're in the top $percentile% of collectors!",
+          icon: Icons.leaderboard,
+          color: Colors.amber,
+        ),
+      );
     }
 
     // ── Level progress ──────────────────────────────────────────────────
     if (insights.length < 2 && player.level >= 1) {
       final xpNeeded = player.xpForNextLevel - player.xp;
-      insights.add(PersonalInsight(
-        text:
-            "You need $xpNeeded XP to reach level ${player.level + 1}. Identify more dogs!",
-        icon: Icons.arrow_upward,
-        color: const Color(0xFFD4874E),
-      ));
+      insights.add(
+        PersonalInsight(
+          text:
+              'You need $xpNeeded XP to reach level ${player.level + 1}. Identify more dogs!',
+          icon: Icons.arrow_upward,
+          color: const Color(0xFFD4874E),
+        ),
+      );
     }
 
     // Return at most 3 insights
@@ -207,7 +225,7 @@ class RecommendationService {
       Rarity.common,
       Rarity.uncommon,
       Rarity.rare,
-      Rarity.legendary
+      Rarity.legendary,
     ]) {
       final totalInRarity = allDogs.where((b) => b.rarity == rarity).length;
       final collectedInRarity =

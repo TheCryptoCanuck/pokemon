@@ -6,5 +6,18 @@ include: package:flutter_lints/flutter.yaml
 # only for the few legitimate non-const cases (e.g. RenderRepaintBoundary).
 linter:
   rules:
+    # Const promotion (C4 sweep — run `dart fix --apply` to batch-apply)
     prefer_const_constructors: true
     prefer_const_literals_to_create_immutables: true
+
+    # Code quality
+    require_trailing_commas: true          # cleaner diffs on multi-arg calls
+    always_use_package_imports: true       # prevents relative-import drift across 59+ services
+    avoid_print: true                      # enforces log() / Logger usage (already in flutter_lints; explicit for clarity)
+    prefer_single_quotes: true             # consistent string quoting throughout codebase
+    sort_pub_dependencies: false           # do NOT sort — preserves intentional grouping in pubspec.yaml
+    use_super_parameters: true             # Dart 3 super-initializer params (reduces boilerplate in widgets)
+
+    # Null safety discipline
+    avoid_dynamic_calls: true             # catches untyped .call() patterns
+    unnecessary_null_checks: true         # flags redundant ! after safe null checks

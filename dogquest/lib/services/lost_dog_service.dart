@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 import 'package:uuid/uuid.dart';
-import '../models/lost_dog_report.dart';
-import '../models/my_dog_profile.dart';
-import 'dog_embedding_service.dart';
-import 'location_service.dart';
-import 'supabase_lost_dog_service.dart';
+import 'package:dogquest/models/lost_dog_report.dart';
+import 'package:dogquest/models/my_dog_profile.dart';
+import 'package:dogquest/services/dog_embedding_service.dart';
+import 'package:dogquest/services/location_service.dart';
+import 'package:dogquest/services/supabase_lost_dog_service.dart';
 
 final _log = Logger('LostDogService');
 
@@ -191,14 +191,16 @@ class LostDogService {
           );
         }
 
-        matches.add(LostDogMatch(
-          reportId: report.id,
-          dogName: report.dogName,
-          breed: report.breed,
-          photoPath: report.photoPath,
-          similarity: similarity,
-          distanceKm: distanceKm,
-        ));
+        matches.add(
+          LostDogMatch(
+            reportId: report.id,
+            dogName: report.dogName,
+            breed: report.breed,
+            photoPath: report.photoPath,
+            similarity: similarity,
+            distanceKm: distanceKm,
+          ),
+        );
       }
     }
 
@@ -229,20 +231,23 @@ class LostDogService {
         );
 
         if (similarity >= _matchThreshold) {
-          matches.add(LostDogMatch(
-            reportId: remote.id,
-            dogName: remote.dogName,
-            breed: remote.breed.isEmpty ? null : remote.breed,
-            photoPath: null, // remote reports use URLs, not local paths
-            similarity: similarity,
-            distanceKm: remote.distanceKm,
-          ));
+          matches.add(
+            LostDogMatch(
+              reportId: remote.id,
+              dogName: remote.dogName,
+              breed: remote.breed.isEmpty ? null : remote.breed,
+              photoPath: null, // remote reports use URLs, not local paths
+              similarity: similarity,
+              distanceKm: remote.distanceKm,
+            ),
+          );
         }
       }
 
       matches.sort((a, b) => b.similarity.compareTo(a.similarity));
       _log.info(
-          'Stray scan (incl. network): ${matches.length} match(es) found');
+        'Stray scan (incl. network): ${matches.length} match(es) found',
+      );
     } else {
       _log.info('Stray scan: ${matches.length} match(es) found');
     }
@@ -295,5 +300,6 @@ class LostDogService {
 
 final lostDogServiceProvider = Provider<LostDogService>((ref) {
   throw UnimplementedError(
-      'lostDogServiceProvider must be overridden after Hive init');
+    'lostDogServiceProvider must be overridden after Hive init',
+  );
 });

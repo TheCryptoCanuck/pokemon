@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../capture_button.dart';
-import 'gallery_button.dart';
+import 'package:dogquest/widgets/capture_button.dart';
+import 'package:dogquest/widgets/identify/gallery_button.dart';
 
 class CameraControls extends StatelessWidget {
   final VoidCallback onTakePhoto;

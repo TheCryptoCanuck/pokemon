@@ -6,12 +6,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
-import '../../constants.dart';
-import '../../models/lost_dog_report.dart';
-import '../../services/lost_dog_service.dart';
-import '../../services/supabase_lost_dog_service.dart';
-import 'lost_dog_report_card.dart';
-import 'remote_lost_dog_card.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
+import 'package:dogquest/services/supabase_lost_dog_service.dart';
+import 'package:dogquest/widgets/lost_dog/lost_dog_report_card.dart';
+import 'package:dogquest/widgets/lost_dog/remote_lost_dog_card.dart';
 
 final _log = Logger('MissingDogsTab');
 
@@ -20,6 +18,7 @@ class MissingDogsTab extends ConsumerStatefulWidget {
   final VoidCallback onChanged;
 
   const MissingDogsTab({
+    super.key,
     required this.lostDogSvc,
     required this.onChanged,
   });
@@ -88,7 +87,8 @@ class _MissingDogsTabState extends ConsumerState<MissingDogsTab> {
     final localNames = localReports.map((r) => r.dogName.toLowerCase()).toSet();
     final remoteOnly = _remoteReports
         .where(
-            (r) => r.isActive && !localNames.contains(r.dogName.toLowerCase()))
+          (r) => r.isActive && !localNames.contains(r.dogName.toLowerCase()),
+        )
         .toList();
 
     final totalCount = localReports.length + remoteOnly.length;
@@ -153,10 +153,12 @@ class _MissingDogsTabState extends ConsumerState<MissingDogsTab> {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          Colors.red.withValues(alpha: 0.12),
-          Colors.orange.withValues(alpha: 0.06),
-        ]),
+        gradient: LinearGradient(
+          colors: [
+            Colors.red.withValues(alpha: 0.12),
+            Colors.orange.withValues(alpha: 0.06),
+          ],
+        ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
       ),
@@ -170,8 +172,11 @@ class _MissingDogsTabState extends ConsumerState<MissingDogsTab> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Center(
-              child: Icon(Icons.warning_amber_rounded,
-                  color: Colors.redAccent, size: 24),
+              child: Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.redAccent,
+                size: 24,
+              ),
             ),
           ),
           const SizedBox(width: 14),

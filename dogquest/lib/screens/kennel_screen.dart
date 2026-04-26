@@ -7,14 +7,14 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shimmer/shimmer.dart';
-import '../constants.dart';
-import '../models/dog.dart';
-import '../services/kennel_service.dart';
-import '../services/dog_group_service.dart';
-import '../services/dog_service.dart';
-import '../services/breed_collection_service.dart';
-import '../widgets/breed_share_sheet.dart';
-import '../widgets/dog_detail_sheet.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/dog_group_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/breed_collection_service.dart';
+import 'package:dogquest/widgets/breed_share_sheet.dart';
+import 'package:dogquest/widgets/dog_detail_sheet.dart';
 
 enum KennelSortMode { recent, name, rarity }
 
@@ -56,28 +56,32 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
         }
         if (box.isEmpty) {
           return Center(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.pets, size: 72, color: Colors.white30),
-              const SizedBox(height: 20),
-              const Text(
-                'Your collection starts here',
-                style: TextStyle(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.pets, size: 72, color: Colors.white30),
+                const SizedBox(height: 20),
+                const Text(
+                  'Your collection starts here',
+                  style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Identify your first dog to begin!',
-                style: TextStyle(color: Colors.white54, fontSize: 15),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: () => context.go('/identify'),
-                icon: const Icon(Icons.camera_alt_rounded),
-                label: const Text('Start Identifying'),
-              ),
-            ]).animate().fadeIn().slideY(begin: 0.1),
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Identify your first dog to begin!',
+                  style: TextStyle(color: Colors.white54, fontSize: 15),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () => context.go('/identify'),
+                  icon: const Icon(Icons.camera_alt_rounded),
+                  label: const Text('Start Identifying'),
+                ),
+              ],
+            ).animate().fadeIn().slideY(begin: 0.1),
           );
         }
 
@@ -105,8 +109,10 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
               Rarity.common: 3,
               Rarity.unknown: 4,
             };
-            dogs.sort((a, b) => (rarityOrder[a.rarity] ?? 5)
-                .compareTo(rarityOrder[b.rarity] ?? 5));
+            dogs.sort(
+              (a, b) => (rarityOrder[a.rarity] ?? 5)
+                  .compareTo(rarityOrder[b.rarity] ?? 5),
+            );
         }
 
         if (_sortMode == KennelSortMode.recent) {
@@ -131,20 +137,29 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                     // Collection progress bar
                     Row(
                       children: [
-                        Text('${box.length}',
-                            style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.amber)),
-                        Text(' / ${dogSvc.all.length} species',
-                            style: const TextStyle(
-                                color: Colors.white54, fontSize: 14)),
+                        Text(
+                          '${box.length}',
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.amber,
+                          ),
+                        ),
+                        Text(
+                          ' / ${dogSvc.all.length} species',
+                          style: const TextStyle(
+                            color: Colors.white54,
+                            fontSize: 14,
+                          ),
+                        ),
                         const Spacer(),
                         Text(
-                            '${(box.length / dogSvc.all.length * 100).toStringAsFixed(1)}%',
-                            style: const TextStyle(
-                                color: Colors.amber,
-                                fontWeight: FontWeight.bold)),
+                          '${(box.length / dogSvc.all.length * 100).toStringAsFixed(1)}%',
+                          style: const TextStyle(
+                            color: Colors.amber,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ).animate().fadeIn(),
                     const SizedBox(height: 6),
@@ -166,22 +181,27 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                           Rarity.common,
                           Rarity.uncommon,
                           Rarity.rare,
-                          Rarity.legendary
+                          Rarity.legendary,
                         ])
                           Padding(
                             padding: const EdgeInsets.only(right: 6),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 3),
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
                               decoration: BoxDecoration(
                                 color: r.color.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Text('${rarityCounts[r] ?? 0} ${r.name}',
-                                  style: TextStyle(
-                                      color: r.color,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold)),
+                              child: Text(
+                                '${rarityCounts[r] ?? 0} ${r.name}',
+                                style: TextStyle(
+                                  color: r.color,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                       ],
@@ -203,11 +223,14 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                   _filterChip(null, 'All', Colors.white70),
                                   ...Rarity.values
                                       .where((r) => r != Rarity.unknown)
-                                      .map((r) => _filterChip(
+                                      .map(
+                                        (r) => _filterChip(
                                           r,
                                           r.name[0].toUpperCase() +
                                               r.name.substring(1),
-                                          r.color)),
+                                          r.color,
+                                        ),
+                                      ),
                                 ],
                               ),
                             ),
@@ -220,18 +243,24 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                           PopupMenuButton<KennelSortMode>(
                             onSelected: (mode) =>
                                 setState(() => _sortMode = mode),
-                            icon: const Icon(Icons.sort,
-                                color: Colors.white54, size: 20),
+                            icon: const Icon(
+                              Icons.sort,
+                              color: Colors.white54,
+                              size: 20,
+                            ),
                             itemBuilder: (_) => [
                               const PopupMenuItem(
-                                  value: KennelSortMode.recent,
-                                  child: Text('Recent')),
+                                value: KennelSortMode.recent,
+                                child: Text('Recent'),
+                              ),
                               const PopupMenuItem(
-                                  value: KennelSortMode.name,
-                                  child: Text('Name')),
+                                value: KennelSortMode.name,
+                                child: Text('Name'),
+                              ),
                               const PopupMenuItem(
-                                  value: KennelSortMode.rarity,
-                                  child: Text('Rarity')),
+                                value: KennelSortMode.rarity,
+                                child: Text('Rarity'),
+                              ),
                             ],
                           ),
                         ],
@@ -256,8 +285,9 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                 SliverFillRemaining(
                   child: Center(
                     child: Text(
-                        'No ${_filterRarity?.name ?? ''} dogs in your kennel yet',
-                        style: const TextStyle(color: Colors.white38)),
+                      'No ${_filterRarity?.name ?? ''} dogs in your kennel yet',
+                      style: const TextStyle(color: Colors.white38),
+                    ),
                   ),
                 )
               else
@@ -270,17 +300,21 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                         return GestureDetector(
                           onTap: () {
                             HapticFeedback.lightImpact();
-                            DogDetailSheet.show(context, dog, _player,
-                                source: 'kennel');
+                            DogDetailSheet.show(
+                              context,
+                              dog,
+                              _player,
+                              source: 'kennel',
+                            );
                           },
                           child: Card(
                             color: bgCard,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                               side: BorderSide(
-                                  color:
-                                      dog.rarity.color.withValues(alpha: 0.6),
-                                  width: 1.5),
+                                color: dog.rarity.color.withValues(alpha: 0.6),
+                                width: 1.5,
+                              ),
                             ),
                             clipBehavior: Clip.antiAlias,
                             child: Stack(
@@ -290,7 +324,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                   imageUrl: dog.imageUrl,
                                   httpHeaders: const {
                                     'User-Agent':
-                                        'DogQuest/1.0 (dog identification app)'
+                                        'DogQuest/1.0 (dog identification app)',
                                   },
                                   fit: BoxFit.cover,
                                   placeholder: (_, __) => Shimmer.fromColors(
@@ -299,8 +333,9 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                     child: Container(color: bgCard),
                                   ),
                                   errorWidget: (_, __, ___) => const Icon(
-                                      Icons.broken_image,
-                                      color: Colors.white24),
+                                    Icons.broken_image,
+                                    color: Colors.white24,
+                                  ),
                                 ),
                                 // Share button (top-right)
                                 Positioned(
@@ -317,8 +352,11 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                         color: Colors.black54,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: const Icon(Icons.share,
-                                          color: Colors.white70, size: 14),
+                                      child: const Icon(
+                                        Icons.share,
+                                        color: Colors.white70,
+                                        size: 14,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -333,27 +371,34 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                         end: Alignment.bottomCenter,
                                         colors: [
                                           Colors.transparent,
-                                          Colors.black.withValues(alpha: 0.8)
+                                          Colors.black.withValues(alpha: 0.8),
                                         ],
                                       ),
                                     ),
                                     padding: const EdgeInsets.all(8),
                                     child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(dog.name,
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis),
-                                          Text(dog.rarity.name,
-                                              style: TextStyle(
-                                                  color: dog.rarity.color,
-                                                  fontSize: 11)),
-                                        ]),
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          dog.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          dog.rarity.name,
+                                          style: TextStyle(
+                                            color: dog.rarity.color,
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -361,8 +406,10 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                           )
                               .animate(autoPlay: !_hasAnimated)
                               .fadeIn(
-                                  delay: Duration(
-                                      milliseconds: (i * 40).clamp(0, 500)))
+                                delay: Duration(
+                                  milliseconds: (i * 40).clamp(0, 500),
+                                ),
+                              )
                               .scale(begin: const Offset(0.9, 0.9)),
                         );
                       },
@@ -397,9 +444,15 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
         children: [
           _viewToggleItem(KennelViewMode.grid, Icons.grid_view, 'Grid'),
           _viewToggleItem(
-              KennelViewMode.families, Icons.account_tree_outlined, 'Families'),
-          _viewToggleItem(KennelViewMode.collections,
-              Icons.collections_bookmark_outlined, 'Sets'),
+            KennelViewMode.families,
+            Icons.account_tree_outlined,
+            'Families',
+          ),
+          _viewToggleItem(
+            KennelViewMode.collections,
+            Icons.collections_bookmark_outlined,
+            'Sets',
+          ),
         ],
       ),
     );
@@ -421,16 +474,22 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
               : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Icon(icon, color: selected ? Colors.amber : Colors.white54, size: 14),
-          const SizedBox(width: 3),
-          Text(label,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon,
+                color: selected ? Colors.amber : Colors.white54, size: 14),
+            const SizedBox(width: 3),
+            Text(
+              label,
               style: TextStyle(
                 color: selected ? Colors.amber : Colors.white54,
                 fontSize: 11,
                 fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-              )),
-        ]),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -450,14 +509,19 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
         children: [
           Row(
             children: [
-              const Text('Breed Collections',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.amber)),
+              const Text(
+                'Breed Collections',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber,
+                ),
+              ),
               const Spacer(),
-              Text('$completedCount/${collections.length} complete',
-                  style: const TextStyle(color: Colors.white38, fontSize: 12)),
+              Text(
+                '$completedCount/${collections.length} complete',
+                style: const TextStyle(color: Colors.white38, fontSize: 12),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -485,66 +549,84 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                     // Header row
                     Row(
                       children: [
-                        Text(collection.emoji,
-                            style: const TextStyle(fontSize: 22)),
+                        Text(
+                          collection.emoji,
+                          style: const TextStyle(fontSize: 22),
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(children: [
-                                Flexible(
-                                  child: Text(collection.name,
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      collection.name,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14,
                                       ),
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                                if (cp.isComplete) ...[
-                                  const SizedBox(width: 6),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: collection.color
-                                          .withValues(alpha: 0.2),
-                                      borderRadius: BorderRadius.circular(6),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    child: Text('COMPLETE',
+                                  ),
+                                  if (cp.isComplete) ...[
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: collection.color
+                                            .withValues(alpha: 0.2),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        'COMPLETE',
                                         style: TextStyle(
                                           color: collection.color,
                                           fontSize: 9,
                                           fontWeight: FontWeight.bold,
-                                        )),
-                                  ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ],
-                              ]),
-                              Text(collection.description,
-                                  style: const TextStyle(
-                                      color: Colors.white38, fontSize: 11)),
+                              ),
+                              Text(
+                                collection.description,
+                                style: const TextStyle(
+                                  color: Colors.white38,
+                                  fontSize: 11,
+                                ),
+                              ),
                             ],
                           ),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text('${cp.collected}/${cp.total}',
-                                style: TextStyle(
-                                  color: cp.isComplete
-                                      ? collection.color
-                                      : Colors.white54,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                )),
-                            Text('${collection.xpReward} XP',
-                                style: TextStyle(
-                                  color: cp.isComplete
-                                      ? collection.color.withValues(alpha: 0.7)
-                                      : Colors.white24,
-                                  fontSize: 10,
-                                )),
+                            Text(
+                              '${cp.collected}/${cp.total}',
+                              style: TextStyle(
+                                color: cp.isComplete
+                                    ? collection.color
+                                    : Colors.white54,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                            Text(
+                              '${collection.xpReward} XP',
+                              style: TextStyle(
+                                color: cp.isComplete
+                                    ? collection.color.withValues(alpha: 0.7)
+                                    : Colors.white24,
+                                fontSize: 10,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -576,13 +658,19 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                           onTap: dog != null
                               ? () {
                                   HapticFeedback.lightImpact();
-                                  DogDetailSheet.show(context, dog, _player,
-                                      source: 'collection');
+                                  DogDetailSheet.show(
+                                    context,
+                                    dog,
+                                    _player,
+                                    source: 'collection',
+                                  );
                                 }
                               : null,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: isCollected
                                   ? collection.color.withValues(alpha: 0.15)
@@ -598,13 +686,18 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 if (isCollected)
-                                  Icon(Icons.check_circle,
-                                      size: 12,
-                                      color: collection.color
-                                          .withValues(alpha: 0.8))
+                                  Icon(
+                                    Icons.check_circle,
+                                    size: 12,
+                                    color:
+                                        collection.color.withValues(alpha: 0.8),
+                                  )
                                 else
-                                  Icon(Icons.radio_button_unchecked,
-                                      size: 12, color: Colors.white24),
+                                  const Icon(
+                                    Icons.radio_button_unchecked,
+                                    size: 12,
+                                    color: Colors.white24,
+                                  ),
                                 const SizedBox(width: 4),
                                 Text(
                                   breedName,
@@ -628,7 +721,8 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                 ),
               ),
             ).animate().fadeIn(
-                delay: Duration(milliseconds: (e.key * 60).clamp(0, 600)));
+                  delay: Duration(milliseconds: (e.key * 60).clamp(0, 600)),
+                );
           }),
         ],
       ),
@@ -644,15 +738,19 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
         children: [
           Row(
             children: [
-              const Text('Dog Families',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.amber)),
+              const Text(
+                'Dog Families',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber,
+                ),
+              ),
               const Spacer(),
               Text(
-                  '${progress.where((p) => p.isComplete).length}/${progress.length} complete',
-                  style: const TextStyle(color: Colors.white38, fontSize: 12)),
+                '${progress.where((p) => p.isComplete).length}/${progress.length} complete',
+                style: const TextStyle(color: Colors.white38, fontSize: 12),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -676,38 +774,54 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                   children: [
                     Row(
                       children: [
-                        Text(fp.family.emoji,
-                            style: const TextStyle(fontSize: 22)),
+                        Text(
+                          fp.family.emoji,
+                          style: const TextStyle(fontSize: 22),
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(children: [
-                                  Text(fp.family.name,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14)),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    fp.family.name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
                                   if (fp.mastery != FamilyMastery.none) ...[
                                     const SizedBox(width: 6),
-                                    Text(fp.mastery.emoji,
-                                        style: const TextStyle(fontSize: 14)),
+                                    Text(
+                                      fp.mastery.emoji,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
                                   ],
-                                ]),
-                                Text(fp.family.description,
-                                    style: const TextStyle(
-                                        color: Colors.white38, fontSize: 11)),
-                              ]),
+                                ],
+                              ),
+                              Text(
+                                fp.family.description,
+                                style: const TextStyle(
+                                  color: Colors.white38,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        Text('${fp.collected}/${fp.total}',
-                            style: TextStyle(
-                              color: fp.isComplete
-                                  ? fp.family.color
-                                  : Colors.white54,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                            )),
+                        Text(
+                          '${fp.collected}/${fp.total}',
+                          style: TextStyle(
+                            color: fp.isComplete
+                                ? fp.family.color
+                                : Colors.white54,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -727,15 +841,16 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                     if (fp.mastery != FamilyMastery.none) ...[
                       const SizedBox(height: 4),
                       Text(
-                          '${fp.mastery.label} Mastery — ${(fp.xpBonus * 100 - 100).toStringAsFixed(0)}% XP bonus',
-                          style:
-                              TextStyle(color: fp.mastery.color, fontSize: 10)),
+                        '${fp.mastery.label} Mastery — ${(fp.xpBonus * 100 - 100).toStringAsFixed(0)}% XP bonus',
+                        style: TextStyle(color: fp.mastery.color, fontSize: 10),
+                      ),
                     ],
                   ],
                 ),
               ),
             ).animate().fadeIn(
-                delay: Duration(milliseconds: (e.key * 60).clamp(0, 600)));
+                  delay: Duration(milliseconds: (e.key * 60).clamp(0, 600)),
+                );
           }),
         ],
       ),
@@ -756,11 +871,14 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: selected ? color : Colors.white12),
           ),
-          child: Text(label,
-              style: TextStyle(
-                  color: selected ? color : Colors.white54,
-                  fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                  fontSize: 11)),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: selected ? color : Colors.white54,
+              fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+              fontSize: 11,
+            ),
+          ),
         ),
       ),
     );

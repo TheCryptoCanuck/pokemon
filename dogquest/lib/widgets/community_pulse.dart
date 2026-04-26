@@ -2,8 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../constants.dart';
-import '../services/dog_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/dog_service.dart';
 
 /// Simulated community activity card creating social proof.
 ///

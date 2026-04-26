@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:logging/logging.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
-import 'shared_tflite_service.dart';
+import 'package:dogquest/services/shared_tflite_service.dart';
 
 final _log = Logger('DogEmbeddingService');
 
@@ -27,13 +27,19 @@ Uint8List _preprocessForEmbedding(Uint8List bytes) {
   final scale = _kInputSize / shortEdge;
   final scaledW = (w * scale).round();
   final scaledH = (h * scale).round();
-  final resized = img.copyResize(oriented,
-      width: scaledW, height: scaledH, interpolation: img.Interpolation.linear);
-  final cropped = img.copyCrop(resized,
-      x: (scaledW - _kInputSize) ~/ 2,
-      y: (scaledH - _kInputSize) ~/ 2,
-      width: _kInputSize,
-      height: _kInputSize);
+  final resized = img.copyResize(
+    oriented,
+    width: scaledW,
+    height: scaledH,
+    interpolation: img.Interpolation.linear,
+  );
+  final cropped = img.copyCrop(
+    resized,
+    x: (scaledW - _kInputSize) ~/ 2,
+    y: (scaledH - _kInputSize) ~/ 2,
+    width: _kInputSize,
+    height: _kInputSize,
+  );
 
   final flat = Uint8List(_kInputSize * _kInputSize * 3);
   int offset = 0;
@@ -174,5 +180,6 @@ class DogEmbeddingService {
 
 final dogEmbeddingServiceProvider = Provider<DogEmbeddingService>((ref) {
   throw UnimplementedError(
-      'dogEmbeddingServiceProvider must be overridden after init');
+    'dogEmbeddingServiceProvider must be overridden after init',
+  );
 });

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/dog.dart';
+import 'package:dogquest/models/dog.dart';
 
 /// Confidence tier for identification results.
 ///
@@ -105,5 +105,6 @@ abstract class IdentificationService {
 
 final identificationServiceProvider = Provider<IdentificationService>((ref) {
   throw UnimplementedError(
-      'identificationServiceProvider must be overridden at startup');
+    'identificationServiceProvider must be overridden at startup',
+  );
 });

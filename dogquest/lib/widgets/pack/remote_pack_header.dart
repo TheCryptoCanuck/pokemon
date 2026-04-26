@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../constants.dart';
-import '../../services/supabase_pack_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/supabase_pack_service.dart';
 
 class RemotePackHeader extends StatelessWidget {
   final PackRemote pack;
@@ -16,10 +16,12 @@ class RemotePackHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          Colors.amber.withValues(alpha: 0.12),
-          Colors.orange.withValues(alpha: 0.06),
-        ]),
+        gradient: LinearGradient(
+          colors: [
+            Colors.amber.withValues(alpha: 0.12),
+            Colors.orange.withValues(alpha: 0.06),
+          ],
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
       ),
@@ -27,14 +29,19 @@ class RemotePackHeader extends StatelessWidget {
         children: [
           const Text('\u{1F43E}', style: TextStyle(fontSize: 48)),
           const SizedBox(height: 8),
-          Text(pack.name,
-              style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: textPrimary)),
+          Text(
+            pack.name,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: textPrimary,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text('${pack.memberCount} member${pack.memberCount == 1 ? '' : 's'}',
-              style: const TextStyle(color: textSecondary, fontSize: 13)),
+          Text(
+            '${pack.memberCount} member${pack.memberCount == 1 ? '' : 's'}',
+            style: const TextStyle(color: textSecondary, fontSize: 13),
+          ),
           const SizedBox(height: 16),
           // Invite code
           Container(
@@ -49,14 +56,16 @@ class RemotePackHeader extends StatelessWidget {
               children: [
                 const Icon(Icons.vpn_key, color: Colors.amber, size: 16),
                 const SizedBox(width: 10),
-                Text(pack.inviteCode,
-                    style: const TextStyle(
-                      color: textPrimary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      letterSpacing: 3,
-                      fontFamily: 'monospace',
-                    )),
+                Text(
+                  pack.inviteCode,
+                  style: const TextStyle(
+                    color: textPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    letterSpacing: 3,
+                    fontFamily: 'monospace',
+                  ),
+                ),
                 const SizedBox(width: 12),
                 GestureDetector(
                   onTap: () {
@@ -66,8 +75,10 @@ class RemotePackHeader extends StatelessWidget {
                       const SnackBar(
                         backgroundColor: bgCard,
                         duration: Duration(seconds: 2),
-                        content: Text('Invite code copied!',
-                            style: TextStyle(color: Colors.amber)),
+                        content: Text(
+                          'Invite code copied!',
+                          style: TextStyle(color: Colors.amber),
+                        ),
                       ),
                     );
                   },

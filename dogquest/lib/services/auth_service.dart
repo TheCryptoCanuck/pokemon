@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 
-import 'api_client.dart';
+import 'package:dogquest/services/api_client.dart';
 
 final _log = Logger('AuthService');
 
@@ -21,11 +21,14 @@ class AuthService {
 
   Future<bool> register(String username, String email, String password) async {
     try {
-      final response = await _api.dio.post('/auth/register', data: {
-        'username': username,
-        'email': email,
-        'password': password,
-      });
+      final response = await _api.dio.post(
+        '/auth/register',
+        data: {
+          'username': username,
+          'email': email,
+          'password': password,
+        },
+      );
       final token = response.data['access_token'] as String;
       await _api.saveToken(token);
       Hive.box('dogquest_player_stats').put('has_auth_token', true);
@@ -45,10 +48,13 @@ class AuthService {
 
   Future<bool> login(String email, String password) async {
     try {
-      final response = await _api.dio.post('/auth/login', data: {
-        'email': email,
-        'password': password,
-      });
+      final response = await _api.dio.post(
+        '/auth/login',
+        data: {
+          'email': email,
+          'password': password,
+        },
+      );
       final token = response.data['access_token'] as String;
       await _api.saveToken(token);
       Hive.box('dogquest_player_stats').put('has_auth_token', true);

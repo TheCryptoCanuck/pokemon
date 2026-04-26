@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
+import 'package:dogquest/constants.dart';
 
 class SightingStatBubble extends StatelessWidget {
   final String label;

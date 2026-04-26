@@ -131,7 +131,8 @@ class _XpGainOverlayState extends State<_XpGainOverlay>
 
     return AnimatedBuilder(
       animation: Listenable.merge(
-          [_mainController, _countController, _levelUpController]),
+        [_mainController, _countController, _levelUpController],
+      ),
       builder: (context, _) {
         final levelUpProgress = _levelUpController.value;
         final showLevelUp = widget.didLevelUp && levelUpProgress > 0;
@@ -262,12 +263,15 @@ class _XpGainOverlayState extends State<_XpGainOverlay>
                           padding: const EdgeInsets.only(top: 12),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 6),
+                              horizontal: 16,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.orange.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                  color: Colors.orange.withValues(alpha: 0.5)),
+                                color: Colors.orange.withValues(alpha: 0.5),
+                              ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -275,8 +279,9 @@ class _XpGainOverlayState extends State<_XpGainOverlay>
                                 const Text(
                                   '\u{1F525}',
                                   style: TextStyle(
-                                      fontSize: 20,
-                                      decoration: TextDecoration.none),
+                                    fontSize: 20,
+                                    decoration: TextDecoration.none,
+                                  ),
                                 ),
                                 const SizedBox(width: 6),
                                 Text(

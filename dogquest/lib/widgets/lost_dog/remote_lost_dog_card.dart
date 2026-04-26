@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../constants.dart';
-import '../../services/supabase_lost_dog_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/supabase_lost_dog_service.dart';
 
 class RemoteLostDogCard extends StatefulWidget {
   final LostDogReportRemote report;
 
-  const RemoteLostDogCard({required this.report});
+  const RemoteLostDogCard({super.key, required this.report});
 
   @override
   State<RemoteLostDogCard> createState() => _RemoteLostDogCardState();
@@ -83,18 +83,24 @@ class _RemoteLostDogCardState extends State<RemoteLostDogCard> {
                       // Cloud-only badge
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.blue.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                              color: Colors.blue.withValues(alpha: 0.4)),
+                            color: Colors.blue.withValues(alpha: 0.4),
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.cloud,
-                                color: Colors.blue.shade300, size: 11),
+                            Icon(
+                              Icons.cloud,
+                              color: Colors.blue.shade300,
+                              size: 11,
+                            ),
                             const SizedBox(width: 3),
                             Text(
                               'Cloud',
@@ -121,8 +127,11 @@ class _RemoteLostDogCardState extends State<RemoteLostDogCard> {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      Icon(Icons.schedule,
-                          color: Colors.red.shade300, size: 14),
+                      Icon(
+                        Icons.schedule,
+                        color: Colors.red.shade300,
+                        size: 14,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         'Missing $timeLabel',
@@ -135,13 +144,18 @@ class _RemoteLostDogCardState extends State<RemoteLostDogCard> {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        const Icon(Icons.near_me,
-                            color: Colors.white38, size: 13),
+                        const Icon(
+                          Icons.near_me,
+                          color: Colors.white38,
+                          size: 13,
+                        ),
                         const SizedBox(width: 3),
                         Text(
                           '${report.distanceKm!.toStringAsFixed(1)} km away',
                           style: const TextStyle(
-                              color: Colors.white38, fontSize: 11),
+                            color: Colors.white38,
+                            fontSize: 11,
+                          ),
                         ),
                       ],
                     ),

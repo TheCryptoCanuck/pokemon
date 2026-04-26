@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// Mode for the capture button.
 enum CaptureMode { photo }

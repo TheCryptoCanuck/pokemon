@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// GitHub-style activity heatmap showing the last 12 weeks of dog
 /// identification activity. Each cell represents one day, with color
@@ -44,7 +44,7 @@ class _CollectionHeatmapState extends State<CollectionHeatmap> {
     final today = DateTime.now();
     const totalDays = _weeks * _daysPerWeek;
     // Start from `totalDays - 1` days ago so today is the last cell.
-    final startDate = today.subtract(Duration(days: totalDays - 1));
+    final startDate = today.subtract(const Duration(days: totalDays - 1));
 
     // Align start to Monday (weekday 1 in Dart).
     final adjustedStart = startDate.subtract(
@@ -61,12 +61,14 @@ class _CollectionHeatmapState extends State<CollectionHeatmap> {
             '${current.year}-${current.month.toString().padLeft(2, '0')}-${current.day.toString().padLeft(2, '0')}';
         final count = widget.activityData[key] ?? 0;
         final isFuture = current.isAfter(today);
-        week.add(_DayCell(
-          dateKey: key,
-          date: current,
-          count: count,
-          isFuture: isFuture,
-        ));
+        week.add(
+          _DayCell(
+            dateKey: key,
+            date: current,
+            count: count,
+            isFuture: isFuture,
+          ),
+        );
         current = current.add(const Duration(days: 1));
       }
       weeks.add(week);

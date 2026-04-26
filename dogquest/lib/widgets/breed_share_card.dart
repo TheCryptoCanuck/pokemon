@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../constants.dart';
-import '../models/dog.dart';
-import 'network_dog_image.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/widgets/network_dog_image.dart';
 
 /// A visually rich breed card optimized for Instagram Stories / TikTok sharing.
 /// Renders at 1080x1920 (9:16) aspect ratio for full-screen story display.
@@ -62,33 +62,44 @@ class BreedShareCard extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.amber.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                            color: Colors.amber.withValues(alpha: 0.3)),
+                          color: Colors.amber.withValues(alpha: 0.3),
+                        ),
                       ),
-                      child:
-                          const Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.pets, color: Colors.amber, size: 14),
-                        SizedBox(width: 6),
-                        Text('DogQuest',
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.pets, color: Colors.amber, size: 14),
+                          SizedBox(width: 6),
+                          Text(
+                            'DogQuest',
                             style: TextStyle(
-                                color: Colors.amber,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13)),
-                      ]),
+                              color: Colors.amber,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
                         color: rarityColor.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                            color: rarityColor.withValues(alpha: 0.5)),
+                          color: rarityColor.withValues(alpha: 0.5),
+                        ),
                       ),
                       child: Text(
                         dog.rarity.label.toUpperCase(),
@@ -112,12 +123,15 @@ class BreedShareCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(
-                        color: rarityColor.withValues(alpha: 0.4), width: 2),
+                      color: rarityColor.withValues(alpha: 0.4),
+                      width: 2,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                          color: rarityColor.withValues(alpha: 0.2),
-                          blurRadius: 30,
-                          spreadRadius: 2),
+                        color: rarityColor.withValues(alpha: 0.2),
+                        blurRadius: 30,
+                        spreadRadius: 2,
+                      ),
                     ],
                   ),
                   clipBehavior: Clip.antiAlias,
@@ -125,7 +139,10 @@ class BreedShareCard extends StatelessWidget {
                     fit: StackFit.expand,
                     children: [
                       NetworkDogImage(
-                          url: dog.imageUrl, height: 280, fit: BoxFit.cover),
+                        url: dog.imageUrl,
+                        height: 280,
+                        fit: BoxFit.cover,
+                      ),
                       // Bottom gradient
                       Positioned(
                         bottom: 0,
@@ -139,7 +156,7 @@ class BreedShareCard extends StatelessWidget {
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withValues(alpha: 0.7)
+                                Colors.black.withValues(alpha: 0.7),
                               ],
                             ),
                           ),
@@ -151,21 +168,32 @@ class BreedShareCard extends StatelessWidget {
                         right: 12,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.amber.withValues(alpha: 0.9),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            const Icon(Icons.bolt,
-                                color: Colors.black87, size: 14),
-                            const SizedBox(width: 2),
-                            Text('+${dog.xp} XP',
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.bolt,
+                                color: Colors.black87,
+                                size: 14,
+                              ),
+                              const SizedBox(width: 2),
+                              Text(
+                                '+${dog.xp} XP',
                                 style: const TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12)),
-                          ]),
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -209,7 +237,10 @@ class BreedShareCard extends StatelessWidget {
                   child: Text(
                     dog.lore,
                     style: const TextStyle(
-                        color: Colors.white70, fontSize: 13, height: 1.5),
+                      color: Colors.white70,
+                      fontSize: 13,
+                      height: 1.5,
+                    ),
                     textAlign: TextAlign.center,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -231,22 +262,32 @@ class BreedShareCard extends StatelessWidget {
                     children: [
                       // Player info
                       Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(playerTitle,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13)),
-                            Text('Level $playerLevel',
-                                style: const TextStyle(
-                                    color: Colors.white54, fontSize: 11)),
-                          ]),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            playerTitle,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                          Text(
+                            'Level $playerLevel',
+                            style: const TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
                       const Spacer(),
                       // Collection counter
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.amber.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
@@ -254,9 +295,10 @@ class BreedShareCard extends StatelessWidget {
                         child: Text(
                           '$kennelCount/$totalBreeds',
                           style: const TextStyle(
-                              color: Colors.amber,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13),
+                            color: Colors.amber,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     ],

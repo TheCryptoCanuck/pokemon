@@ -5,25 +5,24 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:latlong2/latlong.dart';
-import '../constants.dart';
-import '../models/dog_friendship.dart';
-import '../services/dog_friendship_service.dart';
-import '../services/dog_service.dart';
-import '../services/my_dog_service.dart';
-import '../services/player_service.dart';
-import '../services/sighting_service.dart';
-import '../widgets/dog_detail_sheet.dart';
-import '../widgets/network_dog_image.dart';
-import '../widgets/map/tab_button.dart';
-import '../widgets/map/friendship_stats_bar.dart';
-import '../widgets/map/neighborhood_grid.dart';
-import '../widgets/map/dog_detail_card.dart';
-import '../widgets/map/dog_selection_prompt.dart';
-import '../widgets/map/friends_list.dart';
-import '../widgets/map/neighborhood_empty_state.dart';
-import '../widgets/map/sighting_stat_bubble.dart';
-import '../widgets/map/breed_location_stat.dart';
-import '../widgets/map/live_map_filter_chip.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog_friendship.dart';
+import 'package:dogquest/services/dog_friendship_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/my_dog_service.dart';
+import 'package:dogquest/services/sighting_service.dart';
+import 'package:dogquest/widgets/dog_detail_sheet.dart';
+import 'package:dogquest/widgets/network_dog_image.dart';
+import 'package:dogquest/widgets/map/tab_button.dart';
+import 'package:dogquest/widgets/map/friendship_stats_bar.dart';
+import 'package:dogquest/widgets/map/neighborhood_grid.dart';
+import 'package:dogquest/widgets/map/dog_detail_card.dart';
+import 'package:dogquest/widgets/map/dog_selection_prompt.dart';
+import 'package:dogquest/widgets/map/friends_list.dart';
+import 'package:dogquest/widgets/map/neighborhood_empty_state.dart';
+import 'package:dogquest/widgets/map/sighting_stat_bubble.dart';
+import 'package:dogquest/widgets/map/breed_location_stat.dart';
+import 'package:dogquest/widgets/map/live_map_filter_chip.dart';
 
 class MapTab extends ConsumerStatefulWidget {
   const MapTab({super.key});
@@ -175,26 +174,30 @@ class _SightingLogView extends ConsumerWidget {
       return Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(32),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.history, size: 80, color: Colors.white24)
-                .animate()
-                .fadeIn()
-                .scale(),
-            const SizedBox(height: 16),
-            const Text('Sighting Log',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.amber))
-                .animate()
-                .fadeIn(delay: 100.ms),
-            const SizedBox(height: 8),
-            const Text(
-              'Your sighting history will appear here.\nIdentify dogs to start logging!',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white54),
-            ).animate().fadeIn(delay: 200.ms),
-          ]),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.history, size: 80, color: Colors.white24)
+                  .animate()
+                  .fadeIn()
+                  .scale(),
+              const SizedBox(height: 16),
+              const Text(
+                'Sighting Log',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber,
+                ),
+              ).animate().fadeIn(delay: 100.ms),
+              const SizedBox(height: 8),
+              const Text(
+                'Your sighting history will appear here.\nIdentify dogs to start logging!',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white54),
+              ).animate().fadeIn(delay: 200.ms),
+            ],
+          ),
         ),
       );
     }
@@ -247,22 +250,30 @@ class _SightingLogView extends ConsumerWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.amber.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(_formatDate(dateKey),
-                          style: const TextStyle(
-                              color: Colors.amber,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold)),
+                      child: Text(
+                        _formatDate(dateKey),
+                        style: const TextStyle(
+                          color: Colors.amber,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Text(
-                        '${daySightings.length} sighting${daySightings.length == 1 ? '' : 's'}',
-                        style: const TextStyle(
-                            color: Colors.white38, fontSize: 12)),
+                      '${daySightings.length} sighting${daySightings.length == 1 ? '' : 's'}',
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -280,8 +291,12 @@ class _SightingLogView extends ConsumerWidget {
                       onTap: () {
                         HapticFeedback.lightImpact();
                         if (dog != null) {
-                          DogDetailSheet.show(context, dog, AudioPlayer(),
-                              source: 'sighting_log');
+                          DogDetailSheet.show(
+                            context,
+                            dog,
+                            AudioPlayer(),
+                            source: 'sighting_log',
+                          );
                         }
                       },
                       child: Container(
@@ -306,12 +321,15 @@ class _SightingLogView extends ConsumerWidget {
                                         url: dog.imageUrl,
                                         height: 44,
                                         width: 44,
-                                        fit: BoxFit.cover)
+                                        fit: BoxFit.cover,
+                                      )
                                     : Container(
                                         color: Colors.white
                                             .withValues(alpha: 0.05),
-                                        child: const Icon(Icons.help_outline,
-                                            color: Colors.white24),
+                                        child: const Icon(
+                                          Icons.help_outline,
+                                          color: Colors.white24,
+                                        ),
                                       ),
                               ),
                             ),
@@ -320,58 +338,80 @@ class _SightingLogView extends ConsumerWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(sighting.dogName,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis),
-                                  Row(children: [
-                                    Text(_formatTime(sighting.timestamp),
+                                  Text(
+                                    sighting.dogName,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        _formatTime(sighting.timestamp),
                                         style: const TextStyle(
-                                            color: Colors.white38,
-                                            fontSize: 11)),
-                                    if (dog != null) ...[
-                                      const SizedBox(width: 8),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 1),
-                                        decoration: BoxDecoration(
-                                          color: dog.rarity.color
-                                              .withValues(alpha: 0.15),
-                                          borderRadius:
-                                              BorderRadius.circular(6),
+                                          color: Colors.white38,
+                                          fontSize: 11,
                                         ),
-                                        child: Text(dog.rarity.name,
-                                            style: TextStyle(
-                                                color: dog.rarity.color,
-                                                fontSize: 9)),
                                       ),
+                                      if (dog != null) ...[
+                                        const SizedBox(width: 8),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 5,
+                                            vertical: 1,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: dog.rarity.color
+                                                .withValues(alpha: 0.15),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            dog.rarity.name,
+                                            style: TextStyle(
+                                              color: dog.rarity.color,
+                                              fontSize: 9,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ],
-                                  ]),
+                                  ),
                                 ],
                               ),
                             ),
                             if (count > 1)
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
                                   color:
                                       Colors.deepPurple.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Text('\u00D7$count',
-                                    style: const TextStyle(
-                                        color: Colors.deepPurpleAccent,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold)),
+                                child: Text(
+                                  '\u00D7$count',
+                                  style: const TextStyle(
+                                    color: Colors.deepPurpleAccent,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             const SizedBox(width: 6),
-                            Text('${(sighting.confidence * 100).round()}%',
-                                style: const TextStyle(
-                                    color: Colors.white38, fontSize: 11)),
+                            Text(
+                              '${(sighting.confidence * 100).round()}%',
+                              style: const TextStyle(
+                                color: Colors.white38,
+                                fontSize: 11,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -411,7 +451,7 @@ class _SightingLogView extends ConsumerWidget {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return '${months[int.parse(parts[1])]} ${int.parse(parts[2])}';
   }
@@ -446,26 +486,30 @@ class _BreedLocationsViewState extends ConsumerState<_BreedLocationsView> {
       return Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(32),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.map_outlined, size: 80, color: Colors.white24)
-                .animate()
-                .fadeIn()
-                .scale(),
-            const SizedBox(height: 16),
-            const Text('Breed Locations',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.amber))
-                .animate()
-                .fadeIn(delay: 100.ms),
-            const SizedBox(height: 8),
-            const Text(
-              'No sightings with GPS data yet.\nEnable location when identifying dogs!',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white54),
-            ).animate().fadeIn(delay: 200.ms),
-          ]),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.map_outlined, size: 80, color: Colors.white24)
+                  .animate()
+                  .fadeIn()
+                  .scale(),
+              const SizedBox(height: 16),
+              const Text(
+                'Breed Locations',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber,
+                ),
+              ).animate().fadeIn(delay: 100.ms),
+              const SizedBox(height: 8),
+              const Text(
+                'No sightings with GPS data yet.\nEnable location when identifying dogs!',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white54),
+              ).animate().fadeIn(delay: 200.ms),
+            ],
+          ),
         ),
       );
     }
@@ -561,36 +605,47 @@ class _BreedLocationsViewState extends ConsumerState<_BreedLocationsView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(breedName,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis),
+                              Text(
+                                breedName,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                               const SizedBox(height: 2),
                               Row(
                                 children: [
                                   if (dog != null)
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 1),
+                                        horizontal: 6,
+                                        vertical: 1,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: dog.rarity.color
                                             .withValues(alpha: 0.15),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
-                                      child: Text(dog.rarity.label,
-                                          style: TextStyle(
-                                              color: dog.rarity.color,
-                                              fontSize: 9,
-                                              fontWeight: FontWeight.bold)),
+                                      child: Text(
+                                        dog.rarity.label,
+                                        style: TextStyle(
+                                          color: dog.rarity.color,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
                                   const SizedBox(width: 6),
                                   Text(
-                                      _formatRelativeDate(mostRecent.timestamp),
-                                      style: const TextStyle(
-                                          color: Colors.white38, fontSize: 11)),
+                                    _formatRelativeDate(mostRecent.timestamp),
+                                    style: const TextStyle(
+                                      color: Colors.white38,
+                                      fontSize: 11,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -599,21 +654,32 @@ class _BreedLocationsViewState extends ConsumerState<_BreedLocationsView> {
                         // Sighting count badge
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.amber.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            const Icon(Icons.place,
-                                color: Colors.amber, size: 14),
-                            const SizedBox(width: 3),
-                            Text('${sightings.length}',
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.place,
+                                color: Colors.amber,
+                                size: 14,
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                '${sightings.length}',
                                 style: const TextStyle(
-                                    color: Colors.amber,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13)),
-                          ]),
+                                  color: Colors.amber,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(width: 6),
                         Icon(
@@ -632,28 +698,40 @@ class _BreedLocationsViewState extends ConsumerState<_BreedLocationsView> {
                       height: 1,
                       color: Colors.white.withValues(alpha: 0.05),
                     ),
-                    ...sightings.map((s) => Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          child: Row(
-                            children: [
-                              Icon(Icons.my_location,
-                                  color: Colors.amber.withValues(alpha: 0.5),
-                                  size: 14),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  _formatCoordinates(s.latitude!, s.longitude!),
-                                  style: const TextStyle(
-                                      color: Colors.white70, fontSize: 12),
+                    ...sightings.map(
+                      (s) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.my_location,
+                              color: Colors.amber.withValues(alpha: 0.5),
+                              size: 14,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _formatCoordinates(s.latitude!, s.longitude!),
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 12,
                                 ),
                               ),
-                              Text(_formatDateTimeFull(s.timestamp),
-                                  style: const TextStyle(
-                                      color: Colors.white38, fontSize: 11)),
-                            ],
-                          ),
-                        )),
+                            ),
+                            Text(
+                              _formatDateTimeFull(s.timestamp),
+                              style: const TextStyle(
+                                color: Colors.white38,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 4),
                   ],
                 ],
@@ -690,7 +768,7 @@ class _BreedLocationsViewState extends ConsumerState<_BreedLocationsView> {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return '${months[dt.month - 1]} ${dt.day}';
   }
@@ -708,7 +786,7 @@ class _BreedLocationsViewState extends ConsumerState<_BreedLocationsView> {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     final h = dt.hour > 12 ? dt.hour - 12 : (dt.hour == 0 ? 12 : dt.hour);
     final amPm = dt.hour >= 12 ? 'PM' : 'AM';
@@ -747,26 +825,30 @@ class _LiveMapViewState extends ConsumerState<_LiveMapView> {
 
     if (gpsSightings.isEmpty) {
       return Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const Icon(Icons.satellite_alt, size: 80, color: Colors.white24)
-              .animate()
-              .fadeIn()
-              .scale(),
-          const SizedBox(height: 16),
-          const Text('Live Sighting Map',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.amber))
-              .animate()
-              .fadeIn(delay: 100.ms),
-          const SizedBox(height: 8),
-          const Text(
-            'No GPS sightings yet.\nEnable location when identifying dogs!',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white54),
-          ).animate().fadeIn(delay: 200.ms),
-        ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.satellite_alt, size: 80, color: Colors.white24)
+                .animate()
+                .fadeIn()
+                .scale(),
+            const SizedBox(height: 16),
+            const Text(
+              'Live Sighting Map',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.amber,
+              ),
+            ).animate().fadeIn(delay: 100.ms),
+            const SizedBox(height: 8),
+            const Text(
+              'No GPS sightings yet.\nEnable location when identifying dogs!',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white54),
+            ).animate().fadeIn(delay: 200.ms),
+          ],
+        ),
       );
     }
 
@@ -796,7 +878,7 @@ class _LiveMapViewState extends ConsumerState<_LiveMapView> {
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 2),
               boxShadow: [
-                BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 6)
+                BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 6),
               ],
             ),
             child: const Icon(Icons.pets, color: Colors.white, size: 18),
@@ -821,13 +903,15 @@ class _LiveMapViewState extends ConsumerState<_LiveMapView> {
                 selected: _selectedBreed == null,
                 onTap: (breed) => setState(() => _selectedBreed = breed),
               ),
-              ...breeds.map((b) => LiveMapFilterChip(
-                    label: b,
-                    breed: b,
-                    count: gpsSightings.where((s) => s.dogName == b).length,
-                    selected: _selectedBreed == b,
-                    onTap: (breed) => setState(() => _selectedBreed = breed),
-                  )),
+              ...breeds.map(
+                (b) => LiveMapFilterChip(
+                  label: b,
+                  breed: b,
+                  count: gpsSightings.where((s) => s.dogName == b).length,
+                  selected: _selectedBreed == b,
+                  onTap: (breed) => setState(() => _selectedBreed = breed),
+                ),
+              ),
             ],
           ),
         ),
@@ -868,25 +952,32 @@ class _LiveMapViewState extends ConsumerState<_LiveMapView> {
                     color: bgDeep.withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.pets, color: Colors.amber, size: 14),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${filtered.length} sighting${filtered.length != 1 ? "s" : ""}',
-                      style: const TextStyle(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.pets, color: Colors.amber, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${filtered.length} sighting${filtered.length != 1 ? "s" : ""}',
+                        style: const TextStyle(
                           color: Colors.amber,
                           fontSize: 12,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    if (_selectedBreed != null) ...[
-                      const SizedBox(width: 6),
-                      GestureDetector(
-                        onTap: () => setState(() => _selectedBreed = null),
-                        child: const Icon(Icons.close,
-                            color: Colors.white54, size: 14),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      if (_selectedBreed != null) ...[
+                        const SizedBox(width: 6),
+                        GestureDetector(
+                          onTap: () => setState(() => _selectedBreed = null),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white54,
+                            size: 14,
+                          ),
+                        ),
+                      ],
                     ],
-                  ]),
+                  ),
                 ),
               ),
               // Tapped sighting info card
@@ -944,7 +1035,7 @@ class _SightingInfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: rarityColor.withValues(alpha: 0.3)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 12)
+          BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 12),
         ],
       ),
       child: Row(
@@ -964,48 +1055,60 @@ class _SightingInfoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(children: [
-                  Expanded(
-                    child: Text(
-                      sighting.dogName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        sighting.dogName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
-                  ),
-                  if (rarityLabel.isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: rarityColor.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        rarityLabel,
-                        style: TextStyle(
+                    if (rarityLabel.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: rarityColor.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          rarityLabel,
+                          style: TextStyle(
                             color: rarityColor,
                             fontSize: 10,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
-                ]),
+                  ],
+                ),
                 const SizedBox(height: 4),
-                Row(children: [
-                  Icon(Icons.access_time, size: 12, color: Colors.white38),
-                  const SizedBox(width: 4),
-                  Text(timeAgo(sighting.timestamp),
+                Row(
+                  children: [
+                    const Icon(Icons.access_time,
+                        size: 12, color: Colors.white38),
+                    const SizedBox(width: 4),
+                    Text(
+                      timeAgo(sighting.timestamp),
                       style:
-                          const TextStyle(color: Colors.white38, fontSize: 12)),
-                  const SizedBox(width: 12),
-                  Icon(Icons.verified, size: 12, color: Colors.white38),
-                  const SizedBox(width: 4),
-                  Text('$confidence%',
+                          const TextStyle(color: Colors.white38, fontSize: 12),
+                    ),
+                    const SizedBox(width: 12),
+                    const Icon(Icons.verified, size: 12, color: Colors.white38),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$confidence%',
                       style:
-                          const TextStyle(color: Colors.white38, fontSize: 12)),
-                ]),
+                          const TextStyle(color: Colors.white38, fontSize: 12),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

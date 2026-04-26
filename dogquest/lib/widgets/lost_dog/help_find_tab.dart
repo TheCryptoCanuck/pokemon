@@ -8,17 +8,16 @@ import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 
-import '../../constants.dart';
-import '../../models/lost_dog_report.dart';
-import '../../services/lost_dog_service.dart';
-import '../../services/supabase_lost_dog_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
+import 'package:dogquest/services/supabase_lost_dog_service.dart';
 
 final _log = Logger('HelpFindTab');
 
 class HelpFindTab extends ConsumerStatefulWidget {
   final LostDogService lostDogSvc;
 
-  const HelpFindTab({required this.lostDogSvc});
+  const HelpFindTab({super.key, required this.lostDogSvc});
 
   @override
   ConsumerState<HelpFindTab> createState() => _HelpFindTabState();
@@ -81,7 +80,8 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-              'Could not fetch nearby reports — check location & network.'),
+            'Could not fetch nearby reports — check location & network.',
+          ),
           duration: Duration(seconds: 3),
         ),
       );
@@ -276,10 +276,12 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
             width: double.infinity,
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                Colors.amber.withValues(alpha: 0.08),
-                Colors.orange.withValues(alpha: 0.04),
-              ]),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.amber.withValues(alpha: 0.08),
+                  Colors.orange.withValues(alpha: 0.04),
+                ],
+              ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.amber.withValues(alpha: 0.15)),
             ),
@@ -398,16 +400,22 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
                                 errorBuilder: (_, __, ___) => Container(
                                   color: Colors.red.withValues(alpha: 0.08),
                                   child: const Center(
-                                    child: Icon(Icons.pets,
-                                        color: Colors.redAccent, size: 24),
+                                    child: Icon(
+                                      Icons.pets,
+                                      color: Colors.redAccent,
+                                      size: 24,
+                                    ),
                                   ),
                                 ),
                               )
                             : Container(
                                 color: Colors.red.withValues(alpha: 0.08),
                                 child: const Center(
-                                  child: Icon(Icons.pets,
-                                      color: Colors.redAccent, size: 24),
+                                  child: Icon(
+                                    Icons.pets,
+                                    color: Colors.redAccent,
+                                    size: 24,
+                                  ),
                                 ),
                               ),
                       ),
@@ -430,13 +438,17 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
                             Text(
                               report.breed,
                               style: const TextStyle(
-                                  color: Colors.white54, fontSize: 12),
+                                color: Colors.white54,
+                                fontSize: 12,
+                              ),
                             ),
                           const SizedBox(height: 4),
                           Text(
                             'Missing $timeLabel',
                             style: TextStyle(
-                                color: Colors.red.shade300, fontSize: 11),
+                              color: Colors.red.shade300,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
@@ -444,7 +456,9 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
                     if (report.distanceKm != null)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(8),
@@ -452,9 +466,10 @@ class _HelpFindTabState extends ConsumerState<HelpFindTab> {
                         child: Text(
                           '${report.distanceKm!.toStringAsFixed(1)} km',
                           style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600),
+                            color: Colors.white70,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                   ],

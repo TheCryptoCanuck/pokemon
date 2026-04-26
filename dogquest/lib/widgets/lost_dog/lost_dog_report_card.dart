@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../constants.dart';
-import '../../models/lost_dog_report.dart';
-import '../../services/lost_dog_service.dart';
-import 'bottom_sheet_action.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/lost_dog_report.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
+import 'package:dogquest/widgets/lost_dog/bottom_sheet_action.dart';
 
 class LostDogReportCard extends StatelessWidget {
   final LostDogReport report;
@@ -17,6 +17,7 @@ class LostDogReportCard extends StatelessWidget {
   final bool hasCloudSync;
 
   const LostDogReportCard({
+    super.key,
     required this.report,
     required this.lostDogSvc,
     required this.onChanged,
@@ -83,8 +84,11 @@ class LostDogReportCard extends StatelessWidget {
                           child: Container(
                             color: Colors.green.withValues(alpha: 0.08),
                             child: const Center(
-                              child: Icon(Icons.pets,
-                                  color: Colors.green, size: 30),
+                              child: Icon(
+                                Icons.pets,
+                                color: Colors.green,
+                                size: 30,
+                              ),
                             ),
                           ),
                         ),
@@ -113,8 +117,9 @@ class LostDogReportCard extends StatelessWidget {
                             Text(
                               'This dog has been safely returned to their owner.',
                               style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.4),
-                                  fontSize: 12),
+                                color: Colors.white.withValues(alpha: 0.4),
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),
@@ -163,9 +168,11 @@ class LostDogReportCard extends StatelessWidget {
                                     padding: const EdgeInsets.only(right: 6),
                                     child: Tooltip(
                                       message: 'Synced to cloud',
-                                      child: Icon(Icons.cloud_done,
-                                          color: Colors.blue.shade300,
-                                          size: 16),
+                                      child: Icon(
+                                        Icons.cloud_done,
+                                        color: Colors.blue.shade300,
+                                        size: 16,
+                                      ),
                                     ),
                                   ),
                                 _buildStatusBadge(),
@@ -185,8 +192,11 @@ class LostDogReportCard extends StatelessWidget {
                             const SizedBox(height: 6),
                             Row(
                               children: [
-                                Icon(Icons.schedule,
-                                    color: Colors.red.shade300, size: 14),
+                                Icon(
+                                  Icons.schedule,
+                                  color: Colors.red.shade300,
+                                  size: 14,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   'Missing since ${_formatDate(report.lostDate)}',
@@ -209,8 +219,11 @@ class LostDogReportCard extends StatelessWidget {
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  const Icon(Icons.location_on,
-                                      color: Colors.white38, size: 13),
+                                  const Icon(
+                                    Icons.location_on,
+                                    color: Colors.white38,
+                                    size: 13,
+                                  ),
                                   const SizedBox(width: 3),
                                   Expanded(
                                     child: Text(
@@ -229,8 +242,11 @@ class LostDogReportCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Icon(Icons.chevron_right,
-                          color: Colors.white24, size: 20),
+                      const Icon(
+                        Icons.chevron_right,
+                        color: Colors.white24,
+                        size: 20,
+                      ),
                     ],
                   ),
           ),
@@ -371,16 +387,32 @@ class LostDogReportCard extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // ── Info grid ──
-                _detailRow(Icons.schedule, Colors.red.shade300, 'Missing Since',
-                    '${_formatDate(report.lostDate)} ($daysAgo day${daysAgo == 1 ? '' : 's'} ago)'),
+                _detailRow(
+                  Icons.schedule,
+                  Colors.red.shade300,
+                  'Missing Since',
+                  '${_formatDate(report.lostDate)} ($daysAgo day${daysAgo == 1 ? '' : 's'} ago)',
+                ),
                 if (report.lastSeenLocation != null)
-                  _detailRow(Icons.location_on, Colors.amber, 'Last Seen',
-                      report.lastSeenLocation!),
+                  _detailRow(
+                    Icons.location_on,
+                    Colors.amber,
+                    'Last Seen',
+                    report.lastSeenLocation!,
+                  ),
                 if (report.lastSeenLat != null && report.lastSeenLon != null)
-                  _detailRow(Icons.map_outlined, Colors.blue.shade300, 'GPS',
-                      '${report.lastSeenLat!.toStringAsFixed(4)}, ${report.lastSeenLon!.toStringAsFixed(4)}'),
-                _detailRow(Icons.calendar_today, Colors.white38, 'Reported',
-                    _formatDate(report.createdAt)),
+                  _detailRow(
+                    Icons.map_outlined,
+                    Colors.blue.shade300,
+                    'GPS',
+                    '${report.lastSeenLat!.toStringAsFixed(4)}, ${report.lastSeenLon!.toStringAsFixed(4)}',
+                  ),
+                _detailRow(
+                  Icons.calendar_today,
+                  Colors.white38,
+                  'Reported',
+                  _formatDate(report.createdAt),
+                ),
 
                 // ── Owner contact ──
                 if (report.ownerContact != null &&
@@ -393,27 +425,36 @@ class LostDogReportCard extends StatelessWidget {
                       color: Colors.amber.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                          color: Colors.amber.withValues(alpha: 0.2)),
+                        color: Colors.amber.withValues(alpha: 0.2),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.phone,
-                            color: Colors.amber.shade300, size: 20),
+                        Icon(
+                          Icons.phone,
+                          color: Colors.amber.shade300,
+                          size: 20,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Owner Contact',
-                                  style: TextStyle(
-                                      color: Colors.amber,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold)),
+                              const Text(
+                                'Owner Contact',
+                                style: TextStyle(
+                                  color: Colors.amber,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               const SizedBox(height: 2),
                               Text(
                                 report.ownerContact!,
                                 style: const TextStyle(
-                                    color: Colors.white, fontSize: 14),
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
                               ),
                             ],
                           ),
@@ -436,16 +477,22 @@ class LostDogReportCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Description & Notes',
-                            style: TextStyle(
-                                color: Colors.white38,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold)),
+                        const Text(
+                          'Description & Notes',
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 6),
                         Text(
                           report.notes!,
                           style: const TextStyle(
-                              color: Colors.white70, fontSize: 14, height: 1.5),
+                            color: Colors.white70,
+                            fontSize: 14,
+                            height: 1.5,
+                          ),
                         ),
                       ],
                     ),
@@ -521,12 +568,19 @@ class LostDogReportCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.pets,
-                color: Colors.amber.withValues(alpha: 0.4), size: 64),
+            Icon(
+              Icons.pets,
+              color: Colors.amber.withValues(alpha: 0.4),
+              size: 64,
+            ),
             const SizedBox(height: 8),
-            Text('No photo available',
-                style: TextStyle(
-                    color: Colors.amber.withValues(alpha: 0.4), fontSize: 13)),
+            Text(
+              'No photo available',
+              style: TextStyle(
+                color: Colors.amber.withValues(alpha: 0.4),
+                fontSize: 13,
+              ),
+            ),
           ],
         ),
       ),
@@ -534,7 +588,11 @@ class LostDogReportCard extends StatelessWidget {
   }
 
   Widget _detailRow(
-      IconData icon, Color iconColor, String label, String value) {
+    IconData icon,
+    Color iconColor,
+    String label,
+    String value,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -546,14 +604,19 @@ class LostDogReportCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label,
-                    style: const TextStyle(
-                        color: Colors.white38,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold)),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: Colors.white38,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(value,
-                    style: const TextStyle(color: Colors.white, fontSize: 14)),
+                Text(
+                  value,
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                ),
               ],
             ),
           ),
@@ -585,8 +648,10 @@ class LostDogReportCard extends StatelessWidget {
               Navigator.pop(ctx);
               onChanged();
             },
-            child: const Text('Cancel Report',
-                style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Cancel Report',
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),

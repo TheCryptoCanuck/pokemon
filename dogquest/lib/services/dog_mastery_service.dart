@@ -199,7 +199,8 @@ class DogMasteryNotifier extends StateNotifier<DogMasteryState> {
     _initialized = true;
     _load();
     _log.info(
-        'Dog mastery loaded: ${state.sightingCounts.length} dogs tracked');
+      'Dog mastery loaded: ${state.sightingCounts.length} dogs tracked',
+    );
   }
 
   /// Reload mastery state from Hive. Used by demo mode to pick up
@@ -246,7 +247,8 @@ class DogMasteryNotifier extends StateNotifier<DogMasteryState> {
     if (newLevel != oldLevel) {
       xpBonus = newLevel.xpBonus;
       _log.info(
-          'Dog mastery level up: $dogName -> ${newLevel.label} (+$xpBonus XP)');
+        'Dog mastery level up: $dogName -> ${newLevel.label} (+$xpBonus XP)',
+      );
     }
 
     return (
@@ -267,11 +269,13 @@ class DogMasteryNotifier extends StateNotifier<DogMasteryState> {
     final entries = state.sightingCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return entries
-        .map((e) => DogMasteryInfo(
-              dogName: e.key,
-              sightingCount: e.value,
-              level: DogMasteryState._levelFromCount(e.value),
-            ))
+        .map(
+          (e) => DogMasteryInfo(
+            dogName: e.key,
+            sightingCount: e.value,
+            level: DogMasteryState._levelFromCount(e.value),
+          ),
+        )
         .toList();
   }
 }
@@ -281,5 +285,6 @@ class DogMasteryNotifier extends StateNotifier<DogMasteryState> {
 final dogMasteryProvider =
     StateNotifierProvider<DogMasteryNotifier, DogMasteryState>((ref) {
   throw UnimplementedError(
-      'dogMasteryProvider must be overridden after Hive init');
+    'dogMasteryProvider must be overridden after Hive init',
+  );
 });

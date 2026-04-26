@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../constants.dart';
-import '../services/analytics_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/analytics_service.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
@@ -168,7 +168,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 colors: [Color(0xFF1A3A1A), Color(0xFF2A5A2A)],
               ),
               border: Border.all(
-                  color: Colors.amber.withValues(alpha: 0.3), width: 1.5),
+                color: Colors.amber.withValues(alpha: 0.3),
+                width: 1.5,
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.4),

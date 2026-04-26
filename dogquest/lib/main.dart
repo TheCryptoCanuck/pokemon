@@ -14,48 +14,47 @@ import 'package:logging/logging.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'constants.dart';
-import 'router.dart';
-import 'screens/splash_screen.dart';
-import 'security/security_manager.dart';
-import 'services/analytics_service.dart';
-import 'services/kennel_service.dart';
-import 'services/dog_service.dart';
-import 'services/dog_group_service.dart';
-import 'services/daily_dog_service.dart';
-import 'services/api_client.dart';
-import 'services/backend_sync_service.dart';
-import 'services/identification_service.dart';
-import 'services/log_service.dart';
-import 'services/player_service.dart';
-import 'services/sighting_service.dart';
-import 'services/notification_service.dart';
-import 'services/location_service.dart';
-import 'services/activity_tracker_service.dart';
-import 'services/dog_mastery_service.dart';
-import 'services/daily_challenge_service.dart';
-import 'services/combo_service.dart';
-import 'services/flash_challenge_service.dart';
-import 'services/my_dog_service.dart';
-import 'services/dog_friendship_service.dart';
-import 'services/pack_service.dart';
-import 'services/breed_collection_service.dart';
-import 'services/dog_social_service.dart';
-import 'services/mystery_reward_service.dart';
-import 'services/smart_notification_service.dart';
-import 'services/shared_tflite_service.dart';
-import 'services/tflite_identification_service.dart';
-import 'services/dog_embedding_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/router.dart';
+import 'package:dogquest/screens/splash_screen.dart';
+import 'package:dogquest/security/security_manager.dart';
+import 'package:dogquest/services/analytics_service.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/dog_group_service.dart';
+import 'package:dogquest/services/daily_dog_service.dart';
+import 'package:dogquest/services/api_client.dart';
+import 'package:dogquest/services/backend_sync_service.dart';
+import 'package:dogquest/services/identification_service.dart';
+import 'package:dogquest/services/log_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/services/sighting_service.dart';
+import 'package:dogquest/services/notification_service.dart';
+import 'package:dogquest/services/location_service.dart';
+import 'package:dogquest/services/activity_tracker_service.dart';
+import 'package:dogquest/services/dog_mastery_service.dart';
+import 'package:dogquest/services/daily_challenge_service.dart';
+import 'package:dogquest/services/combo_service.dart';
+import 'package:dogquest/services/flash_challenge_service.dart';
+import 'package:dogquest/services/my_dog_service.dart';
+import 'package:dogquest/services/dog_friendship_service.dart';
+import 'package:dogquest/services/pack_service.dart';
+import 'package:dogquest/services/breed_collection_service.dart';
+import 'package:dogquest/services/dog_social_service.dart';
+import 'package:dogquest/services/mystery_reward_service.dart';
+import 'package:dogquest/services/smart_notification_service.dart';
+import 'package:dogquest/services/shared_tflite_service.dart';
+import 'package:dogquest/services/tflite_identification_service.dart';
+import 'package:dogquest/services/dog_embedding_service.dart';
 // NOTE: lost_dog_alert_service and lost_dog_sync_service imports removed —
 // those files exist on disk but were never committed. Their construction +
 // provider registrations below are also stripped. Restore alongside the
 // service files when committed. (T5-feature-restore)
-import 'services/lost_dog_service.dart';
-import 'services/supabase_lost_dog_service.dart';
-import 'services/auth_migration_service.dart';
-import 'services/supabase_auth_service.dart';
-import 'services/supabase_user_service.dart';
-import 'widgets/streak_break_dialog.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
+import 'package:dogquest/services/auth_migration_service.dart';
+import 'package:dogquest/services/supabase_auth_service.dart';
+import 'package:dogquest/services/supabase_user_service.dart';
+import 'package:dogquest/widgets/streak_break_dialog.dart';
 
 final _log = Logger('Main');
 
@@ -83,16 +82,21 @@ Future<List<int>> _getOrCreateHiveEncryptionKey() async {
 Future<void> _openEncryptedSightingsBox(List<int> encryptionKey) async {
   const boxName = 'dogquest_sightings_v1';
   try {
-    await Hive.openBox<Map>(boxName,
-        encryptionCipher: HiveAesCipher(encryptionKey));
+    await Hive.openBox<Map>(
+      boxName,
+      encryptionCipher: HiveAesCipher(encryptionKey),
+    );
     _log.info('Opened encrypted sightings box');
   } catch (e) {
     _log.warning(
-        'Failed to open sightings box (likely unencrypted migration): $e');
+      'Failed to open sightings box (likely unencrypted migration): $e',
+    );
     // Delete the old unencrypted box and create a fresh encrypted one
     await Hive.deleteBoxFromDisk(boxName);
-    await Hive.openBox<Map>(boxName,
-        encryptionCipher: HiveAesCipher(encryptionKey));
+    await Hive.openBox<Map>(
+      boxName,
+      encryptionCipher: HiveAesCipher(encryptionKey),
+    );
     _log.info('Migrated sightings box to encrypted storage (old data cleared)');
   }
 }
@@ -103,10 +107,14 @@ const _sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
 const _environment = String.fromEnvironment('ENV', defaultValue: 'development');
 
 /// Supabase configuration — passed at build time via --dart-define
-const _supabaseUrl = String.fromEnvironment('SUPABASE_URL',
-    defaultValue: 'https://hdcpymjnrbelaawhncep.supabase.co');
-const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY',
-    defaultValue: 'sb_publishable_lrICH1RprCBAxgQAs8tg4g_eKAXDme4');
+const _supabaseUrl = String.fromEnvironment(
+  'SUPABASE_URL',
+  defaultValue: 'https://hdcpymjnrbelaawhncep.supabase.co',
+);
+const _supabaseAnonKey = String.fromEnvironment(
+  'SUPABASE_ANON_KEY',
+  defaultValue: 'sb_publishable_lrICH1RprCBAxgQAs8tg4g_eKAXDme4',
+);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -132,8 +140,11 @@ void main() async {
 /// when Sentry is not active (SentryFlutter sets its own when active).
 void _installLocalErrorHandlers() {
   FlutterError.onError = (details) {
-    _log.severe('FlutterError: ${details.exceptionAsString()}',
-        details.exception, details.stack);
+    _log.severe(
+      'FlutterError: ${details.exceptionAsString()}',
+      details.exception,
+      details.stack,
+    );
     FlutterError.presentError(details);
   };
   PlatformDispatcher.instance.onError = (error, stack) {
@@ -158,9 +169,10 @@ Future<void> _guardedStartup() async {
               const Text(
                 'Something went wrong',
                 style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -237,7 +249,8 @@ class _AppBootstrapState extends State<AppBootstrap> {
       _statusController.add('Ready!');
       _progressController.add(1.0);
       await Future.delayed(
-          Duration(milliseconds: remaining > 0 ? remaining : 300));
+        Duration(milliseconds: remaining > 0 ? remaining : 300),
+      );
 
       // Check for legacy auth migration need
       bool needsMigration = false;
@@ -341,7 +354,9 @@ class _AppBootstrapState extends State<AppBootstrap> {
                           child: Text(
                             error!,
                             style: const TextStyle(
-                                color: Colors.redAccent, fontSize: 12),
+                              color: Colors.redAccent,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       TextFormField(
@@ -550,7 +565,8 @@ Future<_InitResult> _initializeServices(
     anonKey: _supabaseAnonKey,
   );
   _log.info(
-      'Supabase initialized (${_supabaseUrl.split('.').first.split('//').last})');
+    'Supabase initialized (${_supabaseUrl.split('.').first.split('//').last})',
+  );
 
   await Hive.initFlutter();
   await Future.delayed(Duration.zero);
@@ -609,7 +625,8 @@ Future<_InitResult> _initializeServices(
     );
   }
   debugPrint(
-      '[DogQuest] TFLite model loaded once — real identification active');
+    '[DogQuest] TFLite model loaded once — real identification active',
+  );
 
   // Both TfliteIdentificationService and DogEmbeddingService use the shared model
   final tfliteSvc = TfliteIdentificationService(dogSvc, sharedTflite);

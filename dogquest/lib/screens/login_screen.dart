@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../constants.dart';
-import '../services/supabase_auth_service.dart';
-import '../services/supabase_user_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/supabase_auth_service.dart';
+import 'package:dogquest/services/supabase_user_service.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -70,7 +70,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final email = _emailCtrl.text.trim();
     if (email.isEmpty || !email.contains('@')) {
       setState(
-          () => _error = 'Enter your email above, then tap Forgot Password');
+        () => _error = 'Enter your email above, then tap Forgot Password',
+      );
       return;
     }
     try {
@@ -78,7 +79,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Password reset email sent — check your inbox')),
+          content: Text('Password reset email sent — check your inbox'),
+        ),
       );
     } on SupabaseAuthException catch (e) {
       setState(() => _error = e.message);
@@ -133,12 +135,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           color: Colors.red.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                              color: Colors.red.withValues(alpha: 0.4)),
+                            color: Colors.red.withValues(alpha: 0.4),
+                          ),
                         ),
                         child: Text(
                           _error!,
                           style: const TextStyle(
-                              color: Colors.redAccent, fontSize: 13),
+                            color: Colors.redAccent,
+                            fontSize: 13,
+                          ),
                         ),
                       ).animate().shakeX(duration: 400.ms, hz: 4, amount: 6),
                     TextFormField(

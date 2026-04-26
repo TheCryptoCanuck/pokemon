@@ -1,18 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/marketplace.dart';
+import 'package:dogquest/models/marketplace.dart';
 
 final marketplaceServiceProvider =
     Provider<MarketplaceService>((ref) => MarketplaceService());
 
 final marketplaceStatsProvider = Provider<MarketplaceStats>(
-    (ref) => ref.watch(marketplaceServiceProvider).stats);
+  (ref) => ref.watch(marketplaceServiceProvider).stats,
+);
 
 final nearbyProvidersProvider = Provider<List<MarketplaceProvider>>(
-    (ref) => ref.watch(marketplaceServiceProvider).nearbyProviders);
+  (ref) => ref.watch(marketplaceServiceProvider).nearbyProviders,
+);
 
 final featuredProvidersProvider = Provider<List<MarketplaceProvider>>(
-    (ref) => ref.watch(marketplaceServiceProvider).featuredProviders);
+  (ref) => ref.watch(marketplaceServiceProvider).featuredProviders,
+);
 
 /// Mock data service for the Pet Marketplace feature.
 ///
@@ -60,8 +63,10 @@ class MarketplaceService {
   List<MarketplaceProvider> getRecommendedForBreed(String breed) {
     final lower = breed.toLowerCase();
     return _providers
-        .where((p) =>
-            p.breedSpecializations.any((s) => s.toLowerCase().contains(lower)))
+        .where(
+          (p) => p.breedSpecializations
+              .any((s) => s.toLowerCase().contains(lower)),
+        )
         .toList();
   }
 

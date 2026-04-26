@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
+import 'package:dogquest/constants.dart';
 
 class CameraPlaceholder extends StatelessWidget {
   final String? cameraError;
@@ -17,10 +17,9 @@ class CameraPlaceholder extends StatelessWidget {
     return GestureDetector(
       onTap: cameraError != null ? onRetry : null,
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: bgCard,
-          borderRadius:
-              const BorderRadius.vertical(bottom: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
         ),
         child: Center(
           child: Column(

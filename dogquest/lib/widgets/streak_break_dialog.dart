@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// Dialog shown when a user's streak was broken or saved by a streak saver.
 ///
@@ -201,7 +201,9 @@ class _StreakBreakDialogState extends State<StreakBreakDialog> {
             )
             .then()
             .shimmer(
-                duration: 1200.ms, color: Colors.amber.withValues(alpha: 0.3)),
+              duration: 1200.ms,
+              color: Colors.amber.withValues(alpha: 0.3),
+            ),
         const SizedBox(height: 20),
         const Text(
           'Streak Saved!',

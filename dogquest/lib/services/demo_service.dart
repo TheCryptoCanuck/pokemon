@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 
-import '../models/lost_dog_report.dart';
-import 'dog_service.dart';
-import 'player_service.dart';
-import 'dog_mastery_service.dart';
+import 'package:dogquest/models/lost_dog_report.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/player_service.dart';
+import 'package:dogquest/services/dog_mastery_service.dart';
 
 final _log = Logger('DemoService');
 
@@ -122,15 +122,19 @@ class DemoService {
       playerBox.put('quizzes_completed', 4);
       playerBox.put('quiz_perfect_scores', 1);
       playerBox.put(
-          'total_sightings', _demoBreeds.fold<int>(0, (sum, b) => sum + b.$2));
+        'total_sightings',
+        _demoBreeds.fold<int>(0, (sum, b) => sum + b.$2),
+      );
       playerBox.put('selected_avatar', 'bloodhound'); // 20+ breeds avatar
       playerBox.put('cached_username', 'DogLover');
       playerBox.put('offline_mode', true);
       playerBox.put('onboarding_complete', true);
       // Set last active to today so streak shows correctly
       final now = DateTime.now();
-      playerBox.put('last_active_date',
-          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}');
+      playerBox.put(
+        'last_active_date',
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}',
+      );
 
       // ── 2. Seed kennel (collected breeds) ─────────────────────
       final kennelBox = Hive.box<String>('dogquest_kennel');
@@ -233,10 +237,12 @@ class DemoService {
       emb[spikeIdx] = 0.65 + rng.nextDouble() * 0.15;
       // Add minor noise to a few neighboring indices for realism
       for (int i = 1; i <= 3; i++) {
-        if (spikeIdx + i < 150)
+        if (spikeIdx + i < 150) {
           emb[spikeIdx + i] = 0.02 + rng.nextDouble() * 0.05;
-        if (spikeIdx - i >= 0)
+        }
+        if (spikeIdx - i >= 0) {
           emb[spikeIdx - i] = 0.02 + rng.nextDouble() * 0.05;
+        }
       }
       return emb;
     }
@@ -299,8 +305,10 @@ class DemoService {
       ),
     ];
 
-    playerBox.put('lost_dog_reports',
-        jsonEncode(demoLostDogs.map((r) => r.toJson()).toList()));
+    playerBox.put(
+      'lost_dog_reports',
+      jsonEncode(demoLostDogs.map((r) => r.toJson()).toList()),
+    );
     _log.info('Seeded ${demoLostDogs.length} demo lost dog reports');
   }
 

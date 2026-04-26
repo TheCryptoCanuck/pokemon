@@ -177,7 +177,8 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
       state = state.copyWith(pityCounter: state.pityCounter + 1);
       _saveState();
       _log.fine(
-          'No mystery reward (roll=$roll, needed<=$chance, pity=${state.pityCounter})');
+        'No mystery reward (roll=$roll, needed<=$chance, pity=${state.pityCounter})',
+      );
       return null;
     }
 
@@ -208,7 +209,8 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
         state.copyWith(rarityBoostRemaining: state.rarityBoostRemaining - 1);
     _saveState();
     _log.info(
-        'Rarity boost consumed (${state.rarityBoostRemaining} remaining)');
+      'Rarity boost consumed (${state.rarityBoostRemaining} remaining)',
+    );
     return true;
   }
 
@@ -254,7 +256,9 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
 
       case MysteryRewardType.streakSaver:
         return const MysteryReward(
-            type: MysteryRewardType.streakSaver, value: 1);
+          type: MysteryRewardType.streakSaver,
+          value: 1,
+        );
 
       case MysteryRewardType.xpMultiplier:
         final multiplier = _rng.nextBool() ? 2 : 3;
@@ -262,7 +266,9 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
 
       case MysteryRewardType.rarityBoost:
         return const MysteryReward(
-            type: MysteryRewardType.rarityBoost, value: 3);
+          type: MysteryRewardType.rarityBoost,
+          value: 3,
+        );
 
       case MysteryRewardType.titleUnlock:
         final available = _availableTitles
@@ -289,7 +295,8 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
 
       case MysteryRewardType.rarityBoost:
         state = state.copyWith(
-            rarityBoostRemaining: state.rarityBoostRemaining + reward.value);
+          rarityBoostRemaining: state.rarityBoostRemaining + reward.value,
+        );
         break;
 
       case MysteryRewardType.titleUnlock:
@@ -308,5 +315,6 @@ class MysteryRewardNotifier extends StateNotifier<MysteryRewardState> {
 final mysteryRewardProvider =
     StateNotifierProvider<MysteryRewardNotifier, MysteryRewardState>((ref) {
   throw UnimplementedError(
-      'mysteryRewardProvider must be overridden after Hive init');
+    'mysteryRewardProvider must be overridden after Hive init',
+  );
 });

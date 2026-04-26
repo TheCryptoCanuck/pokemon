@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../constants.dart';
+import 'package:dogquest/constants.dart';
 
 class SignInPrompt extends StatelessWidget {
   const SignInPrompt({super.key});
@@ -27,22 +27,30 @@ class SignInPrompt extends StatelessWidget {
               color: Colors.amber.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.cloud_off_rounded,
-                color: Colors.amber, size: 20),
+            child: const Icon(
+              Icons.cloud_off_rounded,
+              color: Colors.amber,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Offline mode",
-                    style: TextStyle(
-                        color: Colors.amber,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13)),
+                const Text(
+                  'Offline mode',
+                  style: TextStyle(
+                    color: Colors.amber,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                const Text('Sign in to sync your collection.',
-                    style: TextStyle(color: Colors.white54, fontSize: 11)),
+                const Text(
+                  'Sign in to sync your collection.',
+                  style: TextStyle(color: Colors.white54, fontSize: 11),
+                ),
                 const SizedBox(height: 8),
                 SizedBox(
                   height: 30,
@@ -52,10 +60,13 @@ class SignInPrompt extends StatelessWidget {
                       backgroundColor: Colors.amber,
                       foregroundColor: Colors.black87,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       textStyle: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.bold),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     child: const Text('Sign In'),
                   ),

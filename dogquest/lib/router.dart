@@ -5,30 +5,30 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'screens/kennel_screen.dart';
-import 'screens/field_guide_screen.dart';
-import 'screens/home_shell.dart';
-import 'screens/identify_screen.dart';
-import 'screens/login_screen.dart';
-import 'screens/map_tab.dart';
-import 'screens/onboarding_screen.dart';
-import 'screens/profile_screen.dart';
-import 'screens/my_dog_wizard_screen.dart';
-import 'screens/my_dog_profile_screen.dart';
-import 'screens/pack_screen.dart';
-import 'screens/quiz_screen.dart';
-import 'screens/register_screen.dart';
-import 'screens/privacy_policy_screen.dart';
-import 'screens/friends_screen.dart';
-import 'screens/leaderboard_screen.dart';
-import 'screens/settings_screen.dart';
-import 'screens/dog_feed_screen.dart';
-import 'screens/dogs_nearby_screen.dart';
-import 'screens/breed_community_screen.dart';
-import 'screens/lost_dog_hub_screen.dart';
-import 'screens/report_lost_screen.dart';
-import 'screens/scan_stray_screen.dart';
-import 'screens/lost_dog_map_screen.dart';
+import 'package:dogquest/screens/kennel_screen.dart';
+import 'package:dogquest/screens/field_guide_screen.dart';
+import 'package:dogquest/screens/home_shell.dart';
+import 'package:dogquest/screens/identify_screen.dart';
+import 'package:dogquest/screens/login_screen.dart';
+import 'package:dogquest/screens/map_tab.dart';
+import 'package:dogquest/screens/onboarding_screen.dart';
+import 'package:dogquest/screens/profile_screen.dart';
+import 'package:dogquest/screens/my_dog_wizard_screen.dart';
+import 'package:dogquest/screens/my_dog_profile_screen.dart';
+import 'package:dogquest/screens/pack_screen.dart';
+import 'package:dogquest/screens/quiz_screen.dart';
+import 'package:dogquest/screens/register_screen.dart';
+import 'package:dogquest/screens/privacy_policy_screen.dart';
+import 'package:dogquest/screens/friends_screen.dart';
+import 'package:dogquest/screens/leaderboard_screen.dart';
+import 'package:dogquest/screens/settings_screen.dart';
+import 'package:dogquest/screens/dog_feed_screen.dart';
+import 'package:dogquest/screens/dogs_nearby_screen.dart';
+import 'package:dogquest/screens/breed_community_screen.dart';
+import 'package:dogquest/screens/lost_dog_hub_screen.dart';
+import 'package:dogquest/screens/report_lost_screen.dart';
+import 'package:dogquest/screens/scan_stray_screen.dart';
+import 'package:dogquest/screens/lost_dog_map_screen.dart';
 // NOTE: imports for shelter_mode_screen, share_lost_dog_screen, marketplace_screen,
 // service_list_screen, provider_detail_screen, reunion_celebration_screen, and
 // models/lost_dog_report removed pending those features being completed and
@@ -120,22 +120,36 @@ final router = GoRouter(
       builder: (context, state, navigationShell) =>
           HomeShell(navigationShell: navigationShell),
       branches: [
-        StatefulShellBranch(routes: [
-          GoRoute(path: '/map', builder: (_, __) => const MapTab()),
-        ]),
-        StatefulShellBranch(routes: [
-          GoRoute(
-              path: '/identify', builder: (_, __) => const IdentifyScreen()),
-        ]),
-        StatefulShellBranch(routes: [
-          GoRoute(path: '/kennel', builder: (_, __) => const KennelScreen()),
-        ]),
-        StatefulShellBranch(routes: [
-          GoRoute(path: '/guide', builder: (_, __) => const FieldGuideScreen()),
-        ]),
-        StatefulShellBranch(routes: [
-          GoRoute(path: '/profile', builder: (_, __) => const ProfileScreen()),
-        ]),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(path: '/map', builder: (_, __) => const MapTab()),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/identify',
+              builder: (_, __) => const IdentifyScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(path: '/kennel', builder: (_, __) => const KennelScreen()),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+                path: '/guide', builder: (_, __) => const FieldGuideScreen()),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+                path: '/profile', builder: (_, __) => const ProfileScreen()),
+          ],
+        ),
       ],
     ),
     GoRoute(
@@ -222,7 +236,8 @@ final router = GoRouter(
         child: const QuizScreen(),
         transitionsBuilder: (context, animation, _, child) => SlideTransition(
           position: Tween(begin: const Offset(0, 1), end: Offset.zero).animate(
-              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+          ),
           child: child,
         ),
       ),

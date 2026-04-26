@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 class NetworkDogImage extends StatelessWidget {
   final String url;
@@ -9,19 +9,20 @@ class NetworkDogImage extends StatelessWidget {
   final double? width;
   final BoxFit fit;
 
-  const NetworkDogImage(
-      {super.key,
-      required this.url,
-      required this.height,
-      this.width,
-      this.fit = BoxFit.contain});
+  const NetworkDogImage({
+    super.key,
+    required this.url,
+    required this.height,
+    this.width,
+    this.fit = BoxFit.contain,
+  });
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: url,
       httpHeaders: const {
-        'User-Agent': 'DogQuest/1.0 (dog identification app)'
+        'User-Agent': 'DogQuest/1.0 (dog identification app)',
       },
       height: height,
       width: width ?? double.infinity,
@@ -35,7 +36,8 @@ class NetworkDogImage extends StatelessWidget {
         height: height,
         color: bgCard,
         child: const Center(
-            child: Icon(Icons.broken_image, color: Colors.white24, size: 48)),
+          child: Icon(Icons.broken_image, color: Colors.white24, size: 48),
+        ),
       ),
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/dog.dart';
-import 'kennel_service.dart';
-import 'dog_service.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/dog_service.dart';
 
 /// A thematic grouping of dog breeds by AKC breed group.
 class DogGroup {
@@ -134,7 +134,7 @@ const families = <DogGroup>[
       'pointer',
       'vizsla',
       'weimaraner',
-      'brittany'
+      'brittany',
     ],
   ),
   DogGroup(
@@ -154,7 +154,7 @@ const families = <DogGroup>[
       'borzoi',
       'saluki',
       'basenji',
-      'rhodesian'
+      'rhodesian',
     ],
   ),
   DogGroup(
@@ -178,7 +178,7 @@ const families = <DogGroup>[
       'samoyed',
       'leonberger',
       'komondor',
-      'kuvasz'
+      'kuvasz',
     ],
   ),
   DogGroup(
@@ -207,7 +207,7 @@ const families = <DogGroup>[
       'havanese',
       'toy',
       'affenpinscher',
-      'italian greyhound'
+      'italian greyhound',
     ],
   ),
   DogGroup(
@@ -226,7 +226,7 @@ const families = <DogGroup>[
       'lhasa',
       'bichon',
       'keeshond',
-      'schipperke'
+      'schipperke',
     ],
   ),
   DogGroup(
@@ -244,7 +244,7 @@ const families = <DogGroup>[
       'bouvier',
       'briard',
       'malinois',
-      'cardigan'
+      'cardigan',
     ],
   ),
 ];
@@ -277,7 +277,10 @@ class DogGroupService {
           final owned =
               members.where((b) => collected.contains(b.name)).toList();
           return FamilyProgress(
-              family: f, allMembers: members, collectedMembers: owned);
+            family: f,
+            allMembers: members,
+            collectedMembers: owned,
+          );
         })
         .where((fp) => fp.total > 0)
         .toList()
@@ -292,7 +295,10 @@ class DogGroupService {
     final collected = _kennelService.all.toSet();
     final owned = members.where((b) => collected.contains(b.name)).toList();
     return FamilyProgress(
-        family: family, allMembers: members, collectedMembers: owned);
+      family: family,
+      allMembers: members,
+      collectedMembers: owned,
+    );
   }
 
   /// Find which family a dog belongs to (first match).

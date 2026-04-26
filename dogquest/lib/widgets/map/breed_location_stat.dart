@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
+import 'package:dogquest/constants.dart';
 
 class BreedLocationStat extends StatelessWidget {
   final String label;

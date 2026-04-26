@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
-import 'analytics_service.dart';
+import 'package:dogquest/services/analytics_service.dart';
 
 /// Conflict resolution strategies for Hive (local) + Supabase (cloud) sync.
 ///

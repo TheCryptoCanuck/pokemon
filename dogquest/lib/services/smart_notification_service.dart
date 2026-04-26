@@ -33,7 +33,8 @@ class SmartNotificationService {
   static const _channelDescription =
       'Personalized reminders based on your activity';
 
-  static NotificationDetails get _notificationDetails => NotificationDetails(
+  static NotificationDetails get _notificationDetails =>
+      const NotificationDetails(
         android: AndroidNotificationDetails(
           _channelId,
           _channelName,
@@ -110,7 +111,8 @@ class SmartNotificationService {
       payload: 'smart_streak_risk',
     );
     debugPrint(
-        '[SmartNotifications] Streak at risk scheduled for $scheduledDate');
+      '[SmartNotifications] Streak at risk scheduled for $scheduledDate',
+    );
   }
 
   /// 2. Morning Motivation — 8 AM daily.
@@ -122,7 +124,7 @@ class SmartNotificationService {
 
     String body;
     if (uncollectedDogNames.isEmpty) {
-      body = "Your daily challenges are ready! Can you sweep all three?";
+      body = 'Your daily challenges are ready! Can you sweep all three?';
     } else {
       final rng = Random();
       final dogName =
@@ -145,7 +147,8 @@ class SmartNotificationService {
       payload: 'smart_morning_motivation',
     );
     debugPrint(
-        '[SmartNotifications] Morning motivation scheduled for $scheduledDate');
+      '[SmartNotifications] Morning motivation scheduled for $scheduledDate',
+    );
   }
 
   /// 3. Challenge Expiring — 9 PM if 1 or 2 of 3 challenges are done.
@@ -173,7 +176,8 @@ class SmartNotificationService {
       payload: 'smart_challenge_expiring',
     );
     debugPrint(
-        '[SmartNotifications] Challenge expiring scheduled for $scheduledDate');
+      '[SmartNotifications] Challenge expiring scheduled for $scheduledDate',
+    );
   }
 
   /// 4. Comeback — fires 48 hours after this scheduling call.
@@ -212,7 +216,8 @@ class SmartNotificationService {
       payload: 'smart_weekly_mission',
     );
     debugPrint(
-        '[SmartNotifications] Weekly mission reminder scheduled for $scheduledDate');
+      '[SmartNotifications] Weekly mission reminder scheduled for $scheduledDate',
+    );
   }
 
   // ─── Time Helpers ──────────────────────────────────────────────────────
@@ -233,7 +238,10 @@ class SmartNotificationService {
   /// If that day/time has already passed this week, returns next week's
   /// instance.
   static tz.TZDateTime _nextInstanceOfDayAndTime(
-      int weekday, int hour, int minute) {
+    int weekday,
+    int hour,
+    int minute,
+  ) {
     var scheduled = _nextInstanceOfTime(hour, minute);
     while (scheduled.weekday != weekday) {
       scheduled = scheduled.add(const Duration(days: 1));

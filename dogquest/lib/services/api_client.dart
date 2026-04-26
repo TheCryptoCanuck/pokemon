@@ -26,39 +26,45 @@ class ApiClient {
     String? baseUrl,
     FlutterSecureStorage? storage,
   }) : _storage = storage ?? const FlutterSecureStorage() {
-    dio = Dio(BaseOptions(
-      baseUrl: baseUrl ?? _baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 15),
-      headers: {'Content-Type': 'application/json'},
-    ));
+    dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl ?? _baseUrl,
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {'Content-Type': 'application/json'},
+      ),
+    );
 
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        final token = await _storage.read(key: 'jwt_token');
-        if (token != null) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
-        handler.next(options);
-      },
-      onError: (error, handler) async {
-        if (error.response?.statusCode == 401) {
-          _log.warning('Auth token expired or invalid — clearing auth state');
-          await _storage.delete(key: 'jwt_token');
-          // Clear Hive auth flag so router redirects to login
-          final box = Hive.box('dogquest_player_stats');
-          box.put('has_auth_token', false);
-        }
-        handler.next(error);
-      },
-    ));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await _storage.read(key: 'jwt_token');
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          handler.next(options);
+        },
+        onError: (error, handler) async {
+          if (error.response?.statusCode == 401) {
+            _log.warning('Auth token expired or invalid — clearing auth state');
+            await _storage.delete(key: 'jwt_token');
+            // Clear Hive auth flag so router redirects to login
+            final box = Hive.box('dogquest_player_stats');
+            box.put('has_auth_token', false);
+          }
+          handler.next(error);
+        },
+      ),
+    );
 
     if (kDebugMode) {
-      dio.interceptors.add(LogInterceptor(
-        requestBody: false,
-        responseBody: false,
-        logPrint: (obj) => debugPrint('[Dio] $obj'),
-      ));
+      dio.interceptors.add(
+        LogInterceptor(
+          requestBody: false,
+          responseBody: false,
+          logPrint: (obj) => debugPrint('[Dio] $obj'),
+        ),
+      );
     }
   }
 

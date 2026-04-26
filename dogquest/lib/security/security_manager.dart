@@ -87,8 +87,10 @@ class SecurityManager {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('I Understand',
-                  style: TextStyle(color: Colors.amber)),
+              child: const Text(
+                'I Understand',
+                style: TextStyle(color: Colors.amber),
+              ),
             ),
           ],
         ),

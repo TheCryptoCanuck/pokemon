@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../constants.dart';
-import '../services/supabase_auth_service.dart';
-import '../services/supabase_user_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/supabase_auth_service.dart';
+import 'package:dogquest/services/supabase_user_service.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -69,8 +69,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     double score = 0;
     if (p.length >= 6) score += 0.25;
     if (p.length >= 10) score += 0.25;
-    if (RegExp(r'[A-Z]').hasMatch(p) && RegExp(r'[a-z]').hasMatch(p))
+    if (RegExp(r'[A-Z]').hasMatch(p) && RegExp(r'[a-z]').hasMatch(p)) {
       score += 0.25;
+    }
     if (RegExp(r'[0-9!@#\$%^&*(),.?":{}|<>]').hasMatch(p)) score += 0.25;
     return score;
   }
@@ -160,12 +161,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           color: Colors.red.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                              color: Colors.red.withValues(alpha: 0.4)),
+                            color: Colors.red.withValues(alpha: 0.4),
+                          ),
                         ),
                         child: Text(
                           _error!,
                           style: const TextStyle(
-                              color: Colors.redAccent, fontSize: 13),
+                            color: Colors.redAccent,
+                            fontSize: 13,
+                          ),
                         ),
                       ).animate().shakeX(duration: 400.ms, hz: 4, amount: 6),
                     TextFormField(
@@ -182,8 +186,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       height: 16,
                                       width: 16,
                                       child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: Colors.white38),
+                                        strokeWidth: 2,
+                                        color: Colors.white38,
+                                      ),
                                     ),
                                   )
                                 : Icon(
@@ -197,11 +202,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   ),
                       ),
                       validator: (v) {
-                        if (v == null || v.trim().length < 3)
+                        if (v == null || v.trim().length < 3) {
                           return 'At least 3 characters';
+                        }
                         if (v.trim().length > 50) return 'Max 50 characters';
-                        if (_usernameStatus == 'taken')
+                        if (_usernameStatus == 'taken') {
                           return 'Username is taken';
+                        }
                         return null;
                       },
                     ),

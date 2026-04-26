@@ -4,9 +4,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 
-import '../models/lost_dog_report.dart';
-import 'location_service.dart';
-import 'lost_dog_service.dart';
+import 'package:dogquest/models/lost_dog_report.dart';
+import 'package:dogquest/services/location_service.dart';
+import 'package:dogquest/services/lost_dog_service.dart';
 
 final _log = Logger('LostDogAlertService');
 
@@ -124,7 +124,7 @@ class LostDogAlertService {
           'Lost Dog Alert',
           'A $breedLabel named ${report.dogName} was lost $distStr away '
               '$daysStr. Keep an eye out!',
-          NotificationDetails(
+          const NotificationDetails(
             android: AndroidNotificationDetails(
               _channelId,
               _channelName,

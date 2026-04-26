@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../constants.dart';
-import '../services/social_service.dart';
-import '../services/supabase_friendship_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/social_service.dart';
+import 'package:dogquest/services/supabase_friendship_service.dart';
 
 class FriendsScreen extends ConsumerStatefulWidget {
   const FriendsScreen({super.key});
@@ -73,8 +73,10 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
           _pendingSub?.cancel();
           _pendingSub = remoteSvc.watchPendingRequests().listen((requests) {
             if (mounted) {
-              setState(() => _remotePending =
-                  requests.map(FriendshipRemote.fromJson).toList());
+              setState(
+                () => _remotePending =
+                    requests.map(FriendshipRemote.fromJson).toList(),
+              );
             }
           });
           return;
@@ -226,8 +228,10 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
         backgroundColor: bgCard,
         title:
             const Text('Remove Friend', style: TextStyle(color: Colors.white)),
-        content: const Text('Are you sure you want to remove this friend?',
-            style: TextStyle(color: Colors.white70)),
+        content: const Text(
+          'Are you sure you want to remove this friend?',
+          style: TextStyle(color: Colors.white70),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -272,8 +276,10 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
         backgroundColor: bgCard,
         title:
             const Text('Remove Friend', style: TextStyle(color: Colors.white)),
-        content: const Text('Are you sure you want to remove this friend?',
-            style: TextStyle(color: Colors.white70)),
+        content: const Text(
+          'Are you sure you want to remove this friend?',
+          style: TextStyle(color: Colors.white70),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -308,9 +314,13 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Friends',
-                style: TextStyle(
-                    color: Colors.amber, fontWeight: FontWeight.bold)),
+            const Text(
+              'Friends',
+              style: TextStyle(
+                color: Colors.amber,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             if (_pendingBadgeCount > 0) ...[
               const SizedBox(width: 8),
               Container(
@@ -322,9 +332,10 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                 child: Text(
                   '$_pendingBadgeCount',
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -339,23 +350,33 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.cloud_off,
-                          color: Colors.white38, size: 48),
+                      const Icon(
+                        Icons.cloud_off,
+                        color: Colors.white38,
+                        size: 48,
+                      ),
                       const SizedBox(height: 16),
-                      const Text('Friends feature available when connected',
-                          style:
-                              TextStyle(color: Colors.white54, fontSize: 16)),
+                      const Text(
+                        'Friends feature available when connected',
+                        style: TextStyle(color: Colors.white54, fontSize: 16),
+                      ),
                       const SizedBox(height: 8),
-                      const Text('Connect to the internet to find friends',
-                          style:
-                              TextStyle(color: Colors.white38, fontSize: 13)),
+                      const Text(
+                        'Connect to the internet to find friends',
+                        style: TextStyle(color: Colors.white38, fontSize: 13),
+                      ),
                       const SizedBox(height: 20),
                       TextButton.icon(
                         onPressed: _loadFriends,
-                        icon: const Icon(Icons.refresh,
-                            color: Colors.amber, size: 18),
-                        label: const Text('Retry',
-                            style: TextStyle(color: Colors.amber)),
+                        icon: const Icon(
+                          Icons.refresh,
+                          color: Colors.amber,
+                          size: 18,
+                        ),
+                        label: const Text(
+                          'Retry',
+                          style: TextStyle(color: Colors.amber),
+                        ),
                       ),
                     ],
                   ),
@@ -390,10 +411,11 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
           const SizedBox(height: 20),
           _sectionHeader('Pending Requests', '${_remotePending.length}'),
           const SizedBox(height: 8),
-          ..._remotePending.asMap().entries.map((e) =>
-              _buildRemotePendingTile(e.value)
-                  .animate()
-                  .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
+          ..._remotePending.asMap().entries.map(
+                (e) => _buildRemotePendingTile(e.value)
+                    .animate()
+                    .fadeIn(delay: Duration(milliseconds: 50 * e.key)),
+              ),
         ],
 
         // Accepted friendships from Supabase
@@ -409,18 +431,24 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             ),
             child: const Column(
               children: [
-                Text('No friends yet',
-                    style: TextStyle(color: Colors.white54, fontSize: 15)),
+                Text(
+                  'No friends yet',
+                  style: TextStyle(color: Colors.white54, fontSize: 15),
+                ),
                 SizedBox(height: 4),
-                Text('Search for users above to send friend requests!',
-                    style: TextStyle(color: Colors.white38, fontSize: 12)),
+                Text(
+                  'Search for users above to send friend requests!',
+                  style: TextStyle(color: Colors.white38, fontSize: 12),
+                ),
               ],
             ),
           )
         else
-          ...accepted.asMap().entries.map((e) => _buildRemoteFriendTile(e.value)
-              .animate()
-              .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
+          ...accepted.asMap().entries.map(
+                (e) => _buildRemoteFriendTile(e.value)
+                    .animate()
+                    .fadeIn(delay: Duration(milliseconds: 50 * e.key)),
+              ),
 
         const SizedBox(height: 40),
       ],
@@ -448,12 +476,14 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
               image: request.requesterPhotoUrl != null
                   ? DecorationImage(
                       image: NetworkImage(request.requesterPhotoUrl!),
-                      fit: BoxFit.cover)
+                      fit: BoxFit.cover,
+                    )
                   : null,
             ),
             child: request.requesterPhotoUrl == null
                 ? const Center(
-                    child: Icon(Icons.pets, color: Colors.amber, size: 20))
+                    child: Icon(Icons.pets, color: Colors.amber, size: 20),
+                  )
                 : null,
           ),
           const SizedBox(width: 12),
@@ -461,14 +491,18 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(request.requesterDogName,
-                    style: const TextStyle(
-                        color: textPrimary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14)),
                 Text(
-                    '${request.requesterBreed} \u2022 ${request.requesterOwnerUsername}',
-                    style: const TextStyle(color: textSecondary, fontSize: 11)),
+                  request.requesterDogName,
+                  style: const TextStyle(
+                    color: textPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  '${request.requesterBreed} \u2022 ${request.requesterOwnerUsername}',
+                  style: const TextStyle(color: textSecondary, fontSize: 11),
+                ),
               ],
             ),
           ),
@@ -508,18 +542,23 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             height: 42,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(colors: [
-                Colors.amber.withValues(alpha: 0.3),
-                accent.withValues(alpha: 0.3),
-              ]),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.amber.withValues(alpha: 0.3),
+                  accent.withValues(alpha: 0.3),
+                ],
+              ),
               image: photoUrl != null
                   ? DecorationImage(
-                      image: NetworkImage(photoUrl), fit: BoxFit.cover)
+                      image: NetworkImage(photoUrl),
+                      fit: BoxFit.cover,
+                    )
                   : null,
             ),
             child: photoUrl == null
                 ? const Center(
-                    child: Icon(Icons.pets, color: Colors.amber, size: 20))
+                    child: Icon(Icons.pets, color: Colors.amber, size: 20),
+                  )
                 : null,
           ),
           const SizedBox(width: 12),
@@ -527,19 +566,27 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(dogName,
-                    style: const TextStyle(
-                        color: textPrimary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14)),
-                Text('$breed \u2022 $owner',
-                    style: const TextStyle(color: textSecondary, fontSize: 11)),
+                Text(
+                  dogName,
+                  style: const TextStyle(
+                    color: textPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  '$breed \u2022 $owner',
+                  style: const TextStyle(color: textSecondary, fontSize: 11),
+                ),
               ],
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.person_remove,
-                color: Colors.white38, size: 20),
+            icon: const Icon(
+              Icons.person_remove,
+              color: Colors.white38,
+              size: 20,
+            ),
             onPressed: () => _removeRemoteFriendship(friendship.id),
             tooltip: 'Remove',
           ),
@@ -566,10 +613,11 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
           const SizedBox(height: 20),
           _sectionHeader('Pending Requests', '${_pendingRequests.length}'),
           const SizedBox(height: 8),
-          ..._pendingRequests.asMap().entries.map((e) =>
-              _buildPendingTile(e.value)
-                  .animate()
-                  .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
+          ..._pendingRequests.asMap().entries.map(
+                (e) => _buildPendingTile(e.value)
+                    .animate()
+                    .fadeIn(delay: Duration(milliseconds: 50 * e.key)),
+              ),
         ],
 
         // Sent requests
@@ -577,9 +625,11 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
           const SizedBox(height: 20),
           _sectionHeader('Sent Requests', '${_sentRequests.length}'),
           const SizedBox(height: 8),
-          ..._sentRequests.asMap().entries.map((e) => _buildSentTile(e.value)
-              .animate()
-              .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
+          ..._sentRequests.asMap().entries.map(
+                (e) => _buildSentTile(e.value)
+                    .animate()
+                    .fadeIn(delay: Duration(milliseconds: 50 * e.key)),
+              ),
         ],
 
         // Friends list
@@ -595,18 +645,24 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             ),
             child: const Column(
               children: [
-                Text('No friends yet',
-                    style: TextStyle(color: Colors.white54, fontSize: 15)),
+                Text(
+                  'No friends yet',
+                  style: TextStyle(color: Colors.white54, fontSize: 15),
+                ),
                 SizedBox(height: 4),
-                Text('Search for users above to send friend requests!',
-                    style: TextStyle(color: Colors.white38, fontSize: 12)),
+                Text(
+                  'Search for users above to send friend requests!',
+                  style: TextStyle(color: Colors.white38, fontSize: 12),
+                ),
               ],
             ),
           )
         else
-          ..._friends.asMap().entries.map((e) => _buildFriendTile(e.value)
-              .animate()
-              .fadeIn(delay: Duration(milliseconds: 50 * e.key))),
+          ..._friends.asMap().entries.map(
+                (e) => _buildFriendTile(e.value)
+                    .animate()
+                    .fadeIn(delay: Duration(milliseconds: 50 * e.key)),
+              ),
 
         const SizedBox(height: 40),
       ],
@@ -652,11 +708,15 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
       return const Padding(
         padding: EdgeInsets.all(16),
         child: Center(
-            child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                    color: Colors.amber, strokeWidth: 2))),
+          child: SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              color: Colors.amber,
+              strokeWidth: 2,
+            ),
+          ),
+        ),
       );
     }
 
@@ -679,21 +739,29 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                   color: Colors.amber.withValues(alpha: 0.15),
                 ),
                 child: const Center(
-                    child: Icon(Icons.person, color: Colors.amber, size: 20)),
+                  child: Icon(Icons.person, color: Colors.amber, size: 20),
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(user['username'] as String,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14)),
-                    Text('Lv.${user['level']} ${user['level_title']}',
-                        style: const TextStyle(
-                            color: Colors.white54, fontSize: 11)),
+                    Text(
+                      user['username'] as String,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      'Lv.${user['level']} ${user['level_title']}',
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 11,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -705,7 +773,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
                     backgroundColor: Colors.amber,
                     foregroundColor: Colors.black87,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
                   child: const Text('Add', style: TextStyle(fontSize: 12)),
@@ -737,21 +806,26 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
               color: Colors.amber.withValues(alpha: 0.15),
             ),
             child: const Center(
-                child: Icon(Icons.person_add, color: Colors.amber, size: 20)),
+              child: Icon(Icons.person_add, color: Colors.amber, size: 20),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(request['from_username'] as String,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14)),
-                Text('Lv.${request['from_level']}',
-                    style:
-                        const TextStyle(color: Colors.white54, fontSize: 11)),
+                Text(
+                  request['from_username'] as String,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  'Lv.${request['from_level']}',
+                  style: const TextStyle(color: Colors.white54, fontSize: 11),
+                ),
               ],
             ),
           ),
@@ -788,21 +862,26 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
               color: Colors.white.withValues(alpha: 0.08),
             ),
             child: const Center(
-                child:
-                    Icon(Icons.hourglass_top, color: Colors.white38, size: 20)),
+              child: Icon(Icons.hourglass_top, color: Colors.white38, size: 20),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(request['friend_username'] as String,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14)),
-                const Text('Pending...',
-                    style: TextStyle(color: Colors.white38, fontSize: 11)),
+                Text(
+                  request['friend_username'] as String,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                const Text(
+                  'Pending...',
+                  style: TextStyle(color: Colors.white38, fontSize: 11),
+                ),
               ],
             ),
           ),
@@ -831,39 +910,52 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             height: 36,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(colors: [
-                Colors.amber.withValues(alpha: 0.3),
-                const Color(0xFFD4874E).withValues(alpha: 0.3),
-              ]),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.amber.withValues(alpha: 0.3),
+                  const Color(0xFFD4874E).withValues(alpha: 0.3),
+                ],
+              ),
             ),
             child: const Center(
-                child: Icon(Icons.person, color: Colors.amber, size: 20)),
+              child: Icon(Icons.person, color: Colors.amber, size: 20),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(friend['friend_username'] as String,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14)),
-                Text('Lv.${friend['friend_level']}',
-                    style:
-                        const TextStyle(color: Colors.white54, fontSize: 11)),
+                Text(
+                  friend['friend_username'] as String,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  'Lv.${friend['friend_level']}',
+                  style: const TextStyle(color: Colors.white54, fontSize: 11),
+                ),
               ],
             ),
           ),
-          Text('${friend['friend_xp']} XP',
-              style: const TextStyle(
-                  color: Colors.amber,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold)),
+          Text(
+            '${friend['friend_xp']} XP',
+            style: const TextStyle(
+              color: Colors.amber,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(width: 8),
           IconButton(
-            icon: const Icon(Icons.person_remove,
-                color: Colors.white38, size: 20),
+            icon: const Icon(
+              Icons.person_remove,
+              color: Colors.white38,
+              size: 20,
+            ),
             onPressed: () => _removeFriend(friend['id'] as int),
             tooltip: 'Remove',
           ),
@@ -875,11 +967,14 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
   Widget _sectionHeader(String title, String count) {
     return Row(
       children: [
-        Text(title,
-            style: const TextStyle(
-                color: Colors.amber,
-                fontWeight: FontWeight.bold,
-                fontSize: 16)),
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.amber,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
         const SizedBox(width: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -887,11 +982,14 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> {
             color: Colors.amber.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Text(count,
-              style: const TextStyle(
-                  color: Colors.amber,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold)),
+          child: Text(
+            count,
+            style: const TextStyle(
+              color: Colors.amber,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ],
     );

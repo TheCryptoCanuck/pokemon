@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../constants.dart';
-import '../services/player_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/player_service.dart';
 
 /// Full-screen level-up celebration dialog.
 class LevelUpDialog extends StatelessWidget {
@@ -17,7 +17,10 @@ class LevelUpDialog extends StatelessWidget {
 
   /// Show the level-up dialog if a level change occurred.
   static void showIfLeveledUp(
-      BuildContext context, int oldLevel, PlayerState newState) {
+    BuildContext context,
+    int oldLevel,
+    PlayerState newState,
+  ) {
     if (newState.level > oldLevel) {
       HapticFeedback.heavyImpact();
       showDialog(
@@ -45,9 +48,10 @@ class LevelUpDialog extends StatelessWidget {
               Border.all(color: Colors.amber.withValues(alpha: 0.6), width: 2),
           boxShadow: [
             BoxShadow(
-                color: Colors.amber.withValues(alpha: 0.3),
-                blurRadius: 40,
-                spreadRadius: 8),
+              color: Colors.amber.withValues(alpha: 0.3),
+              blurRadius: 40,
+              spreadRadius: 8,
+            ),
           ],
         ),
         child: Column(
@@ -57,13 +61,15 @@ class LevelUpDialog extends StatelessWidget {
             const Text('⭐', style: TextStyle(fontSize: 72))
                 .animate(onPlay: (c) => c.repeat(reverse: true))
                 .scale(
-                    begin: const Offset(0.8, 0.8),
-                    end: const Offset(1.2, 1.2),
-                    duration: 800.ms)
+                  begin: const Offset(0.8, 0.8),
+                  end: const Offset(1.2, 1.2),
+                  duration: 800.ms,
+                )
                 .then()
                 .shimmer(
-                    duration: 1200.ms,
-                    color: Colors.amber.withValues(alpha: 0.6)),
+                  duration: 1200.ms,
+                  color: Colors.amber.withValues(alpha: 0.6),
+                ),
             const SizedBox(height: 16),
 
             // LEVEL UP text
@@ -76,19 +82,22 @@ class LevelUpDialog extends StatelessWidget {
                 letterSpacing: 3,
               ),
             ).animate().fadeIn().scale(
-                begin: const Offset(0.5, 0.5),
-                curve: Curves.elasticOut,
-                duration: 600.ms),
+                  begin: const Offset(0.5, 0.5),
+                  curve: Curves.elasticOut,
+                  duration: 600.ms,
+                ),
             const SizedBox(height: 12),
 
             // Level number
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Colors.amber.withValues(alpha: 0.2),
-                  Colors.orange.withValues(alpha: 0.15),
-                ]),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.amber.withValues(alpha: 0.2),
+                    Colors.orange.withValues(alpha: 0.15),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: Colors.amber.withValues(alpha: 0.5)),
               ),

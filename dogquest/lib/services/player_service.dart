@@ -2,9 +2,9 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
-import '../constants.dart';
-import '../helpers/date_helpers.dart';
-import '../models/dog.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/helpers/date_helpers.dart';
+import 'package:dogquest/models/dog.dart';
 
 final _log = Logger('PlayerService');
 
@@ -110,7 +110,8 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
           _box.get('quiz_perfect_scores', defaultValue: 0) as int,
       totalSightings: _box.get('total_sightings', defaultValue: 0) as int,
       selectedAvatar: _migrateAvatarId(
-          _box.get('selected_avatar', defaultValue: 'default') as String),
+        _box.get('selected_avatar', defaultValue: 'default') as String,
+      ),
     );
   }
 
@@ -231,12 +232,14 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
       );
       streakSaverUsed = true;
       _log.info(
-          'Streak saved! Used 1 streak saver (${state.streakSavers} remaining)');
+        'Streak saved! Used 1 streak saver (${state.streakSavers} remaining)',
+      );
     } else {
       // Missed one or more days — capture old streak and reset to 1
       brokenStreakValue = state.streak;
       _log.info(
-          'Streak broken at ${state.streak} days (last active: $lastActiveKey, today: $todayKey)');
+        'Streak broken at ${state.streak} days (last active: $lastActiveKey, today: $todayKey)',
+      );
       state = state.copyWith(streak: 1);
     }
 
@@ -360,15 +363,17 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
             allDogs.where((b) => b.rarity == Rarity.common).length;
         final collectedCommon =
             collectedDogs.where((b) => b.rarity == Rarity.common).length;
-        if (collectedCommon >= totalCommon && totalCommon > 0)
+        if (collectedCommon >= totalCommon && totalCommon > 0) {
           tryUnlock('all_common');
+        }
 
         final totalUncommon =
             allDogs.where((b) => b.rarity == Rarity.uncommon).length;
         final collectedUncommon =
             collectedDogs.where((b) => b.rarity == Rarity.uncommon).length;
-        if (collectedUncommon >= totalUncommon && totalUncommon > 0)
+        if (collectedUncommon >= totalUncommon && totalUncommon > 0) {
           tryUnlock('all_uncommon');
+        }
 
         final totalRare = allDogs.where((b) => b.rarity == Rarity.rare).length;
         final collectedRare =
@@ -377,17 +382,21 @@ class PlayerNotifier extends StateNotifier<PlayerState> {
       }
 
       // Conservation achievements
-      final hasEndangered = collectedDogs.any((b) =>
-          b.conservationStatus == 'Endangered' ||
-          b.conservationStatus == 'Critically Endangered');
+      final hasEndangered = collectedDogs.any(
+        (b) =>
+            b.conservationStatus == 'Endangered' ||
+            b.conservationStatus == 'Critically Endangered',
+      );
       if (hasEndangered) tryUnlock('endangered_spotter');
 
       final threatenedCount = collectedDogs
-          .where((b) =>
-              b.conservationStatus == 'Vulnerable' ||
-              b.conservationStatus == 'Endangered' ||
-              b.conservationStatus == 'Critically Endangered' ||
-              b.conservationStatus == 'Near Threatened')
+          .where(
+            (b) =>
+                b.conservationStatus == 'Vulnerable' ||
+                b.conservationStatus == 'Endangered' ||
+                b.conservationStatus == 'Critically Endangered' ||
+                b.conservationStatus == 'Near Threatened',
+          )
           .length;
       if (threatenedCount >= 5) tryUnlock('conservation_hero');
     }

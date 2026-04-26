@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 /// Full-screen achievement unlock celebration overlay with confetti,
 /// bouncing emoji, and gold header text.
@@ -239,12 +239,15 @@ class _AchievementOverlayState extends State<_AchievementOverlay>
                           opacity: textOpacity,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 8),
+                              horizontal: 20,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.amber.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                  color: Colors.amber.withValues(alpha: 0.4)),
+                                color: Colors.amber.withValues(alpha: 0.4),
+                              ),
                             ),
                             child: Text(
                               widget.title,

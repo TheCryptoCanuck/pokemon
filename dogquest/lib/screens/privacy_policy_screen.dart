@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../constants.dart';
+import 'package:dogquest/constants.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
@@ -55,12 +55,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _bullet('Email address'),
             _bullet('Password (stored securely using one-way hashing)'),
             _bullet(
-                'Dog collection data (species identified, sighting history)'),
+              'Dog collection data (species identified, sighting history)',
+            ),
             _bullet(
                 'Location data (GPS coordinates) when you identify a species, '
                 'if you have granted location permission'),
             _bullet(
-                'Basic device information (OS version, app version) for troubleshooting'),
+              'Basic device information (OS version, app version) for troubleshooting',
+            ),
             const SizedBox(height: 24),
             _heading('2. Camera Usage'),
             const SizedBox(height: 8),

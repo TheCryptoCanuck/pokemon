@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../constants.dart';
-import '../../services/supabase_pack_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/supabase_pack_service.dart';
 
 class RemoteMembersSection extends StatelessWidget {
   final PackRemote pack;
@@ -19,11 +19,14 @@ class RemoteMembersSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Pack Members',
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.amber)),
+        const Text(
+          'Pack Members',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.amber,
+          ),
+        ),
         const SizedBox(height: 12),
         if (members.isEmpty)
           Container(
@@ -33,8 +36,10 @@ class RemoteMembersSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Center(
-              child: Text('No members yet',
-                  style: TextStyle(color: Colors.white54)),
+              child: Text(
+                'No members yet',
+                style: TextStyle(color: Colors.white54),
+              ),
             ),
           )
         else
@@ -74,32 +79,44 @@ class RemoteMembersSection extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text(member.displayName ?? member.username,
-                                style: const TextStyle(
-                                    color: textPrimary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14)),
+                            Text(
+                              member.displayName ?? member.username,
+                              style: const TextStyle(
+                                color: textPrimary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
                             if (member.role == 'alpha') ...[
                               const SizedBox(width: 6),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 1),
+                                  horizontal: 6,
+                                  vertical: 1,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.amber.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
-                                child: const Text('Alpha',
-                                    style: TextStyle(
-                                        color: Colors.amber,
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.bold)),
+                                child: const Text(
+                                  'Alpha',
+                                  style: TextStyle(
+                                    color: Colors.amber,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ],
                           ],
                         ),
-                        Text('@${member.username}',
-                            style: const TextStyle(
-                                color: textSecondary, fontSize: 11)),
+                        Text(
+                          '@${member.username}',
+                          style: const TextStyle(
+                            color: textSecondary,
+                            fontSize: 11,
+                          ),
+                        ),
                       ],
                     ),
                   ),

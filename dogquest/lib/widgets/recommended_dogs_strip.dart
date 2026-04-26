@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../constants.dart';
-import '../models/dog.dart';
-import '../services/kennel_service.dart';
-import '../services/dog_service.dart';
-import '../services/recommendation_service.dart';
+import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/services/kennel_service.dart';
+import 'package:dogquest/services/dog_service.dart';
+import 'package:dogquest/services/recommendation_service.dart';
 
 /// A horizontal scrollable strip of recommended dogs the user hasn't
 /// collected yet, prioritized by achievability and habitat familiarity.
