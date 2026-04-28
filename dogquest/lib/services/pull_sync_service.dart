@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final pullSyncServiceProvider =
-    Provider<PullSyncService>((ref) => PullSyncService(ref));
+    Provider<PullSyncService>((ref) => PullSyncService());
 
 /// Cloud-to-local pull sync service.
 ///
@@ -12,9 +12,8 @@ final pullSyncServiceProvider =
 /// from Supabase into local Hive cache. Each pull operation is independent;
 /// a failure in one does not block the others.
 class PullSyncService {
-  PullSyncService(this._ref);
+  PullSyncService();
 
-  final Ref _ref;
   final _log = Logger('PullSyncService');
 
   static const _playerBoxName = 'dogquest_player';

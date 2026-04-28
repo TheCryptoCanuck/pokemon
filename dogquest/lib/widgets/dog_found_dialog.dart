@@ -14,7 +14,6 @@ import 'package:dogquest/models/dog.dart';
 import 'package:dogquest/services/analytics_service.dart';
 import 'package:dogquest/services/dog_mastery_service.dart';
 import 'package:dogquest/services/kennel_service.dart';
-import 'package:dogquest/services/dog_service.dart';
 import 'package:dogquest/services/identification_service.dart';
 import 'package:dogquest/services/player_service.dart';
 import 'package:dogquest/widgets/network_dog_image.dart';
@@ -177,7 +176,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
 
       await Share.shareXFiles(
         [XFile(file.path)],
-        text: 'I found a ${dog.name} on DogQuest!',
+        text: 'I found a ${dog.name} on Hound!',
       );
     } catch (_) {
       // Silently handle share failures
@@ -407,7 +406,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        'Breeds ${ref.read(kennelServiceProvider).count + (widget.alreadyOwned ? 0 : 1)} / ${ref.read(dogServiceProvider).all.length} in your kennel',
+                        'Breeds ${ref.read(kennelServiceProvider).count + (widget.alreadyOwned ? 0 : 1)} / $kDeployedBreedCount in your kennel',
                         style: const TextStyle(
                           color: Colors.white38,
                           fontSize: 11,

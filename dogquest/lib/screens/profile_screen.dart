@@ -53,49 +53,14 @@ class ProfileScreen extends ConsumerWidget {
           // ─── Top Bar ────────────────────────────────────────────
           Row(
             children: [
-              // Streak fire (left side, prominent)
-              if (playerState.streak > 0)
-                StreakFireWidget(
-                  streak: playerState.streak,
-                  xpMultiplier: playerState.streakXpMultiplier,
-                ),
+              // Streak fire — always visible; dormant CTA at streak=0
+              StreakFireWidget(
+                streak: playerState.streak,
+                xpMultiplier: playerState.streakXpMultiplier,
+              ),
               const Spacer(),
-              IconButton(
-                icon: const Icon(
-                  Icons.dynamic_feed_rounded,
-                  color: Colors.white54,
-                  size: 22,
-                ),
-                onPressed: () => context.push('/feed'),
-                tooltip: 'Dog Feed',
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.explore_rounded,
-                  color: Colors.white54,
-                  size: 22,
-                ),
-                onPressed: () => context.push('/dogs-nearby'),
-                tooltip: 'Dogs Nearby',
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.leaderboard_rounded,
-                  color: Colors.white54,
-                  size: 22,
-                ),
-                onPressed: () => context.push('/leaderboard'),
-                tooltip: 'Leaderboard',
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.people_rounded,
-                  color: Colors.white54,
-                  size: 22,
-                ),
-                onPressed: () => context.push('/friends'),
-                tooltip: 'Friends',
-              ),
+              // Community: feed, nearby, leaderboard, friends — one entry point
+              _CommunityChip(onTap: () => context.push('/social')),
               IconButton(
                 icon: const Icon(
                   Icons.search_rounded,
@@ -235,171 +200,153 @@ class ProfileScreen extends ConsumerWidget {
           const RecommendedDogsStrip(),
           const SizedBox(height: 24),
 
-          // ─── Collection + Mastery Row ───────────────────────────
-          const _SectionHeader(
-              title: 'Collection', icon: Icons.collections_bookmark),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Rarity Wheel
-              Expanded(
-                child: RarityCollectionWheel(
-                  segments: [
-                    for (final r in [
-                      Rarity.common,
-                      Rarity.uncommon,
-                      Rarity.rare,
-                      Rarity.legendary,
-                    ])
-                      RaritySegment(
-                        rarity: r,
-                        collected: kennelSvc.collectedDogs
-                            .where((b) => b.rarity == r)
-                            .length,
-                        total: dogSvc.all.where((b) => b.rarity == r).length,
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              // Mastery breakdown
-              Expanded(
-                child: _MasterySummary(
-                  mastery: masteryState,
-                  totalDogs: dogSvc.all.length,
-                ),
-              ),
-            ],
-          ).animate().fadeIn(delay: 250.ms),
-          const SizedBox(height: 24),
-
-          // ─── Activity Heatmap ───────────────────────────────────
-          const _SectionHeader(title: 'Activity', icon: Icons.grid_on),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: bgCard,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child:
-                CollectionHeatmap(activityData: ref.watch(activityMapProvider)),
-          ).animate().fadeIn(delay: 300.ms),
-          const SizedBox(height: 24),
-
-          // ─── Next Achievements ──────────────────────────────────
+          // ─── Next Achievements (progress hints — always visible) ──
           ..._buildNextAchievements(playerState, kennelSvc, dogSvc),
 
-          // ─── All Achievements Grid ──────────────────────────────
-          _SectionHeader(
-            title: 'Achievements',
-            icon: Icons.emoji_events,
-            subtitle:
+          // ─── Achievements Grid — behind "See all" ───────────────
+          _DisclosureSection(
+            headerIcon: Icons.emoji_events,
+            headerTitle: 'Achievements',
+            headerBadge:
                 '${playerState.unlockedAchievements.length}/${achievements.length}',
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: achievements.entries.map((e) {
+                final unlocked =
+                    playerState.unlockedAchievements.contains(e.key);
+                return _AchievementTile(
+                  emoji: e.value.$1,
+                  title: e.value.$2,
+                  condition: e.value.$3,
+                  unlocked: unlocked,
+                );
+              }).toList(),
+            ).animate().fadeIn(delay: 350.ms),
           ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: achievements.entries.map((e) {
-              final unlocked = playerState.unlockedAchievements.contains(e.key);
-              return Tooltip(
-                message: unlocked ? '${e.value.$2}: ${e.value.$3}' : e.value.$3,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: unlocked
-                        ? Colors.amber.withValues(alpha: 0.12)
-                        : bgCard,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: unlocked
-                          ? Colors.amber.withValues(alpha: 0.5)
-                          : Colors.white10,
-                      width: unlocked ? 1.5 : 1,
-                    ),
-                    boxShadow: unlocked
-                        ? [
-                            BoxShadow(
-                              color: Colors.amber.withValues(alpha: 0.08),
-                              blurRadius: 8,
+          const SizedBox(height: 8),
+
+          // ─── Collection & Stats — behind "See all" ──────────────
+          _DisclosureSection(
+            headerIcon: Icons.bar_chart_rounded,
+            headerTitle: 'Collection & Stats',
+            child: Column(
+              children: [
+                // Collection + Mastery Row
+                const _SectionHeader(
+                    title: 'Collection', icon: Icons.collections_bookmark),
+                const SizedBox(height: 12),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: RarityCollectionWheel(
+                        segments: [
+                          for (final r in [
+                            Rarity.common,
+                            Rarity.uncommon,
+                            Rarity.rare,
+                            Rarity.legendary,
+                          ])
+                            RaritySegment(
+                              rarity: r,
+                              collected: kennelSvc.collectedDogs
+                                  .where((b) => b.rarity == r)
+                                  .length,
+                              total:
+                                  dogSvc.all.where((b) => b.rarity == r).length,
                             ),
-                          ]
-                        : null,
-                  ),
-                  child: Center(
-                    child: Text(
-                      unlocked ? e.value.$1 : '\u{1F512}',
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: unlocked ? null : Colors.white24,
+                        ],
                       ),
                     ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ).animate().fadeIn(delay: 350.ms),
-          const SizedBox(height: 24),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _MasterySummary(
+                        mastery: masteryState,
+                        totalDogs: dogSvc.all.length,
+                      ),
+                    ),
+                  ],
+                ).animate().fadeIn(delay: 250.ms),
+                const SizedBox(height: 24),
 
-          // ─── Community Pulse ──────────────────────────────────────
-          const CommunityPulse(),
-          const SizedBox(height: 16),
-
-          // ─── Eco Impact ─────────────────────────────────────────
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFF1B5E20).withValues(alpha: 0.3),
-                  bgCard,
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: const Color(0xFFD4874E).withValues(alpha: 0.25),
-              ),
-            ),
-            child: Row(
-              children: [
+                // Activity Heatmap
+                const _SectionHeader(title: 'Activity', icon: Icons.grid_on),
+                const SizedBox(height: 12),
                 Container(
-                  width: 44,
-                  height: 44,
+                  padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFFD4874E).withValues(alpha: 0.15),
+                    color: bgCard,
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  child:
-                      const Icon(Icons.eco, color: Color(0xFFD4874E), size: 22),
-                ),
-                const SizedBox(width: 14),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: CollectionHeatmap(
+                      activityData: ref.watch(activityMapProvider)),
+                ).animate().fadeIn(delay: 300.ms),
+                const SizedBox(height: 24),
+
+                // Community Pulse
+                const CommunityPulse(),
+                const SizedBox(height: 16),
+
+                // Eco Impact
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFF1B5E20).withValues(alpha: 0.3),
+                        bgCard,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFFD4874E).withValues(alpha: 0.25),
+                    ),
+                  ),
+                  child: Row(
                     children: [
-                      Text(
-                        'Eco Impact',
-                        style: TextStyle(
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color:
+                              const Color(0xFFD4874E).withValues(alpha: 0.15),
+                        ),
+                        child: const Icon(
+                          Icons.eco,
                           color: Color(0xFFD4874E),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          size: 22,
                         ),
                       ),
-                      SizedBox(height: 2),
-                      Text(
-                        'Every breed identified helps grow the DogQuest community.',
-                        style: TextStyle(color: Colors.white54, fontSize: 12),
+                      const SizedBox(width: 14),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Eco Impact',
+                              style: TextStyle(
+                                color: Color(0xFFD4874E),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            SizedBox(height: 2),
+                            Text(
+                              'Every breed identified helps grow the Hound community.',
+                              style: TextStyle(
+                                  color: Colors.white54, fontSize: 12),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
+                ).animate().fadeIn(delay: 400.ms),
               ],
             ),
-          ).animate().fadeIn(delay: 400.ms),
+          ),
           const SizedBox(height: 32),
         ],
       ),
@@ -749,15 +696,248 @@ class ProfileScreen extends ConsumerWidget {
 
 // ─── Reusable Widgets ─────────────────────────────────────────────────────────
 
+/// Single chip replacing four separate social icon buttons.
+/// Routes to the consolidated /social screen.
+class _CommunityChip extends StatelessWidget {
+  final VoidCallback onTap;
+  const _CommunityChip({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white12),
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.people_rounded, color: Colors.white54, size: 16),
+            SizedBox(width: 5),
+            Text(
+              'Community',
+              style: TextStyle(
+                color: Colors.white54,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Collapsible section with a tappable "header + chevron" disclosure row.
+///
+/// Collapsed by default. Tapping the header expands the [child] with an
+/// animated size transition. Avoids nesting a scrollable inside a scrollable —
+/// the child renders inline in the parent scroll view.
+class _DisclosureSection extends StatefulWidget {
+  final IconData headerIcon;
+  final String headerTitle;
+  final String? headerBadge;
+  final Widget child;
+
+  const _DisclosureSection({
+    required this.headerIcon,
+    required this.headerTitle,
+    required this.child,
+    this.headerBadge,
+  });
+
+  @override
+  State<_DisclosureSection> createState() => _DisclosureSectionState();
+}
+
+class _DisclosureSectionState extends State<_DisclosureSection> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Tappable header row
+        GestureDetector(
+          onTap: () => setState(() => _expanded = !_expanded),
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Row(
+              children: [
+                Icon(widget.headerIcon, color: Colors.amber, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  widget.headerTitle,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                if (widget.headerBadge != null) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      widget.headerBadge!,
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                ],
+                const Spacer(),
+                AnimatedRotation(
+                  turns: _expanded ? 0.5 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: Colors.white38,
+                    size: 22,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Animated body
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          child: _expanded
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: widget.child,
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
+    );
+  }
+}
+
+/// Achievement badge tile.
+///
+/// Unlocked  → compact 56×56 glowing square, emoji centred.
+/// Locked    → wider card (~140 px) showing the greyed emoji, achievement
+///             title, and unlock condition inline — no tap required.
+class _AchievementTile extends StatelessWidget {
+  final String emoji;
+  final String title;
+  final String condition;
+  final bool unlocked;
+
+  const _AchievementTile({
+    required this.emoji,
+    required this.title,
+    required this.condition,
+    required this.unlocked,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (unlocked) {
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        width: 56,
+        height: 56,
+        decoration: BoxDecoration(
+          color: Colors.amber.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Colors.amber.withValues(alpha: 0.5),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.amber.withValues(alpha: 0.08),
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: Center(
+          child: Text(emoji, style: const TextStyle(fontSize: 24)),
+        ),
+      );
+    }
+
+    // Locked — always-visible condition card.
+    return Container(
+      width: 140,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: bgCard,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Greyed emoji so users recognise the reward they're chasing.
+          Text(
+            emoji,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.white24,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white38,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  condition,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Colors.white24,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _SectionHeader extends StatelessWidget {
   final String title;
   final IconData icon;
-  final String? subtitle;
 
   const _SectionHeader({
     required this.title,
     required this.icon,
-    this.subtitle,
   });
 
   @override
@@ -774,20 +954,6 @@ class _SectionHeader extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        if (subtitle != null) ...[
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              subtitle!,
-              style: const TextStyle(color: Colors.white38, fontSize: 11),
-            ),
-          ),
-        ],
         const Spacer(),
       ],
     );

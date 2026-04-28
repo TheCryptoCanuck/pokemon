@@ -24,9 +24,6 @@ class _LostDogMapScreenState extends ConsumerState<LostDogMapScreen> {
 
   late LostDogMapController _controller;
 
-  static const _defaultCenter = LatLng(40.7580, -73.9855);
-  static const _defaultZoom = 10.0;
-
   @override
   void initState() {
     super.initState();
@@ -351,7 +348,7 @@ class _LostDogMap extends StatelessWidget {
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.dogquest.app',
+                userAgentPackageName: 'com.hound.app',
                 fallbackUrl: 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
               ),
               MarkerLayer(

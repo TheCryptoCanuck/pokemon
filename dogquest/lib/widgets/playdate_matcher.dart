@@ -348,8 +348,6 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
       selectedTime.minute,
     );
 
-    // Try to use the user's first dog as organizer dog
-    final myDogSvc = ref.read(myDogServiceProvider);
     String? organizerDogId;
     // MyDogService uses local Hive -- no remote dog_id available yet
     // organizerDogId stays null until Supabase dog_profiles are linked
