@@ -8,7 +8,6 @@ import 'package:dogquest/models/dog_friendship.dart';
 import 'package:dogquest/services/dog_friendship_service.dart';
 import 'package:dogquest/services/dog_service.dart';
 import 'package:dogquest/services/location_service.dart';
-import 'package:dogquest/services/my_dog_service.dart';
 import 'package:dogquest/services/playdate_service.dart';
 
 /// Playdate match result with compatibility score.
