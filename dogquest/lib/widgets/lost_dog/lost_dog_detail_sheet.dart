@@ -58,7 +58,7 @@ class LostDogDetailSheet extends StatelessWidget {
                 child: SizedBox(
                   height: 220,
                   width: double.infinity,
-                  child: _PhotoPlaceholder.build(report),
+                  child: _PhotoPlaceholder.forReport(report),
                 ),
               ),
               const SizedBox(height: 16),
@@ -286,7 +286,10 @@ class _PhotoPlaceholder extends StatelessWidget {
 
   const _PhotoPlaceholder(this.report);
 
-  static Widget build(LostDogReport report) {
+  /// Factory that returns either an Image.file or the placeholder widget.
+  /// Named `forReport` (not `build`) to avoid shadowing the inherited
+  /// StatelessWidget.build(BuildContext).
+  static Widget forReport(LostDogReport report) {
     final hasPhoto = report.photoPath != null &&
         report.photoPath!.isNotEmpty &&
         File(report.photoPath!).existsSync();
