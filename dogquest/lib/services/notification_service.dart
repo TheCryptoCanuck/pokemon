@@ -13,9 +13,9 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
-  static const _streakChannelId = 'dogquest_streak';
+  static const _streakChannelId = 'hound_streak';
   static const _streakChannelName = 'Streak Reminders';
-  static const _dailyDogChannelId = 'dogquest_daily_dog';
+  static const _dailyDogChannelId = 'hound_daily_dog';
   static const _dailyDogChannelName = 'Daily Dog Alerts';
 
   static const _streakNotificationId = 1001;
@@ -63,7 +63,7 @@ class NotificationService {
     await _plugin.zonedSchedule(
       _streakNotificationId,
       "Don't break your streak!",
-      'Open DogQuest to keep your identifying streak alive!',
+      'Open Hound to keep your identifying streak alive!',
       _nextInstanceOfTime(20, 0), // 8:00 PM
       const NotificationDetails(
         android: AndroidNotificationDetails(

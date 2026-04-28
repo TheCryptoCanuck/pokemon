@@ -26,7 +26,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'DogQuest Privacy Policy',
+              'Hound Privacy Policy',
               style: TextStyle(
                 color: Colors.amber,
                 fontSize: 22,
@@ -40,7 +40,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             _body(
-              'Thank you for using DogQuest. This privacy policy explains how '
+              'Thank you for using Hound. This privacy policy explains how '
               'we collect, use, and protect your information when you use our '
               'dog identification app.',
             ),
@@ -67,7 +67,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _heading('2. Camera Usage'),
             const SizedBox(height: 8),
             _body(
-              'DogQuest requests camera access solely for the purpose of dog '
+              'Hound requests camera access solely for the purpose of dog '
               'identification. Photos taken through the app are processed '
               'entirely on your device. Images are NOT uploaded to any server '
               'or shared with any third party. After identification is '
@@ -87,7 +87,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _heading('3a. Location Data'),
             const SizedBox(height: 8),
             _body(
-              'When you grant location permission, DogQuest records the GPS '
+              'When you grant location permission, Hound records the GPS '
               'coordinates (latitude, longitude, and accuracy) of each species '
               'identification. This data is stored locally on your device and '
               'is used to:',
@@ -110,7 +110,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _heading('5. Third-Party Services'),
             const SizedBox(height: 8),
             _body(
-              'DogQuest uses the following third-party services to enhance '
+              'Hound uses the following third-party services to enhance '
               'your experience:',
             ),
             const SizedBox(height: 8),
@@ -178,7 +178,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _heading('8. Children\'s Privacy'),
             const SizedBox(height: 8),
             _body(
-              'DogQuest does not knowingly collect personal information from '
+              'Hound does not knowingly collect personal information from '
               'children under the age of 13. If you believe a child has '
               'provided us with personal data, please contact us so we can '
               'remove it promptly.',
@@ -211,7 +211,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'support@dogquest.app',
+                    'jesseg.8899@gmail.com',
                     style: TextStyle(
                       color: Colors.amber,
                       fontSize: 15,

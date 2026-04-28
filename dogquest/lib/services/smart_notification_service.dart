@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-/// Contextual, personalized notification scheduler for DogQuest.
+/// Contextual, personalized notification scheduler for Hound.
 ///
 /// Schedules smart notifications based on player state (streak, challenges,
 /// collection progress) to create habit-forming cues that bring users back.
@@ -28,7 +28,7 @@ class SmartNotificationService {
 
   // ─── Channel ───────────────────────────────────────────────────────────
 
-  static const _channelId = 'dogquest_smart';
+  static const _channelId = 'hound_smart';
   static const _channelName = 'Smart Reminders';
   static const _channelDescription =
       'Personalized reminders based on your activity';
@@ -102,7 +102,7 @@ class SmartNotificationService {
     await _plugin.zonedSchedule(
       _streakRiskId,
       'Your $streak-day streak is in danger!',
-      'Open DogQuest and spot a dog before midnight to keep your streak alive.',
+      'Open Hound and spot a dog before midnight to keep your streak alive.',
       scheduledDate,
       _notificationDetails,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,

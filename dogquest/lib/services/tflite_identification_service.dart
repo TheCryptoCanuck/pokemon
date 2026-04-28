@@ -289,7 +289,7 @@ class TfliteIdentificationService implements IdentificationService {
         'top-1: ${(topProb * 100).toStringAsFixed(1)}%, '
         'top-2: ${(top2Prob * 100).toStringAsFixed(1)}%, '
         'gap: ${(confidenceGap * 100).toStringAsFixed(1)}%');
-    _log.fine('DOGQUEST_ID: entropy=${normalizedEntropy.toStringAsFixed(3)}, '
+    _log.fine('HOUND_ID: entropy=${normalizedEntropy.toStringAsFixed(3)}, '
         'top1=${(topProb * 100).toStringAsFixed(1)}%, '
         'top2=${(top2Prob * 100).toStringAsFixed(1)}%, '
         'gap=${(confidenceGap * 100).toStringAsFixed(1)}%');
@@ -301,8 +301,7 @@ class TfliteIdentificationService implements IdentificationService {
       final dogName = dog?.name ?? '(no match)';
       _log.info('  [${i + 1}] ${(e.prob * 100).toStringAsFixed(2)}% — '
           'label="$label" -> "$dogName"');
-      _log.fine(
-          'DOGQUEST_ID: [${i + 1}] ${(e.prob * 100).toStringAsFixed(2)}% — '
+      _log.fine('HOUND_ID: [${i + 1}] ${(e.prob * 100).toStringAsFixed(2)}% — '
           'label="$label" -> "$dogName"');
     }
 
@@ -356,7 +355,7 @@ class TfliteIdentificationService implements IdentificationService {
       _log.info('Returning ${results.length} result(s): '
           '${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}');
       _log.info(
-        'DOGQUEST_ID: RESULT -> ${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}',
+        'HOUND_ID: RESULT -> ${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}',
       );
     } else {
       _log.info('No label matches — returning unrecognized sentinel');
