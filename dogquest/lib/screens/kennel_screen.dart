@@ -15,6 +15,7 @@ import 'package:dogquest/services/dog_service.dart';
 import 'package:dogquest/services/breed_collection_service.dart';
 import 'package:dogquest/widgets/breed_share_sheet.dart';
 import 'package:dogquest/widgets/dog_detail_sheet.dart';
+import 'package:dogquest/widgets/breed_ghost_card.dart';
 
 enum KennelSortMode { recent, name, rarity }
 
@@ -127,6 +128,21 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
         if (_sortMode == KennelSortMode.recent) {
           dogs = dogs.reversed.toList();
         }
+
+        // All breeds for grid (collected + ghost)
+        final gridDogs =
+            dogSvc.filter(
+              rarity: _filterRarity,
+              search: _searchQuery,
+            );
+
+        // Sort grid: collected first, then alphabetical
+        gridDogs.sort((a, b) {
+          final aOwned = kennelSvc.contains(a.name);
+          final bOwned = kennelSvc.contains(b.name);
+          if (aOwned != bOwned) return bOwned ? 1 : -1;
+          return a.name.compareTo(b.name);
+        });
 
         // Rarity counts for header
         final allDogs = kennelSvc.collectedDogs;
@@ -281,22 +297,42 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                         // Rarity filter chips (only visible in grid mode)
                         if (_viewMode == KennelViewMode.grid)
                           Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  _filterChip(null, 'All', Colors.white70),
-                                  ...Rarity.values
-                                      .where((r) => r != Rarity.unknown)
-                                      .map(
-                                        (r) => _filterChip(
-                                          r,
-                                          r.name[0].toUpperCase() +
-                                              r.name.substring(1),
-                                          r.color,
-                                        ),
-                                      ),
+                            child: ShaderMask(
+                              shaderCallback: (bounds) =>
+                                  const LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  Colors.white,
+                                  Colors.white,
+                                  Colors.transparent,
                                 ],
+                                stops: [0.0, 0.85, 1.0],
+                              ).createShader(bounds),
+                              blendMode: BlendMode.dstIn,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    _filterChip(
+                                      null,
+                                      'All',
+                                      Colors.white70,
+                                    ),
+                                    ...Rarity.values
+                                        .where(
+                                          (r) => r != Rarity.unknown,
+                                        )
+                                        .map(
+                                          (r) => _filterChip(
+                                            r,
+                                            r.name[0].toUpperCase() +
+                                                r.name.substring(1),
+                                            r.color,
+                                          ),
+                                        ),
+                                  ],
+                                ),
                               ),
                             ),
                           )
@@ -346,7 +382,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
               )
             else ...[
               // Dog grid
-              if (dogs.isEmpty)
+              if (gridDogs.isEmpty)
                 SliverFillRemaining(
                   child: Center(
                     child: Text(
@@ -363,7 +399,23 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                   sliver: SliverGrid(
                     delegate: SliverChildBuilderDelegate(
                       (c, i) {
-                        final dog = dogs[i];
+                        final dog = gridDogs[i];
+                        final owned = kennelSvc.contains(dog.name);
+
+                        if (!owned) {
+                          return BreedGhostCard(dog: dog)
+                              .animate(autoPlay: !_hasAnimated)
+                              .fadeIn(
+                                delay: Duration(
+                                  milliseconds:
+                                      (i * 40).clamp(0, 500),
+                                ),
+                              )
+                              .scale(
+                                begin: const Offset(0.9, 0.9),
+                              );
+                        }
+
                         return GestureDetector(
                           onTap: () {
                             HapticFeedback.lightImpact();
@@ -379,7 +431,8 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                               side: BorderSide(
-                                color: dog.rarity.color.withValues(alpha: 0.6),
+                                color: dog.rarity.color
+                                    .withValues(alpha: 0.6),
                                 width: 1.5,
                               ),
                             ),
@@ -394,12 +447,17 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                         'Hound/1.0 (dog identification app)',
                                   },
                                   fit: BoxFit.cover,
-                                  placeholder: (_, __) => Shimmer.fromColors(
+                                  placeholder: (_, __) =>
+                                      Shimmer.fromColors(
                                     baseColor: bgCard,
-                                    highlightColor: const Color(0xFF3A2F2A),
-                                    child: Container(color: bgCard),
+                                    highlightColor:
+                                        const Color(0xFF3A2F2A),
+                                    child: Container(
+                                      color: bgCard,
+                                    ),
                                   ),
-                                  errorWidget: (_, __, ___) => const Icon(
+                                  errorWidget: (_, __, ___) =>
+                                      const Icon(
                                     Icons.broken_image,
                                     color: Colors.white24,
                                   ),
@@ -410,14 +468,20 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                   right: 6,
                                   child: GestureDetector(
                                     onTap: () {
-                                      HapticFeedback.lightImpact();
-                                      BreedShareSheet.show(context, dog);
+                                      HapticFeedback
+                                          .lightImpact();
+                                      BreedShareSheet.show(
+                                        context,
+                                        dog,
+                                      );
                                     },
                                     child: Container(
-                                      padding: const EdgeInsets.all(6),
+                                      padding:
+                                          const EdgeInsets.all(6),
                                       decoration: BoxDecoration(
                                         color: Colors.black54,
-                                        borderRadius: BorderRadius.circular(8),
+                                        borderRadius:
+                                            BorderRadius.circular(8),
                                       ),
                                       child: const Icon(
                                         Icons.share,
@@ -434,11 +498,14 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
+                                        begin:
+                                            Alignment.topCenter,
                                         end: Alignment.bottomCenter,
                                         colors: [
                                           Colors.transparent,
-                                          Colors.black.withValues(alpha: 0.8),
+                                          Colors.black.withValues(
+                                            alpha: 0.8,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -451,11 +518,13 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                           dog.name,
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight:
+                                                FontWeight.bold,
                                             fontSize: 13,
                                           ),
                                           maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                          overflow:
+                                              TextOverflow.ellipsis,
                                         ),
                                         Text(
                                           dog.rarity.name,
@@ -474,13 +543,16 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                               .animate(autoPlay: !_hasAnimated)
                               .fadeIn(
                                 delay: Duration(
-                                  milliseconds: (i * 40).clamp(0, 500),
+                                  milliseconds:
+                                      (i * 40).clamp(0, 500),
                                 ),
                               )
-                              .scale(begin: const Offset(0.9, 0.9)),
+                              .scale(
+                                begin: const Offset(0.9, 0.9),
+                              ),
                         );
                       },
-                      childCount: dogs.length,
+                      childCount: gridDogs.length,
                     ),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
