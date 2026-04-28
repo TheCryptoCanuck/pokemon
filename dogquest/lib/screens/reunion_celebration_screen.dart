@@ -43,17 +43,19 @@ class _ReunionCelebrationScreenState extends State<ReunionCelebrationScreen>
 
     // Fire-and-forget: notify users who filed sightings.
     // notify-sighters Edge Function may not be deployed yet — silent failure ok.
-    unawaited(
-      Supabase.instance.client.functions.invoke(
-        'notify-sighters',
-        body: {'report_id': widget.reportId},
-      ).catchError((Object e) {
+    unawaited(() async {
+      try {
+        await Supabase.instance.client.functions.invoke(
+          'notify-sighters',
+          body: {'report_id': widget.reportId},
+        );
+      } catch (e) {
         _log(
           'notify-sighters not available: $e',
           name: 'ReunionCelebrationScreen',
         );
-      }),
-    );
+      }
+    }());
   }
 
   @override
@@ -187,8 +189,8 @@ class _SimplePawIcon extends StatelessWidget {
     )
         .animate()
         .scale(
-          begin: 0.5,
-          end: 1.0,
+          begin: const Offset(0.5, 0.5),
+          end: const Offset(1.0, 1.0),
           duration: 600.ms,
           curve: Curves.elasticOut,
         )
@@ -208,7 +210,7 @@ class _ActionButtons extends StatelessWidget {
 
   Future<void> _shareNews(BuildContext context) async {
     final message =
-        '🎉 Great news! $dogName has been reunited with their family! #DogQuest #ReunionStory';
+        '🎉 Great news! $dogName has been reunited with their family! #Hound #ReunionStory';
     try {
       final scaff = ScaffoldMessenger.of(context);
       await Clipboard.setData(ClipboardData(text: message));

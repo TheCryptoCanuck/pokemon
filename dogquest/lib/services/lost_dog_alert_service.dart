@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
 
@@ -23,7 +24,7 @@ class LostDogAlertService {
 
   static const _alertRadiusKm = 2.0;
   static const _alertExpiryMs = 72 * 60 * 60 * 1000; // 72 hours
-  static const _channelId = 'dogquest_lost_dog_alerts';
+  static const _channelId = 'hound_lost_dog_alerts';
   static const _channelName = 'Lost Dog Alerts';
   static const _baseNotificationId = 2000;
 
