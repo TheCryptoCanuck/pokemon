@@ -153,23 +153,43 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              _filterChip(null, 'All', Colors.white70),
-              ...Rarity.values.where((r) => r != Rarity.unknown).map(
-                    (r) => _filterChip(
-                      r,
-                      r.name[0].toUpperCase() + r.name.substring(1),
-                      r.color,
-                    ),
-                  ),
-              const SizedBox(width: 8),
-              _collectedChip(true, 'Collected', Colors.green),
-              _collectedChip(false, 'Not Found', Colors.white54),
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              Colors.white,
+              Colors.white,
+              Colors.transparent,
             ],
+            stops: [0.0, 0.85, 1.0],
+          ).createShader(bounds),
+          blendMode: BlendMode.dstIn,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                _filterChip(null, 'All', Colors.white70),
+                ...Rarity.values
+                    .where((r) => r != Rarity.unknown)
+                    .map(
+                      (r) => _filterChip(
+                        r,
+                        r.name[0].toUpperCase() +
+                            r.name.substring(1),
+                        r.color,
+                      ),
+                    ),
+                const SizedBox(width: 8),
+                _collectedChip(true, 'Collected', Colors.green),
+                _collectedChip(
+                  false,
+                  'Not Found',
+                  Colors.white54,
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 8),
