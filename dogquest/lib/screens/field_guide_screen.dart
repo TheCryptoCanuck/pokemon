@@ -32,6 +32,19 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
     super.dispose();
   }
 
+  String _formatBreedInfo(String habitat) {
+    // habitat format: "Sporting Group | Origin: Canada"
+    final parts = habitat.split(' | ');
+    final group = parts.isNotEmpty ? parts[0].replaceAll(' Group', '') : '';
+    String origin = '';
+    if (parts.length > 1 && parts[1].startsWith('Origin: ')) {
+      origin = parts[1].substring('Origin: '.length);
+    }
+    if (group.isEmpty) return habitat; // fallback to raw string
+    if (origin.isEmpty) return '$group Group';
+    return '$group Group · $origin';
+  }
+
   @override
   Widget build(BuildContext context) {
     final dogSvc = ref.read(dogServiceProvider);
@@ -211,7 +224,7 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
                               imageUrl: dog.imageUrl,
                               httpHeaders: const {
                                 'User-Agent':
-                                    'DogQuest/1.0 (dog identification app)',
+                                    'Hound/1.0 (dog identification app)',
                               },
                               fit: BoxFit.cover,
                               placeholder: (_, __) => Shimmer.fromColors(
@@ -234,10 +247,9 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              dog.scientificName,
+                              _formatBreedInfo(dog.habitat),
                               style: const TextStyle(
                                 color: Colors.white54,
-                                fontStyle: FontStyle.italic,
                                 fontSize: 12,
                               ),
                             ),
