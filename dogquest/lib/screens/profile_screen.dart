@@ -72,7 +72,7 @@ class ProfileScreen extends ConsumerWidget {
               ),
               IconButton(
                 icon:
-                    const Icon(Icons.settings, color: Colors.white54, size: 22),
+                    const Icon(Icons.settings, color: Colors.white70, size: 22),
                 onPressed: () => context.push('/settings'),
                 tooltip: 'Settings',
               ),
@@ -716,12 +716,12 @@ class _CommunityChip extends StatelessWidget {
         child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.people_rounded, color: Colors.white54, size: 16),
+            Icon(Icons.people_rounded, color: Colors.white70, size: 16),
             SizedBox(width: 5),
             Text(
               'Community',
               style: TextStyle(
-                color: Colors.white54,
+                color: Colors.white70,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
