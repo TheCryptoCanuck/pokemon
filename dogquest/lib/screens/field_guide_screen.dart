@@ -171,13 +171,10 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
             child: Row(
               children: [
                 _filterChip(null, 'All', Colors.white70),
-                ...Rarity.values
-                    .where((r) => r != Rarity.unknown)
-                    .map(
+                ...Rarity.values.where((r) => r != Rarity.unknown).map(
                       (r) => _filterChip(
                         r,
-                        r.name[0].toUpperCase() +
-                            r.name.substring(1),
+                        r.name[0].toUpperCase() + r.name.substring(1),
                         r.color,
                       ),
                     ),

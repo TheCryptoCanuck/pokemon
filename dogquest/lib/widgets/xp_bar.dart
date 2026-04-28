@@ -60,8 +60,7 @@ class XpBar extends StatelessWidget {
             child: LinearProgressIndicator(
               value: clampedProgress,
               minHeight: 8,
-              backgroundColor:
-                  Colors.white.withValues(alpha: 0.1),
+              backgroundColor: Colors.white.withValues(alpha: 0.1),
               valueColor: AlwaysStoppedAnimation<Color>(
                 accent,
               ),
