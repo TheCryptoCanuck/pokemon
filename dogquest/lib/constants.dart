@@ -48,10 +48,8 @@ const accentGreen =
     Color(0xFF539548); // Mid forest green — nature/social contexts
 const textPrimary = Colors.white;
 const textSecondary = Colors.white70;
-const textMuted =
-    Color(0xFFB0B8B0); // Muted text on dark bg — WCAG AA ≥4.5:1
-const textHint =
-    Color(0xFF8A948A); // Hint/tertiary text — WCAG AA ≥3:1 for large text
+const textMuted = Color(0xFFB0B8B0); // Muted on dark bg
+const textHint = Color(0xFF8A948A); // Hint on dark bg
 
 // ─── Unlockable Avatars ──────────────────────────────────────────────────────
 
