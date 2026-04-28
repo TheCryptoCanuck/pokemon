@@ -13,7 +13,6 @@ import 'package:dogquest/constants.dart';
 import 'package:dogquest/models/dog.dart';
 import 'package:dogquest/services/analytics_service.dart';
 import 'package:dogquest/services/dog_mastery_service.dart';
-import 'package:dogquest/services/dog_service.dart';
 import 'package:dogquest/services/kennel_service.dart';
 import 'package:dogquest/services/identification_service.dart';
 import 'package:dogquest/services/player_service.dart';
@@ -407,7 +406,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        'Breeds ${ref.read(kennelServiceProvider).count + (widget.alreadyOwned ? 0 : 1)} / $kDeployedBreedCount in your kennel',
+                        'Breeds ${ref.read(kennelServiceProvider).count + (widget.alreadyOwned ? 0 : 1)} / 150 in your kennel',
                         style: const TextStyle(
                           color: Colors.white38,
                           fontSize: 11,
