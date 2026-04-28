@@ -81,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 duration: const Duration(milliseconds: 800),
                 curve: Curves.easeOut,
                 child: const Text(
-                  'DogQuest',
+                  'Hound',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 32,
@@ -158,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             status,
                             key: ValueKey(status),
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.4),
+                              color: Colors.white.withValues(alpha: 0.7),
                               fontSize: 12,
                             ),
                           ),
