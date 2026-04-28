@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
-const appName = 'DogQuest';
+const appName = 'Hound';
+
+// ─── Breed counts ─────────────────────────────────────────────────────────────
+/// Breeds available in the currently deployed model (v5.1, EfficientNetB2).
+/// Update this to 294 when v6 ships.
+const kDeployedBreedCount = 150;
+
+/// Breed target for the in-training v6 model.
+const kTargetBreedCount = 294;
 
 // ─── Rarity Enum ──────────────────────────────────────────────────────────────
 
@@ -18,21 +26,32 @@ enum Rarity {
 
 const _rarityColors = <Rarity, Color>{
   Rarity.common: Colors.white70,
-  Rarity.uncommon: Color(0xFFD4874E),
-  Rarity.rare: Color(0xFF2196F3),
+  Rarity.uncommon: Color(0xFFC8A55A), // Desaturated gold — distinct from accent
+  Rarity.rare:
+      Color(0xFF5B9CF6), // Slightly warmer blue — harmonises with green bg
   Rarity.legendary: Colors.amber,
   Rarity.unknown: Color(0xFFCE93D8),
 };
 
 // ─── Theme Colors ─────────────────────────────────────────────────────────────
+//
+// Dark forest green base + warm amber accent.
+// Green undertone replaces the previous warm-brown throughout —
+// outdoor/nature feel while keeping the dark collector gamification aesthetic.
 
-const bgDeep = Color(0xFF1A0F0A);
-const bgCard = Color(0xFF2A1F1A);
-const bgNav = Color(0xFF1F0F0A);
-const accent = Color(0xFFD4874E);
-const accentLight = Color(0xFFE8A96E);
+const bgDeep = Color(0xFF0F1A10); // Very dark forest green-black
+const bgCard = Color(0xFF1A2B1C); // Dark green-tinted card surface
+const bgNav = Color(0xFF0A1A0C); // Deep green nav bar
+const accent = Color(0xFFD4874E); // Warm amber — unchanged, bridges both worlds
+const accentLight = Color(0xFFE8A96E); // Light amber hover/highlight
+const accentGreen =
+    Color(0xFF539548); // Mid forest green — nature/social contexts
 const textPrimary = Colors.white;
 const textSecondary = Colors.white70;
+const textMuted =
+    Color(0xFFB0B8B0); // Muted text on dark bg — WCAG AA ≥4.5:1
+const textHint =
+    Color(0xFF8A948A); // Hint/tertiary text — WCAG AA ≥3:1 for large text
 
 // ─── Unlockable Avatars ──────────────────────────────────────────────────────
 

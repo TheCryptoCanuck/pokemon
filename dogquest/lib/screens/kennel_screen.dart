@@ -33,10 +33,13 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
   KennelViewMode _viewMode = KennelViewMode.grid;
   bool _hasAnimated = false;
   final _player = AudioPlayer();
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void dispose() {
     _player.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -95,6 +98,12 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
           dogs = dogs.where((b) => b.rarity == _filterRarity).toList();
         }
 
+        // Filter by search query
+        if (_searchQuery.isNotEmpty) {
+          final q = _searchQuery.toLowerCase();
+          dogs = dogs.where((d) => d.name.toLowerCase().contains(q)).toList();
+        }
+
         // Sort
         switch (_sortMode) {
           case KennelSortMode.recent:
@@ -134,7 +143,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
                 child: Column(
                   children: [
-                    // Collection progress bar
+                    // Collection progress bar — keyed to deployed breed count
                     Row(
                       children: [
                         Text(
@@ -146,19 +155,33 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                           ),
                         ),
                         Text(
-                          ' / ${dogSvc.all.length} species',
+                          ' / $kDeployedBreedCount breeds',
                           style: const TextStyle(
-                            color: Colors.white54,
+                            color: textMuted,
                             fontSize: 14,
                           ),
                         ),
                         const Spacer(),
-                        Text(
-                          '${(box.length / dogSvc.all.length * 100).toStringAsFixed(1)}%',
-                          style: const TextStyle(
-                            color: Colors.amber,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '${(box.length / kDeployedBreedCount * 100).toStringAsFixed(1)}%',
+                              style: const TextStyle(
+                                color: Colors.amber,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                            Text(
+                              '$kTargetBreedCount coming',
+                              style: const TextStyle(
+                                color: textHint,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ).animate().fadeIn(),
@@ -166,7 +189,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(6),
                       child: LinearProgressIndicator(
-                        value: box.length / dogSvc.all.length,
+                        value: box.length / kDeployedBreedCount,
                         minHeight: 8,
                         backgroundColor: bgCard,
                         valueColor:
@@ -207,6 +230,48 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                       ],
                     ).animate().fadeIn(delay: 100.ms),
                     const SizedBox(height: 10),
+                    // Search field
+                    TextField(
+                      controller: _searchController,
+                      onChanged: (v) => setState(() => _searchQuery = v.trim()),
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      decoration: InputDecoration(
+                        hintText: 'Search breeds…',
+                        hintStyle: const TextStyle(
+                          color: Colors.white38,
+                          fontSize: 14,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.white38,
+                          size: 20,
+                        ),
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.white38,
+                                  size: 18,
+                                ),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() => _searchQuery = '');
+                                },
+                              )
+                            : null,
+                        filled: true,
+                        fillColor: Colors.white.withValues(alpha: 0.05),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0,
+                          horizontal: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     // Controls row
                     Row(
                       children: [
@@ -285,7 +350,9 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                 SliverFillRemaining(
                   child: Center(
                     child: Text(
-                      'No ${_filterRarity?.name ?? ''} dogs in your kennel yet',
+                      _searchQuery.isNotEmpty
+                          ? 'No breeds match "$_searchQuery"'
+                          : 'No ${_filterRarity?.name ?? ''} dogs in your kennel yet',
                       style: const TextStyle(color: Colors.white38),
                     ),
                   ),
@@ -324,7 +391,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                   imageUrl: dog.imageUrl,
                                   httpHeaders: const {
                                     'User-Agent':
-                                        'DogQuest/1.0 (dog identification app)',
+                                        'Hound/1.0 (dog identification app)',
                                   },
                                   fit: BoxFit.cover,
                                   placeholder: (_, __) => Shimmer.fromColors(
