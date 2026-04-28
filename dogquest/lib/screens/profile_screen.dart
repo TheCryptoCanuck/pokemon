@@ -27,6 +27,7 @@ import 'package:dogquest/widgets/rarity_collection_wheel.dart';
 import 'package:dogquest/widgets/recommended_dogs_strip.dart';
 import 'package:dogquest/widgets/streak_fire_widget.dart';
 import 'package:dogquest/widgets/weekly_mission_card.dart';
+import 'package:dogquest/widgets/xp_bar.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -79,24 +80,8 @@ class ProfileScreen extends ConsumerWidget {
             ],
           ),
 
-          // My Dog card
-          _MyDogCard(),
-          const SizedBox(height: 4),
-
-          // Pack card
-          _PackCard(),
-          const SizedBox(height: 8),
-
-          // Sign-in prompt for offline users
-          if (Hive.box('dogquest_player_stats')
-                  .get('offline_mode', defaultValue: false) ==
-              true)
-            _buildSignInPrompt(context),
-
-          const SizedBox(height: 8),
-
-          // ─── Level Progress Ring ────────────────────────────────
-          LevelProgressRing(
+          // ─── XP Bar (Hero) ───────────────────────────────────────
+          XpBar(
             level: playerState.level,
             xp: playerState.xp,
             xpForNext: nextLevelXp,
@@ -154,6 +139,31 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ],
           ).animate().fadeIn(delay: 150.ms),
+
+          // ─── Level Progress Ring (Demoted) ──────────────────────
+          const SizedBox(height: 20),
+          LevelProgressRing(
+            level: playerState.level,
+            xp: playerState.xp,
+            xpForNext: nextLevelXp,
+            streakMultiplier: playerState.streakXpMultiplier,
+          ).animate().fadeIn(),
+          const SizedBox(height: 20),
+
+          // ─── My Dog Card ────────────────────────────────────────
+          _MyDogCard(),
+          const SizedBox(height: 4),
+
+          // ─── Pack Card ──────────────────────────────────────────
+          _PackCard(),
+          const SizedBox(height: 8),
+
+          // ─── Sign-in Prompt (Offline) ──────────────────────────
+          if (Hive.box('dogquest_player_stats')
+                  .get('offline_mode', defaultValue: false) ==
+              true)
+            _buildSignInPrompt(context),
+          const SizedBox(height: 8),
 
           // Best streak + streak savers
           if (playerState.bestStreak > 1 || playerState.streakSavers > 0) ...[
@@ -366,8 +376,8 @@ class ProfileScreen extends ConsumerWidget {
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: Colors.amber.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
@@ -375,7 +385,7 @@ class ProfileScreen extends ConsumerWidget {
             child: const Icon(
               Icons.cloud_off_rounded,
               color: Colors.amber,
-              size: 20,
+              size: 28,
             ),
           ),
           const SizedBox(width: 12),
@@ -384,7 +394,7 @@ class ProfileScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Offline mode',
+                  'Back up your collection',
                   style: TextStyle(
                     color: Colors.amber,
                     fontWeight: FontWeight.bold,
@@ -407,7 +417,9 @@ class ProfileScreen extends ConsumerWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                      ),
                       textStyle: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -1482,7 +1494,7 @@ class _MyDogCard extends ConsumerWidget {
                   color: Colors.amber.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.pets, color: Colors.amber, size: 24),
+                child: const Icon(Icons.pets, color: Colors.amber, size: 28),
               ),
               const SizedBox(width: 14),
               const Expanded(
@@ -1677,13 +1689,13 @@ class _PackCard extends ConsumerWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                const Color(0xFF7C4DFF).withValues(alpha: 0.1),
-                const Color(0xFF448AFF).withValues(alpha: 0.06),
+                Colors.amber.withValues(alpha: 0.12),
+                Colors.orange.withValues(alpha: 0.06),
               ],
             ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: const Color(0xFF7C4DFF).withValues(alpha: 0.3),
+              color: Colors.amber.withValues(alpha: 0.4),
             ),
           ),
           child: Row(
@@ -1691,13 +1703,13 @@ class _PackCard extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF7C4DFF).withValues(alpha: 0.15),
+                  color: Colors.amber.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(11),
                 ),
                 child: const Icon(
                   Icons.group_add,
-                  color: Color(0xFF7C4DFF),
-                  size: 22,
+                  color: Colors.amber,
+                  size: 28,
                 ),
               ),
               const SizedBox(width: 14),
@@ -1708,7 +1720,7 @@ class _PackCard extends ConsumerWidget {
                     Text(
                       'Start a Pack',
                       style: TextStyle(
-                        color: Color(0xFF7C4DFF),
+                        color: Colors.amber,
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                       ),
@@ -1723,7 +1735,7 @@ class _PackCard extends ConsumerWidget {
               ),
               const Icon(
                 Icons.arrow_forward_ios,
-                color: Color(0xFF7C4DFF),
+                color: Colors.amber,
                 size: 14,
               ),
             ],
