@@ -46,7 +46,10 @@ export function getCardId(card: Card): string {
 }
 
 export function getCardImageUrl(card: Card): string {
-  return `https://raw.githubusercontent.com/flibustier/pokemon-tcg-pocket-database/main/dist/images/${card.image}`;
+  // Card images live in the sibling pokemon-tcg-exchange repo at
+  // public/images/cards-by-set/{set}/{number}.webp. Routed through
+  // jsDelivr (CDN, CORS, no GitHub rate limit) for mobile speed.
+  return `https://cdn.jsdelivr.net/gh/flibustier/pokemon-tcg-exchange@main/public/images/cards-by-set/${card.set}/${card.number}.webp`;
 }
 
 export const ENERGY_TYPES = [

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Card, Deck, getCardId } from "../../types/card";
+import { Card, Deck, getCardId, getCardImageUrl } from "../../types/card";
 import { validateDeck, canAddCard, getDeckStats } from "../../utils/deck-rules";
 import { getElements, getSets } from "../../data/cards";
 import CardDisplay from "../shared/CardDisplay";
@@ -190,7 +190,7 @@ export default function DeckEditor({
               className="flex items-center gap-2 bg-slate-700 rounded p-2"
             >
               <img
-                src={`https://raw.githubusercontent.com/flibustier/pokemon-tcg-pocket-database/main/dist/images/${card!.image}`}
+                src={getCardImageUrl(card!)}
                 alt={card!.name}
                 className="w-8 h-11 rounded object-cover"
               />
