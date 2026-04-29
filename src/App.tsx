@@ -33,6 +33,7 @@ export default function App() {
     duplicateDeck,
     addCardToDeck,
     removeCardFromDeck,
+    setDeckCards,
   } = useDecks();
 
   useEffect(() => {
@@ -106,6 +107,7 @@ export default function App() {
       {activeTab === "deck-builder" && (
         <DeckBuilderPage
           allCards={cards}
+          collection={collection}
           getCount={getCount}
           decks={decks}
           activeDeck={activeDeck}
@@ -117,6 +119,7 @@ export default function App() {
           duplicateDeck={duplicateDeck}
           addCardToDeck={addCardToDeck}
           removeCardFromDeck={removeCardFromDeck}
+          setDeckCards={setDeckCards}
         />
       )}
 
