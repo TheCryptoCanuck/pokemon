@@ -80,6 +80,8 @@ export default function CardFilters({
         <option value="SR">Super Rare</option>
         <option value="SAR">Special Art Rare</option>
         <option value="IM">Immersive</option>
+        <option value="S">Shiny</option>
+        <option value="SSR">Shiny Super Rare</option>
         <option value="UR">Crown Rare</option>
       </select>
 

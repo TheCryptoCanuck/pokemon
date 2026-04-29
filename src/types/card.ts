@@ -73,7 +73,9 @@ export const RARITY_ORDER: Record<string, number> = {
   SR: 5,
   SAR: 6,
   IM: 7,
-  UR: 8,
+  S: 8,
+  SSR: 9,
+  UR: 10,
 };
 
 export const RARITY_LABELS: Record<string, string> = {
@@ -85,5 +87,7 @@ export const RARITY_LABELS: Record<string, string> = {
   SR: "Super Rare",
   SAR: "Special Art Rare",
   IM: "Immersive Rare",
+  S: "Shiny",
+  SSR: "Shiny Super Rare",
   UR: "Crown Rare",
 };
