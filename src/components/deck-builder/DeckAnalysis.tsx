@@ -1,9 +1,12 @@
+import type { DeckScore, ScoreStatus } from "../../utils/deck-scoring";
+
 interface Props {
   totalCards: number;
   pokemonCount: number;
   trainerCount: number;
   energyTypes: string[];
   typeBreakdown: Record<string, number>;
+  score?: DeckScore;
 }
 
 const TYPE_COLORS: Record<string, string> = {
@@ -18,12 +21,33 @@ const TYPE_COLORS: Record<string, string> = {
   colorless: "#9ca3af",
 };
 
+const STATUS_COLOR: Record<ScoreStatus, string> = {
+  good: "#10b981", // emerald-500
+  warn: "#f59e0b", // amber-500
+  bad: "#f43f5e", // rose-500
+};
+
+const GRADE_PILL: Record<DeckScore["grade"], string> = {
+  S: "bg-emerald-500 text-white",
+  A: "bg-emerald-600 text-white",
+  B: "bg-amber-500 text-white",
+  C: "bg-amber-600 text-white",
+  D: "bg-rose-600 text-white",
+};
+
+function ringColor(total: number): string {
+  if (total >= 75) return STATUS_COLOR.good;
+  if (total >= 45) return STATUS_COLOR.warn;
+  return STATUS_COLOR.bad;
+}
+
 export default function DeckAnalysis({
   totalCards,
   pokemonCount,
   trainerCount,
   energyTypes,
   typeBreakdown,
+  score,
 }: Props) {
   if (totalCards === 0) {
     return (
@@ -35,6 +59,73 @@ export default function DeckAnalysis({
 
   return (
     <div className="space-y-4">
+      {/* Deck score */}
+      {score && score.breakdown.length > 0 && (
+        <div className="bg-slate-800 border border-slate-700 rounded p-3">
+          <div className="flex items-center gap-3">
+            <div
+              className="relative w-16 h-16 rounded-full flex items-center justify-center"
+              style={{
+                background: `conic-gradient(${ringColor(score.total)} ${score.total * 3.6}deg, #334155 0)`,
+              }}
+            >
+              <div className="absolute inset-1 rounded-full bg-slate-800 flex items-center justify-center">
+                <span className="text-xl font-bold text-white">
+                  {score.total}
+                </span>
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <h4 className="text-sm font-semibold text-white">Deck Score</h4>
+                <span
+                  className={`text-xs font-bold px-2 py-0.5 rounded ${GRADE_PILL[score.grade]}`}
+                >
+                  {score.grade}
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Tap to expand the breakdown
+              </p>
+            </div>
+          </div>
+
+          <details className="mt-3 group">
+            <summary className="cursor-pointer text-xs text-blue-400 hover:text-blue-300 select-none list-none">
+              <span className="group-open:hidden">▸ Show breakdown</span>
+              <span className="hidden group-open:inline">▾ Hide breakdown</span>
+            </summary>
+            <ul className="mt-2 space-y-2">
+              {score.breakdown.map((h) => (
+                <li key={h.id} className="text-xs">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="inline-block w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: STATUS_COLOR[h.status] }}
+                    />
+                    <span className="text-gray-200 font-medium flex-1 truncate">
+                      {h.label}
+                    </span>
+                    <span className="text-gray-400 tabular-nums">
+                      {h.score}/100
+                    </span>
+                  </div>
+                  <p className="text-gray-400 ml-4 mt-0.5">{h.message}</p>
+                  {h.suggestion && (
+                    <p className="text-amber-300 ml-4 mt-0.5 italic">
+                      {h.suggestion}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+            <p className="text-[10px] text-gray-500 mt-3">
+              Synergy data reviewed {score.lastReviewed}
+            </p>
+          </details>
+        </div>
+      )}
+
       {/* Card type split */}
       <div>
         <h4 className="text-xs text-gray-400 mb-2 uppercase tracking-wider">
