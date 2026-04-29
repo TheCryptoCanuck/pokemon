@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Card, Deck, getCardId, getCardImageUrl } from "../../types/card";
 import { validateDeck, canAddCard, getDeckStats } from "../../utils/deck-rules";
+import { scoreDeck } from "../../utils/deck-scoring";
 import { getElements, getSets } from "../../data/cards";
 import CardDisplay from "../shared/CardDisplay";
 import DeckValidation from "./DeckValidation";
@@ -38,6 +39,11 @@ export default function DeckEditor({
 
   const stats = useMemo(
     () => getDeckStats(deck.cards, allCards),
+    [deck.cards, allCards]
+  );
+
+  const score = useMemo(
+    () => scoreDeck(deck.cards, allCards),
     [deck.cards, allCards]
   );
 
@@ -212,7 +218,7 @@ export default function DeckEditor({
         </div>
 
         {/* Analysis */}
-        <DeckAnalysis {...stats} />
+        <DeckAnalysis {...stats} score={score} />
       </div>
     </div>
   );

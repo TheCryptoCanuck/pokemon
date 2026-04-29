@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Card, Deck } from "../../types/card";
+import { Card, CollectionEntry, Deck, DeckCard } from "../../types/card";
+import { autoBuild } from "../../utils/auto-build";
 import DeckEditor from "./DeckEditor";
+import AutoBuildModal from "./AutoBuildModal";
 
 interface Props {
   allCards: Card[];
+  collection: CollectionEntry[];
   getCount: (cardId: string) => number;
   decks: Deck[];
   activeDeck: Deck | null;
@@ -15,10 +18,12 @@ interface Props {
   duplicateDeck: (id: string) => string | null;
   addCardToDeck: (deckId: string, cardId: string) => void;
   removeCardFromDeck: (deckId: string, cardId: string) => void;
+  setDeckCards: (deckId: string, cards: DeckCard[]) => void;
 }
 
 export default function DeckBuilderPage({
   allCards,
+  collection,
   getCount,
   decks,
   activeDeck,
@@ -30,8 +35,35 @@ export default function DeckBuilderPage({
   duplicateDeck,
   addCardToDeck,
   removeCardFromDeck,
+  setDeckCards,
 }: Props) {
   const [collectionOnly, setCollectionOnly] = useState(true);
+  const [autoBuildOpen, setAutoBuildOpen] = useState(false);
+  const [autoBuildToast, setAutoBuildToast] = useState<string | null>(null);
+
+  const handleAutoBuild = (
+    name: string,
+    energyTypes: string[],
+    pool: "all" | "owned"
+  ) => {
+    const result = autoBuild(allCards, { energyTypes, pool, collection });
+    if (result.cards.length === 0) {
+      setAutoBuildToast(
+        result.warnings[0] ?? "Could not build a deck for those settings."
+      );
+      setAutoBuildOpen(false);
+      return;
+    }
+    const newId = createDeck(name);
+    setDeckCards(newId, result.cards);
+    setActiveDeckId(newId);
+    setAutoBuildOpen(false);
+    setAutoBuildToast(
+      result.warnings.length > 0
+        ? result.warnings.join(" ")
+        : `Built ${name} (score ${result.score.total}/${result.score.grade}).`
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -44,6 +76,14 @@ export default function DeckBuilderPage({
           + New Deck
         </button>
 
+        <button
+          onClick={() => setAutoBuildOpen(true)}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-semibold text-sm"
+          title="Auto-build a deck for chosen energy types"
+        >
+          ⚡ Auto-Build
+        </button>
+
         <label className="flex items-center gap-2 text-sm text-gray-300">
           <input
             type="checkbox"
@@ -54,6 +94,27 @@ export default function DeckBuilderPage({
           Show only owned cards
         </label>
       </div>
+
+      {autoBuildToast && (
+        <div className="bg-slate-800 border border-slate-700 rounded p-2 flex items-center gap-2">
+          <p className="text-sm text-gray-200 flex-1">{autoBuildToast}</p>
+          <button
+            onClick={() => setAutoBuildToast(null)}
+            className="text-gray-400 hover:text-white text-sm px-2"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {autoBuildOpen && (
+        <AutoBuildModal
+          allCards={allCards}
+          collection={collection}
+          onClose={() => setAutoBuildOpen(false)}
+          onBuild={handleAutoBuild}
+        />
+      )}
 
       {/* Deck tabs */}
       {decks.length > 0 && (
