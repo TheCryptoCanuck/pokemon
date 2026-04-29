@@ -45,6 +45,14 @@ export function getCardId(card: Card): string {
   return `${card.set}-${card.number}`;
 }
 
+// Upstream data splits non-Pokémon cards into 'supporter', 'item', 'tool',
+// and 'Fossil' instead of using 'trainer' as a single bucket. Treat all
+// non-Pokémon cards as Trainers for UI/scoring purposes (Fossils are
+// played from hand like Trainers and live in the same deck slots).
+export function isTrainerCard(card: Card): boolean {
+  return !!card.type && card.type !== "pokemon";
+}
+
 export function getCardImageUrl(card: Card): string {
   // Card images live in the sibling pokemon-tcg-exchange repo at
   // public/images/cards-by-set/{set}/{number}.webp. Routed through

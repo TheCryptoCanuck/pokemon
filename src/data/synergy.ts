@@ -111,7 +111,7 @@ export const ACCEL_BY_TYPE: Record<string, string> = {
 // Universal Trainer staples in priority order. Auto-builder adds them
 // after the seed Pokémon and its evolution chain.
 export const STAPLE_TRAINERS: ReadonlyArray<{ name: string; copies: number }> = [
-  { name: "Professor's Research", copies: 2 },
+  { name: "Professor’s Research", copies: 2 },
   { name: "Poké Ball", copies: 2 },
   { name: "X Speed", copies: 1 },
   { name: "Sabrina", copies: 1 },

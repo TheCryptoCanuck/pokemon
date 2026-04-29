@@ -1,4 +1,4 @@
-import { Card, CollectionEntry, DeckCard, getCardId } from "../types/card";
+import { Card, CollectionEntry, DeckCard, getCardId, isTrainerCard } from "../types/card";
 import { canAddCard } from "./deck-rules";
 import { scoreDeck, type DeckScore } from "./deck-scoring";
 import {
@@ -41,7 +41,7 @@ function buildPool(
 
   const pool = allCards
     .filter((card) => {
-      if (card.type === "trainer") return true;
+      if (isTrainerCard(card)) return true;
       // Pokémon: keep if its element matches one of our chosen energies, or
       // it's colourless (universal).
       if (!card.element || card.element === "colorless") return true;
@@ -245,7 +245,7 @@ export function autoBuild(allCards: Card[], opts: AutoBuildOptions): AutoBuildRe
       if (existing) existing.count -= 1;
       else deck.pop();
 
-      const kind = card.type === "pokemon" ? 0 : 1;
+      const kind = card.type === "pokemon" ? 0 : 1; // ties: Pokémon win
       if (delta > bestDelta || (delta === bestDelta && kind < bestKind)) {
         bestDelta = delta;
         bestCard = card;

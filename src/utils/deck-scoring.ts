@@ -1,4 +1,4 @@
-import { Card, DeckCard, getCardId } from "../types/card";
+import { Card, DeckCard, getCardId, isTrainerCard } from "../types/card";
 import {
   HEAVY_ATTACKERS,
   POWER_PAIRINGS,
@@ -202,7 +202,7 @@ function trainerDensity(resolved: Resolved[]): HeuristicResult {
     disrupt = 0,
     accel = 0;
   for (const { card, count } of resolved) {
-    if (card.type !== "trainer") continue;
+    if (!isTrainerCard(card)) continue;
     const role = getTrainerRole(card.name);
     if (role === "search") search += count;
     else if (role === "draw") draw += count;
@@ -277,7 +277,7 @@ function energyAccel(resolved: Resolved[]): HeuristicResult {
   let accelTrainers = 0;
   const accelTypes: string[] = [];
   for (const { card, count } of resolved) {
-    if (card.type !== "trainer") continue;
+    if (!isTrainerCard(card)) continue;
     if (getTrainerRole(card.name) === "accel") {
       accelTrainers += count;
       const t = ACCEL_TYPE[card.name];
@@ -423,7 +423,7 @@ function benchMobility(resolved: Resolved[]): HeuristicResult {
   else score = Math.round(100 - ((avg - 1.3) / 1.2) * 60);
   const status = statusFromScore(score);
   const hasSwitch = resolved.some(
-    (r) => r.card.type === "trainer" && getTrainerRole(r.card.name) === "switch"
+    (r) => isTrainerCard(r.card) && getTrainerRole(r.card.name) === "switch"
   );
   return {
     id: "benchMobility",

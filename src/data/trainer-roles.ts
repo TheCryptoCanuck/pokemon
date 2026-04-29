@@ -16,7 +16,7 @@ export type TrainerRole =
 // (no specific energy type, e.g. ramp via discard).
 export const TRAINER_ROLES: Record<string, TrainerRole> = {
   // Universal draw / search
-  "Professor's Research": "draw",
+  "Professor’s Research": "draw",
   "Pokédex": "draw",
   "Poké Ball": "search",
   "Pokémon Communication": "search",
@@ -31,7 +31,6 @@ export const TRAINER_ROLES: Record<string, TrainerRole> = {
 
   // Switch (own active)
   "X Speed": "switch",
-  "Pokémon Catcher": "switch",
 
   // Heal
   "Potion": "heal",

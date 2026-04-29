@@ -1,4 +1,4 @@
-import { Card, DeckCard, getCardId } from "../types/card";
+import { Card, DeckCard, getCardId, isTrainerCard } from "../types/card";
 
 export interface ValidationError {
   type: "card_limit" | "deck_size" | "basic_pokemon" | "energy_types";
@@ -113,7 +113,7 @@ export function getDeckStats(deckCards: DeckCard[], allCards: Card[]) {
     .reduce((sum, dc) => sum + dc.count, 0);
 
   const trainerCount = resolved
-    .filter((dc) => dc.card!.type === "trainer")
+    .filter((dc) => isTrainerCard(dc.card!))
     .reduce((sum, dc) => sum + dc.count, 0);
 
   const energyTypes = [
