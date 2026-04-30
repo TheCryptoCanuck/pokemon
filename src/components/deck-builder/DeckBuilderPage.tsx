@@ -48,6 +48,9 @@ export default function DeckBuilderPage({
   const [collectionOnly, setCollectionOnly] = useState(true);
   const [autoBuildOpen, setAutoBuildOpen] = useState(false);
   const [autoBuildToast, setAutoBuildToast] = useState<Toast | null>(null);
+  // Holds the deck-id of the most recent successful auto-build for
+  // ~800ms so the deck tab can render a sparkle burst above it.
+  const [sparkleDeckId, setSparkleDeckId] = useState<string | null>(null);
 
   // Auto-dismiss toast after 4s. Timer resets each time `autoBuildToast`
   // changes, so a rapid second build cancels the previous fade-out.
@@ -91,7 +94,19 @@ export default function DeckBuilderPage({
           : `Built ${finalName} (score ${result.score.total}/${result.score.grade}).`,
       status: result.warnings.length > 0 ? "warning" : "success",
     });
+    // Sparkle the new deck tab on a successful build (no warnings).
+    if (result.warnings.length === 0) {
+      setSparkleDeckId(newId);
+    }
   };
+
+  // Clear sparkle id after the animation finishes (~900ms covers the
+  // 800ms keyframe + a small buffer).
+  useEffect(() => {
+    if (!sparkleDeckId) return;
+    const t = setTimeout(() => setSparkleDeckId(null), 900);
+    return () => clearTimeout(t);
+  }, [sparkleDeckId]);
 
   return (
     <div className="space-y-6">
@@ -158,8 +173,41 @@ export default function DeckBuilderPage({
       {/* Deck tabs */}
       {decks.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {decks.map((deck) => (
-            <div key={deck.id} className="flex items-center">
+          {decks.map((deck) => {
+            const isSparkling = sparkleDeckId === deck.id;
+            return (
+            <div
+              key={deck.id}
+              className={`flex items-center relative ${isSparkling ? "animate-pop" : ""}`}
+            >
+              {isSparkling && (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -inset-1 flex items-center justify-center"
+                >
+                  {[
+                    { top: "-6px", left: "10%", delay: "0ms" },
+                    { top: "-2px", left: "55%", delay: "120ms" },
+                    { bottom: "-4px", left: "30%", delay: "60ms" },
+                    { top: "20%", right: "-4px", delay: "180ms" },
+                  ].map((s, i) => (
+                    <svg
+                      key={i}
+                      viewBox="0 0 12 12"
+                      className="absolute w-3 h-3 text-yellow-300 animate-sparkle"
+                      style={{
+                        ...s,
+                        animationDelay: s.delay,
+                      }}
+                    >
+                      <path
+                        d="M6 0 L7 5 L12 6 L7 7 L6 12 L5 7 L0 6 L5 5 Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  ))}
+                </span>
+              )}
               <button
                 onClick={() => setActiveDeckId(deck.id)}
                 className={`px-3 py-1.5 rounded-l text-sm flex items-center gap-1 ${
@@ -211,7 +259,8 @@ export default function DeckBuilderPage({
                 </button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
