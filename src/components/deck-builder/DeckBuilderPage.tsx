@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CollectionEntry, Deck, DeckCard } from "../../types/card";
 import { autoBuild } from "../../utils/auto-build";
+import { ARCHETYPE_LABELS, type Archetype } from "../../data/archetypes";
 import DeckEditor from "./DeckEditor";
 import AutoBuildModal from "./AutoBuildModal";
 
@@ -46,9 +47,15 @@ export default function DeckBuilderPage({
   const handleAutoBuild = (
     name: string,
     energyTypes: string[],
-    pool: "all" | "owned"
+    pool: "all" | "owned",
+    archetype: Archetype | "auto"
   ) => {
-    const result = autoBuild(allCards, { energyTypes, pool, collection });
+    const result = autoBuild(allCards, {
+      energyTypes,
+      pool,
+      collection,
+      archetype,
+    });
     if (result.cards.length === 0) {
       setAutoBuildToast(
         result.warnings[0] ?? "Could not build a deck for those settings."
@@ -56,14 +63,16 @@ export default function DeckBuilderPage({
       setAutoBuildOpen(false);
       return;
     }
-    const newId = createDeck(name);
+    const archetypeLabel = ARCHETYPE_LABELS[result.archetype];
+    const finalName = `${name} · ${archetypeLabel}`;
+    const newId = createDeck(finalName);
     setDeckCards(newId, result.cards);
     setActiveDeckId(newId);
     setAutoBuildOpen(false);
     setAutoBuildToast(
       result.warnings.length > 0
         ? result.warnings.join(" ")
-        : `Built ${name} (score ${result.score.total}/${result.score.grade}).`
+        : `Built ${finalName} (score ${result.score.total}/${result.score.grade}).`
     );
   };
 
