@@ -122,6 +122,7 @@ export const ENERGY_TYPES = [
   "fighting",
   "darkness",
   "metal",
+  "dragon",
   "colorless",
 ] as const;
 

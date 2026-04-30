@@ -97,6 +97,7 @@ export const BEST_BASICS_BY_TYPE: Record<string, string[]> = {
   fighting: ["Hitmonlee", "Hitmonchan", "Machop", "Buzzwole"],
   darkness: ["Murkrow", "Houndour"],
   metal: ["Skarmory", "Magnemite"],
+  dragon: ["Dragonite", "Garchomp ex", "Garchomp", "Salamence ex", "Dratini", "Gible"],
 };
 
 // Canonical energy-acceleration trainer per type. Auto-builder pulls 2x

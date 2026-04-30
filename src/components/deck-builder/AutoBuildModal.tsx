@@ -31,6 +31,7 @@ const TYPE_COLORS: Record<string, string> = {
   fighting: "bg-orange-700 hover:bg-orange-800",
   darkness: "bg-gray-800 hover:bg-gray-900",
   metal: "bg-gray-500 hover:bg-gray-600",
+  dragon: "bg-amber-700 hover:bg-amber-800",
 };
 
 export default function AutoBuildModal({
