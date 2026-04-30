@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, getCardImageUrl, RARITY_LABELS } from "../../types/card";
+import { tap } from "../../utils/haptics";
 
 interface Props {
   card: Card;
@@ -98,6 +99,7 @@ export default function CardDisplay({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  tap();
                   onRemove();
                 }}
                 aria-label={`Remove one ${card.name}`}
@@ -110,6 +112,7 @@ export default function CardDisplay({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  tap();
                   onAdd();
                 }}
                 aria-label={`Add one ${card.name}`}

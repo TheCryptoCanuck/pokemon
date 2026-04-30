@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CollectionEntry, Deck, DeckCard } from "../../types/card";
 import { autoBuild } from "../../utils/auto-build";
 import { ARCHETYPE_LABELS, type Archetype } from "../../data/archetypes";
+import { tap } from "../../utils/haptics";
 import DeckEditor from "./DeckEditor";
 import AutoBuildModal from "./AutoBuildModal";
 
@@ -59,6 +60,7 @@ export default function DeckBuilderPage({
     const deck = decks.find((d) => d.id === id);
     const wasPinned = !!deck?.pinnedAt;
     togglePinDeck(id);
+    tap();
     // Only celebrate when going unpinned → pinned. Unpinning is silent.
     if (!wasPinned) setJustPinnedId(id);
   };
@@ -131,14 +133,14 @@ export default function DeckBuilderPage({
       <div className="flex flex-wrap items-center gap-3">
         <button
           onClick={() => createDeck("New Deck")}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold text-sm"
+          className="bg-blue-600 hover:bg-blue-700 active:scale-[0.97] transition-transform text-white px-4 py-2 rounded font-semibold text-sm"
         >
           + New Deck
         </button>
 
         <button
           onClick={() => setAutoBuildOpen(true)}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-semibold text-sm"
+          className="bg-purple-600 hover:bg-purple-700 active:scale-[0.97] transition-transform text-white px-4 py-2 rounded font-semibold text-sm"
           title="Auto-build a deck for chosen energy types"
         >
           ⚡ Auto-Build
