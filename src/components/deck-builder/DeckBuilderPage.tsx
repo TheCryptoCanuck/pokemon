@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CollectionEntry, Deck, DeckCard } from "../../types/card";
 import { autoBuild } from "../../utils/auto-build";
 import { ARCHETYPE_LABELS, type Archetype } from "../../data/archetypes";
 import DeckEditor from "./DeckEditor";
 import AutoBuildModal from "./AutoBuildModal";
+
+interface Toast {
+  message: string;
+  status: "success" | "warning";
+}
 
 interface Props {
   allCards: Card[];
@@ -42,7 +47,15 @@ export default function DeckBuilderPage({
 }: Props) {
   const [collectionOnly, setCollectionOnly] = useState(true);
   const [autoBuildOpen, setAutoBuildOpen] = useState(false);
-  const [autoBuildToast, setAutoBuildToast] = useState<string | null>(null);
+  const [autoBuildToast, setAutoBuildToast] = useState<Toast | null>(null);
+
+  // Auto-dismiss toast after 4s. Timer resets each time `autoBuildToast`
+  // changes, so a rapid second build cancels the previous fade-out.
+  useEffect(() => {
+    if (!autoBuildToast) return;
+    const t = setTimeout(() => setAutoBuildToast(null), 4000);
+    return () => clearTimeout(t);
+  }, [autoBuildToast]);
 
   const handleAutoBuild = (
     name: string,
@@ -57,9 +70,11 @@ export default function DeckBuilderPage({
       archetype,
     });
     if (result.cards.length === 0) {
-      setAutoBuildToast(
-        result.warnings[0] ?? "Could not build a deck for those settings."
-      );
+      setAutoBuildToast({
+        message:
+          result.warnings[0] ?? "Could not build a deck for those settings.",
+        status: "warning",
+      });
       setAutoBuildOpen(false);
       return;
     }
@@ -69,11 +84,13 @@ export default function DeckBuilderPage({
     setDeckCards(newId, result.cards);
     setActiveDeckId(newId);
     setAutoBuildOpen(false);
-    setAutoBuildToast(
-      result.warnings.length > 0
-        ? result.warnings.join(" ")
-        : `Built ${finalName} (score ${result.score.total}/${result.score.grade}).`
-    );
+    setAutoBuildToast({
+      message:
+        result.warnings.length > 0
+          ? result.warnings.join(" ")
+          : `Built ${finalName} (score ${result.score.total}/${result.score.grade}).`,
+      status: result.warnings.length > 0 ? "warning" : "success",
+    });
   };
 
   return (
@@ -107,11 +124,22 @@ export default function DeckBuilderPage({
       </div>
 
       {autoBuildToast && (
-        <div className="bg-slate-800 border border-slate-700 rounded p-2 flex items-center gap-2">
-          <p className="text-sm text-gray-200 flex-1">{autoBuildToast}</p>
+        <div
+          role="status"
+          aria-live="polite"
+          className={`fixed bottom-4 inset-x-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 bg-slate-800 border border-slate-700 border-l-4 ${
+            autoBuildToast.status === "success"
+              ? "border-l-emerald-500"
+              : "border-l-amber-500"
+          } rounded shadow-lg p-3 flex items-center gap-2 animate-slide-up-fade`}
+        >
+          <p className="text-sm text-gray-200 flex-1">
+            {autoBuildToast.message}
+          </p>
           <button
             onClick={() => setAutoBuildToast(null)}
-            className="text-gray-400 hover:text-white text-sm px-2"
+            aria-label="Dismiss notification"
+            className="text-gray-400 hover:text-white text-lg leading-none px-2 focus-visible:outline-2 focus-visible:outline-blue-400"
           >
             ×
           </button>
