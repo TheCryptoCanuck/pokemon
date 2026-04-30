@@ -1,3 +1,5 @@
+import { CARD_CATEGORIES, CATEGORY_LABELS } from "../../types/card";
+
 interface Props {
   search: string;
   onSearchChange: (v: string) => void;
@@ -46,11 +48,20 @@ export default function CardFilters({
         className={selectClass}
       >
         <option value="">All Types</option>
-        {types.map((t) => (
-          <option key={t} value={t}>
-            {t.charAt(0).toUpperCase() + t.slice(1)}
-          </option>
-        ))}
+        <optgroup label="Element">
+          {types.map((t) => (
+            <option key={t} value={t}>
+              {t.charAt(0).toUpperCase() + t.slice(1)}
+            </option>
+          ))}
+        </optgroup>
+        <optgroup label="Category">
+          {CARD_CATEGORIES.map((c) => (
+            <option key={c} value={c}>
+              {CATEGORY_LABELS[c]}
+            </option>
+          ))}
+        </optgroup>
       </select>
 
       <select

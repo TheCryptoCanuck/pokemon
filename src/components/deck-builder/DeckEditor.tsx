@@ -1,5 +1,13 @@
 import { useState, useMemo } from "react";
-import { Card, Deck, getCardId, getCardImageUrl } from "../../types/card";
+import {
+  Card,
+  CARD_CATEGORIES,
+  CATEGORY_LABELS,
+  Deck,
+  getCardId,
+  getCardImageUrl,
+  matchesTypeFilter,
+} from "../../types/card";
 import { validateDeck, canAddCard, getDeckStats } from "../../utils/deck-rules";
 import { scoreDeck } from "../../utils/deck-scoring";
 import { getElements, getSets } from "../../data/cards";
@@ -54,7 +62,7 @@ export default function DeckEditor({
     return allCards.filter((card) => {
       if (search && !card.name.toLowerCase().includes(search.toLowerCase()))
         return false;
-      if (selectedType && card.element !== selectedType) return false;
+      if (!matchesTypeFilter(card, selectedType)) return false;
       if (selectedSet && card.set !== selectedSet) return false;
       if (collectionFilter && getCount(getCardId(card)) === 0) return false;
       return true;
@@ -91,11 +99,20 @@ export default function DeckEditor({
             className={selectClass}
           >
             <option value="">All Types</option>
-            {types.map((t) => (
-              <option key={t} value={t}>
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-              </option>
-            ))}
+            <optgroup label="Element">
+              {types.map((t) => (
+                <option key={t} value={t}>
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Category">
+              {CARD_CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {CATEGORY_LABELS[c]}
+                </option>
+              ))}
+            </optgroup>
           </select>
           <select
             value={selectedSet}

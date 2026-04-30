@@ -70,6 +70,42 @@ export function isTrainerCard(card: Card): boolean {
   return !!card.type && card.type !== "pokemon";
 }
 
+// Card categories we expose as filter options. Mirrors the upstream
+// `card.type` field. "trainer" is a virtual catch-all that matches any
+// non-Pokémon card (supporter / item / tool / Fossil).
+export const CARD_CATEGORIES = [
+  "pokemon",
+  "trainer",
+  "supporter",
+  "item",
+  "tool",
+  "Fossil",
+] as const;
+export type CardCategory = (typeof CARD_CATEGORIES)[number];
+
+const CATEGORY_SET = new Set<string>(CARD_CATEGORIES);
+
+// Combined type/element filter. Accepts either an element name (e.g.
+// "grass") or a category name (e.g. "trainer", "supporter"). Empty
+// string means "no filter".
+export function matchesTypeFilter(card: Card, value: string): boolean {
+  if (!value) return true;
+  if (CATEGORY_SET.has(value)) {
+    if (value === "trainer") return isTrainerCard(card);
+    return card.type === value;
+  }
+  return card.element === value;
+}
+
+export const CATEGORY_LABELS: Record<CardCategory, string> = {
+  pokemon: "Pokémon",
+  trainer: "Trainers (any)",
+  supporter: "Supporter",
+  item: "Item",
+  tool: "Tool",
+  Fossil: "Fossil",
+};
+
 export function getCardImageUrl(card: Card): string {
   // Card images live in the sibling pokemon-tcg-exchange repo at
   // public/images/cards-by-set/{set}/{number}.webp. Routed through
