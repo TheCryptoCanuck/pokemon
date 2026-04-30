@@ -12,8 +12,22 @@ A mobile-first web app for managing your Pokémon TCG Pocket card collection and
 - **Video import** — upload a screen recording of your TCGP collection and Claude Vision identifies the cards automatically. Imports are cumulative but capped at 2 copies per card (the deck-building maximum), so re-importing is safe.
 - **Auto-Build** — pick 1–3 energy types and a strategy (Auto / Aggressive / Evolution / Control) and the app generates a legal 20-card deck tuned to that archetype, using rich attack and ability data to pick the best seed, partner, and trainer mix.
 - **Elite deck scoring** — every deck gets a 0–100 score with an S/A/B/C/D grade. The score breaks down into 10 weighted heuristics, each with traffic-light status and a one-line suggestion (e.g. *"All attackers weak to Dark — diversify"*).
+- **Card detail modal** — tap any card in the Collection grid or any row inside a deck to open a full-detail modal: HP, type, weakness, retreat, every attack (with coloured energy-cost pips, damage, and effect text), and any abilities.
 - **Pinned decks** — star any deck to save it. Pinned decks float to the top of the deck list and live in their own **Pinned** tab for one-tap access.
 - **Meta decks** — 12 hand-curated meta decks; the app shows you which ones your collection can build, ranked by completeness.
+
+## Feel
+
+The app puts care into every state change so it doesn't feel like a static form on a phone:
+
+- **Score ring sweeps + number tweens** when you add or remove cards (600 ms eased RAF tween); the grade pill pops on each grade-boundary crossing.
+- **Toast slides up** from the bottom on Auto-Build with an emerald left-border for success / amber for warnings, auto-dismisses in 4 s.
+- **Sparkle burst** — golden ★ stars fan out around the new deck tab when Auto-Build succeeds.
+- **Card tap ring** + count-pulse when you increment / decrement a card.
+- **Pin halo** — pressing ★ pops the star and ripples a yellow halo behind it.
+- **Tab switch fade** + a sticky-header drop-shadow on scroll.
+- **Haptic tick** (`navigator.vibrate(8)`) on Android Chrome whenever you actually mutate a deck — not on filter taps or modal opens.
+- **Reduced motion** — a single global `@media (prefers-reduced-motion: reduce)` rule collapses every animation to ~0 ms, so users with the OS toggle on get instant state changes.
 
 ## Quick start
 
@@ -110,7 +124,8 @@ src/
 │   ├── deck-scoring.ts           10 weighted heuristics → DeckScore
 │   ├── auto-build.ts             Archetype-aware greedy builder
 │   ├── collection-match.ts       Match meta decks against your collection
-│   └── card-classifier.ts        Regex strategy detection on attacks/abilities
+│   ├── card-classifier.ts        Regex strategy detection on attacks/abilities
+│   └── haptics.ts                navigator.vibrate(8) on deck mutations
 ├── data/
 │   ├── cards.ts                  Fetches base + rich card data, merges
 │   ├── archetypes.ts             Slot/role budgets per archetype
