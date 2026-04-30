@@ -26,6 +26,12 @@ Use ~/.claude/skills/gstack/... for gstack file paths (the global path).
 
 **TCGP Deck Builder** — React 19 + Vite 8 + TS + Tailwind 4 SPA deployed to GitHub Pages at https://thecryptocanuck.github.io/pokemon/. Mobile-first; the user runs it on Android Chrome.
 
+> **Open follow-ups live in [TODOS.md](./TODOS.md).** Read it before proposing new
+> features — there's a backlog of small bugs, hardening, and v1.4 ideas with
+> file paths and acceptance criteria. When you close one, move its entry to
+> the `## Done` section with a link to the PR. The latest CHANGELOG.md entries
+> live alongside, one heading per merged PR.
+
 ### Where things live
 
 - `src/App.tsx` — top-level state. Owns `useCollection` and `useDecks` hooks; routes the active tab to the right page component.
