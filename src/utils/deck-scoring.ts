@@ -1,10 +1,12 @@
 import { Card, DeckCard, getCardId, isTrainerCard } from "../types/card";
-import {
-  HEAVY_ATTACKERS,
-  POWER_PAIRINGS,
-  SYNERGY_LAST_REVIEWED,
-} from "../data/synergy";
+import { POWER_PAIRINGS, SYNERGY_LAST_REVIEWED } from "../data/synergy";
 import { ACCEL_TYPE, getTrainerRole } from "../data/trainer-roles";
+import {
+  hasAbilityKind,
+  hasEnergyAccel,
+  hasSoftDraw,
+  isHeavyAttacker,
+} from "./card-classifier";
 
 export type HeuristicId =
   | "basicConsistency"
@@ -197,17 +199,28 @@ function basicConsistency(resolved: Resolved[]): HeuristicResult {
 function trainerDensity(resolved: Resolved[]): HeuristicResult {
   // Bucketed mix: ≥2 search, ≥2 draw, ≥1 disrupt, ≥1 accel matched to
   // the deck's energy types. Score = 25 per filled bucket.
+  //
+  // Pokémon abilities count as soft fills: a Bibarel-style draw ability
+  // contributes to "draw"; a Gardevoir-style energy ability contributes
+  // to "accel". This stops the heuristic from punishing ability-driven
+  // decks that don't need so many Trainer staples.
   let search = 0,
     draw = 0,
     disrupt = 0,
     accel = 0;
   for (const { card, count } of resolved) {
-    if (!isTrainerCard(card)) continue;
-    const role = getTrainerRole(card.name);
-    if (role === "search") search += count;
-    else if (role === "draw") draw += count;
-    else if (role === "disrupt") disrupt += count;
-    else if (role === "accel") accel += count;
+    if (isTrainerCard(card)) {
+      const role = getTrainerRole(card.name);
+      if (role === "search") search += count;
+      else if (role === "draw") draw += count;
+      else if (role === "disrupt") disrupt += count;
+      else if (role === "accel") accel += count;
+    } else {
+      if (hasSoftDraw(card)) draw += count;
+      if (hasEnergyAccel(card)) accel += count;
+      if (hasAbilityKind(card, "search")) search += count;
+      if (hasAbilityKind(card, "disrupt")) disrupt += count;
+    }
   }
 
   const buckets = [
@@ -268,22 +281,32 @@ function evolutionLines(deck: DeckCard[], cards: Card[]): HeuristicResult {
 }
 
 function energyAccel(resolved: Resolved[]): HeuristicResult {
+  // "Heavy attacker" is now driven by real attack costs (max attack
+  // cost ≥3) when the rich data is loaded, falling back to retreatCost
+  // ≥2 otherwise. This also catches non-listed ex Pokémon and skips
+  // light-cost Pokémon that happened to have high retreat.
   let heavy = 0;
   for (const { card, count } of resolved) {
     if (!isPokemon(card)) continue;
-    if (HEAVY_ATTACKERS.has(card.name) || (card.retreatCost ?? 0) >= 2)
-      heavy += count;
+    if (isHeavyAttacker(card)) heavy += count;
   }
+  // Acceleration sources: type-matched Trainers + Pokémon with energy
+  // abilities (Gardevoir Psy Shadow, Hydreigon Forced Tribute, etc.).
   let accelTrainers = 0;
   const accelTypes: string[] = [];
+  let accelAbility = 0;
   for (const { card, count } of resolved) {
-    if (!isTrainerCard(card)) continue;
-    if (getTrainerRole(card.name) === "accel") {
-      accelTrainers += count;
-      const t = ACCEL_TYPE[card.name];
-      if (t) accelTypes.push(t);
+    if (isTrainerCard(card)) {
+      if (getTrainerRole(card.name) === "accel") {
+        accelTrainers += count;
+        const t = ACCEL_TYPE[card.name];
+        if (t) accelTypes.push(t);
+      }
+    } else if (hasEnergyAccel(card)) {
+      accelAbility += count;
     }
   }
+  const accel = accelTrainers + accelAbility;
 
   if (heavy === 0) {
     return {
@@ -295,18 +318,22 @@ function energyAccel(resolved: Resolved[]): HeuristicResult {
       message: "No heavy attackers — no acceleration needed",
     };
   }
-  const ratio = Math.min(accelTrainers / heavy, 1);
+  const ratio = Math.min(accel / heavy, 1);
   const score = clamp(Math.round(ratio * 100));
   const status = statusFromScore(score);
+  const accelDesc =
+    accelAbility > 0
+      ? `${accelTrainers} accel trainer${accelTrainers === 1 ? "" : "s"}, ${accelAbility} ability source${accelAbility === 1 ? "" : "s"}`
+      : `${accelTrainers} accel trainer${accelTrainers === 1 ? "" : "s"}`;
   return {
     id: "energyAccel",
     label: "Energy Acceleration",
     score,
     weight: 0.15,
     status,
-    message: `${heavy} heavy attacker${heavy === 1 ? "" : "s"}, ${accelTrainers} accel trainer${accelTrainers === 1 ? "" : "s"}${accelTypes.length ? ` (${[...new Set(accelTypes)].join(", ")})` : ""}`,
-    suggestion: accelTrainers === 0
-      ? `Heavy attackers stall without ramp — add Misty (water), Erika (grass), or Lt. Surge (lightning).`
+    message: `${heavy} heavy attacker${heavy === 1 ? "" : "s"}, ${accelDesc}${accelTypes.length ? ` (${[...new Set(accelTypes)].join(", ")})` : ""}`,
+    suggestion: accel === 0
+      ? `Heavy attackers stall without ramp — add Gardevoir, Misty (water), Erika (grass), or Lt. Surge (lightning).`
       : undefined,
   };
 }

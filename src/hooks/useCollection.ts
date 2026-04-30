@@ -62,15 +62,27 @@ export function useCollection() {
     [collection]
   );
 
+  // Merge import results into the collection. Imports are cumulative —
+  // each call adds entry.count to the existing count — but capped at
+  // OWNED_CAP_PER_IMPORT (2) since TCGP decks allow at most 2 copies of
+  // any card. Manual addCard calls above the cap are preserved (a user
+  // who clicked +3 keeps 3; future imports won't reduce it).
+  const OWNED_CAP_PER_IMPORT = 2;
   const mergeCollection = useCallback((entries: CollectionEntry[]) => {
     setCollection((prev) => {
       const merged = [...prev];
       for (const entry of entries) {
         const existing = merged.find((e) => e.cardId === entry.cardId);
         if (existing) {
-          existing.count = Math.max(existing.count, entry.count);
+          existing.count = Math.max(
+            existing.count,
+            Math.min(OWNED_CAP_PER_IMPORT, existing.count + entry.count)
+          );
         } else {
-          merged.push({ ...entry });
+          merged.push({
+            ...entry,
+            count: Math.min(OWNED_CAP_PER_IMPORT, entry.count),
+          });
         }
       }
       return merged;

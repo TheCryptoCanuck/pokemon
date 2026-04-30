@@ -19,6 +19,7 @@ interface Props {
   addCardToDeck: (deckId: string, cardId: string) => void;
   removeCardFromDeck: (deckId: string, cardId: string) => void;
   setDeckCards: (deckId: string, cards: DeckCard[]) => void;
+  togglePinDeck: (id: string) => void;
 }
 
 export default function DeckBuilderPage({
@@ -36,6 +37,7 @@ export default function DeckBuilderPage({
   addCardToDeck,
   removeCardFromDeck,
   setDeckCards,
+  togglePinDeck,
 }: Props) {
   const [collectionOnly, setCollectionOnly] = useState(true);
   const [autoBuildOpen, setAutoBuildOpen] = useState(false);
@@ -123,18 +125,32 @@ export default function DeckBuilderPage({
             <div key={deck.id} className="flex items-center">
               <button
                 onClick={() => setActiveDeckId(deck.id)}
-                className={`px-3 py-1.5 rounded-l text-sm ${
+                className={`px-3 py-1.5 rounded-l text-sm flex items-center gap-1 ${
                   activeDeckId === deck.id
                     ? "bg-blue-600 text-white"
                     : "bg-slate-700 text-gray-300 hover:bg-slate-600"
                 }`}
               >
+                {deck.pinnedAt && (
+                  <span className="text-yellow-400" title="Pinned">★</span>
+                )}
                 {deck.name}
                 <span className="ml-1 text-xs opacity-70">
                   ({deck.cards.reduce((s, c) => s + c.count, 0)}/20)
                 </span>
               </button>
               <div className="flex">
+                <button
+                  onClick={() => togglePinDeck(deck.id)}
+                  className={`px-1.5 py-1.5 text-xs border-l border-slate-500 ${
+                    deck.pinnedAt
+                      ? "bg-yellow-600 hover:bg-yellow-700 text-white"
+                      : "bg-slate-600 hover:bg-slate-500 text-gray-300"
+                  }`}
+                  title={deck.pinnedAt ? "Unpin" : "Pin to top"}
+                >
+                  ★
+                </button>
                 <button
                   onClick={() => duplicateDeck(deck.id)}
                   className="bg-slate-600 hover:bg-slate-500 text-gray-300 px-1.5 py-1.5 text-xs border-l border-slate-500"

@@ -34,6 +34,7 @@ export default function App() {
     addCardToDeck,
     removeCardFromDeck,
     setDeckCards,
+    togglePinDeck,
   } = useDecks();
 
   useEffect(() => {
@@ -120,6 +121,7 @@ export default function App() {
           addCardToDeck={addCardToDeck}
           removeCardFromDeck={removeCardFromDeck}
           setDeckCards={setDeckCards}
+          togglePinDeck={togglePinDeck}
         />
       )}
 
