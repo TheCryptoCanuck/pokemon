@@ -21,6 +21,7 @@ const ELEMENT_COLORS: Record<string, string> = {
   fighting: "bg-orange-700",
   darkness: "bg-gray-800",
   metal: "bg-gray-500",
+  dragon: "bg-amber-700",
   colorless: "bg-gray-400",
 };
 

@@ -64,6 +64,7 @@ const TYPE_COLORS: Record<string, string> = {
   fighting: "#c2410c",
   darkness: "#374151",
   metal: "#6b7280",
+  dragon: "#b45309",
   colorless: "#9ca3af",
 };
 
