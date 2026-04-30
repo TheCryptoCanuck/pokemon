@@ -51,6 +51,23 @@ export default function DeckBuilderPage({
   // Holds the deck-id of the most recent successful auto-build for
   // ~800ms so the deck tab can render a sparkle burst above it.
   const [sparkleDeckId, setSparkleDeckId] = useState<string | null>(null);
+  // Holds the deck-id whose ★ was just pressed (pin), so we can pop
+  // the star and ping a halo for ~700ms.
+  const [justPinnedId, setJustPinnedId] = useState<string | null>(null);
+
+  const handleTogglePin = (id: string) => {
+    const deck = decks.find((d) => d.id === id);
+    const wasPinned = !!deck?.pinnedAt;
+    togglePinDeck(id);
+    // Only celebrate when going unpinned → pinned. Unpinning is silent.
+    if (!wasPinned) setJustPinnedId(id);
+  };
+
+  useEffect(() => {
+    if (!justPinnedId) return;
+    const t = setTimeout(() => setJustPinnedId(null), 700);
+    return () => clearTimeout(t);
+  }, [justPinnedId]);
 
   // Auto-dismiss toast after 4s. Timer resets each time `autoBuildToast`
   // changes, so a rapid second build cancels the previous fade-out.
@@ -226,8 +243,8 @@ export default function DeckBuilderPage({
               </button>
               <div className="flex">
                 <button
-                  onClick={() => togglePinDeck(deck.id)}
-                  className={`px-1.5 py-1.5 text-xs border-l border-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 ${
+                  onClick={() => handleTogglePin(deck.id)}
+                  className={`relative px-1.5 py-1.5 text-xs border-l border-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 ${
                     deck.pinnedAt
                       ? "bg-yellow-600 hover:bg-yellow-700 text-white"
                       : "bg-slate-600 hover:bg-slate-500 text-gray-300"
@@ -238,7 +255,21 @@ export default function DeckBuilderPage({
                   }
                   aria-pressed={!!deck.pinnedAt}
                 >
-                  ★
+                  {justPinnedId === deck.id && (
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 rounded-r animate-ping bg-yellow-400/60"
+                    />
+                  )}
+                  <span
+                    className={
+                      justPinnedId === deck.id
+                        ? "relative inline-block animate-pop"
+                        : "relative inline-block"
+                    }
+                  >
+                    ★
+                  </span>
                 </button>
                 <button
                   onClick={() => duplicateDeck(deck.id)}

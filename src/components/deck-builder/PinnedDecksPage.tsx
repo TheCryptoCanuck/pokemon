@@ -72,7 +72,7 @@ export default function PinnedDecksPage({
       {pinned.map(({ deck, total, score, thumbs }) => (
         <div
           key={deck.id}
-          className="bg-slate-800 border border-slate-700 rounded-lg p-3"
+          className="bg-slate-800 border border-slate-700 rounded-lg p-3 animate-slide-up-fade"
         >
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-1 min-w-0 flex-1">
