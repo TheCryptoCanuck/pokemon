@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Card, getCardImageUrl, RARITY_LABELS } from "../../types/card";
 
 interface Props {
@@ -34,13 +35,28 @@ export default function CardDisplay({
   const imgUrl = getCardImageUrl(card);
   const elColor = ELEMENT_COLORS[card.element || "colorless"] || "bg-gray-400";
 
+  // Re-key the count badge whenever it changes so the animate-count-pulse
+  // animation re-runs on every increment/decrement.
+  const prevCountRef = useRef(count);
+  const [pulseKey, setPulseKey] = useState(0);
+  useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
+    if (prevCountRef.current !== count) {
+      setPulseKey((k) => k + 1);
+      prevCountRef.current = count;
+    }
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [count]);
+
   return (
     <div
-      className={`relative group rounded-lg overflow-hidden transition-all ${
+      className={`relative group rounded-lg overflow-hidden transition-all duration-150 ${
         owned === false ? "opacity-40 grayscale" : ""
-      } ${onClick ? "cursor-pointer hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20" : ""} ${
-        compact ? "w-28" : "w-36"
-      }`}
+      } ${
+        onClick
+          ? "cursor-pointer hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 active:ring-2 active:ring-blue-400"
+          : ""
+      } ${compact ? "w-28" : "w-36"}`}
       onClick={onClick}
     >
       <img
@@ -55,12 +71,15 @@ export default function CardDisplay({
       />
 
       {count !== undefined && count > 0 && (
-        <span className="absolute top-1 right-1 bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow">
+        <span
+          key={pulseKey}
+          className="absolute top-1 right-1 bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow motion-safe:animate-count-pulse"
+        >
           {count}
         </span>
       )}
 
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-2 pt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-2 pt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
         <p className="text-white text-xs font-semibold truncate">{card.name}</p>
         <div className="flex items-center gap-1 mt-0.5">
           <span
@@ -81,9 +100,10 @@ export default function CardDisplay({
                   e.stopPropagation();
                   onRemove();
                 }}
-                className="bg-red-600 hover:bg-red-700 text-white text-xs px-2 py-0.5 rounded"
+                aria-label={`Remove one ${card.name}`}
+                className="bg-red-600 hover:bg-red-700 text-white text-base font-bold leading-none w-9 h-9 rounded flex items-center justify-center active:scale-95 transition-transform"
               >
-                -
+                −
               </button>
             )}
             {onAdd && (
@@ -92,7 +112,8 @@ export default function CardDisplay({
                   e.stopPropagation();
                   onAdd();
                 }}
-                className="bg-green-600 hover:bg-green-700 text-white text-xs px-2 py-0.5 rounded"
+                aria-label={`Add one ${card.name}`}
+                className="bg-green-600 hover:bg-green-700 text-white text-base font-bold leading-none w-9 h-9 rounded flex items-center justify-center active:scale-95 transition-transform"
               >
                 +
               </button>
