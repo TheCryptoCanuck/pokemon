@@ -83,8 +83,10 @@ export default function DeckEditor({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Left: Card browser */}
-      <div className="lg:col-span-2 space-y-4">
+      {/* Card browser. On mobile we want the deck panel to render FIRST
+          (so the user sees their deck, score, and validation before the
+          1,000+ card grid); on desktop the browser sits on the left. */}
+      <div className="lg:col-span-2 space-y-4 order-2 lg:order-1">
         <div className="flex flex-wrap gap-2">
           <input
             type="text"
@@ -156,8 +158,8 @@ export default function DeckEditor({
         </div>
       </div>
 
-      {/* Right: Deck panel */}
-      <div className="space-y-4">
+      {/* Deck panel — appears first on mobile, second on desktop. */}
+      <div className="space-y-4 order-1 lg:order-2">
         {/* Deck name */}
         <div>
           {editingName ? (
