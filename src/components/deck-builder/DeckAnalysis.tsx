@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import type { DeckScore, ScoreStatus } from "../../utils/deck-scoring";
 
 interface Props {
@@ -7,6 +8,51 @@ interface Props {
   energyTypes: string[];
   typeBreakdown: Record<string, number>;
   score?: DeckScore;
+}
+
+// Smoothly tween from the previous score to the new target over ~600ms.
+// Single in-flight RAF; cancel on each new target so the latest value
+// always wins (handles rapid +/- spam without runaway animations).
+function useDeckScoreTween(target: number): number {
+  const [display, setDisplay] = useState(target);
+  const rafRef = useRef<number | null>(null);
+  const fromRef = useRef(target);
+
+  useEffect(() => {
+    // setState-in-effect is intentional here: we're driving an
+    // animation off requestAnimationFrame, which is exactly the
+    // "synchronizing state with an external system" use case the
+    // React docs carve out.
+    /* eslint-disable react-hooks/set-state-in-effect */
+    if (Math.abs(target - fromRef.current) < 1) {
+      setDisplay(target);
+      fromRef.current = target;
+      return;
+    }
+    const start = performance.now();
+    const from = fromRef.current;
+    const duration = 600;
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3); // easeOutCubic
+    const step = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const v = from + (target - from) * ease(t);
+      setDisplay(Math.round(v));
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(step);
+      } else {
+        fromRef.current = target;
+        rafRef.current = null;
+      }
+    };
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(step);
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [target]);
+
+  return display;
 }
 
 const TYPE_COLORS: Record<string, string> = {
@@ -49,10 +95,30 @@ export default function DeckAnalysis({
   typeBreakdown,
   score,
 }: Props) {
+  // Always call hooks at top level — early return below.
+  const displayedTotal = useDeckScoreTween(score?.total ?? 0);
+  // Re-key the grade pill when the grade letter changes so the
+  // animate-pop animation re-runs. setState-in-effect here is the
+  // canonical "remount-on-change" pattern.
+  const prevGradeRef = useRef<string | undefined>(score?.grade);
+  const [popKey, setPopKey] = useState(0);
+  useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
+    if (score && prevGradeRef.current && prevGradeRef.current !== score.grade) {
+      setPopKey((k) => k + 1);
+    }
+    prevGradeRef.current = score?.grade;
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [score?.grade, score]);
+
   if (totalCards === 0) {
     return (
-      <div className="text-gray-500 text-sm text-center py-4">
-        Add cards to see analysis
+      <div className="text-center py-6 animate-slide-up-fade">
+        <div className="text-4xl mb-2" aria-hidden>🃏</div>
+        <p className="text-sm text-gray-300">Empty deck</p>
+        <p className="text-xs text-gray-500 mt-1">
+          Pick cards from the browser to see your score and breakdown.
+        </p>
       </div>
     );
   }
@@ -66,12 +132,14 @@ export default function DeckAnalysis({
             <div
               className="relative w-16 h-16 rounded-full flex items-center justify-center"
               style={{
-                background: `conic-gradient(${ringColor(score.total)} ${score.total * 3.6}deg, #334155 0)`,
+                background: `conic-gradient(${ringColor(displayedTotal)} ${displayedTotal * 3.6}deg, #334155 0)`,
               }}
+              role="img"
+              aria-label={`Deck score ${score.total} out of 100, grade ${score.grade}`}
             >
               <div className="absolute inset-1 rounded-full bg-slate-800 flex items-center justify-center">
-                <span className="text-xl font-bold text-white">
-                  {score.total}
+                <span className="text-xl font-bold text-white tabular-nums">
+                  {displayedTotal}
                 </span>
               </div>
             </div>
@@ -79,7 +147,12 @@ export default function DeckAnalysis({
               <div className="flex items-center gap-2">
                 <h4 className="text-sm font-semibold text-white">Deck Score</h4>
                 <span
-                  className={`text-xs font-bold px-2 py-0.5 rounded ${GRADE_PILL[score.grade]}`}
+                  key={popKey}
+                  className={`text-xs font-bold px-2 py-0.5 rounded animate-pop ${GRADE_PILL[score.grade]} ${
+                    score.grade === "S"
+                      ? "shadow-lg shadow-emerald-500/40"
+                      : ""
+                  }`}
                 >
                   {score.grade}
                 </span>

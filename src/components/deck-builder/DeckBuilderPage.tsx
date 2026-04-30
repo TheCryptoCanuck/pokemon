@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CollectionEntry, Deck, DeckCard } from "../../types/card";
 import { autoBuild } from "../../utils/auto-build";
 import { ARCHETYPE_LABELS, type Archetype } from "../../data/archetypes";
+import { tap } from "../../utils/haptics";
 import DeckEditor from "./DeckEditor";
 import AutoBuildModal from "./AutoBuildModal";
+
+interface Toast {
+  message: string;
+  status: "success" | "warning";
+}
 
 interface Props {
   allCards: Card[];
@@ -42,7 +48,36 @@ export default function DeckBuilderPage({
 }: Props) {
   const [collectionOnly, setCollectionOnly] = useState(true);
   const [autoBuildOpen, setAutoBuildOpen] = useState(false);
-  const [autoBuildToast, setAutoBuildToast] = useState<string | null>(null);
+  const [autoBuildToast, setAutoBuildToast] = useState<Toast | null>(null);
+  // Holds the deck-id of the most recent successful auto-build for
+  // ~800ms so the deck tab can render a sparkle burst above it.
+  const [sparkleDeckId, setSparkleDeckId] = useState<string | null>(null);
+  // Holds the deck-id whose ★ was just pressed (pin), so we can pop
+  // the star and ping a halo for ~700ms.
+  const [justPinnedId, setJustPinnedId] = useState<string | null>(null);
+
+  const handleTogglePin = (id: string) => {
+    const deck = decks.find((d) => d.id === id);
+    const wasPinned = !!deck?.pinnedAt;
+    togglePinDeck(id);
+    tap();
+    // Only celebrate when going unpinned → pinned. Unpinning is silent.
+    if (!wasPinned) setJustPinnedId(id);
+  };
+
+  useEffect(() => {
+    if (!justPinnedId) return;
+    const t = setTimeout(() => setJustPinnedId(null), 700);
+    return () => clearTimeout(t);
+  }, [justPinnedId]);
+
+  // Auto-dismiss toast after 4s. Timer resets each time `autoBuildToast`
+  // changes, so a rapid second build cancels the previous fade-out.
+  useEffect(() => {
+    if (!autoBuildToast) return;
+    const t = setTimeout(() => setAutoBuildToast(null), 4000);
+    return () => clearTimeout(t);
+  }, [autoBuildToast]);
 
   const handleAutoBuild = (
     name: string,
@@ -57,9 +92,11 @@ export default function DeckBuilderPage({
       archetype,
     });
     if (result.cards.length === 0) {
-      setAutoBuildToast(
-        result.warnings[0] ?? "Could not build a deck for those settings."
-      );
+      setAutoBuildToast({
+        message:
+          result.warnings[0] ?? "Could not build a deck for those settings.",
+        status: "warning",
+      });
       setAutoBuildOpen(false);
       return;
     }
@@ -69,12 +106,26 @@ export default function DeckBuilderPage({
     setDeckCards(newId, result.cards);
     setActiveDeckId(newId);
     setAutoBuildOpen(false);
-    setAutoBuildToast(
-      result.warnings.length > 0
-        ? result.warnings.join(" ")
-        : `Built ${finalName} (score ${result.score.total}/${result.score.grade}).`
-    );
+    setAutoBuildToast({
+      message:
+        result.warnings.length > 0
+          ? result.warnings.join(" ")
+          : `Built ${finalName} (score ${result.score.total}/${result.score.grade}).`,
+      status: result.warnings.length > 0 ? "warning" : "success",
+    });
+    // Sparkle the new deck tab on a successful build (no warnings).
+    if (result.warnings.length === 0) {
+      setSparkleDeckId(newId);
+    }
   };
+
+  // Clear sparkle id after the animation finishes (~900ms covers the
+  // 800ms keyframe + a small buffer).
+  useEffect(() => {
+    if (!sparkleDeckId) return;
+    const t = setTimeout(() => setSparkleDeckId(null), 900);
+    return () => clearTimeout(t);
+  }, [sparkleDeckId]);
 
   return (
     <div className="space-y-6">
@@ -82,14 +133,14 @@ export default function DeckBuilderPage({
       <div className="flex flex-wrap items-center gap-3">
         <button
           onClick={() => createDeck("New Deck")}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold text-sm"
+          className="bg-blue-600 hover:bg-blue-700 active:scale-[0.97] transition-transform text-white px-4 py-2 rounded font-semibold text-sm"
         >
           + New Deck
         </button>
 
         <button
           onClick={() => setAutoBuildOpen(true)}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-semibold text-sm"
+          className="bg-purple-600 hover:bg-purple-700 active:scale-[0.97] transition-transform text-white px-4 py-2 rounded font-semibold text-sm"
           title="Auto-build a deck for chosen energy types"
         >
           ⚡ Auto-Build
@@ -107,11 +158,22 @@ export default function DeckBuilderPage({
       </div>
 
       {autoBuildToast && (
-        <div className="bg-slate-800 border border-slate-700 rounded p-2 flex items-center gap-2">
-          <p className="text-sm text-gray-200 flex-1">{autoBuildToast}</p>
+        <div
+          role="status"
+          aria-live="polite"
+          className={`fixed bottom-4 inset-x-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 bg-slate-800 border border-slate-700 border-l-4 ${
+            autoBuildToast.status === "success"
+              ? "border-l-emerald-500"
+              : "border-l-amber-500"
+          } rounded shadow-lg p-3 flex items-center gap-2 animate-slide-up-fade`}
+        >
+          <p className="text-sm text-gray-200 flex-1">
+            {autoBuildToast.message}
+          </p>
           <button
             onClick={() => setAutoBuildToast(null)}
-            className="text-gray-400 hover:text-white text-sm px-2"
+            aria-label="Dismiss notification"
+            className="text-gray-400 hover:text-white text-lg leading-none px-2 focus-visible:outline-2 focus-visible:outline-blue-400"
           >
             ×
           </button>
@@ -130,8 +192,41 @@ export default function DeckBuilderPage({
       {/* Deck tabs */}
       {decks.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {decks.map((deck) => (
-            <div key={deck.id} className="flex items-center">
+          {decks.map((deck) => {
+            const isSparkling = sparkleDeckId === deck.id;
+            return (
+            <div
+              key={deck.id}
+              className={`flex items-center relative ${isSparkling ? "animate-pop" : ""}`}
+            >
+              {isSparkling && (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -inset-1 flex items-center justify-center"
+                >
+                  {[
+                    { top: "-6px", left: "10%", delay: "0ms" },
+                    { top: "-2px", left: "55%", delay: "120ms" },
+                    { bottom: "-4px", left: "30%", delay: "60ms" },
+                    { top: "20%", right: "-4px", delay: "180ms" },
+                  ].map((s, i) => (
+                    <svg
+                      key={i}
+                      viewBox="0 0 12 12"
+                      className="absolute w-3 h-3 text-yellow-300 animate-sparkle"
+                      style={{
+                        ...s,
+                        animationDelay: s.delay,
+                      }}
+                    >
+                      <path
+                        d="M6 0 L7 5 L12 6 L7 7 L6 12 L5 7 L0 6 L5 5 Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  ))}
+                </span>
+              )}
               <button
                 onClick={() => setActiveDeckId(deck.id)}
                 className={`px-3 py-1.5 rounded-l text-sm flex items-center gap-1 ${
@@ -150,8 +245,8 @@ export default function DeckBuilderPage({
               </button>
               <div className="flex">
                 <button
-                  onClick={() => togglePinDeck(deck.id)}
-                  className={`px-1.5 py-1.5 text-xs border-l border-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 ${
+                  onClick={() => handleTogglePin(deck.id)}
+                  className={`relative px-1.5 py-1.5 text-xs border-l border-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 ${
                     deck.pinnedAt
                       ? "bg-yellow-600 hover:bg-yellow-700 text-white"
                       : "bg-slate-600 hover:bg-slate-500 text-gray-300"
@@ -162,7 +257,21 @@ export default function DeckBuilderPage({
                   }
                   aria-pressed={!!deck.pinnedAt}
                 >
-                  ★
+                  {justPinnedId === deck.id && (
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 rounded-r animate-ping bg-yellow-400/60"
+                    />
+                  )}
+                  <span
+                    className={
+                      justPinnedId === deck.id
+                        ? "relative inline-block animate-pop"
+                        : "relative inline-block"
+                    }
+                  >
+                    ★
+                  </span>
                 </button>
                 <button
                   onClick={() => duplicateDeck(deck.id)}
@@ -183,7 +292,8 @@ export default function DeckBuilderPage({
                 </button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

@@ -107,9 +107,21 @@ export default function MetaDecksPage({
         ))}
 
         {filtered.length === 0 && (
-          <div className="text-center text-gray-500 py-12">
-            No decks match your filters. Try adjusting the tier or completion
-            filter.
+          <div className="text-center py-12 animate-slide-up-fade">
+            <div className="text-5xl mb-3" aria-hidden>📋</div>
+            <p className="text-lg text-gray-300">No meta decks match</p>
+            <p className="text-sm text-gray-500 mt-1 max-w-sm mx-auto">
+              Try lowering the completion threshold or selecting "All tiers".
+            </p>
+            <button
+              onClick={() => {
+                setTierFilter("");
+                setMinCompletion(0);
+              }}
+              className="mt-5 bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 rounded font-semibold text-sm active:scale-95 transition-transform"
+            >
+              Reset filters
+            </button>
           </div>
         )}
       </div>
