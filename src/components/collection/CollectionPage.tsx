@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Card, CollectionEntry, getCardId, RARITY_ORDER } from "../../types/card";
+import { Card, CollectionEntry, getCardId, matchesTypeFilter, RARITY_ORDER } from "../../types/card";
 import { getSets, getElements } from "../../data/cards";
 import CardGrid from "./CardGrid";
 import CardFilters from "./CardFilters";
@@ -40,7 +40,7 @@ export default function CollectionPage({
     return cards.filter((card) => {
       if (search && !card.name.toLowerCase().includes(search.toLowerCase()))
         return false;
-      if (selectedType && card.element !== selectedType) return false;
+      if (!matchesTypeFilter(card, selectedType)) return false;
       if (selectedSet && card.set !== selectedSet) return false;
       if (selectedRarity && card.rarity !== selectedRarity) return false;
 

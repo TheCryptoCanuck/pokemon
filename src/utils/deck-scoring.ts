@@ -16,7 +16,9 @@ export type HeuristicId =
   | "powerPairings"
   | "weaknessConcentration"
   | "exDensity"
-  | "benchMobility";
+  | "benchMobility"
+  | "redundancy"
+  | "recovery";
 
 export type ScoreStatus = "good" | "warn" | "bad";
 
@@ -237,7 +239,7 @@ function trainerDensity(resolved: Resolved[]): HeuristicResult {
     id: "trainerDensity",
     label: "Trainer Mix",
     score,
-    weight: 0.20,
+    weight: 0.10,
     status,
     message: `${filled}/4 roles covered (search ${search}, draw ${draw}, disrupt ${disrupt}, accel ${accel})`,
     suggestion: missing ? `Missing ${missing.label}.` : undefined,
@@ -251,7 +253,7 @@ function evolutionLines(deck: DeckCard[], cards: Card[]): HeuristicResult {
       id: "evolutionLines",
       label: "Evolution Lines",
       score: 100,
-      weight: 0.18,
+      weight: 0.15,
       status: "good",
       message: "All-Basic deck (no evolution lines to validate)",
     };
@@ -273,7 +275,7 @@ function evolutionLines(deck: DeckCard[], cards: Card[]): HeuristicResult {
     id: "evolutionLines",
     label: "Evolution Lines",
     score,
-    weight: 0.18,
+    weight: 0.15,
     status,
     message: `${lines.length} line${lines.length === 1 ? "" : "s"}, ${incomplete} incomplete`,
     suggestion,
@@ -349,7 +351,7 @@ function powerPairings(resolved: Resolved[]): HeuristicResult {
     id: "powerPairings",
     label: "Power Pairings",
     score,
-    weight: 0.12,
+    weight: 0.10,
     status,
     message: matched.length === 0
       ? "No top-tier pairings detected"
@@ -465,6 +467,98 @@ function benchMobility(resolved: Resolved[]): HeuristicResult {
   };
 }
 
+// Redundancy: each critical role should be filled by ≥2 different cards
+// (not just 2 copies of the same one). Catches "single Poké Ball, single
+// Professor's Research" decks that look fine on paper but choke when the
+// staple gets prized.
+function redundancy(resolved: Resolved[]): HeuristicResult {
+  // Map role → set of distinct trainer names contributing to that role.
+  const roleCards: Record<string, Set<string>> = {
+    search: new Set(),
+    draw: new Set(),
+    disrupt: new Set(),
+    switch: new Set(),
+  };
+  for (const { card } of resolved) {
+    if (!isTrainerCard(card)) continue;
+    const role = getTrainerRole(card.name);
+    if (role in roleCards) roleCards[role].add(card.name);
+  }
+  // Pokémon with abilities count toward draw/search redundancy too.
+  for (const { card } of resolved) {
+    if (isTrainerCard(card)) continue;
+    if (hasSoftDraw(card)) roleCards.draw.add(card.name);
+    if (hasAbilityKind(card, "search")) roleCards.search.add(card.name);
+  }
+  // Count roles where ≥2 distinct cards contribute.
+  const redundantRoles = (["search", "draw"] as const).filter(
+    (r) => roleCards[r].size >= 2
+  ).length;
+  // Score: 50 per redundant key role (search + draw = 100 max), small
+  // bonus for redundancy in disrupt/switch.
+  let score = redundantRoles * 50;
+  if (roleCards.disrupt.size >= 2) score = Math.min(100, score + 10);
+  if (roleCards.switch.size >= 2) score = Math.min(100, score + 10);
+  const status = statusFromScore(score);
+  const missing = (["search", "draw"] as const).filter(
+    (r) => roleCards[r].size < 2
+  );
+  return {
+    id: "redundancy",
+    label: "Redundancy",
+    score,
+    weight: 0.10,
+    status,
+    message: `Search has ${roleCards.search.size} distinct card${roleCards.search.size === 1 ? "" : "s"}, draw has ${roleCards.draw.size}`,
+    suggestion: missing.length > 0
+      ? `Add a 2nd different ${missing.join(" / ")} card so a prized staple doesn't break the engine.`
+      : undefined,
+  };
+}
+
+// Recovery: can the deck keep playing after losing a Pokémon? Heal
+// trainers (Potion, Pokémon Center Lady), heal abilities (Erika, Powder
+// Heal), and switch trainers all contribute.
+function recovery(resolved: Resolved[]): HeuristicResult {
+  let healTrainers = 0;
+  let switchTrainers = 0;
+  let healAbilityCount = 0;
+  for (const { card, count } of resolved) {
+    if (isTrainerCard(card)) {
+      const role = getTrainerRole(card.name);
+      if (role === "heal") healTrainers += count;
+      else if (role === "switch") switchTrainers += count;
+    } else if (hasAbilityKind(card, "heal")) {
+      healAbilityCount += count;
+    }
+  }
+  // Score: heal trainer +50, heal ability +30 (capped), switch trainer +20.
+  let score = 0;
+  if (healTrainers >= 1) score += 50;
+  if (healAbilityCount >= 1) score += Math.min(30, healAbilityCount * 15);
+  if (switchTrainers >= 1) score += 20;
+  score = Math.min(100, score);
+  const status = statusFromScore(score);
+  const sources: string[] = [];
+  if (healTrainers > 0) sources.push(`${healTrainers} heal trainer`);
+  if (healAbilityCount > 0) sources.push(`${healAbilityCount} heal ability`);
+  if (switchTrainers > 0) sources.push(`${switchTrainers} switch`);
+  return {
+    id: "recovery",
+    label: "Recovery",
+    score,
+    weight: 0.05,
+    status,
+    message:
+      sources.length > 0
+        ? sources.join(", ")
+        : "No recovery cards — one KO can end the game",
+    suggestion: score < 50
+      ? `Add a Potion or X Speed so a knock-out doesn't snowball.`
+      : undefined,
+  };
+}
+
 // ─── Orchestrator ────────────────────────────────────────────────────────
 
 export function scoreDeck(deck: DeckCard[], cards: Card[]): DeckScore {
@@ -486,6 +580,8 @@ export function scoreDeck(deck: DeckCard[], cards: Card[]): DeckScore {
     weaknessConcentration(resolved),
     exDensity(resolved),
     benchMobility(resolved),
+    redundancy(resolved),
+    recovery(resolved),
   ];
   const total = Math.round(
     breakdown.reduce((s, h) => s + h.weight * h.score, 0)
