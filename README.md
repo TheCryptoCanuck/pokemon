@@ -4,6 +4,8 @@ A mobile-first web app for managing your Pokémon TCG Pocket card collection and
 
 **Live:** https://thecryptocanuck.github.io/pokemon/
 
+**What's shipped:** [CHANGELOG.md](./CHANGELOG.md) — a per-PR scannable history.
+
 > On phones the deck panel (deck name, cards, score, analysis) renders first; the 1,000+ card browser drops below it. Open any deck and you see your deck immediately, not a wall of cards. On desktop the card browser stays on the left, deck panel on the right.
 
 ## Features
