@@ -1,3 +1,15 @@
+export interface Attack {
+  name: string;
+  cost: string[]; // capitalized energy names from upstream: ["Psychic", "Colorless"]
+  damage: string; // upstream is a string ("60", "60+", "20×")
+  effect?: string;
+}
+
+export interface Ability {
+  name: string;
+  effect: string;
+}
+
 export interface Card {
   set: string;
   number: number;
@@ -12,6 +24,10 @@ export interface Card {
   retreatCost?: number;
   weakness?: string;
   evolvesFrom?: string;
+  // Populated from the rich data fetch (hugoburguete) and merged in
+  // fetchCards. Pokémon may have multiple attacks; abilities are rare.
+  attacks?: Attack[];
+  abilities?: Ability[];
 }
 
 export interface CollectionEntry {
