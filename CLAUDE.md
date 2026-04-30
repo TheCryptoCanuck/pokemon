@@ -50,6 +50,7 @@ Use ~/.claude/skills/gstack/... for gstack file paths (the global path).
 - **Anthropic Vision**: model ID is `claude-sonnet-4-6`. Browser-direct calls require the `anthropic-dangerous-direct-browser-access: true` header.
 - **localStorage keys**: `tcgp-anthropic-key`, `tcgp-collection`, `tcgp-decks`. Don't break shape — existing users have data stored.
 - **Pinned decks**: `Deck.pinnedAt?: string` (ISO timestamp; absent = unpinned). Sort: pinned first by `pinnedAt asc`, then unpinned by `createdAt desc`.
+- **Mobile-first DeckEditor layout**: `DeckEditor.tsx` uses Tailwind `order-1 lg:order-2` on the deck panel and `order-2 lg:order-1` on the card browser. On phones (single column) the deck panel renders first so the user sees their deck immediately; on desktop the card browser sits on the left as you'd expect. Don't drop the `order-*` classes when refactoring.
 
 ### Refreshing rich card data
 

@@ -4,6 +4,8 @@ A mobile-first web app for managing your Pokémon TCG Pocket card collection and
 
 **Live:** https://thecryptocanuck.github.io/pokemon/
 
+> On phones the deck panel (deck name, cards, score, analysis) renders first; the 1,000+ card browser drops below it. Open any deck and you see your deck immediately, not a wall of cards. On desktop the card browser stays on the left, deck panel on the right.
+
 ## Features
 
 - **Collection tracker** — browse 2,500+ TCGP cards, filter by element / category (Pokémon / Supporter / Item / Tool / Fossil) / set / rarity / ownership.
@@ -107,6 +109,7 @@ src/
 │   ├── deck-rules.ts             20-card / 2-copy / Basic / 3-energy validation
 │   ├── deck-scoring.ts           10 weighted heuristics → DeckScore
 │   ├── auto-build.ts             Archetype-aware greedy builder
+│   ├── collection-match.ts       Match meta decks against your collection
 │   └── card-classifier.ts        Regex strategy detection on attacks/abilities
 ├── data/
 │   ├── cards.ts                  Fetches base + rich card data, merges
