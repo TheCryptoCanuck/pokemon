@@ -1,5 +1,89 @@
 @import "tailwindcss";
 
+/* Tailwind 4: CSS-first theme. Each `--animate-*` becomes
+   `animate-<name>` in JSX (e.g. animate-slide-up-fade). */
+@theme {
+  --animate-slide-up-fade: slide-up-fade 200ms ease-out;
+  --animate-pop: pop 250ms ease-out;
+  --animate-sparkle: sparkle 800ms ease-out forwards;
+  --animate-shimmer: shimmer 1.5s linear infinite;
+  --animate-count-pulse: count-pulse 300ms ease-out;
+}
+
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes count-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Respect the user's system preference. Collapses every animation
+   and transition to ~0ms so reduced-motion users see instant state
+   changes — counters jump to final values, modals appear without
+   sliding, etc. Single source of truth; no per-component checks. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 body {
   margin: 0;
   background: #0f172a;
