@@ -12,6 +12,7 @@ import { validateDeck, canAddCard, getDeckStats } from "../../utils/deck-rules";
 import { scoreDeck } from "../../utils/deck-scoring";
 import { getElements, getSets } from "../../data/cards";
 import CardDisplay from "../shared/CardDisplay";
+import CardModal from "../shared/CardModal";
 import DeckValidation from "./DeckValidation";
 import DeckAnalysis from "./DeckAnalysis";
 
@@ -39,6 +40,7 @@ export default function DeckEditor({
   const [selectedSet, setSelectedSet] = useState("");
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(deck.name);
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 
   const errors = useMemo(
     () => validateDeck(deck.cards, allCards),
@@ -212,12 +214,22 @@ export default function DeckEditor({
           {deckCardDetails.map(({ cardId, count, card }) => (
             <div
               key={cardId}
-              className="flex items-center gap-2 bg-slate-700 rounded p-2"
+              role="button"
+              tabIndex={0}
+              onClick={() => setSelectedCard(card!)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setSelectedCard(card!);
+                }
+              }}
+              className="w-full flex items-center gap-2 bg-slate-700 hover:bg-slate-600 rounded p-2 active:scale-[0.98] transition-transform cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-400"
+              aria-label={`View details for ${card!.name}`}
             >
               <img
                 src={getCardImageUrl(card!)}
-                alt={card!.name}
-                className="w-8 h-11 rounded object-cover"
+                alt=""
+                className="w-8 h-11 rounded object-cover shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <p className="text-white text-sm truncate">{card!.name}</p>
@@ -225,12 +237,18 @@ export default function DeckEditor({
                   {card!.element || "colorless"} - {card!.set}
                 </p>
               </div>
-              <span className="text-blue-400 font-bold text-sm">x{count}</span>
+              <span className="text-blue-400 font-bold text-sm shrink-0">
+                x{count}
+              </span>
               <button
-                onClick={() => onRemoveCard(cardId)}
-                className="text-red-400 hover:text-red-300 text-sm px-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveCard(cardId);
+                }}
+                aria-label={`Remove one ${card!.name}`}
+                className="text-red-400 hover:text-red-300 text-base font-bold leading-none w-8 h-8 flex items-center justify-center rounded shrink-0 active:scale-90 transition-transform"
               >
-                -
+                −
               </button>
             </div>
           ))}
@@ -239,6 +257,16 @@ export default function DeckEditor({
         {/* Analysis */}
         <DeckAnalysis {...stats} score={score} />
       </div>
+
+      {/* Card detail modal — opens on tap of any card row in the deck or
+          card in the browser. */}
+      {selectedCard && (
+        <CardModal
+          card={selectedCard}
+          count={getCount(getCardId(selectedCard))}
+          onClose={() => setSelectedCard(null)}
+        />
+      )}
     </div>
   );
 }
