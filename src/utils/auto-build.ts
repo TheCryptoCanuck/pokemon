@@ -375,19 +375,26 @@ export function autoBuild(allCards: Card[], opts: AutoBuildOptions): AutoBuildRe
     }
   }
 
-  // 5. Ability-driven partners (energy-accel / draw on Pokémon).
+  // 5. Ability-driven partners (energy-accel / draw on Pokémon). In
+  // evolution archetype the seed already consumed 6+ Pokémon slots for
+  // its chain; cap ability partners at 1 and don't pull their evolution
+  // chain or we blow the Pokémon budget (14P/6T → 10P/10T target).
   const exclude = new Set(
     deck.map((dc) => {
       const c = allCards.find((a) => getCardId(a) === dc.cardId);
       return c?.name ?? "";
     })
   );
-  for (const p of pickAbilityPartners(pool, opts.energyTypes, exclude, archetype === "control" ? 1 : 2)) {
+  const partnerLimit =
+    archetype === "evolution" ? 1 : archetype === "control" ? 1 : 2;
+  for (const p of pickAbilityPartners(pool, opts.energyTypes, exclude, partnerLimit)) {
     tryAdd(deck, p, 2, allCards);
-    if (archetype === "evolution") {
+    // Only pull the partner's chain in aggressive archetype, where we
+    // have headroom; evolution needs trainer slots, control wants room
+    // for walls/heal.
+    if (archetype === "aggressive") {
       const chain = evolutionChain(p, allCards, pool);
       if (chain.basic && chain.basic !== p) tryAdd(deck, chain.basic, 2, allCards);
-      if (chain.stage1 && chain.stage1 !== p) tryAdd(deck, chain.stage1, 2, allCards);
     }
   }
 
