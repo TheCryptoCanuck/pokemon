@@ -23,6 +23,9 @@ export default function VideoImport({ allCards, onImport }: Props) {
   const [results, setResults] = useState<CollectionEntry[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [frames, setFrames] = useState<ExtractedFrame[]>([]);
+  // Diagnostic counter shown during the recognize stage so a long-running
+  // import doesn't look frozen.
+  const [frameProgress, setFrameProgress] = useState({ current: 0, total: 0 });
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,11 +60,15 @@ export default function VideoImport({ allCards, onImport }: Props) {
       setStage("recognizing");
       setProgressLabel("Identifying cards with Claude Vision...");
       setProgress(0);
+      setFrameProgress({ current: 0, total: extracted.length });
       const recognized = await recognizeCards(
         extracted,
         apiKey.trim(),
         allCards,
-        (current, total) => setProgress(Math.round((current / total) * 100))
+        (current, total) => {
+          setProgress(Math.round((current / total) * 100));
+          setFrameProgress({ current, total });
+        }
       );
 
       setResults(recognized.entries);
@@ -135,18 +142,23 @@ export default function VideoImport({ allCards, onImport }: Props) {
       {(stage === "extracting" || stage === "recognizing") && (
         <div className="space-y-3">
           <p className="text-white text-sm">{progressLabel}</p>
-          <div className="w-full bg-slate-700 rounded-full h-3">
+          <div className="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
             <div
-              className="bg-blue-600 h-3 rounded-full transition-all"
+              className="h-3 rounded-full bg-gradient-to-r from-blue-700 via-blue-400 to-blue-700 bg-[length:200%_100%] animate-shimmer transition-[width] duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="text-gray-400 text-sm">{progress}%</p>
-          {stage === "extracting" && (
-            <p className="text-gray-500 text-xs">
-              Extracted {frames.length} unique frames so far...
-            </p>
-          )}
+          <div className="flex items-center justify-between text-xs text-gray-400 tabular-nums">
+            <span>{progress}%</span>
+            {stage === "extracting" && (
+              <span>Extracted {frames.length} unique frames</span>
+            )}
+            {stage === "recognizing" && frameProgress.total > 0 && (
+              <span>
+                Frame {frameProgress.current} / {frameProgress.total}
+              </span>
+            )}
+          </div>
         </div>
       )}
 
@@ -178,7 +190,7 @@ export default function VideoImport({ allCards, onImport }: Props) {
           )}
 
           {results.length > 0 ? (
-            <div className="bg-green-900/30 border border-green-700 rounded-lg p-4 mb-4">
+            <div className="bg-green-900/30 border border-green-700 rounded-lg p-4 mb-4 animate-slide-up-fade">
               <p className="text-green-400 font-semibold">
                 Found {results.length} unique cards!
               </p>
@@ -187,13 +199,14 @@ export default function VideoImport({ allCards, onImport }: Props) {
               </p>
             </div>
           ) : (
-            <div className="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 mb-4">
+            <div className="text-center py-6 mb-4 animate-slide-up-fade">
+              <div className="text-4xl mb-2" aria-hidden>🎞️</div>
               <p className="text-yellow-400 font-semibold">
                 No cards recognized
               </p>
-              <p className="text-yellow-300 text-sm mt-1">
-                Make sure your video shows the TCGP collection screen with card
-                names visible. Try a slower scroll speed for better results.
+              <p className="text-yellow-300 text-sm mt-1 max-w-md mx-auto">
+                Make sure the recording shows the TCGP collection screen with
+                card names visible. A slower scroll usually helps.
               </p>
             </div>
           )}
