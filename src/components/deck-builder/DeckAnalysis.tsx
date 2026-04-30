@@ -113,8 +113,12 @@ export default function DeckAnalysis({
 
   if (totalCards === 0) {
     return (
-      <div className="text-gray-500 text-sm text-center py-4">
-        Add cards to see analysis
+      <div className="text-center py-6 animate-slide-up-fade">
+        <div className="text-4xl mb-2" aria-hidden>🃏</div>
+        <p className="text-sm text-gray-300">Empty deck</p>
+        <p className="text-xs text-gray-500 mt-1">
+          Pick cards from the browser to see your score and breakdown.
+        </p>
       </div>
     );
   }

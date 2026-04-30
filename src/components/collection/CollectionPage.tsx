@@ -158,6 +158,13 @@ export default function CollectionPage({
         onAdd={addCard}
         onRemove={removeCard}
         onCardClick={setSelectedCard}
+        onClearFilters={() => {
+          setSearch("");
+          setSelectedType("");
+          setSelectedSet("");
+          setSelectedRarity("");
+          setShowOwned("all");
+        }}
       />
 
       {/* Card modal */}

@@ -44,14 +44,16 @@ export default function PinnedDecksPage({
 
   if (pinned.length === 0) {
     return (
-      <div className="text-center py-16">
-        <p className="text-lg text-gray-300">No pinned decks yet.</p>
-        <p className="text-sm text-gray-500 mt-2">
-          Tap ★ on any deck in Deck Builder to save it here.
+      <div className="text-center py-16 animate-slide-up-fade">
+        <div className="text-5xl mb-3 text-yellow-400" aria-hidden>★</div>
+        <p className="text-lg text-gray-300">No pinned decks yet</p>
+        <p className="text-sm text-gray-500 mt-2 max-w-sm mx-auto">
+          Tap ★ on any deck in Deck Builder to save it here. Pinned decks
+          float to the top and survive bulk operations.
         </p>
         <button
           onClick={onGoToBuilder}
-          className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 rounded font-semibold text-sm"
+          className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 rounded font-semibold text-sm active:scale-95 transition-transform"
         >
           Go to Deck Builder
         </button>

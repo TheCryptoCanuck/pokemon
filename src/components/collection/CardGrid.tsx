@@ -7,6 +7,7 @@ interface Props {
   onAdd: (cardId: string) => void;
   onRemove: (cardId: string) => void;
   onCardClick?: (card: Card) => void;
+  onClearFilters?: () => void;
 }
 
 export default function CardGrid({
@@ -15,11 +16,24 @@ export default function CardGrid({
   onAdd,
   onRemove,
   onCardClick,
+  onClearFilters,
 }: Props) {
   if (cards.length === 0) {
     return (
-      <div className="text-center text-gray-500 py-12">
-        No cards match your filters.
+      <div className="text-center py-16 animate-slide-up-fade">
+        <div className="text-5xl mb-3" aria-hidden>🔍</div>
+        <p className="text-lg text-gray-300">No cards match your filters</p>
+        <p className="text-sm text-gray-500 mt-1">
+          Try widening your search or pick a different element.
+        </p>
+        {onClearFilters && (
+          <button
+            onClick={onClearFilters}
+            className="mt-5 bg-blue-600 hover:bg-blue-700 text-white px-5 h-10 rounded font-semibold text-sm active:scale-95 transition-transform"
+          >
+            Clear filters
+          </button>
+        )}
       </div>
     );
   }
