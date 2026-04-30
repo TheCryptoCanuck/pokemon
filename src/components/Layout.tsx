@@ -9,6 +9,7 @@ interface Props {
 const TABS: { id: Tab; label: string }[] = [
   { id: "collection", label: "Collection" },
   { id: "deck-builder", label: "Deck Builder" },
+  { id: "pinned", label: "Pinned" },
   { id: "meta", label: "Meta Decks" },
 ];
 
@@ -23,12 +24,12 @@ export default function Layout({ activeTab, onTabChange, children }: Props) {
               <span className="text-blue-400">TCGP</span> Deck Builder
             </h1>
 
-            <nav className="flex gap-1">
+            <nav className="flex gap-1 overflow-x-auto whitespace-nowrap">
               {TABS.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => onTabChange(tab.id)}
-                  className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+                  className={`px-3 py-2 rounded text-sm font-medium transition-colors shrink-0 ${
                     activeTab === tab.id
                       ? "bg-blue-600 text-white"
                       : "text-gray-400 hover:text-white hover:bg-slate-700"

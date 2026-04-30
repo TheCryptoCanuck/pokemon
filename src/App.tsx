@@ -6,6 +6,7 @@ import { useDecks } from "./hooks/useDecks";
 import Layout from "./components/Layout";
 import CollectionPage from "./components/collection/CollectionPage";
 import DeckBuilderPage from "./components/deck-builder/DeckBuilderPage";
+import PinnedDecksPage from "./components/deck-builder/PinnedDecksPage";
 import MetaDecksPage from "./components/meta/MetaDecksPage";
 
 export default function App() {
@@ -122,6 +123,19 @@ export default function App() {
           removeCardFromDeck={removeCardFromDeck}
           setDeckCards={setDeckCards}
           togglePinDeck={togglePinDeck}
+        />
+      )}
+
+      {activeTab === "pinned" && (
+        <PinnedDecksPage
+          decks={decks}
+          allCards={cards}
+          onOpenDeck={(id) => {
+            setActiveDeckId(id);
+            setActiveTab("deck-builder");
+          }}
+          onUnpin={togglePinDeck}
+          onGoToBuilder={() => setActiveTab("deck-builder")}
         />
       )}
 

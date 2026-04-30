@@ -56,7 +56,7 @@ export interface MetaDeck {
   strategy: string;
 }
 
-export type Tab = "collection" | "deck-builder" | "meta";
+export type Tab = "collection" | "deck-builder" | "pinned" | "meta";
 
 export function getCardId(card: Card): string {
   return `${card.set}-${card.number}`;
