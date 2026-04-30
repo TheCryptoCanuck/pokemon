@@ -17,7 +17,7 @@ class BreedGhostCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: dog.rarity.color.withValues(alpha: 0.25),
+          color: dog.rarity.color.withValues(alpha: 0.55),
           width: 1.5,
         ),
       ),
@@ -29,7 +29,7 @@ class BreedGhostCard extends StatelessWidget {
           Center(
             child: Icon(
               Icons.help_outline,
-              color: Colors.white12,
+              color: Colors.white30,
               size: 40,
             ),
           ),
@@ -56,7 +56,7 @@ class BreedGhostCard extends StatelessWidget {
                   Text(
                     dog.name,
                     style: const TextStyle(
-                      color: Colors.white38,
+                      color: Colors.white70,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -66,7 +66,7 @@ class BreedGhostCard extends StatelessWidget {
                   Text(
                     dog.rarity.name,
                     style: TextStyle(
-                      color: dog.rarity.color.withValues(alpha: 0.4),
+                      color: dog.rarity.color.withValues(alpha: 0.75),
                       fontSize: 11,
                     ),
                   ),

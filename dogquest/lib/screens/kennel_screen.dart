@@ -172,7 +172,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                         Text(
                           ' / $kDeployedBreedCount breeds',
                           style: const TextStyle(
-                            color: textMuted,
+                            color: textSecondary,
                             fontSize: 14,
                           ),
                         ),
@@ -192,7 +192,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                             Text(
                               '$kTargetBreedCount coming',
                               style: const TextStyle(
-                                color: textHint,
+                                color: textMuted,
                                 fontSize: 10,
                               ),
                             ),
@@ -442,7 +442,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                     'User-Agent':
                                         'Hound/1.0 (dog identification app)',
                                   },
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                   placeholder: (_, __) => Shimmer.fromColors(
                                     baseColor: bgCard,
                                     highlightColor: const Color(0xFF3A2F2A),
@@ -526,16 +526,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                 ),
                               ],
                             ),
-                          )
-                              .animate(autoPlay: !_hasAnimated)
-                              .fadeIn(
-                                delay: Duration(
-                                  milliseconds: (i * 40).clamp(0, 500),
-                                ),
-                              )
-                              .scale(
-                                begin: const Offset(0.9, 0.9),
-                              ),
+                          ),
                         );
                       },
                       childCount: gridDogs.length,
@@ -543,7 +534,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.82,
+                      childAspectRatio: 1.1,
                       mainAxisSpacing: 12,
                       crossAxisSpacing: 12,
                     ),
