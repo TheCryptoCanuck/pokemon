@@ -111,8 +111,27 @@ export function useDecks() {
     []
   );
 
+  const togglePinDeck = useCallback((id: string) => {
+    setDecks((prev) =>
+      prev.map((d) =>
+        d.id === id
+          ? { ...d, pinnedAt: d.pinnedAt ? undefined : new Date().toISOString() }
+          : d
+      )
+    );
+  }, []);
+
+  // Pinned decks first (oldest pin first so the order is stable when you
+  // pin a new one), then unpinned (newest first).
+  const sortedDecks = [...decks].sort((a, b) => {
+    if (a.pinnedAt && !b.pinnedAt) return -1;
+    if (!a.pinnedAt && b.pinnedAt) return 1;
+    if (a.pinnedAt && b.pinnedAt) return a.pinnedAt.localeCompare(b.pinnedAt);
+    return b.createdAt.localeCompare(a.createdAt);
+  });
+
   return {
-    decks,
+    decks: sortedDecks,
     activeDeck,
     activeDeckId,
     setActiveDeckId,
@@ -123,5 +142,6 @@ export function useDecks() {
     addCardToDeck,
     removeCardFromDeck,
     setDeckCards,
+    togglePinDeck,
   };
 }

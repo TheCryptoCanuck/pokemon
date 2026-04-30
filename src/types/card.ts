@@ -29,6 +29,7 @@ export interface Deck {
   name: string;
   cards: DeckCard[];
   createdAt: string;
+  pinnedAt?: string; // ISO timestamp; undefined = unpinned
 }
 
 export interface MetaDeck {
