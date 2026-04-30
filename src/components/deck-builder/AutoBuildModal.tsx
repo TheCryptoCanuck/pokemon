@@ -20,7 +20,7 @@ interface Props {
   ) => void;
 }
 
-const SELECTABLE_TYPES = ENERGY_TYPES.filter((t) => t !== "colorless");
+const SELECTABLE_TYPES = ENERGY_TYPES;
 
 const TYPE_COLORS: Record<string, string> = {
   grass: "bg-green-600 hover:bg-green-700",
@@ -32,6 +32,7 @@ const TYPE_COLORS: Record<string, string> = {
   darkness: "bg-gray-800 hover:bg-gray-900",
   metal: "bg-gray-500 hover:bg-gray-600",
   dragon: "bg-amber-700 hover:bg-amber-800",
+  colorless: "bg-gray-400 hover:bg-gray-500",
 };
 
 export default function AutoBuildModal({

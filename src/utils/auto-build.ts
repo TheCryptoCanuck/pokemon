@@ -21,7 +21,7 @@ import {
 import { getTrainerRole, type TrainerRole } from "../data/trainer-roles";
 
 export interface AutoBuildOptions {
-  energyTypes: string[]; // 1–3 from ENERGY_TYPES (excluding 'colorless')
+  energyTypes: string[]; // 1–3 from ENERGY_TYPES
   pool: "all" | "owned";
   collection?: CollectionEntry[]; // required when pool === 'owned'
   archetype?: Archetype | "auto"; // default 'auto' (detect from seed)
