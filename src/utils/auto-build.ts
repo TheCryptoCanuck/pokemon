@@ -2,6 +2,12 @@ import { Card, CollectionEntry, DeckCard, getCardId, isTrainerCard } from "../ty
 import { canAddCard } from "./deck-rules";
 import { scoreDeck, type DeckScore } from "./deck-scoring";
 import {
+  hasEnergyAccel,
+  hasSoftDraw,
+  getMaxAttackDamage,
+  getMinAttackCost,
+} from "./card-classifier";
+import {
   ACCEL_BY_TYPE,
   BEST_BASICS_BY_TYPE,
   POWER_PAIRINGS,
@@ -119,10 +125,11 @@ function evolutionChain(
   };
 }
 
-// Pick the seed Basic for the chosen energy types: scan
-// BEST_BASICS_BY_TYPE in declaration order across the chosen types,
-// returning the first present in the pool. Falls back to the
-// highest-HP Basic of the primary type.
+// Pick the seed Basic for the chosen energy types. Strategy:
+//   1. Scan BEST_BASICS_BY_TYPE for a hand-curated meta seed.
+//   2. Fall back to the Basic with the best damage-per-energy ratio
+//      across the chosen types (uses real attack data when present).
+//   3. Final fallback: highest-HP Basic of the primary type.
 function pickSeed(opts: AutoBuildOptions, pool: Card[]): Card | undefined {
   for (const type of opts.energyTypes) {
     const candidates = BEST_BASICS_BY_TYPE[type] ?? [];
@@ -131,16 +138,52 @@ function pickSeed(opts: AutoBuildOptions, pool: Card[]): Card | undefined {
       if (c) return c;
     }
   }
-  // Fallback: highest-HP Basic of the primary type.
-  const primary = opts.energyTypes[0];
+  const energySet = new Set(opts.energyTypes);
   const basics = pool.filter(
     (c) =>
       c.type === "pokemon" &&
       (c.stage === "basic" || c.stage === 0) &&
-      c.element === primary
+      c.element &&
+      energySet.has(c.element)
   );
-  basics.sort((a, b) => (b.health ?? 0) - (a.health ?? 0));
+
+  // damage-per-energy ratio when attacks data is available, else HP.
+  basics.sort((a, b) => {
+    const aDmg = getMaxAttackDamage(a);
+    const bDmg = getMaxAttackDamage(b);
+    if (aDmg && bDmg) {
+      const aCost = Math.max(1, getMinAttackCost(a));
+      const bCost = Math.max(1, getMinAttackCost(b));
+      return bDmg / bCost - aDmg / aCost;
+    }
+    return (b.health ?? 0) - (a.health ?? 0);
+  });
   return basics[0];
+}
+
+// Find Pokémon in the pool with energy-acceleration abilities matching
+// the chosen energy types (Gardevoir for psychic, Hydreigon for darkness,
+// etc.). Returns up to two such cards in pool order. Auto-builder pulls
+// these so abilities-driven decks get built even without a power-pair
+// match.
+function pickAbilityPartners(
+  pool: Card[],
+  energyTypes: string[],
+  excludeNames: Set<string>,
+  limit = 2
+): Card[] {
+  const energySet = new Set(energyTypes);
+  const out: Card[] = [];
+  for (const card of pool) {
+    if (out.length >= limit) break;
+    if (excludeNames.has(card.name)) continue;
+    if (!card.element || !energySet.has(card.element)) continue;
+    if (hasEnergyAccel(card) || hasSoftDraw(card)) {
+      out.push(card);
+      excludeNames.add(card.name);
+    }
+  }
+  return out;
 }
 
 export function autoBuild(allCards: Card[], opts: AutoBuildOptions): AutoBuildResult {
@@ -208,7 +251,21 @@ export function autoBuild(allCards: Card[], opts: AutoBuildOptions): AutoBuildRe
     }
   }
 
-  // 4. Type-matched accel trainers (2x).
+  // 4. Ability-driven partners — Pokémon with energy-accel or draw
+  // abilities matching the chosen energies. Catches Gardevoir/Hydreigon
+  // even when they're not in the hand-curated POWER_PAIRINGS list.
+  const exclude = new Set(deck.map((dc) => {
+    const c = allCards.find((a) => getCardId(a) === dc.cardId);
+    return c?.name ?? "";
+  }));
+  for (const partner of pickAbilityPartners(pool, opts.energyTypes, exclude)) {
+    tryAdd(deck, partner, 2, allCards);
+    const chain = evolutionChain(partner, allCards, pool);
+    if (chain.basic && chain.basic !== partner) tryAdd(deck, chain.basic, 2, allCards);
+    if (chain.stage1 && chain.stage1 !== partner) tryAdd(deck, chain.stage1, 2, allCards);
+  }
+
+  // 5. Type-matched accel trainers (2x).
   for (const type of opts.energyTypes) {
     const accelName = ACCEL_BY_TYPE[type];
     if (!accelName) continue;
@@ -216,13 +273,13 @@ export function autoBuild(allCards: Card[], opts: AutoBuildOptions): AutoBuildRe
     if (accel) tryAdd(deck, accel, 2, allCards);
   }
 
-  // 5. Universal staples in priority order.
+  // 6. Universal staples in priority order.
   for (const { name, copies } of STAPLE_TRAINERS) {
     const staple = findInPool(pool, name);
     if (staple) tryAdd(deck, staple, copies, allCards);
   }
 
-  // 6. Greedy fill to 20: at each open slot, pick the candidate that
+  // 7. Greedy fill to 20: at each open slot, pick the candidate that
   // most increases the deck score. Tie-break by Pokémon-then-Trainer,
   // then by sorted pool order (already deterministic).
   let safety = 30; // upper bound on iterations
