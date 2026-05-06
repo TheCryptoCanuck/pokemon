@@ -4,6 +4,12 @@ A scannable history of what shipped in each PR. Live app: https://thecryptocanuc
 
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/). Newest first.
 
+## 2026-05-06
+
+### Fix: Erika is `heal`, not `accel`
+
+- **Bug fix**: in TCGP, Erika's "Soothing Aroma" heals 50 from a Grass Pokémon — she does not accelerate energy. Reclassifying her in `src/data/trainer-roles.ts` from `accel` → `heal` and removing her from `ACCEL_TYPE` so she no longer silently inflates Energy Acceleration scores in psychic (or any non-grass) decks. Closes [TODO #2](./TODOS.md).
+
 ## 2026-04-30
 
 ### [PR #14](https://github.com/TheCryptoCanuck/pokemon/pull/14) — docs: sync README and CLAUDE with v1.3 polish + card modal

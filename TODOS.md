@@ -20,18 +20,6 @@ link to the PR that closed it.
   fixing it needs real TCGP meta knowledge for which 2 cards to add per deck.
 - **Acceptance:** every entry in `META_DECKS` sums (`reduce(s + count)`) to 20.
 
-### 2. Erika misclassified as `accel`
-
-- **Severity:** Bug — silently inflates Energy Acceleration scores
-- **Effort:** Trivial (1 line)
-- **File:** `src/data/trainer-roles.ts` (line for `Erika`)
-- **Why it matters:** In TCGP, Erika's "Soothing Aroma" heals 50 from a Grass
-  Pokémon — she's a `heal`, not `accel`. Currently any psychic deck with
-  Erika gets a free Energy Acceleration boost. Move her to `heal` and remove
-  her from `ACCEL_TYPE`.
-- **Acceptance:** rebuilding a psychic deck no longer credits "1 accel
-  trainer (grass)" for an Erika that doesn't accelerate psychic energy.
-
 ### 3. Energy Acceleration heuristic doesn't type-match
 
 - **Severity:** Bug — minor score inflation
@@ -134,3 +122,4 @@ link to the PR that closed it.
 _Move closed items here with the PR link, e.g._
 
 - ~~Tap any deck card row to open the detail modal~~ — closed by [PR #13](https://github.com/TheCryptoCanuck/pokemon/pull/13)
+- ~~Erika misclassified as `accel`~~ — closed on branch `claude/complete-todo-task-s8zFY`
