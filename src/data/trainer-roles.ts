@@ -35,6 +35,7 @@ export const TRAINER_ROLES: Record<string, TrainerRole> = {
   // Heal
   "Potion": "heal",
   "Pokémon Center Lady": "heal",
+  "Erika": "heal",
 
   // Damage boosters (situational, count as 'boost' not 'draw')
   "Giovanni": "boost",
@@ -45,7 +46,6 @@ export const TRAINER_ROLES: Record<string, TrainerRole> = {
 
   // Type-specific energy acceleration
   "Misty": "accel",
-  "Erika": "accel",
   "Lt. Surge": "accel",
   "Brock": "accel",
   "Volkner": "accel",
@@ -55,7 +55,6 @@ export const TRAINER_ROLES: Record<string, TrainerRole> = {
 // auto-builder to pick the right ramp for the chosen energies.
 export const ACCEL_TYPE: Record<string, string> = {
   "Misty": "water",
-  "Erika": "grass",
   "Lt. Surge": "lightning",
   "Brock": "fighting",
   "Volkner": "lightning",
