@@ -1,0 +1,11 @@
+{
+  "name": "empty",
+  "deck": {
+    "id": "fixture-empty",
+    "name": "Empty deck (fixture)",
+    "energies": [],
+    "cards": [],
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  "expectedScore": 0
+}

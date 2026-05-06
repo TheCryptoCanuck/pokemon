@@ -1,0 +1,22 @@
+{
+  "name": "aggressive-meta",
+  "deck": {
+    "id": "fixture-aggressive-meta",
+    "name": "Mewtwo / Gardevoir (fixture)",
+    "energies": ["psychic"],
+    "cards": [
+      { "id": "A1-129", "count": 2 },
+      { "id": "A1-130", "count": 2 },
+      { "id": "A1-131", "count": 2 },
+      { "id": "A1-132", "count": 1 },
+      { "id": "PROMO-A-1", "count": 2 },
+      { "id": "PROMO-A-2", "count": 2 },
+      { "id": "A1-219", "count": 2 },
+      { "id": "A1-223", "count": 2 },
+      { "id": "A1-225", "count": 2 },
+      { "id": "A1-227", "count": 1 }
+    ],
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  "expectedScore": 80
+}

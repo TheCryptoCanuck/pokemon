@@ -1,0 +1,18 @@
+{
+  "name": "half-built",
+  "deck": {
+    "id": "fixture-half-built",
+    "name": "Half-built deck (fixture)",
+    "energies": ["fire"],
+    "cards": [
+      { "id": "A1-33", "count": 2 },
+      { "id": "A1-34", "count": 2 },
+      { "id": "A1-35", "count": 1 },
+      { "id": "PROMO-A-1", "count": 2 },
+      { "id": "PROMO-A-2", "count": 2 },
+      { "id": "A1-219", "count": 1 }
+    ],
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  "expectedScore": 35
+}

@@ -1,0 +1,23 @@
+{
+  "name": "evolution",
+  "deck": {
+    "id": "fixture-evolution",
+    "name": "Charizard ex evolution (fixture)",
+    "energies": ["fire"],
+    "cards": [
+      { "id": "A1-33", "count": 2 },
+      { "id": "A1-34", "count": 2 },
+      { "id": "A1-36", "count": 2 },
+      { "id": "A1-37", "count": 1 },
+      { "id": "PROMO-A-1", "count": 2 },
+      { "id": "PROMO-A-2", "count": 2 },
+      { "id": "A1-219", "count": 2 },
+      { "id": "A1-223", "count": 2 },
+      { "id": "A1-225", "count": 2 },
+      { "id": "A1-227", "count": 1 },
+      { "id": "A1-228", "count": 2 }
+    ],
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  "expectedScore": 75
+}
