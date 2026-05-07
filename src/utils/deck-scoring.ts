@@ -1,12 +1,8 @@
-import { Card, DeckCard, getCardId, isTrainerCard } from "../types/card";
+import { Card, DeckCard, isTrainerCard } from "../types/card";
+import { getCardById } from "../data/cards";
 import { POWER_PAIRINGS, SYNERGY_LAST_REVIEWED } from "../data/synergy";
 import { ACCEL_TYPE, getTrainerRole } from "../data/trainer-roles";
-import {
-  hasAbilityKind,
-  hasEnergyAccel,
-  hasSoftDraw,
-  isHeavyAttacker,
-} from "./card-classifier";
+import { getCapabilities } from "./card-classifier";
 
 export type HeuristicId =
   | "basicConsistency"
@@ -49,7 +45,7 @@ interface Resolved {
 function resolve(deck: DeckCard[], cards: Card[]): Resolved[] {
   const out: Resolved[] = [];
   for (const dc of deck) {
-    const card = cards.find((c) => getCardId(c) === dc.cardId);
+    const card = getCardById(cards, dc.cardId);
     if (card) out.push({ card, count: dc.count });
   }
   return out;
@@ -218,10 +214,11 @@ function trainerDensity(resolved: Resolved[]): HeuristicResult {
       else if (role === "disrupt") disrupt += count;
       else if (role === "accel") accel += count;
     } else {
-      if (hasSoftDraw(card)) draw += count;
-      if (hasEnergyAccel(card)) accel += count;
-      if (hasAbilityKind(card, "search")) search += count;
-      if (hasAbilityKind(card, "disrupt")) disrupt += count;
+      const caps = getCapabilities(card);
+      if (caps.hasSoftDraw) draw += count;
+      if (caps.hasEnergyAccel) accel += count;
+      if (caps.abilityKinds.includes("search")) search += count;
+      if (caps.abilityKinds.includes("disrupt")) disrupt += count;
     }
   }
 
@@ -290,7 +287,7 @@ function energyAccel(resolved: Resolved[]): HeuristicResult {
   let heavy = 0;
   for (const { card, count } of resolved) {
     if (!isPokemon(card)) continue;
-    if (isHeavyAttacker(card)) heavy += count;
+    if (getCapabilities(card).isHeavyAttacker) heavy += count;
   }
   // Acceleration sources: type-matched Trainers + Pokémon with energy
   // abilities (Gardevoir Psy Shadow, Hydreigon Forced Tribute, etc.).
@@ -304,7 +301,7 @@ function energyAccel(resolved: Resolved[]): HeuristicResult {
         const t = ACCEL_TYPE[card.name];
         if (t) accelTypes.push(t);
       }
-    } else if (hasEnergyAccel(card)) {
+    } else if (getCapabilities(card).hasEnergyAccel) {
       accelAbility += count;
     }
   }
@@ -487,8 +484,9 @@ function redundancy(resolved: Resolved[]): HeuristicResult {
   // Pokémon with abilities count toward draw/search redundancy too.
   for (const { card } of resolved) {
     if (isTrainerCard(card)) continue;
-    if (hasSoftDraw(card)) roleCards.draw.add(card.name);
-    if (hasAbilityKind(card, "search")) roleCards.search.add(card.name);
+    const caps = getCapabilities(card);
+    if (caps.hasSoftDraw) roleCards.draw.add(card.name);
+    if (caps.abilityKinds.includes("search")) roleCards.search.add(card.name);
   }
   // Count roles where ≥2 distinct cards contribute.
   const redundantRoles = (["search", "draw"] as const).filter(
@@ -528,7 +526,7 @@ function recovery(resolved: Resolved[]): HeuristicResult {
       const role = getTrainerRole(card.name);
       if (role === "heal") healTrainers += count;
       else if (role === "switch") switchTrainers += count;
-    } else if (hasAbilityKind(card, "heal")) {
+    } else if (getCapabilities(card).abilityKinds.includes("heal")) {
       healAbilityCount += count;
     }
   }

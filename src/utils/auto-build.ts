@@ -2,8 +2,7 @@ import { Card, CollectionEntry, DeckCard, getCardId, isTrainerCard } from "../ty
 import { canAddCard } from "./deck-rules";
 import { scoreDeck, type DeckScore } from "./deck-scoring";
 import {
-  hasEnergyAccel,
-  hasSoftDraw,
+  getCapabilities,
   getMaxAttackDamage,
   getMinAttackCost,
 } from "./card-classifier";
@@ -186,7 +185,8 @@ function pickAbilityPartners(
     if (out.length >= limit) break;
     if (excludeNames.has(card.name)) continue;
     if (!card.element || !energySet.has(card.element)) continue;
-    if (hasEnergyAccel(card) || hasSoftDraw(card)) {
+    const caps = getCapabilities(card);
+    if (caps.hasEnergyAccel || caps.hasSoftDraw) {
       out.push(card);
       excludeNames.add(card.name);
     }

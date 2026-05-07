@@ -4,6 +4,17 @@ A scannable history of what shipped in each PR. Live app: https://thecryptocanuc
 
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/). Newest first.
 
+## 2026-05-07
+
+### Refactor: pre-compute card capabilities + add cardId index map
+
+Behaviour-preserving infrastructure refactor. No user-visible changes; sets up future score-delta and beam-search work.
+
+- **`CardCapabilities`** — new frozen field on every Card, computed once at fetch-merge time in `src/data/cards.ts`. Holds `isHeavyAttacker`, `hasEnergyAccel`, `hasSoftDraw`, `rewardsWideBench`, `maxAttackCost`, `abilityKinds[]`, `attackPatterns[]`. `src/utils/deck-scoring.ts` (8 callsites), `src/utils/auto-build.ts` (1), and `src/data/archetypes.ts` (2) now read these as cheap field accesses instead of re-running `card-classifier.ts` regex on every score call.
+- **`Map<cardId, Card>` index** built alongside `cachedCards` in the same merge pass. `getCardById()` is now O(1); `resolve()` in `deck-scoring.ts` uses it instead of `cards.find()`. Removes ~50k `find()` operations per `scoreDeck` call.
+- **Verified byte-identical scoring** against production at `https://thecryptocanuck.github.io/pokemon/`: grass · Auto = 81/A (5P/15T) on both; water · Auto = 62/B (8P/12T) on both. Same deck compositions in both runs.
+- Closes plan items A + C from `/root/.claude/plans/you-know-best-about-flickering-spindle.md`. Item B (score deltas) is a follow-up that builds on this.
+
 ## 2026-05-06
 
 ### Fix: Erika is `heal`, not `accel`
