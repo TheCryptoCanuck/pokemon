@@ -6,6 +6,16 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/). Newest f
 
 ## 2026-05-07
 
+### Perf: incremental score deltas for auto-build's greedy fill
+
+Behaviour-preserving optimization. No user-visible scoring or composition changes; cuts the auto-builder's hot-loop work.
+
+- **`scoreDeltaIfAdd(deck, card, allCards, baseline)`** — new export from `src/utils/deck-scoring.ts`. Returns the same `DeckScore` as `scoreDeck([...deck, card], allCards)` but only re-runs the heuristics whose inputs the candidate card touches. Each of the 10 heuristics declares an `isDirty` predicate (e.g. `basicConsistency` is dirty only when adding a Basic; `weaknessConcentration` only when adding a Pokémon with a weakness). Clean heuristics are reused from the baseline; dirty ones are spliced into the breakdown.
+- **`auto-build.ts:437-478` greedy fill** now computes one `scoreDeck` baseline per outer iteration and a `scoreDeltaIfAdd` per candidate, instead of a full `scoreDeck` per candidate. Reduces full `scoreDeck` calls from `outer × (1 + |pool|)` to `outer` — at typical pool sizes that's a 7×–200× drop, depending on how thin the pool is.
+- **Verified via in-PR instrumentation (stripped before commit)**: 5 outer × 30 candidates exercised on an owned-only grass build, drift=0 — `scoreDeltaIfAdd.total` equalled `scoreDeck([...newDeck], allCards).total` for all 30 candidate (deck, card) pairs.
+- **Fixture parity**: empty-collection grass · Auto = 81/A · 5P/15T (matches PR #21 + production); water · Auto = 62/B · 8P/12T (matches). Same deck compositions before and after.
+- Closes plan item B from `/root/.claude/plans/you-know-best-about-flickering-spindle.md`.
+
 ### Refactor: pre-compute card capabilities + add cardId index map
 
 Behaviour-preserving infrastructure refactor. No user-visible changes; sets up future score-delta and beam-search work.

@@ -1,8 +1,14 @@
-import { Card, DeckCard, isTrainerCard } from "../types/card";
+import { Card, DeckCard, getCardId, isTrainerCard } from "../types/card";
 import { getCardById } from "../data/cards";
 import { POWER_PAIRINGS, SYNERGY_LAST_REVIEWED } from "../data/synergy";
 import { ACCEL_TYPE, getTrainerRole } from "../data/trainer-roles";
 import { getCapabilities } from "./card-classifier";
+
+// Pre-computed for the powerPairings dirty predicate so we don't scan
+// POWER_PAIRINGS for every candidate card during auto-build's inner loop.
+const POWER_PAIRING_NAMES: ReadonlySet<string> = new Set(
+  POWER_PAIRINGS.flatMap((p) => [p.a, p.b])
+);
 
 export type HeuristicId =
   | "basicConsistency"
@@ -588,4 +594,208 @@ export function scoreDeck(deck: DeckCard[], cards: Card[]): DeckScore {
     total >= 85 ? "S" : total >= 75 ? "A" : total >= 60 ? "B" : total >= 45 ? "C" : "D";
 
   return { total, grade, breakdown, lastReviewed: SYNERGY_LAST_REVIEWED };
+}
+
+// ─── Incremental delta scorer ────────────────────────────────────────────
+//
+// scoreDeck on a 20-card deck calls 10 heuristics; auto-build's greedy
+// fill calls scoreDeck up to ~4500 times per build (1 + |pool| per outer
+// iteration × up to 30 outer iterations). Most tentative adds only
+// affect 1–4 heuristics. scoreDeltaIfAdd recomputes only the heuristics
+// whose inputs the candidate card touches, reusing the rest from the
+// caller-supplied baseline.
+//
+// Contract: for any (deck, card) where baseline === scoreDeck(deck, cards),
+//   scoreDeltaIfAdd(deck, card, cards, baseline).total
+//     === scoreDeck([...deck with card incremented], cards).total
+// and the breakdown arrays match heuristic-for-heuristic.
+
+type HeuristicFn = (
+  resolved: Resolved[],
+  deck: DeckCard[],
+  cards: Card[]
+) => HeuristicResult;
+
+const HEURISTIC_FNS: Record<HeuristicId, HeuristicFn> = {
+  basicConsistency: (r) => basicConsistency(r),
+  trainerDensity: (r) => trainerDensity(r),
+  evolutionLines: (_r, d, c) => evolutionLines(d, c),
+  energyAccel: (r) => energyAccel(r),
+  powerPairings: (r) => powerPairings(r),
+  weaknessConcentration: (r) => weaknessConcentration(r),
+  exDensity: (r) => exDensity(r),
+  benchMobility: (r) => benchMobility(r),
+  redundancy: (r) => redundancy(r),
+  recovery: (r) => recovery(r),
+};
+
+// "Will this heuristic's output change if we add `card` to a deck where
+// it's already at `existingCount` copies?" The default fallback when a
+// predicate is hard to slice is `true` (always dirty) — correct, just
+// less performant. Each predicate below is hand-justified; the inline
+// notes are the slicing rationale.
+function isDirty(
+  id: HeuristicId,
+  card: Card,
+  existingCount: number
+): boolean {
+  const isAlreadyInDeck = existingCount > 0;
+  const trainer = isTrainerCard(card);
+  const role = trainer ? getTrainerRole(card.name) : null;
+  const caps = getCapabilities(card);
+
+  switch (id) {
+    case "basicConsistency":
+      // Counts Basics. Only dirty when adding a Basic.
+      return isBasic(card);
+
+    case "trainerDensity":
+      // Counts {search, draw, disrupt, accel}. Trainers contribute via
+      // role; non-trainer Pokémon contribute via ability tags.
+      if (trainer) return true;
+      return (
+        caps.hasSoftDraw ||
+        caps.hasEnergyAccel ||
+        caps.abilityKinds.includes("search") ||
+        caps.abilityKinds.includes("disrupt")
+      );
+
+    case "evolutionLines":
+      // Walks evolution chains via card names. Adding a 2nd copy of a
+      // Pokémon already in the deck doesn't add to the name set, so
+      // skip when the card's already there.
+      if (isAlreadyInDeck) return false;
+      return isPokemon(card);
+
+    case "energyAccel":
+      // Counts heavy attackers + accel sources (trainers + abilities).
+      if (trainer) return role === "accel";
+      if (!isPokemon(card)) return false;
+      return caps.isHeavyAttacker || caps.hasEnergyAccel;
+
+    case "powerPairings":
+      // Looks at the SET of card names. Duplicate adds don't change the
+      // set; only relevant when the card is named in POWER_PAIRINGS.
+      if (isAlreadyInDeck) return false;
+      return POWER_PAIRING_NAMES.has(card.name);
+
+    case "weaknessConcentration":
+      // Counts Pokémon weakness shares. Only dirty for Pokémon with a
+      // weakness field.
+      return isPokemon(card) && !!card.weakness;
+
+    case "exDensity":
+      // Counts ex Pokémon (regex on name " ex").
+      return isEx(card);
+
+    case "benchMobility":
+      // Avg retreat across Pokémon. Duplicate adds DO change the avg
+      // (numerator and denominator both grow by retreatCost / 1).
+      return isPokemon(card);
+
+    case "redundancy":
+      // Counts the SET of distinct names per role. Duplicate adds
+      // don't change the set, so skip for in-deck cards.
+      if (isAlreadyInDeck) return false;
+      if (trainer)
+        return (
+          role === "search" ||
+          role === "draw" ||
+          role === "disrupt" ||
+          role === "switch"
+        );
+      return caps.hasSoftDraw || caps.abilityKinds.includes("search");
+
+    case "recovery":
+      // Counts heal + switch trainers + heal abilities (uses count, so
+      // duplicates DO change it).
+      if (trainer) return role === "heal" || role === "switch";
+      return caps.abilityKinds.includes("heal");
+  }
+}
+
+const HEURISTIC_IDS_ORDERED: readonly HeuristicId[] = [
+  "basicConsistency",
+  "trainerDensity",
+  "evolutionLines",
+  "energyAccel",
+  "powerPairings",
+  "weaknessConcentration",
+  "exDensity",
+  "benchMobility",
+  "redundancy",
+  "recovery",
+];
+
+export function scoreDeltaIfAdd(
+  deck: DeckCard[],
+  card: Card,
+  cards: Card[],
+  baseline: DeckScore
+): DeckScore {
+  // Empty-deck baseline carries no breakdown — fall back to a full
+  // score so the first card lands on a populated structure.
+  if (baseline.breakdown.length === 0) {
+    const cardId = getCardId(card);
+    return scoreDeck([{ cardId, count: 1 }], cards);
+  }
+
+  const cardId = getCardId(card);
+  const existing = deck.find((dc) => dc.cardId === cardId);
+  const existingCount = existing?.count ?? 0;
+
+  // Build the post-add deck without mutating the input.
+  const newDeck: DeckCard[] = existing
+    ? deck.map((dc) =>
+        dc.cardId === cardId ? { cardId: dc.cardId, count: dc.count + 1 } : dc
+      )
+    : [...deck, { cardId, count: 1 }];
+
+  // Determine which heuristics need recomputing.
+  const dirty = new Set<HeuristicId>();
+  for (const id of HEURISTIC_IDS_ORDERED) {
+    if (isDirty(id, card, existingCount)) dirty.add(id);
+  }
+
+  // If nothing's dirty, the score doesn't change. Return the baseline
+  // breakdown but updated to reflect the new deck size in messages.
+  // (Practically rare — most cards trigger at least one heuristic.)
+  if (dirty.size === 0) {
+    return {
+      total: baseline.total,
+      grade: baseline.grade,
+      breakdown: baseline.breakdown,
+      lastReviewed: baseline.lastReviewed,
+    };
+  }
+
+  // One resolve() pass for the new deck — feeds every dirty heuristic.
+  const newResolved = resolve(newDeck, cards);
+
+  // Splice: keep clean entries from baseline; recompute dirty in place.
+  const newBreakdown = baseline.breakdown.map((h) => {
+    if (!dirty.has(h.id)) return h;
+    return HEURISTIC_FNS[h.id](newResolved, newDeck, cards);
+  });
+
+  const total = Math.round(
+    newBreakdown.reduce((s, h) => s + h.weight * h.score, 0)
+  );
+  const grade: DeckScore["grade"] =
+    total >= 85
+      ? "S"
+      : total >= 75
+        ? "A"
+        : total >= 60
+          ? "B"
+          : total >= 45
+            ? "C"
+            : "D";
+
+  return {
+    total,
+    grade,
+    breakdown: newBreakdown,
+    lastReviewed: baseline.lastReviewed,
+  };
 }
