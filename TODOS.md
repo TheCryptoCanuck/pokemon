@@ -45,6 +45,129 @@ link to the PR that closed it.
   see if the issue is one card or general.
 - **Acceptance:** all ex Pokémon show their published HP in the modal.
 
+### 10. Tabs clip at phone width — half the app hides behind horizontal scroll
+
+- **Severity:** Bug — visible to user (mobile blocker)
+- **Effort:** Medium
+- **File:** `src/components/Layout.tsx`
+- **Why it matters:** At 393px the H1 "TCGP Deck Builder" wraps to 2 lines
+  and consumes ~50% of the header width. The tab strip uses
+  `overflow-x-auto whitespace-nowrap`, so "Pinned" clips to "Pi" and
+  "Meta Decks" is fully off-screen on first paint. Even the active tab can
+  be invisible (e.g. when on Meta Decks). Confirmed at Pixel 7 (393×851)
+  during the 2026-05-07 UX audit.
+- **Acceptance:** at 393px, all four tabs (Collection, Deck Builder, Pinned,
+  Meta Decks) are simultaneously visible and tappable without horizontal
+  scroll; the active tab is always visible. Recommended approach: bottom
+  tab bar with `safe-area-inset-bottom` (matches Marvel Snap, frees vertical
+  space, thumb-friendly). Fallback approach: title shrinks to "TCGP" on
+  `< 640px`, tab strip becomes a second row under the header.
+
+### 11. Collection grid +/− buttons are hover-only — invisible on touch
+
+- **Severity:** Bug — visible to user (mobile blocker)
+- **Effort:** Medium
+- **Files:** `src/components/shared/CardDisplay.tsx`,
+  `src/components/collection/CardGrid.tsx`
+- **Why it matters:** `CardDisplay.tsx:84` wraps the +/− buttons in a
+  gradient overlay with `opacity-0 group-hover:opacity-100`. Touchscreens
+  have no hover, so the buttons stay invisible. Tapping the card art opens
+  the modal (parent `onClick`), which means on phone the only way to add a
+  card to the collection is via the modal's "Add" button — the fast +/−
+  loop the desktop user gets is unreachable.
+- **Acceptance:** on Android Chrome at 393px, every Collection-grid card
+  shows a persistent + (and − when count > 0) along with its count badge.
+  Tapping the card art still opens the modal. Hover-reveal can stay on
+  desktop or be replaced with the same persistent variant — not both.
+
+### 12. Escape doesn't dismiss CardModal or AutoBuildModal; focus isn't trapped
+
+- **Severity:** Bug — accessibility / keyboard expectation
+- **Effort:** Trivial (Escape) + Small (focus trap)
+- **Files:** `src/components/shared/CardModal.tsx`,
+  `src/components/deck-builder/AutoBuildModal.tsx`
+- **Why it matters:** Verified Escape leaves both modals open. Focus also
+  escapes to background content under the backdrop because no focus trap
+  is in place. Universal modal expectation; low-effort a11y win.
+- **Acceptance:** Escape closes both modals. Initial focus moves to the
+  close button on open; focus is trapped while open; focus returns to the
+  trigger on close. Backdrop tap still closes. `role="dialog"` and
+  `aria-modal="true"` are set if not already.
+
+### 13. Deck delete (×) has no confirmation
+
+- **Severity:** Bug — destructive without confirm
+- **Effort:** Trivial
+- **File:** `src/components/deck-builder/DeckBuilderPage.tsx` (deck tab strip)
+- **Why it matters:** The "x" action on each deck tab deletes the deck on a
+  single tap. Tap targets are small on phone; an accidental delete loses an
+  Auto-Build (or any deck) with no recourse. No undo, no toast.
+- **Acceptance:** tapping × on a deck tab shows a small inline two-step
+  confirm ("Delete <deck name>? · Cancel · Delete"). Pinned decks gate
+  behind the same confirm at minimum.
+
+### 14. "cp" and "x" deck-tab labels render as raw text + lack `aria-label`
+
+- **Severity:** Bug — discoverability + accessibility
+- **Effort:** Trivial
+- **File:** `src/components/deck-builder/DeckBuilderPage.tsx`
+- **Why it matters:** The deck tab strip exposes "★ cp x" as visible
+  labels. ★ has both `aria-label` and `title`; "cp" and "x" only have
+  `title` ("Duplicate" / "Delete") and no `aria-label`. "cp" reads as
+  nothing visually and "x" reads as close-modal.
+- **Acceptance:** Duplicate uses a clipboard/copy SVG icon; Delete uses a
+  trash SVG icon. Both gain `aria-label` matching their `title`.
+  Tap-target stays ≥ 32×32.
+
+### 15. "Show only owned cards" defaults on with empty collection — first run looks broken
+
+- **Severity:** Bug — first-run UX
+- **Effort:** Trivial
+- **Files:** `src/components/deck-builder/DeckBuilderPage.tsx`,
+  `src/components/deck-builder/DeckEditor.tsx`
+- **Why it matters:** A new user with 0 owned cards opens Deck Builder; the
+  card-browser column shows "0 cards" with no explanation because the
+  toggle is on. The Auto-Build modal already handles this gracefully
+  (`(collection empty)` annotation + auto-disabled "Use only cards I own"
+  toggle). Mirror that here.
+- **Acceptance:** with `collection.size === 0`, the toggle defaults off
+  (or auto-disables with annotation); as soon as the user adds any card,
+  it returns to default-on.
+
+### 16. Persistent +/− and count display in CardModal
+
+- **Severity:** Bug — usability
+- **Effort:** Trivial
+- **File:** `src/components/shared/CardModal.tsx`
+- **Why it matters:** Modal shows a single green "Add" button with no count
+  display and no decrement. Going from 1 → 2 means tap Add, close the
+  modal, find the card again. The data is right there.
+- **Acceptance:** modal shows the current owned count (e.g. "Owned: 1 / 2")
+  plus −/+ controls that update the collection in place; the standalone
+  "Add" button is removed.
+
+### 17. Auto-Build success toast covers the score ring
+
+- **Severity:** Bug — motion/feedback overlap (polish)
+- **Effort:** Trivial
+- **File:** the toast component / `src/components/deck-builder/DeckBuilderPage.tsx`
+- **Why it matters:** Toast slides up from the bottom-right and overlaps
+  the score panel exactly when its message says "Tap to expand the
+  breakdown" — the call-to-action is hidden under the toast itself.
+- **Acceptance:** at 393×851 the Auto-Build toast does not visually overlap
+  the score ring or the "Show breakdown" link. Either offset higher
+  (`bottom-20` on phone) or center-bottom with margin from the deck panel.
+
+### 18. Score breakdown summary copy is static after expansion
+
+- **Severity:** Bug — polish
+- **Effort:** Trivial
+- **File:** `src/components/deck-builder/DeckAnalysis.tsx`
+- **Why it matters:** Chevron flips ▶ → ▼ on expand, but the
+  "Tap to expand the breakdown" prose stays the same. Minor confusion.
+- **Acceptance:** expanded state reads "Tap to collapse the breakdown" (or
+  equivalent); collapsed state stays as today.
+
 ## Hardening
 
 ### 5. Add "Clear stored API key" button
@@ -117,9 +240,73 @@ link to the PR that closed it.
   the original 18 cards as the seed and the auto-builder filling the
   remaining 2 from staples or backup attackers.
 
+### 19. Element-color chips on Auto-Build modal + Collection Type filter
+
+- **Severity:** Feature — visual hierarchy / usability
+- **Effort:** Medium
+- **Files:** `src/components/deck-builder/AutoBuildModal.tsx`,
+  `src/components/collection/CardFilters.tsx`
+- **Why it matters:** The 10 element buttons in Auto-Build are text-only
+  pills. The Collection Type filter is a native `<select>`. Pokémon TCG
+  players orient by element color (grass=green, fire=red, water=blue, …),
+  not text. `src/components/shared/CardDisplay.tsx` already exports an
+  `ELEMENT_COLORS` map; reuse it. Pattern borrowed from MTG Arena's
+  color-chip filter.
+- **Acceptance:** Auto-Build energy-type buttons are color-filled per
+  element (and remain accessible — colors meet contrast against the active
+  state). Collection Type filter splits into a horizontally-scrollable chip
+  strip on phone (10 elements + Pokémon / Trainers / Items / Tools /
+  Fossils / Supporters), still backed by the existing `matchesTypeFilter`
+  helper.
+
+### 20. Compress Collection stats panel on phone widths
+
+- **Severity:** Feature — information hierarchy / mobile
+- **Effort:** Medium
+- **File:** `src/components/collection/CollectionPage.tsx`
+- **Why it matters:** At 393px the four stat tiles (Cards Owned, Total
+  Cards, Complete, Sets) + the By-Rarity strip + Import button + 4-row
+  filter stack push the actual card grid beyond ~1100px scroll. New users
+  open the app and see no cards on first paint.
+- **Acceptance:** at `< 640px`, the four stat tiles collapse to a single
+  horizontal-scroll chip strip; By-Rarity moves behind a "Stats" disclosure
+  (default collapsed). Card grid begins above ~600px scroll on first paint.
+
+## Backlog (polish)
+
+Smaller polish items surfaced by the 2026-05-07 UX audit. Pick when
+convenient — none are blockers and most are trivial.
+
+- **Card thumbnails on Meta Decks card-breakdown rows** —
+  `src/components/meta/MetaDeckCard.tsx`. Reuse the 32×44 thumbnail
+  pattern from `DeckEditor.tsx:229-233`. Trivial.
+- **Replace `opacity-40 grayscale` for unowned with a "not owned" corner
+  badge + `opacity-70`** — `src/components/shared/CardDisplay.tsx`. Keeps
+  the art readable; lets us reserve a distinct treatment for "invalid for
+  this deck" later. Trivial.
+- **By-Rarity abbreviations gain `title` tooltips** —
+  `src/components/collection/CollectionPage.tsx`. Use existing
+  `RARITY_LABELS`. Trivial.
+- **Visible rename affordance on the deck name** —
+  `src/components/deck-builder/DeckEditor.tsx:192-201`. Pencil icon next to
+  the H3. Trivial.
+- **Long-press preview from the deck-builder card browser** —
+  `src/components/deck-builder/DeckEditor.tsx:138-154`. Today: tap commits
+  silently. Add long-press → modal preview. Medium.
+- **Drop-zone copy: "Tap to choose a video" instead of "Drop a video or
+  click to upload"** — `src/components/collection/VideoImport.tsx`. Phones
+  don't drag-drop. Trivial.
+- **Confirm API-key input is `type="password"` + `autocomplete="off"`** —
+  `src/components/collection/VideoImport.tsx`. Hardening overlap with
+  TODO #5. Trivial.
+- **Replace meta-deck chevron `v` / `^` text with a Heroicons SVG** —
+  `src/components/meta/MetaDeckCard.tsx`. Trivial.
+- **Folder / grouping for decks** — borrowed from Limitless TCG. Useful
+  once a user has > ~10 decks. Significant. v1.5 candidate.
+
 ## Done
 
 _Move closed items here with the PR link, e.g._
 
 - ~~Tap any deck card row to open the detail modal~~ — closed by [PR #13](https://github.com/TheCryptoCanuck/pokemon/pull/13)
-- ~~Erika misclassified as `accel`~~ — closed on branch `claude/complete-todo-task-s8zFY`
+- ~~Erika misclassified as `accel`~~ — closed by [PR #19](https://github.com/TheCryptoCanuck/pokemon/pull/19)
