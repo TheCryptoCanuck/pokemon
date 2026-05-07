@@ -3,24 +3,11 @@
 // without rich fields just fall through as "no signal", which means the
 // scorer / auto-builder behaves the same as the v1 hardcoded heuristics.
 
-import type { Card } from "../types/card";
+import type { AbilityKind, AttackPattern, Card, CardCapabilities } from "../types/card";
 
-export type AbilityKind =
-  | "energy-accel"
-  | "draw"
-  | "heal"
-  | "search"
-  | "disrupt"
-  | "boost"
-  | "other";
-
-export type AttackPattern =
-  | "spread" // damages multiple bench targets at once
-  | "snipe" // targets a single benched opponent
-  | "scaling" // damage scales with bench count, energy count, etc.
-  | "discard" // forces opponent to discard
-  | "self-damage" // damages the attacker
-  | "none";
+// Re-export for back-compat with existing imports. The canonical types
+// now live in types/card.ts so they can be referenced by Card itself.
+export type { AbilityKind, AttackPattern };
 
 // ─── Attack cost & damage extraction ────────────────────────────────────
 
@@ -142,4 +129,34 @@ export function hasSoftDraw(card: Card): boolean {
 // rewards filling the bench wide.
 export function rewardsWideBench(card: Card): boolean {
   return hasAttackPattern(card, "scaling");
+}
+
+// ─── Pre-computed capabilities ──────────────────────────────────────────
+
+// Builds the full CardCapabilities bag for a card by calling each
+// predicate above exactly once. Called once per card during the
+// fetch-merge in data/cards.ts so deck-scoring / auto-build can read
+// derived facts as cheap field reads instead of re-running regex on
+// every score call.
+export function computeCapabilities(card: Card): CardCapabilities {
+  return Object.freeze({
+    isHeavyAttacker: isHeavyAttacker(card),
+    hasEnergyAccel: hasEnergyAccel(card),
+    hasSoftDraw: hasSoftDraw(card),
+    rewardsWideBench: rewardsWideBench(card),
+    maxAttackCost: getMaxAttackCost(card),
+    abilityKinds: Object.freeze(
+      card.abilities?.map((a) => classifyAbility(a.effect)) ?? []
+    ),
+    attackPatterns: Object.freeze(
+      card.attacks?.map((a) => classifyAttack(a.effect)) ?? []
+    ),
+  }) as CardCapabilities;
+}
+
+// Use this in hot loops. Returns the pre-computed capabilities if the
+// card was loaded via fetchCards(); otherwise falls back to runtime
+// classification so test fixtures and ad-hoc Card objects still work.
+export function getCapabilities(card: Card): CardCapabilities {
+  return card.capabilities ?? computeCapabilities(card);
 }

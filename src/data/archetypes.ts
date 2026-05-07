@@ -7,11 +7,7 @@
 //      2-2-2 ratios.
 
 import type { Card } from "../types/card";
-import {
-  hasAbilityKind,
-  hasAttackPattern,
-  isHeavyAttacker,
-} from "../utils/card-classifier";
+import { getCapabilities } from "../utils/card-classifier";
 
 export type Archetype = "aggressive" | "evolution" | "control";
 
@@ -92,9 +88,10 @@ export function detectArchetype(seed: Card, pool: Card[]): Archetype {
   // Control: low retreat, high HP, disrupt-style abilities, or attacks
   // that don't reward fast prize trades.
   const isWall = (seed.health ?? 0) >= 130 && (seed.retreatCost ?? 99) <= 1;
+  const caps = getCapabilities(seed);
   const hasDisrupt =
-    hasAbilityKind(seed, "disrupt") || hasAttackPattern(seed, "discard");
-  if ((isWall || hasDisrupt) && !isHeavyAttacker(seed)) return "control";
+    caps.abilityKinds.includes("disrupt") || caps.attackPatterns.includes("discard");
+  if ((isWall || hasDisrupt) && !caps.isHeavyAttacker) return "control";
 
   return "aggressive";
 }

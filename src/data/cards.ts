@@ -1,4 +1,5 @@
 import { Ability, Attack, Card, getCardId } from "../types/card";
+import { computeCapabilities } from "../utils/card-classifier";
 
 const CARDS_URL =
   "https://raw.githubusercontent.com/flibustier/pokemon-tcg-pocket-database/main/dist/cards.extra.json";
@@ -14,6 +15,10 @@ interface RichBundle {
 }
 
 let cachedCards: Card[] | null = null;
+// Map<cardId, Card> built in lockstep with cachedCards so getCardById is
+// O(1) instead of O(n). Same lifecycle as cachedCards — both are populated
+// once on first fetchCards() and cached for the session.
+let cachedIndex: Map<string, Card> | null = null;
 
 export async function fetchCards(): Promise<Card[]> {
   if (cachedCards) return cachedCards;
@@ -38,19 +43,33 @@ export async function fetchCards(): Promise<Card[]> {
     }
   }
 
-  const merged = base.map((c) => {
+  // Single pass: merge rich-card data, compute capabilities, and build
+  // the cardId index. All three derive from the same merged Card so the
+  // pass cost is one allocation per card.
+  const merged: Card[] = [];
+  const index = new Map<string, Card>();
+  for (const c of base) {
     const r = rich[getCardId(c)];
-    return r ? { ...c, ...r } : c;
-  });
+    const enrichedBase: Card = r ? { ...c, ...r } : c;
+    const enriched: Card = {
+      ...enrichedBase,
+      capabilities: computeCapabilities(enrichedBase),
+    };
+    merged.push(enriched);
+    index.set(getCardId(enriched), enriched);
+  }
 
   cachedCards = merged;
+  cachedIndex = index;
   return merged;
 }
 
-export function getCardById(cards: Card[], cardId: string): Card | undefined {
-  const [set, numStr] = cardId.split("-");
-  const number = parseInt(numStr, 10);
-  return cards.find((c) => c.set === set && c.number === number);
+// O(1) cardId lookup via the merge-time index. The `_cards` argument is
+// retained as a no-op so callers don't all need to change — the index is
+// populated alongside cachedCards and shares the same lifecycle, so any
+// caller holding a reference to the cards array also has the index.
+export function getCardById(_cards: Card[], cardId: string): Card | undefined {
+  return cachedIndex?.get(cardId);
 }
 
 export function getCardsByName(cards: Card[], name: string): Card[] {

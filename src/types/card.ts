@@ -10,6 +10,40 @@ export interface Ability {
   effect: string;
 }
 
+// Tags emitted by card-classifier for ability/attack text. Re-exported from
+// card-classifier.ts for back-compat with existing imports.
+export type AbilityKind =
+  | "energy-accel"
+  | "draw"
+  | "heal"
+  | "search"
+  | "disrupt"
+  | "boost"
+  | "other";
+
+export type AttackPattern =
+  | "spread"
+  | "snipe"
+  | "scaling"
+  | "discard"
+  | "self-damage"
+  | "none";
+
+// Pre-computed strategy facts for a card. Built once at fetch-merge time in
+// data/cards.ts so deck-scoring + auto-build don't re-run regex on every
+// score call. Always populated for cards loaded via fetchCards(); falls
+// back to runtime classification via getCapabilities() for fixtures /
+// tests that construct Cards directly.
+export interface CardCapabilities {
+  readonly isHeavyAttacker: boolean;
+  readonly hasEnergyAccel: boolean;
+  readonly hasSoftDraw: boolean;
+  readonly rewardsWideBench: boolean;
+  readonly maxAttackCost: number;
+  readonly abilityKinds: readonly AbilityKind[];
+  readonly attackPatterns: readonly AttackPattern[];
+}
+
 export interface Card {
   set: string;
   number: number;
@@ -28,6 +62,10 @@ export interface Card {
   // fetchCards. Pokémon may have multiple attacks; abilities are rare.
   attacks?: Attack[];
   abilities?: Ability[];
+  // Derived from attacks/abilities at merge time. Optional because Cards
+  // constructed in tests/fixtures won't have it; consumers should prefer
+  // getCapabilities(card) which falls back to runtime computation.
+  readonly capabilities?: CardCapabilities;
 }
 
 export interface CollectionEntry {
