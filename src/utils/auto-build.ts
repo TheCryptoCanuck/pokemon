@@ -1,6 +1,6 @@
 import { Card, CollectionEntry, DeckCard, getCardId, isTrainerCard } from "../types/card";
 import { canAddCard } from "./deck-rules";
-import { scoreDeck, type DeckScore } from "./deck-scoring";
+import { scoreDeck, scoreDeltaIfAdd, type DeckScore } from "./deck-scoring";
 import {
   getCapabilities,
   getMaxAttackDamage,
@@ -437,13 +437,18 @@ export function autoBuild(allCards: Card[], opts: AutoBuildOptions): AutoBuildRe
   // 10. Greedy fill to 20: pick the candidate that most increases the
   // score. Stop early if no improving move and total ≥ 18 — better than
   // padding with bad cards.
+  //
+  // Per-iteration: compute baseline score once, then evaluate each
+  // candidate via scoreDeltaIfAdd which only re-runs the heuristics
+  // whose inputs the candidate touches. Replaces a full scoreDeck call
+  // per candidate with a partial recompute.
   let safety = 30;
   while (totalCards(deck) < DECK_SIZE && safety-- > 0) {
     let bestCard: Card | null = null;
     let bestDelta = -Infinity;
     let bestKind = 2;
 
-    const baseScore = scoreDeck(deck, allCards).total;
+    const baseline = scoreDeck(deck, allCards);
     const { pokemon: pInDeck, trainers: tInDeck } = countByKind(deck, pool);
 
     for (const card of pool) {
@@ -457,12 +462,8 @@ export function autoBuild(allCards: Card[], opts: AutoBuildOptions): AutoBuildRe
       if (wouldBePokemon && pInDeck >= targets.pokemon + 2) continue;
       if (!wouldBePokemon && tInDeck >= targets.trainers + 2) continue;
 
-      const existing = deck.find((dc) => dc.cardId === id);
-      if (existing) existing.count += 1;
-      else deck.push({ cardId: id, count: 1 });
-      const delta = scoreDeck(deck, allCards).total - baseScore;
-      if (existing) existing.count -= 1;
-      else deck.pop();
+      const delta =
+        scoreDeltaIfAdd(deck, card, allCards, baseline).total - baseline.total;
 
       const kind = wouldBePokemon ? 0 : 1;
       if (delta > bestDelta || (delta === bestDelta && kind < bestKind)) {
