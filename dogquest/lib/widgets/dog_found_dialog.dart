@@ -12,7 +12,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:dogquest/constants.dart';
 import 'package:dogquest/models/dog.dart';
 import 'package:dogquest/services/analytics_service.dart';
+import 'package:dogquest/services/combo_service.dart';
 import 'package:dogquest/services/dog_mastery_service.dart';
+import 'package:dogquest/services/flash_challenge_service.dart';
 import 'package:dogquest/services/kennel_service.dart';
 import 'package:dogquest/services/identification_service.dart';
 import 'package:dogquest/services/player_service.dart';
@@ -59,6 +61,18 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
   bool _v1OpenEmitted = false;
   bool _v1ActionEmitted = false;
 
+  // Cached analytics reference. We resolve it once in initState so that
+  // dispose() can emit the v1_dismissed event without touching ref —
+  // ref.read() during dispose throws "Cannot use 'ref' after the widget
+  // was disposed."
+  late final AnalyticsService _analytics;
+
+  @override
+  void initState() {
+    super.initState();
+    _analytics = ref.read(analyticsProvider);
+  }
+
   Dog get dog => widget.dog;
   bool get _isSpecial =>
       dog.rarity == Rarity.rare || dog.rarity == Rarity.legendary;
@@ -66,14 +80,14 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
   void _v1Emit(String event, [Map<String, dynamic>? extra]) {
     if (widget.source == 'mock') {
       // Demo mode — emit with sentinel so dashboards can filter without gaps.
-      ref.read(analyticsProvider).track(event, {
+      _analytics.track(event, {
         'source': 'mock',
         'picked_index': -2,
         ...?extra,
       });
       return;
     }
-    ref.read(analyticsProvider).track(event, {
+    _analytics.track(event, {
       'top1_breed': widget.dog.name,
       'top1_confidence': widget.confidence,
       'has_alternatives': widget.alternatives.isNotEmpty,
@@ -185,6 +199,78 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
         setState(() => _isSharing = false);
       }
     }
+  }
+
+  /// Build context info row showing active combo and
+  /// flash challenge status
+  List<Widget> _contextInfoRow() {
+    final comboState = ref.watch(comboProvider);
+    final flashState = ref.watch(flashChallengeProvider);
+    final flashChallenge = flashState.activeChallenge;
+
+    final hasCombo = comboState.count > 0;
+    final hasFlash = flashChallenge != null && flashChallenge.isActive;
+
+    if (!hasCombo && !hasFlash) {
+      return [];
+    }
+
+    return [
+      const SizedBox(height: 10),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          children: [
+            if (hasCombo)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.amber.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Text(
+                  '🔥 ${comboState.count}x Combo',
+                  style: const TextStyle(
+                    color: Colors.amber,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            if (hasFlash)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.blue.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Text(
+                  '⚡ ${flashChallenge.title}',
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ];
   }
 
   @override
@@ -422,6 +508,9 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                         dogName: dog.name,
                       ).animate().fadeIn(delay: 500.ms),
                     ],
+
+                    // Context info row (combo + flash challenge)
+                    ..._contextInfoRow(),
 
                     // ── Confidence quality bar (replaces raw %) ──
                     if (!isMock) ...[

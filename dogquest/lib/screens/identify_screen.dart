@@ -14,22 +14,19 @@ import 'package:dogquest/models/dog.dart';
 import 'package:dogquest/services/analytics_service.dart';
 import 'package:dogquest/services/kennel_service.dart';
 import 'package:dogquest/services/dog_service.dart';
-import 'package:dogquest/services/daily_dog_service.dart';
 import 'package:dogquest/services/daily_challenge_service.dart';
 import 'package:dogquest/services/identification_orchestrator.dart';
 import 'package:dogquest/services/identification_service.dart';
 import 'package:dogquest/services/location_service.dart';
 import 'package:dogquest/services/haptic_service.dart';
+import 'package:dogquest/services/sighting_service.dart';
 import 'package:dogquest/widgets/data_consent_dialog.dart';
 import 'package:dogquest/widgets/achievement_unlock_overlay.dart';
 import 'package:dogquest/widgets/dog_catch_animation.dart';
 import 'package:dogquest/widgets/capture_button.dart';
 import 'package:dogquest/widgets/dog_found_dialog.dart';
 import 'package:dogquest/widgets/breed_share_sheet.dart';
-import 'package:dogquest/widgets/combo_counter.dart';
-import 'package:dogquest/widgets/flash_challenge_banner.dart';
 import 'package:dogquest/widgets/mystery_bone_reveal.dart';
-import 'package:dogquest/widgets/seasonal_event_banner.dart';
 import 'package:dogquest/widgets/xp_gain_animation.dart';
 
 final _log = Logger('IdentifyScreen');
@@ -57,6 +54,12 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
   double _minZoom = 1.0;
   double _maxZoom = 1.0;
   double _baseZoom = 1.0; // zoom level when pinch gesture starts
+
+  // Tap-to-focus state
+  final _viewfinderKey = GlobalKey();
+  Offset? _focusIndicatorPosition;
+  bool _focusIndicatorVisible = false;
+  Timer? _focusTimer;
 
   @override
   void initState() {
@@ -89,6 +92,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _scanOverlay?.remove();
+    _focusTimer?.cancel();
     _cam?.dispose();
     _player.stop();
     _player.dispose();
@@ -114,8 +118,13 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
         setState(() => _cameraError = 'No camera found on this device');
         return;
       }
-      _cam = CameraController(cameras[0], ResolutionPreset.medium);
+      _cam = CameraController(cameras[0], ResolutionPreset.high);
       await _cam!.initialize();
+      // Enable auto focus and exposure — not all HALs support these; swallow errors.
+      try {
+        await _cam!.setFocusMode(FocusMode.auto);
+        await _cam!.setExposureMode(ExposureMode.auto);
+      } catch (_) {}
       if (!mounted) return;
       _minZoom = await _cam!.getMinZoomLevel();
       _maxZoom = await _cam!.getMaxZoomLevel();
@@ -146,6 +155,28 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
       return 'Camera access denied — check Settings';
     }
     return 'Could not start camera';
+  }
+
+  Future<void> _handleFocusTap(
+    Offset normalizedPoint,
+    Offset localPosition,
+  ) async {
+    if (_cam == null || !_camReady) return;
+    try {
+      await _cam!.setFocusPoint(normalizedPoint);
+      await _cam!.setExposurePoint(normalizedPoint);
+    } catch (_) {
+      return; // device doesn't support tap-to-focus
+    }
+    _focusTimer?.cancel();
+    if (!mounted) return;
+    setState(() {
+      _focusIndicatorPosition = localPosition;
+      _focusIndicatorVisible = true;
+    });
+    _focusTimer = Timer(const Duration(milliseconds: 1500), () {
+      if (mounted) setState(() => _focusIndicatorVisible = false);
+    });
   }
 
   Future<void> _takePhoto() async {
@@ -346,6 +377,36 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
     });
 
     if (!mounted) return;
+
+    // Show low-confidence guidance if the top result is weak
+    if (results.first.confidence < 0.15 && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xFFB8860B), // dark amber
+          duration: const Duration(seconds: 5),
+          content: const Row(
+            children: [
+              Icon(Icons.photo_camera_outlined, color: Colors.white, size: 20),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Photo is blurry or distant — results may be less accurate.',
+                  style: TextStyle(color: Colors.white, fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+          action: SnackBarAction(
+            label: 'Retake',
+            textColor: Colors.amber,
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              _reinitCamera();
+            },
+          ),
+        ),
+      );
+    }
     _showFoundDialog(results);
   }
 
@@ -360,15 +421,15 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
         content: Text(
           showManualSearch
               ? 'Could not match this dog to a known breed. You can search for the breed manually, or try a different photo.'
-              : 'Could not identify a dog in this photo. Try getting a clearer shot with the dog centered in frame.',
+              : 'The dog may be too small or distant in the photo.\n\nTry moving closer or zooming in before taking the shot.',
           style: const TextStyle(color: Colors.white70),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Try Again'),
-          ),
-          if (showManualSearch)
+          if (showManualSearch) ...[
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Try Again'),
+            ),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.pop(ctx);
@@ -377,6 +438,19 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
               icon: const Icon(Icons.search, size: 18),
               label: const Text('Search Breeds'),
             ),
+          ] else ...[
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Dismiss'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                _reinitCamera();
+              },
+              child: const Text('Retake'),
+            ),
+          ],
         ],
       ),
     );
@@ -530,8 +604,17 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
       );
     }
 
-    // ── UI: Queued rewards (mystery bone, then achievements, spaced out) ─
-    var delayMs = 2800; // after catch animation finishes
+    // ── UI: Queued rewards — hard-capped at 5 000 ms total ──────────────
+    // Timing budget:
+    //   0–2 800 ms  : catch animation runs (base delay)
+    //   2 800 ms    : mystery bone reveal (if any)
+    //   2 800/3 000 ms + : achievement overlays, staggered 1 500 ms apart
+    //   ≤ 5 000 ms  : share prompt (capped regardless of chain length)
+    const _kBaseDelayMs = 2800;
+    const _kAchievementStaggerMs = 1500;
+    const _kMaxShareDelayMs = 5000;
+
+    var delayMs = _kBaseDelayMs;
 
     if (outcome.mysteryReward != null) {
       Future.delayed(Duration(milliseconds: delayMs), () {
@@ -539,10 +622,12 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
         HapticService.celebration();
         MysteryBoneReveal.show(context, reward: outcome.mysteryReward!);
       });
-      delayMs += 2800;
+      // Mystery runs in parallel — offset achievements by only 400 ms so
+      // they don't obscure the reveal but the chain doesn't stall waiting.
+      delayMs += 400;
     }
 
-    // Queue achievements one at a time
+    // Queue achievements with a tight stagger so all fit inside the budget.
     for (final key in outcome.achievementsUnlocked) {
       final a = achievements[key];
       if (a == null) continue;
@@ -557,7 +642,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
           description: a.$3,
         );
       });
-      delayMs += 3000;
+      delayMs += _kAchievementStaggerMs;
     }
 
     // ── UI: Encounter milestone snackbar (after all overlays) ────────────
@@ -588,18 +673,20 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
       });
     }
 
-    // ── UI: Share prompt (after all overlays settle) ────────────────────
+    // ── UI: Share prompt — cap to _kMaxShareDelayMs regardless of chain ──
     final isSpecialFind =
         dog.rarity == Rarity.rare || dog.rarity == Rarity.legendary;
+    final shareDelayMs =
+        (delayMs + (isSpecialFind ? 500 : 300)).clamp(0, _kMaxShareDelayMs);
     if (isSpecialFind) {
       // Auto-show share sheet for rare/legendary finds
-      Future.delayed(Duration(milliseconds: delayMs + 500), () {
+      Future.delayed(Duration(milliseconds: shareDelayMs), () {
         if (!mounted) return;
         BreedShareSheet.show(context, dog);
       });
     } else {
       // Subtle snackbar with share action for common/uncommon
-      Future.delayed(Duration(milliseconds: delayMs + 300), () {
+      Future.delayed(Duration(milliseconds: shareDelayMs), () {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -633,8 +720,6 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
 
   @override
   Widget build(BuildContext context) {
-    final topPadding = MediaQuery.of(context).padding.top;
-
     return Column(
       children: [
         // Camera viewfinder fills all available space
@@ -645,6 +730,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
               // ── Camera preview or error state ──
               if (_camReady && _cam != null)
                 GestureDetector(
+                  key: _viewfinderKey,
                   onScaleStart: (_) => _baseZoom = _currentZoom,
                   onScaleUpdate: (details) {
                     final newZoom =
@@ -656,6 +742,19 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
                       ); // fire-and-forget to avoid HAL race
                       setState(() {});
                     }
+                  },
+                  onTapUp: (details) {
+                    final box = _viewfinderKey.currentContext
+                        ?.findRenderObject() as RenderBox?;
+                    if (box == null) return;
+                    final size = box.size;
+                    final nx =
+                        (details.localPosition.dx / size.width).clamp(0.0, 1.0);
+                    final ny = (details.localPosition.dy / size.height)
+                        .clamp(0.0, 1.0);
+                    unawaited(
+                      _handleFocusTap(Offset(nx, ny), details.localPosition),
+                    );
                   },
                   child: ClipRRect(
                     borderRadius: const BorderRadius.vertical(
@@ -729,27 +828,26 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
                 ),
               ),
 
-              // ── Top overlays (compact pills to preserve viewfinder) ──
-              Positioned(
-                top: topPadding + 8,
-                left: 12,
-                right: 80, // leave room for combo counter
-                child: const Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FlashChallengeBanner(),
-                    SeasonalEventBanner(),
-                    _DailyDogPill(),
-                  ],
+              // ── Tap-to-focus ring ──
+              if (_focusIndicatorPosition != null)
+                IgnorePointer(
+                  child: Positioned(
+                    left: _focusIndicatorPosition!.dx - 28,
+                    top: _focusIndicatorPosition!.dy - 28,
+                    child: AnimatedOpacity(
+                      opacity: _focusIndicatorVisible ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 300),
+                      child: Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.amber, width: 2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-
-              // ── Combo counter overlay (offset below top overlays) ──
-              Positioned(
-                top: topPadding + 8,
-                right: 12,
-                child: const ComboCounter(),
-              ),
 
               // ── Zoom level indicator ──
               if (_currentZoom > _minZoom + 0.05)
@@ -779,7 +877,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
                   ),
                 ),
 
-              // ── Daily challenge progress pill (#10) ──
+              // ── Daily challenge progress pill — shown only for new users ──
               const Positioned(
                 bottom: 130,
                 left: 0,
@@ -1011,46 +1109,10 @@ class _BreedSearchDialogState extends State<_BreedSearchDialog> {
   }
 }
 
-// ── Compact daily dog pill for camera overlay (#5) ──────────────────────
-class _DailyDogPill extends ConsumerWidget {
-  const _DailyDogPill();
+// _DailyDogPill and _PriorityContextBanner removed — camera overlays
+// moved to result screen per Sprint 9 Phase 3 design critique.
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final dailySvc = ref.watch(dailyDogServiceProvider);
-    final dog = dailySvc.todaysDog;
-    final claimed = dailySvc.isBonusClaimed;
-
-    return Container(
-      margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.black54,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.wb_sunny, color: Colors.amber, size: 14),
-          const SizedBox(width: 6),
-          Text(
-            claimed
-                ? '${dog.name} (claimed)'
-                : '${dog.name} — ${DailyDogService.bonusMultiplier}x XP',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Daily challenge progress pill for camera screen (#10) ───────────────
+// ── Daily challenge progress pill — visible only to new users (< 10 sightings)
 class _DailyChallengePill extends ConsumerWidget {
   const _DailyChallengePill();
 
@@ -1059,28 +1121,33 @@ class _DailyChallengePill extends ConsumerWidget {
     final state = ref.watch(dailyChallengeProvider);
     final completed = state.challenges.where((c) => c.completed).length;
     final total = state.challenges.length;
-    if (total == 0) return const SizedBox.shrink();
+
+    // Hide once all challenges are done or all have been completed at least once.
+    if (total == 0 || completed == total) return const SizedBox.shrink();
+
+    // Hide for experienced users — they know to check the profile.
+    final sightingCount = ref.read(sightingServiceProvider).totalSightings;
+    if (sightingCount >= 10) return const SizedBox.shrink();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.black54,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.amber.withValues(alpha: 0.25)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            completed == total ? Icons.check_circle : Icons.flag_rounded,
-            color: completed == total ? Colors.green : Colors.amber,
-            size: 14,
-          ),
+          const Icon(Icons.check_circle_outline, color: Colors.amber, size: 13),
           const SizedBox(width: 6),
           Text(
-            completed == total
-                ? 'Challenges complete!'
-                : '$completed/$total challenges',
-            style: const TextStyle(color: Colors.white70, fontSize: 11),
+            'Daily: $completed / $total',
+            style: const TextStyle(
+              color: Colors.white70,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
