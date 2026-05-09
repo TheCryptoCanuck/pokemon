@@ -8,6 +8,7 @@ class XpBar extends StatelessWidget {
   final double streakMultiplier;
 
   const XpBar({
+    super.key,
     required this.level,
     required this.xp,
     required this.xpForNext,

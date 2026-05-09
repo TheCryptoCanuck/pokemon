@@ -26,7 +26,7 @@ class BreedGhostCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           // Placeholder center icon
-          Center(
+          const Center(
             child: Icon(
               Icons.help_outline,
               color: Colors.white30,
