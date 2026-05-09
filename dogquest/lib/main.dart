@@ -71,7 +71,9 @@ Future<List<int>> _getOrCreateHiveEncryptionKey() async {
 
   // Generate a cryptographically random 32-byte key
   final secureRandom = Random.secure();
-  final key = List<int>.generate(32, (_) => secureRandom.nextInt(256));
+  final key = Uint8List.fromList(
+    List<int>.generate(32, (_) => secureRandom.nextInt(256)),
+  );
   await storage.write(key: keyName, value: base64Url.encode(key));
   return key;
 }
@@ -106,19 +108,41 @@ Future<void> _openEncryptedSightingsBox(List<int> encryptionKey) async {
 const _sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
 const _environment = String.fromEnvironment('ENV', defaultValue: 'development');
 
-/// Supabase configuration — passed at build time via --dart-define
-const _supabaseUrl = String.fromEnvironment(
-  'SUPABASE_URL',
-  defaultValue: 'https://hdcpymjnrbelaawhncep.supabase.co',
-);
-const _supabaseAnonKey = String.fromEnvironment(
-  'SUPABASE_ANON_KEY',
-  defaultValue: 'sb_publishable_lrICH1RprCBAxgQAs8tg4g_eKAXDme4',
-);
+/// Supabase configuration — MANDATORY via --dart-define at build time.
+///
+/// Defaults intentionally absent: shipping a hard-coded URL/key in source means
+/// every build (including unconfigured local builds) connects to production
+/// regardless of the Makefile's `--dart-define=SUPABASE_URL=$$...` guard.
+/// Same hardening pattern as `API_BASE_URL` (api_client.dart, 2026-04-28).
+///
+/// For local debug runs without a Supabase project, pass placeholders:
+///   --dart-define=SUPABASE_URL=https://example.supabase.co
+///   --dart-define=SUPABASE_ANON_KEY=placeholder
+const _supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+
+/// Validates Supabase env vars at startup. Throws [ArgumentError] in both
+/// debug and release builds — assert() is compiled out in release, so this
+/// uses explicit runtime checks to guarantee the guard fires in production.
+void _assertSupabaseEnv() {
+  if (_supabaseUrl.isEmpty) {
+    throw ArgumentError(
+      'SUPABASE_URL must be set via --dart-define=SUPABASE_URL=https://... '
+      'See lib/main.dart docstring for placeholder values for unconfigured builds.',
+    );
+  }
+  if (_supabaseAnonKey.isEmpty) {
+    throw ArgumentError(
+      'SUPABASE_ANON_KEY must be set via --dart-define=SUPABASE_ANON_KEY=... '
+      'See lib/main.dart docstring for placeholder values for unconfigured builds.',
+    );
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   LogService.init();
+  _assertSupabaseEnv();
 
   if (_sentryDsn.isNotEmpty) {
     await SentryFlutter.init(
@@ -490,7 +514,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
             child: Padding(
               padding: const EdgeInsets.all(32),
               child: Text(
-                'DogQuest failed to start.\n\nPlease restart the app.\n\n$_fatalError',
+                'Hound failed to start.\n\nPlease restart the app.\n\n$_fatalError',
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.white70, fontSize: 16),
               ),
@@ -522,7 +546,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
               curve: Curves.easeOut,
               child: ProviderScope(
                 overrides: _overrides!,
-                child: const DogQuest(),
+                child: const HoundApp(),
               ),
             ),
         ],
@@ -574,7 +598,7 @@ Future<_InitResult> _initializeServices(
   await SecurityManager.instance.enforcePortraitOrientation();
 
   if (kDebugMode) {
-    debugPrint('[Security] Debug mode active — some protections relaxed');
+    _log.info('Debug mode active — some protections relaxed');
   }
 
   // Firebase
@@ -591,12 +615,20 @@ Future<_InitResult> _initializeServices(
     // debug to avoid polluting reports during development.
     await FirebaseCrashlytics.instance
         .setCrashlyticsCollectionEnabled(!kDebugMode);
+    // ENV-003: tag every report with the build environment so dev/staging/
+    // prod issues are filterable in the Firebase console.
+    await FirebaseCrashlytics.instance.setCustomKey('env', _environment);
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
     PlatformDispatcher.instance.onError = (error, stack) {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true; // prevent crash in release mode
     };
     _log.info('Crashlytics handlers installed');
+
+    // Tag analytics events with environment so dashboards can segment by build.
+    unawaited(
+      firebaseAnalytics.setUserProperty(name: 'env', value: _environment),
+    );
   } catch (e) {
     _log.info('Firebase not available: $e');
   }
@@ -621,12 +653,10 @@ Future<_InitResult> _initializeServices(
     throw Exception(
       'Dog classifier model failed to load.\n'
       'Ensure dog_model.tflite is present in assets.\n'
-      'DogQuest requires real ML inference — no mock mode.',
+      'Hound requires real ML inference — no mock mode.',
     );
   }
-  debugPrint(
-    '[DogQuest] TFLite model loaded once — real identification active',
-  );
+  _log.info('TFLite model loaded once — real identification active');
 
   // Both TfliteIdentificationService and DogEmbeddingService use the shared model
   final tfliteSvc = TfliteIdentificationService(dogSvc, sharedTflite);
@@ -650,6 +680,7 @@ Future<_InitResult> _initializeServices(
     Hive.openBox<Map>('dogquest_pending_syncs'), // [2]
     Hive.openBox('dogquest_collections'), // [3]
     Hive.openBox('dogquest_social'), // [4]
+    Hive.openBox('hound_prefs'), // [5] first-run state (hasCompletedFirstScan, localSightingsCount)
   ]);
   final kennelBox = boxResults[0] as Box<String>;
   final playerBox = boxResults[1];
@@ -728,12 +759,12 @@ Future<_InitResult> _initializeServices(
     uncollectedHabitat:
         uncollectedDogs.isNotEmpty ? uncollectedDogs.first.habitat : null,
   ).catchError((e) {
-    debugPrint('[DogQuest] Smart notification scheduling failed: $e');
+    _log.warning('Smart notification scheduling failed: $e');
   });
 
   if (await apiClient.isAuthenticated) {
     backendSync.flushPendingSyncs().catchError((e) {
-      debugPrint('[DogQuest] Pending sync flush failed: $e');
+      _log.warning('Pending sync flush failed: $e');
     });
   }
 
@@ -782,13 +813,13 @@ Future<_InitResult> _initializeServices(
   );
 }
 
-class DogQuest extends StatelessWidget {
-  const DogQuest({super.key});
+class HoundApp extends StatelessWidget {
+  const HoundApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'DogQuest',
+      title: 'Hound',
       routerConfig: router,
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: bgDeep,

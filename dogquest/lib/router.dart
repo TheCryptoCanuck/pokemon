@@ -6,7 +6,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:dogquest/screens/kennel_screen.dart';
-import 'package:dogquest/screens/field_guide_screen.dart';
 import 'package:dogquest/screens/home_shell.dart';
 import 'package:dogquest/screens/identify_screen.dart';
 import 'package:dogquest/screens/login_screen.dart';
@@ -26,6 +25,7 @@ import 'package:dogquest/screens/dog_feed_screen.dart';
 import 'package:dogquest/screens/dogs_nearby_screen.dart';
 import 'package:dogquest/screens/breed_community_screen.dart';
 import 'package:dogquest/screens/lost_dog_hub_screen.dart';
+import 'package:dogquest/screens/social_hub_screen.dart';
 import 'package:dogquest/screens/report_lost_screen.dart';
 import 'package:dogquest/screens/scan_stray_screen.dart';
 import 'package:dogquest/screens/lost_dog_map_screen.dart';
@@ -106,6 +106,7 @@ final router = GoRouter(
       path: '/onboarding',
       builder: (context, state) => OnboardingScreen(
         onComplete: () => GoRouter.of(context).go('/login'),
+        onStartGuest: () => GoRouter.of(context).go('/identify'),
       ),
     ),
     GoRoute(
@@ -141,13 +142,32 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-                path: '/guide', builder: (_, __) => const FieldGuideScreen()),
+              path: '/lost-dog',
+              builder: (_, __) => const LostDogHubScreen(),
+              routes: [
+                GoRoute(
+                  path: 'report',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (_, __) => const ReportLostScreen(),
+                ),
+                GoRoute(
+                  path: 'scan',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (_, __) => const ScanStrayScreen(),
+                ),
+                GoRoute(
+                  path: 'map',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (_, __) => const LostDogMapScreen(),
+                ),
+              ],
+            ),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-                path: '/profile', builder: (_, __) => const ProfileScreen()),
+                path: '/profile', builder: (_, __) => const ProfileScreen(),),
           ],
         ),
       ],
@@ -178,6 +198,11 @@ final router = GoRouter(
       builder: (_, __) => const PackScreen(),
     ),
     GoRoute(
+      path: '/social',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, __) => const SocialHubScreen(),
+    ),
+    GoRoute(
       path: '/feed',
       parentNavigatorKey: rootNavigatorKey,
       builder: (_, __) => const DogFeedScreen(),
@@ -186,26 +211,6 @@ final router = GoRouter(
       path: '/dogs-nearby',
       parentNavigatorKey: rootNavigatorKey,
       builder: (_, __) => const DogsNearbyScreen(),
-    ),
-    GoRoute(
-      path: '/lost-dog',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (_, __) => const LostDogHubScreen(),
-    ),
-    GoRoute(
-      path: '/lost-dog/report',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (_, __) => const ReportLostScreen(),
-    ),
-    GoRoute(
-      path: '/lost-dog/scan',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (_, __) => const ScanStrayScreen(),
-    ),
-    GoRoute(
-      path: '/lost-dog/map',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (_, __) => const LostDogMapScreen(),
     ),
     // /lost-dog/share, /shelter-mode, /marketplace, /marketplace/category/:name,
     // and /marketplace/provider/:id routes removed pending those screens being

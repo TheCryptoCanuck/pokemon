@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +10,15 @@ import 'package:dogquest/services/analytics_service.dart';
 class OnboardingScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
 
-  const OnboardingScreen({super.key, required this.onComplete});
+  /// Called when user chooses "Start scanning" (guest mode).
+  /// If null, falls back to [onComplete].
+  final VoidCallback? onStartGuest;
+
+  const OnboardingScreen({
+    super.key,
+    required this.onComplete,
+    this.onStartGuest,
+  });
 
   /// Returns true if onboarding has been completed.
   static bool isComplete() {
@@ -32,7 +42,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   static const _pages = [
     _OnboardingPage(
       icon: '🐶',
-      title: 'Welcome to DogQuest',
+      title: 'Welcome to Hound',
       body: 'Your pocket dog identification companion.\n\n'
           'Snap a photo of any dog and our on-device AI will identify it instantly — no internet required.',
     ),
@@ -65,18 +75,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     if (_currentPage < _pages.length - 1) {
       _controller.nextPage(duration: 300.ms, curve: Curves.easeInOut);
     } else {
-      ref.read(analyticsProvider).track('onboarding_completed');
-      OnboardingScreen.markComplete();
-      widget.onComplete();
+      // Last page "Next" should not be reachable — buttons replace it.
+      // Fallback: start as guest.
+      unawaited(_startAsGuest('onboarding_completed'));
     }
+  }
+
+  /// Sets offline_mode = true then navigates to the scan screen.
+  Future<void> _startAsGuest(String analyticsEvent) async {
+    ref.read(analyticsProvider).track(analyticsEvent, {'path': 'guest'});
+    OnboardingScreen.markComplete();
+    await Hive.box('dogquest_player_stats').put('offline_mode', true);
+    (widget.onStartGuest ?? widget.onComplete)();
   }
 
   void _skip() {
     ref.read(analyticsProvider).track('onboarding_skipped', {
       'skipped_at_page': _currentPage,
     });
-    OnboardingScreen.markComplete();
-    widget.onComplete();
+    unawaited(_startAsGuest('onboarding_skipped_guest'));
   }
 
   @override
@@ -131,18 +148,46 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ),
             const SizedBox(height: 32),
 
-            // Action button
+            // Action button(s)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _next,
-                  child: Text(
-                    _currentPage == _pages.length - 1 ? "Let's Go!" : 'Next',
-                  ),
-                ),
-              ),
+              child: _currentPage == _pages.length - 1
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () =>
+                                unawaited(_startAsGuest('onboarding_completed')),
+                            child: const Text('Start scanning →'),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextButton(
+                            onPressed: () {
+                              ref
+                                  .read(analyticsProvider)
+                                  .track('onboarding_completed', {'path': 'account'});
+                              OnboardingScreen.markComplete();
+                              widget.onComplete();
+                            },
+                            child: const Text(
+                              'Create account',
+                              style: TextStyle(color: Colors.white54),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _next,
+                        child: const Text('Next'),
+                      ),
+                    ),
             ),
             const SizedBox(height: 32),
           ],
