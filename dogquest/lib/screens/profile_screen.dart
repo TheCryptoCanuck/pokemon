@@ -41,7 +41,14 @@ class ProfileScreen extends ConsumerWidget {
     final sightingSvc = ref.read(sightingServiceProvider);
     final seasonalSvc = ref.read(seasonalEventServiceProvider);
     final masteryState = ref.watch(dogMasteryProvider);
+    final myDogSvc = ref.read(myDogServiceProvider);
+    final packSvc = ref.read(packServiceProvider);
     final nextLevelXp = playerState.xpForNextLevel;
+
+    // Engagement gate: experienced users (level > 5 or 20+ sightings)
+    // suppress onboarding CTAs
+    final isExperienced =
+        playerState.level > 5 || sightingSvc.totalSightings > 20;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -151,19 +158,28 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 20),
 
           // ─── My Dog Card ────────────────────────────────────────
-          _MyDogCard(),
-          const SizedBox(height: 4),
+          if (!isExperienced || myDogSvc.dogs.isNotEmpty) ...[
+            _MyDogCard(),
+            const SizedBox(height: 4),
+          ],
 
           // ─── Pack Card ──────────────────────────────────────────
-          _PackCard(),
-          const SizedBox(height: 8),
+          if (!isExperienced || packSvc.pack != null) ...[
+            _PackCard(),
+            const SizedBox(height: 8),
+          ],
 
           // ─── Sign-in Prompt (Offline) ──────────────────────────
-          if (Hive.box('dogquest_player_stats')
-                  .get('offline_mode', defaultValue: false) ==
-              true)
+          if (!isExperienced &&
+              Hive.box('dogquest_player_stats')
+                      .get('offline_mode', defaultValue: false) ==
+                  true)
             _buildSignInPrompt(context),
-          const SizedBox(height: 8),
+          if (!isExperienced &&
+              Hive.box('dogquest_player_stats')
+                      .get('offline_mode', defaultValue: false) ==
+                  true)
+            const SizedBox(height: 8),
 
           // Best streak + streak savers
           if (playerState.bestStreak > 1 || playerState.streakSavers > 0) ...[
