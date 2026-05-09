@@ -3,9 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
 import 'package:dogquest/models/dog_friendship.dart';
 import 'package:dogquest/services/dog_friendship_service.dart';
 import 'package:dogquest/services/dog_service.dart';
@@ -37,6 +40,11 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   @override
   Widget build(BuildContext context) {
+    final localSightings =
+        Hive.box('hound_prefs').get('localSightingsCount', defaultValue: 0)
+            as int;
+    if (localSightings == 0) return const _FeaturedBreedsView();
+
     return Column(
       children: [
         // Toggle bar
@@ -935,7 +943,7 @@ class _LiveMapViewState extends ConsumerState<_LiveMapView> {
                     TileLayer(
                       urlTemplate:
                           'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.dogquest.app',
+                      userAgentPackageName: 'com.hound.app',
                     ),
                     MarkerLayer(markers: markers),
                   ],
@@ -1003,6 +1011,163 @@ class _LiveMapViewState extends ConsumerState<_LiveMapView> {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════
+// Featured Breeds — shown on Discover tab until first scan is completed
+// ═══════════════════════════════════════════════════════════════════════
+
+class _FeaturedBreedsView extends ConsumerWidget {
+  const _FeaturedBreedsView();
+
+  static const _featuredBreeds = [
+    'Golden Retriever',
+    'German Shepherd',
+    'Labrador Retriever',
+    'French Bulldog',
+    'Bulldog',
+    'Poodle',
+    'Beagle',
+    'Rottweiler',
+    'Yorkshire Terrier',
+    'Dachshund',
+    'Boxer',
+    'Shih Tzu',
+  ];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dogSvc = ref.read(dogServiceProvider);
+
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Discover Breeds',
+                  style: TextStyle(
+                    color: Colors.amber,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ).animate().fadeIn(),
+                const SizedBox(height: 4),
+                const Text(
+                  'Identify your first dog to unlock your Sighting Log.',
+                  style: TextStyle(color: Colors.white54, fontSize: 13),
+                ).animate().fadeIn(delay: 80.ms),
+              ],
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 0.9,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, i) {
+                final name = _featuredBreeds[i];
+                final dog = dogSvc.lookup(name);
+                return GestureDetector(
+                  onTap: () => context.push(
+                    '/breed/${Uri.encodeComponent(name)}',
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: bgCard,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: dog?.rarity.color.withValues(alpha: 0.3) ??
+                            Colors.white12,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(15),
+                            ),
+                            child: dog != null && dog.imageUrl.isNotEmpty
+                                ? NetworkDogImage(
+                                    url: dog.imageUrl,
+                                    height: double.infinity,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(
+                                    color: Colors.white.withValues(alpha: 0.04),
+                                    child: const Center(
+                                      child: Text(
+                                        '🐶',
+                                        style: TextStyle(fontSize: 48),
+                                      ),
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (dog != null) ...[
+                                const SizedBox(height: 3),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: dog.rarity.color
+                                        .withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    dog.rarity.label,
+                                    style: TextStyle(
+                                      color: dog.rarity.color,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ).animate().fadeIn(delay: Duration(milliseconds: 60 * i));
+              },
+              childCount: _featuredBreeds.length,
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 32)),
+      ],
+    );
+  }
+}
+
 class _SightingInfoCard extends StatelessWidget {
   final Sighting sighting;
   final dynamic dog; // Dog?
@@ -1016,8 +1181,9 @@ class _SightingInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rarityColor = dog?.rarity?.color ?? Colors.amber;
-    final rarityLabel = dog?.rarity?.label ?? '';
+    final Dog? typedDog = dog as Dog?;
+    final rarityColor = typedDog?.rarity.color ?? Colors.amber;
+    final rarityLabel = typedDog?.rarity.label ?? '';
     final confidence = (sighting.confidence * 100).toStringAsFixed(0);
 
     String timeAgo(DateTime dt) {
@@ -1092,7 +1258,7 @@ class _SightingInfoCard extends StatelessWidget {
                 Row(
                   children: [
                     const Icon(Icons.access_time,
-                        size: 12, color: Colors.white38),
+                        size: 12, color: Colors.white38,),
                     const SizedBox(width: 4),
                     Text(
                       timeAgo(sighting.timestamp),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -8,6 +9,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+
+import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:dogquest/constants.dart';
 import 'package:dogquest/models/dog.dart';
@@ -71,6 +76,12 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
   void initState() {
     super.initState();
     _analytics = ref.read(analyticsProvider);
+    // Increment local sightings count for Discover tab new-user graduation
+    if (widget.source != 'mock' && widget.dog.rarity != Rarity.unknown) {
+      final prefs = Hive.box('hound_prefs');
+      final count = prefs.get('localSightingsCount', defaultValue: 0) as int;
+      unawaited(prefs.put('localSightingsCount', count + 1));
+    }
   }
 
   Dog get dog => widget.dog;
@@ -393,7 +404,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                     Text(
                       dog.scientificName,
                       style: const TextStyle(
-                        color: Colors.white54,
+                        color: Colors.white70,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -494,7 +505,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                       child: Text(
                         'Breeds ${ref.read(kennelServiceProvider).count + (widget.alreadyOwned ? 0 : 1)} / 150 in your kennel',
                         style: const TextStyle(
-                          color: Colors.white38,
+                          color: Colors.white70,
                           fontSize: 11,
                         ),
                       ),
@@ -585,7 +596,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                         style: TextStyle(
                           color: tier == ConfidenceTier.low
                               ? const Color(0xFFFFAB91)
-                              : Colors.white38,
+                              : Colors.white70,
                           fontSize: tier == ConfidenceTier.low ? 13 : 12,
                           fontWeight: tier == ConfidenceTier.low
                               ? FontWeight.w600
@@ -626,14 +637,14 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                               children: [
                                 Icon(
                                   Icons.search,
-                                  color: Colors.white38,
+                                  color: Colors.white70,
                                   size: 15,
                                 ),
                                 SizedBox(width: 6),
                                 Text(
                                   'Not the right breed? Search manually',
                                   style: TextStyle(
-                                    color: Colors.white38,
+                                    color: Colors.white70,
                                     fontSize: 12,
                                     decoration: TextDecoration.underline,
                                     decorationColor: Colors.white24,
@@ -644,6 +655,14 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                           ),
                         ),
                     ],
+
+                    const SizedBox(height: 16),
+
+                    // Guest save CTA — shown only for unauthenticated users
+                    if (!isMock &&
+                        !isUnknown &&
+                        Supabase.instance.client.auth.currentSession == null)
+                      _GuestSaveCta(breedName: dog.name),
 
                     const SizedBox(height: 16),
 
@@ -660,12 +679,12 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                                     height: 18,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      color: Colors.white54,
+                                      color: Colors.white70,
                                     ),
                                   )
                                 : const Icon(
                                     Icons.share,
-                                    color: Colors.white54,
+                                    color: Colors.white70,
                                     size: 20,
                                   ),
                             tooltip: 'Share',
@@ -682,7 +701,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                           child: OutlinedButton(
                             onPressed: () => Navigator.pop(context),
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white54,
+                              foregroundColor: Colors.white70,
                             ),
                             child: Text(widget.alreadyOwned ? 'OK' : 'Skip'),
                           ),
@@ -847,7 +866,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
             const SizedBox(height: 4),
             Text(
               '${info.sightingsToNextLevel} more to ${nextLevel.label}',
-              style: const TextStyle(color: Colors.white38, fontSize: 11),
+              style: const TextStyle(color: Colors.white70, fontSize: 11),
             ),
           ] else ...[
             const SizedBox(height: 4),
@@ -1124,7 +1143,7 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
                   'or',
-                  style: TextStyle(color: Colors.white38, fontSize: 12),
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ),
               // Alternative
@@ -1239,7 +1258,7 @@ class _AlternativeChip extends StatelessWidget {
                     Text(
                       result.dog.scientificName,
                       style: const TextStyle(
-                        color: Colors.white38,
+                        color: Colors.white70,
                         fontSize: 11,
                         fontStyle: FontStyle.italic,
                       ),
@@ -1372,7 +1391,7 @@ class _ComparisonBreedTile extends StatelessWidget {
               style: TextStyle(
                 color: isSelected
                     ? Colors.amber.withValues(alpha: 0.6)
-                    : Colors.white38,
+                    : Colors.white70,
                 fontSize: 9,
               ),
             ),
@@ -1380,5 +1399,86 @@ class _ComparisonBreedTile extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Post-scan account CTA shown to unauthenticated users at the bottom of
+/// DogFoundDialog. Prompts them to save the breed or dismiss.
+class _GuestSaveCta extends StatefulWidget {
+  final String breedName;
+
+  const _GuestSaveCta({required this.breedName});
+
+  @override
+  State<_GuestSaveCta> createState() => _GuestSaveCtaState();
+}
+
+class _GuestSaveCtaState extends State<_GuestSaveCta> {
+  bool _dismissed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_dismissed) return const SizedBox.shrink();
+
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.amber.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.amber.withValues(alpha: 0.35)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const Text('💾', style: TextStyle(fontSize: 16)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Save ${widget.breedName} to your Kennel',
+                  style: const TextStyle(
+                    color: Colors.amber,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => context.go('/login'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    foregroundColor: Colors.black87,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Create account →',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              TextButton(
+                onPressed: () => setState(() => _dismissed = true),
+                child: const Text(
+                  'Maybe later',
+                  style: TextStyle(color: Colors.white54, fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1, delay: 400.ms);
   }
 }
