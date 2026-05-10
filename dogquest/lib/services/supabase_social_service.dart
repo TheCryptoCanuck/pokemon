@@ -100,14 +100,10 @@ class SupabaseSocialService {
 
   /// Get paginated social feed using the get_feed RPC.
   Future<List<SocialPost>> getFeed({int limit = 20, DateTime? cursor}) async {
-    final uid = _userId;
-    if (uid == null) return [];
-
     try {
       final response = await _client.rpc(
         'get_feed',
         params: {
-          'p_user_id': uid,
           'p_limit': limit,
           if (cursor != null) 'p_cursor': cursor.toUtc().toIso8601String(),
         },

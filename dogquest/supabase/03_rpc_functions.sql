@@ -7,9 +7,10 @@
 
 -- ============================================================
 -- Feed: Get paginated social feed for a user
+-- SUPA-001 (2026-05-10): dropped p_user_id — caller was trusted. Now derives
+-- identity from auth.uid() server-side so no client can impersonate another user.
 -- ============================================================
 CREATE OR REPLACE FUNCTION get_feed(
-  p_user_id UUID,
   p_limit INTEGER DEFAULT 20,
   p_cursor TIMESTAMPTZ DEFAULT NULL
 )
@@ -29,7 +30,12 @@ RETURNS TABLE (
   user_has_liked BOOLEAN,
   created_at TIMESTAMPTZ
 ) AS $$
+DECLARE
+  v_user_id UUID := auth.uid();
 BEGIN
+  IF v_user_id IS NULL THEN
+    RAISE EXCEPTION 'Not authenticated';
+  END IF;
   RETURN QUERY
   SELECT
     sp.id,
@@ -44,11 +50,11 @@ BEGIN
     sp.metadata,
     sp.like_count,
     sp.comment_count,
-    EXISTS(SELECT 1 FROM post_likes pl WHERE pl.post_id = sp.id AND pl.user_id = p_user_id) AS user_has_liked,
+    EXISTS(SELECT 1 FROM post_likes pl WHERE pl.post_id = sp.id AND pl.user_id = v_user_id) AS user_has_liked,
     sp.created_at
   FROM social_posts sp
   JOIN users u ON u.id = sp.user_id
-  LEFT JOIN user_blocks ub ON ub.blocker_id = p_user_id AND ub.blocked_id = sp.user_id
+  LEFT JOIN user_blocks ub ON ub.blocker_id = v_user_id AND ub.blocked_id = sp.user_id
   WHERE sp.is_public = true
     AND ub.id IS NULL
     AND (p_cursor IS NULL OR sp.created_at < p_cursor)
@@ -59,9 +65,10 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ============================================================
 -- Dogs Nearby: Find dogs within a radius
+-- SUPA-001 (2026-05-10): dropped p_user_id — derives identity from
+-- auth.uid() server-side so no client can impersonate another user.
 -- ============================================================
 CREATE OR REPLACE FUNCTION get_dogs_nearby(
-  p_user_id UUID,
   p_lat DOUBLE PRECISION,
   p_lon DOUBLE PRECISION,
   p_radius_miles DOUBLE PRECISION DEFAULT 5.0,
@@ -76,7 +83,12 @@ RETURNS TABLE (
   owner_display_name TEXT,
   distance_miles DOUBLE PRECISION
 ) AS $$
+DECLARE
+  v_user_id UUID := auth.uid();
 BEGIN
+  IF v_user_id IS NULL THEN
+    RAISE EXCEPTION 'Not authenticated';
+  END IF;
   RETURN QUERY
   SELECT
     dp.id AS dog_id,
@@ -94,10 +106,10 @@ BEGIN
     ) AS distance_miles
   FROM dog_profiles dp
   JOIN users u ON u.id = dp.owner_id
-  LEFT JOIN user_blocks ub ON (ub.blocker_id = p_user_id AND ub.blocked_id = dp.owner_id)
-    OR (ub.blocker_id = dp.owner_id AND ub.blocked_id = p_user_id)
+  LEFT JOIN user_blocks ub ON (ub.blocker_id = v_user_id AND ub.blocked_id = dp.owner_id)
+    OR (ub.blocker_id = dp.owner_id AND ub.blocked_id = v_user_id)
   WHERE u.location_sharing_enabled = true
-    AND u.id != p_user_id
+    AND u.id != v_user_id
     AND ub.id IS NULL
     AND u.approximate_lat IS NOT NULL
     AND u.approximate_lon IS NOT NULL

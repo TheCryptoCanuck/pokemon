@@ -58,12 +58,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
   double _minZoom = 1.0;
   double _maxZoom = 1.0;
   double _baseZoom = 1.0; // zoom level when pinch gesture starts
-
-  // Tap-to-focus state
   final _viewfinderKey = GlobalKey();
-  Offset? _focusIndicatorPosition;
-  bool _focusIndicatorVisible = false;
-  Timer? _focusTimer;
 
   bool _hasSeenCoachMark = true;
 
@@ -113,7 +108,6 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _scanOverlay?.remove();
-    _focusTimer?.cancel();
     _cam?.dispose();
     _player.stop();
     _player.dispose();
@@ -143,8 +137,8 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
       await _cam!.initialize();
       // Enable auto focus and exposure — not all HALs support these; swallow errors.
       try {
-        await _cam!.setFocusMode(FocusMode.auto);
-        await _cam!.setExposureMode(ExposureMode.auto);
+        await _cam!.setFocusMode(FocusMode.auto).timeout(const Duration(seconds: 2));
+        await _cam!.setExposureMode(ExposureMode.auto).timeout(const Duration(seconds: 2));
       } catch (_) {}
       if (!mounted) return;
       _minZoom = await _cam!.getMinZoomLevel();
@@ -178,27 +172,6 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
     return 'Could not start camera';
   }
 
-  Future<void> _handleFocusTap(
-    Offset normalizedPoint,
-    Offset localPosition,
-  ) async {
-    if (_cam == null || !_camReady) return;
-    try {
-      await _cam!.setFocusPoint(normalizedPoint);
-      await _cam!.setExposurePoint(normalizedPoint);
-    } catch (_) {
-      return; // device doesn't support tap-to-focus
-    }
-    _focusTimer?.cancel();
-    if (!mounted) return;
-    setState(() {
-      _focusIndicatorPosition = localPosition;
-      _focusIndicatorVisible = true;
-    });
-    _focusTimer = Timer(const Duration(milliseconds: 1500), () {
-      if (mounted) setState(() => _focusIndicatorVisible = false);
-    });
-  }
 
   Future<void> _takePhoto() async {
     _dismissCoachMark();
@@ -790,19 +763,11 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
                         setState(() {});
                       }
                     },
-                    onTapUp: (details) {
-                      final box = _viewfinderKey.currentContext
-                          ?.findRenderObject() as RenderBox?;
-                      if (box == null) return;
-                      final size = box.size;
-                      final nx = (details.localPosition.dx / size.width)
-                          .clamp(0.0, 1.0);
-                      final ny = (details.localPosition.dy / size.height)
-                          .clamp(0.0, 1.0);
-                      unawaited(
-                        _handleFocusTap(Offset(nx, ny), details.localPosition),
-                      );
-                    },
+                    // Tap-to-focus disabled for beta — setFocusPoint blocks
+                    // the platform channel on some Android HALs (Sony XQ-CT54),
+                    // freezing the entire app. Autofocus via FocusMode.auto
+                    // set during _initCamera() still works.
+                    // TODO: re-enable after camera package upgrade or isolate workaround
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                         bottom: Radius.circular(24),
@@ -827,26 +792,6 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
                 ),
               ),
 
-              // ── Tap-to-focus ring ──
-              if (_focusIndicatorPosition != null)
-                IgnorePointer(
-                  child: Positioned(
-                    left: _focusIndicatorPosition!.dx - 28,
-                    top: _focusIndicatorPosition!.dy - 28,
-                    child: AnimatedOpacity(
-                      opacity: _focusIndicatorVisible ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 300),
-                      child: Container(
-                        width: 56,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.amber, width: 2),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
 
               // ── Zoom level indicator ──
               if (_currentZoom > _minZoom + 0.05)

@@ -75,16 +75,9 @@ class _DogsNearbyScreenState extends ConsumerState<DogsNearbyScreen> {
   Future<void> _fetchRemoteDogs() async {
     setState(() => _isLoading = true);
     try {
-      final uid = Supabase.instance.client.auth.currentUser?.id;
-      if (uid == null) {
-        setState(() => _isLoading = false);
-        return;
-      }
-
       final response = await Supabase.instance.client.rpc(
         'get_dogs_nearby',
         params: {
-          'p_user_id': uid,
           'p_lat': _refLat,
           'p_lon': _refLon,
           'p_radius_miles': _radiusMiles,
