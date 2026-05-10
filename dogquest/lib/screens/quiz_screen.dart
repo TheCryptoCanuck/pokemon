@@ -47,6 +47,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   int _hintsRemaining = 2;
   int _fiftyfiftyRemaining = 1;
   final Set<int> _eliminatedOptions = {};
+  bool _processingAnswer = false;
+  String? _activeHint;
   bool _showXpToast = false;
   int _lastXpAwarded = 0;
   final List<int?> _userAnswers = [];
@@ -170,6 +172,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     _bestStreak = 0;
     _totalXpEarned = 0;
     _eliminatedOptions.clear();
+    _processingAnswer = false;
+    _activeHint = null;
     _showXpToast = false;
     _userAnswers.clear();
   }
@@ -232,12 +236,15 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     _bestStreak = 0;
     _totalXpEarned = 0;
     _eliminatedOptions.clear();
+    _processingAnswer = false;
+    _activeHint = null;
     _showXpToast = false;
     _userAnswers.clear();
   }
 
   void _selectAnswer(int index) {
-    if (_answered) return;
+    if (_answered || _processingAnswer) return;
+    _processingAnswer = true;
     final q = _questions![_currentIndex];
     final isCorrect = index == q.correctIndex;
 
@@ -260,6 +267,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     setState(() {
       _selectedOption = index;
       _answered = true;
+      _processingAnswer = false;
       _userAnswers.add(index);
       if (isCorrect) {
         _showXpToast = true;
@@ -277,16 +285,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
     q.hintUsed = true;
     _hintsRemaining--;
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(hint, style: const TextStyle(color: Colors.white)),
-        backgroundColor: Colors.amber.shade800,
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-    setState(() {});
+    setState(() => _activeHint = hint);
   }
 
   void _useFiftyFifty() {
@@ -341,7 +340,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         );
         ref.read(examServiceProvider).recordResult(result);
         ref.read(analyticsProvider).track('exam_attempted', {
-          'group_id': _examGroupId!,
+          'group_id': _examGroupId,
           'tier': _examTier!.name,
           'score': _score,
           'total': _totalQuestions,
@@ -350,7 +349,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         });
         if (passed) {
           ref.read(analyticsProvider).track('exam_passed', {
-            'group_id': _examGroupId!,
+            'group_id': _examGroupId,
             'tier': _examTier!.name,
             'xp_multiplier': _examTier!.xpMultiplier,
           });
@@ -374,6 +373,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       _currentIndex++;
       _selectedOption = null;
       _answered = false;
+      _processingAnswer = false;
+      _activeHint = null;
       _eliminatedOptions.clear();
     });
   }
@@ -418,77 +419,83 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ...QuizDifficulty.values.map(
               (diff) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: GestureDetector(
-                  onTap: () => _startQuiz(diff),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: diff.color.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: diff.color.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          diff.emoji,
-                          style: const TextStyle(fontSize: 32),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => _startQuiz(diff),
+                    borderRadius: BorderRadius.circular(16),
+                    splashColor: diff.color.withValues(alpha: 0.1),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: diff.color.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: diff.color.withValues(alpha: 0.3),
                         ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    diff.label,
-                                    style: TextStyle(
-                                      color: diff.color,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: diff.color.withValues(alpha: 0.15),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      '${(diff.xpMultiplier * 100).round()}% XP',
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            diff.emoji,
+                            style: const TextStyle(fontSize: 32),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      diff.label,
                                       style: TextStyle(
                                         color: diff.color,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w600,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                diff.description,
-                                style: const TextStyle(
-                                  color: Colors.white38,
-                                  fontSize: 12,
-                                  height: 1.3,
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            diff.color.withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        '${(diff.xpMultiplier * 100).round()}% XP',
+                                        style: TextStyle(
+                                          color: diff.color,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 4),
+                                Text(
+                                  diff.description,
+                                  style: const TextStyle(
+                                    color: Colors.white38,
+                                    fontSize: 12,
+                                    height: 1.3,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          color: diff.color.withValues(alpha: 0.5),
-                          size: 16,
-                        ),
-                      ],
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: diff.color.withValues(alpha: 0.5),
+                            size: 16,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -525,6 +532,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Progress bar
           Row(
@@ -536,12 +544,19 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: LinearProgressIndicator(
-                    value: (_currentIndex + 1) / _totalQuestions,
-                    minHeight: 8,
-                    backgroundColor: bgCard,
-                    valueColor:
-                        const AlwaysStoppedAnimation<Color>(Colors.amber),
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween<double>(
+                      end: (_currentIndex + 1) / _totalQuestions,
+                    ),
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeOut,
+                    builder: (_, value, __) => LinearProgressIndicator(
+                      value: value,
+                      minHeight: 8,
+                      backgroundColor: bgCard,
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.amber),
+                    ),
                   ),
                 ),
               ),
@@ -630,6 +645,41 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           _buildQuestion(q),
           const SizedBox(height: 16),
 
+          // Inline hint callout (persists until answer is locked)
+          if (_activeHint != null)
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.amber.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.amber.withValues(alpha: 0.25),
+                ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.lightbulb,
+                    color: Colors.amber,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _activeHint!,
+                      style: const TextStyle(
+                        color: Colors.amber,
+                        fontSize: 13,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ).animate().fadeIn().slideY(begin: -0.1),
+
           // Lifeline buttons
           if (!_answered)
             Row(
@@ -709,14 +759,33 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: q.type == QuizType.silhouetteRound
-                  ? ColorFiltered(
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFF1A1A2E),
-                        BlendMode.saturation,
-                      ),
-                      child: NetworkDogImage(
-                        url: q.correctDog.imageUrl,
-                        height: 200,
+                  ? SizedBox(
+                      height: 200,
+                      width: double.infinity,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          ColorFiltered(
+                            colorFilter: const ColorFilter.matrix(<double>[
+                              0, 0, 0, 0, 0, //
+                              0, 0, 0, 0, 0, //
+                              0, 0, 0, 0, 0, //
+                              0, 0, 0, 1, 0, //
+                            ]),
+                            child: NetworkDogImage(
+                              url: q.correctDog.imageUrl,
+                              height: 200,
+                            ),
+                          ),
+                          if (_answered)
+                            NetworkDogImage(
+                              url: q.correctDog.imageUrl,
+                              height: 200,
+                            ).animate().fadeIn(
+                                  duration: 600.ms,
+                                  curve: Curves.easeOut,
+                                ),
+                        ],
                       ),
                     )
                   : NetworkDogImage(url: q.correctDog.imageUrl, height: 200),
@@ -906,7 +975,19 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             const SizedBox(height: 12),
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: NetworkDogImage(url: q.correctDog.imageUrl, height: 140),
+              child: q.correctDog.imageUrl.isEmpty
+                  ? Container(
+                      height: 140,
+                      width: double.infinity,
+                      color: const Color(0xFF1A2A1A),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.pets, color: Colors.white24, size: 48),
+                        ],
+                      ),
+                    )
+                  : NetworkDogImage(url: q.correctDog.imageUrl, height: 140),
             ),
             const SizedBox(height: 8),
             Text(
@@ -971,49 +1052,73 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           borderColor = Colors.amber;
         }
 
-        return GestureDetector(
-          onTap: () => _selectAnswer(i),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            decoration: BoxDecoration(
-              color: bgColor,
+        return Semantics(
+          button: true,
+          label: dogs[i].name,
+          excludeSemantics: true,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: _answered ? null : () => _selectAnswer(i),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: borderColor,
-                width: isSelected || (_answered && isCorrect) ? 2 : 1.5,
+              splashColor: Colors.white12,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: borderColor,
+                    width: isSelected || (_answered && isCorrect) ? 2 : 1.5,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(13),
+                        ),
+                        child: dogs[i].imageUrl.isEmpty
+                            ? Container(
+                                color: const Color(0xFF1A2A1A),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.pets,
+                                    color: Colors.white24,
+                                    size: 36,
+                                  ),
+                                ),
+                              )
+                            : NetworkDogImage(
+                                url: dogs[i].imageUrl,
+                                height: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 6,
+                      ),
+                      child: Text(
+                        dogs[i].name,
+                        style: TextStyle(
+                          color: _answered && isCorrect
+                              ? Colors.green
+                              : Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(13),
-                    ),
-                    child: NetworkDogImage(
-                      url: dogs[i].imageUrl,
-                      height: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                  child: Text(
-                    dogs[i].name,
-                    style: TextStyle(
-                      color:
-                          _answered && isCorrect ? Colors.green : Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
             ),
           ),
         );
@@ -1104,34 +1209,44 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: GestureDetector(
-        onTap: () => _selectAnswer(index),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          decoration: BoxDecoration(
-            color: bgColor,
+      child: Semantics(
+        button: true,
+        label: q.options[index],
+        excludeSemantics: true,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: _answered ? null : () => _selectAnswer(index),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: borderColor,
-              width: isSelected || (_answered && isCorrect) ? 2 : 1.5,
-            ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  q.options[index],
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+            splashColor: Colors.white12,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: borderColor,
+                  width: isSelected || (_answered && isCorrect) ? 2 : 1.5,
                 ),
               ),
-              if (trailingIcon != null)
-                Icon(trailingIcon, color: iconColor, size: 22),
-            ],
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      q.options[index],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  if (trailingIcon != null)
+                    Icon(trailingIcon, color: iconColor, size: 22),
+                ],
+              ),
+            ),
           ),
         ),
       ),
