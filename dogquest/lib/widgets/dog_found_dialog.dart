@@ -12,7 +12,6 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:dogquest/constants.dart';
 import 'package:dogquest/models/dog.dart';
@@ -255,7 +254,12 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
+              ).animate().fadeIn(delay: 570.ms, duration: 220.ms).slideY(
+                    begin: 0.3,
+                    delay: 570.ms,
+                    duration: 280.ms,
+                    curve: Curves.easeOut,
+                  ),
             if (hasFlash)
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -277,7 +281,12 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
+              ).animate().fadeIn(delay: 630.ms, duration: 220.ms).slideY(
+                    begin: 0.3,
+                    delay: 630.ms,
+                    duration: 280.ms,
+                    curve: Curves.easeOut,
+                  ),
           ],
         ),
       ),
@@ -463,39 +472,44 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                     ),
                     const SizedBox(height: 8),
 
-                    // XP display -- bigger for special dogs
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: _isSpecial ? 16 : 8,
-                        vertical: _isSpecial ? 8 : 4,
-                      ),
-                      decoration: _isSpecial
-                          ? BoxDecoration(
-                              color: Colors.amber.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.amber.withValues(alpha: 0.3),
-                              ),
-                            )
-                          : null,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.bolt,
-                            color: Colors.amber,
-                            size: _isSpecial ? 22 : 16,
-                          ),
-                          Text(
-                            ' +${dog.xp} XP',
-                            style: TextStyle(
+                    // XP display -- bigger for special dogs; counts up from 0
+                    TweenAnimationBuilder<int>(
+                      tween: IntTween(begin: 0, end: dog.xp),
+                      duration: const Duration(milliseconds: 1000),
+                      curve: Curves.easeOut,
+                      builder: (context, xpValue, _) => Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: _isSpecial ? 16 : 8,
+                          vertical: _isSpecial ? 8 : 4,
+                        ),
+                        decoration: _isSpecial
+                            ? BoxDecoration(
+                                color: Colors.amber.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.amber.withValues(alpha: 0.3),
+                                ),
+                              )
+                            : null,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.bolt,
                               color: Colors.amber,
-                              fontWeight: FontWeight.bold,
-                              fontSize: _isSpecial ? 18 : 14,
+                              size: _isSpecial ? 22 : 16,
                             ),
-                          ),
-                        ],
+                            Text(
+                              ' +$xpValue XP',
+                              style: TextStyle(
+                                color: Colors.amber,
+                                fontWeight: FontWeight.bold,
+                                fontSize: _isSpecial ? 18 : 14,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ).animate().fadeIn(delay: 400.ms),
 
@@ -616,125 +630,104 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                       ),
                     ],
 
-                    // ── Manual search fallback ──
-                    // Prominent button when confidence is low; subtle link otherwise
-                    if (widget.onManualSearch != null && !isMock) ...[
-                      const SizedBox(height: 12),
-                      if (tier == ConfidenceTier.low)
-                        _prominentManualSearch()
-                      else
-                        InkWell(
-                          onTap: _v1HandleManualSearch,
-                          borderRadius: BorderRadius.circular(8),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 6,
-                              horizontal: 4,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.search,
-                                  color: Colors.white70,
-                                  size: 15,
-                                ),
-                                SizedBox(width: 6),
-                                Text(
-                                  'Not the right breed? Search manually',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: Colors.white24,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
+                    // Manual search link integrated into main action column below.
 
                     const SizedBox(height: 16),
 
-                    // Guest save CTA — shown only for unauthenticated users
-                    if (!isMock &&
-                        !isUnknown &&
-                        Supabase.instance.client.auth.currentSession == null)
-                      _GuestSaveCta(breedName: dog.name),
+                    // Guest save CTA disabled — account nudge moving to Me tab.
+                    // See _GuestSaveCta class below.
+                    const SizedBox.shrink(),
 
                     const SizedBox(height: 16),
 
-                    // Action buttons with share
-                    Row(
+                    // Action column — primary CTA, manual search link, share + skip
+                    Column(
                       children: [
-                        // Small share icon (hidden for rare/legendary since they get the prominent button)
-                        if (!isUnknown && !_isSpecial)
-                          IconButton(
-                            onPressed: _isSharing ? null : _shareDog,
-                            icon: _isSharing
-                                ? const SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white70,
-                                    ),
-                                  )
-                                : const Icon(
-                                    Icons.share,
-                                    color: Colors.white70,
-                                    size: 20,
-                                  ),
-                            tooltip: 'Share',
-                            style: IconButton.styleFrom(
-                              backgroundColor:
-                                  Colors.white.withValues(alpha: 0.06),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                        // Primary action — full-width "Add to Kennel" button
+                        if (!widget.alreadyOwned && !isUnknown)
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                HapticFeedback.mediumImpact();
+                                Navigator.pop(context);
+                                _v1HandleAdd();
+                              },
+                              icon: const Icon(Icons.star_rounded, size: 20),
+                              label: const Text('Add to Kennel'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: accent,
+                                foregroundColor: bgDeep,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
                               ),
                             ),
                           ),
-                        if (!isUnknown && !_isSpecial) const SizedBox(width: 8),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => Navigator.pop(context),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white70,
+
+                        // "Not this breed?" text link
+                        if (!isUnknown &&
+                            widget.onManualSearch != null &&
+                            !isMock)
+                          TextButton(
+                            onPressed: _v1HandleManualSearch,
+                            child: Text(
+                              'Not this breed? Search manually',
+                              style: TextStyle(color: textMuted, fontSize: 13),
                             ),
-                            child: Text(widget.alreadyOwned ? 'OK' : 'Skip'),
                           ),
-                        ),
-                        if (!widget.alreadyOwned) ...[
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: !isMock && _isVerySlow
-                                ? OutlinedButton(
-                                    onPressed: () {
-                                      HapticFeedback.mediumImpact();
-                                      Navigator.pop(context);
-                                      _v1HandleAdd();
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: const Color(0xFFFFAB91),
-                                      side: BorderSide(
-                                        color: const Color(0xFFFF7043)
-                                            .withValues(alpha: 0.5),
+
+                        const SizedBox(height: 4),
+
+                        // Secondary row: Share + Skip
+                        Row(
+                          children: [
+                            if (!isUnknown && !_isSpecial)
+                              IconButton(
+                                onPressed: _isSharing ? null : _shareDog,
+                                icon: _isSharing
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white70,
+                                        ),
+                                      )
+                                    : const Icon(
+                                        Icons.share,
+                                        color: Colors.white70,
+                                        size: 20,
                                       ),
-                                    ),
-                                    child: const Text('Add Anyway'),
-                                  )
-                                : ElevatedButton(
-                                    onPressed: () {
-                                      HapticFeedback.mediumImpact();
-                                      Navigator.pop(context);
-                                      _v1HandleAdd();
-                                    },
-                                    child: const Text('Add to Kennel'),
+                                tooltip: 'Share',
+                                style: IconButton.styleFrom(
+                                  backgroundColor:
+                                      Colors.white.withValues(alpha: 0.06),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                          ),
-                        ],
+                                ),
+                              ),
+                            const Spacer(),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(
+                                widget.alreadyOwned ? 'OK' : 'Skip →',
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
 
@@ -1164,26 +1157,6 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
       ),
     );
   }
-
-  /// Prominent manual search fallback for low-confidence results.
-  Widget _prominentManualSearch() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: OutlinedButton.icon(
-        onPressed: _v1HandleManualSearch,
-        icon: const Icon(Icons.search_rounded, size: 18),
-        label: const Text('Search breeds manually'),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.amber,
-          side: BorderSide(color: Colors.amber.withValues(alpha: 0.5)),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      ),
-    );
-  }
 }
 
 class _AlternativeChip extends StatelessWidget {
@@ -1404,6 +1377,7 @@ class _ComparisonBreedTile extends StatelessWidget {
 
 /// Post-scan account CTA shown to unauthenticated users at the bottom of
 /// DogFoundDialog. Prompts them to save the breed or dismiss.
+// TODO: Move account creation nudge to Me tab (Fix #4 design spec)
 class _GuestSaveCta extends StatefulWidget {
   final String breedName;
 
@@ -1415,6 +1389,14 @@ class _GuestSaveCta extends StatefulWidget {
 
 class _GuestSaveCtaState extends State<_GuestSaveCta> {
   bool _dismissed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(
+      Hive.box('hound_prefs').put('pendingBreedResult', widget.breedName),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

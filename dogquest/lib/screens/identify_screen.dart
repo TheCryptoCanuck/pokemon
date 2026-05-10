@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_animate/flutter_animate.dart';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:logging/logging.dart';
+
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:dogquest/constants.dart';
 import 'package:dogquest/helpers/game_helpers.dart';
@@ -61,11 +65,28 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
   bool _focusIndicatorVisible = false;
   Timer? _focusTimer;
 
+  bool _hasSeenCoachMark = true;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final seen = Hive.box('hound_prefs')
+          .get('hasSeenIdentifyPrompt', defaultValue: false) as bool;
+      final sightings = ref.read(sightingServiceProvider).totalSightings;
+      // Show coach mark only if user has never dismissed it AND has zero sightings.
+      if (!seen && sightings == 0 && mounted) {
+        setState(() => _hasSeenCoachMark = false);
+      }
+    });
     _initCameraAndLocation();
+  }
+
+  void _dismissCoachMark() {
+    if (_hasSeenCoachMark) return;
+    unawaited(Hive.box('hound_prefs').put('hasSeenIdentifyPrompt', true));
+    if (mounted) setState(() => _hasSeenCoachMark = true);
   }
 
   Future<void> _initCameraAndLocation() async {
@@ -180,6 +201,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
   }
 
   Future<void> _takePhoto() async {
+    _dismissCoachMark();
     if (_identifying) return;
     if (_cam == null || !_camReady) {
       _log.warning('Camera not ready, reinitializing...');
@@ -221,6 +243,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
   }
 
   Future<void> _pickFromGallery() async {
+    _dismissCoachMark();
     if (_identifying) return;
     try {
       final picker = ImagePicker();
@@ -282,7 +305,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
                   },
                   child: const Text(
                     'Cancel',
-                    style: TextStyle(color: Colors.white54, fontSize: 14),
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                 ),
               ],
@@ -382,6 +405,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
     if (results.first.confidence < 0.15 && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          behavior: SnackBarBehavior.floating,
           backgroundColor: const Color(0xFFB8860B), // dark amber
           duration: const Duration(seconds: 5),
           content: const Row(
@@ -498,9 +522,13 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
       );
     }
 
-    showDialog(
+    showGeneralDialog<void>(
       context: context,
-      builder: (ctx) => DogFoundDialog(
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 380),
+      pageBuilder: (ctx, _, __) => DogFoundDialog(
         dog: topResult.dog,
         confidence: topResult.confidence,
         source: topResult.source,
@@ -524,6 +552,19 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
           _showBreedSearchDialog();
         },
       ),
+      transitionBuilder: (context, animation, _, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        );
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.08),
+            end: Offset.zero,
+          ).animate(curved),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
     );
   }
 
@@ -610,11 +651,11 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
     //   2 800 ms    : mystery bone reveal (if any)
     //   2 800/3 000 ms + : achievement overlays, staggered 1 500 ms apart
     //   ≤ 5 000 ms  : share prompt (capped regardless of chain length)
-    const _kBaseDelayMs = 2800;
-    const _kAchievementStaggerMs = 1500;
-    const _kMaxShareDelayMs = 5000;
+    const kBaseDelayMs = 2800;
+    const kAchievementStaggerMs = 1500;
+    const kMaxShareDelayMs = 5000;
 
-    var delayMs = _kBaseDelayMs;
+    var delayMs = kBaseDelayMs;
 
     if (outcome.mysteryReward != null) {
       Future.delayed(Duration(milliseconds: delayMs), () {
@@ -642,7 +683,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
           description: a.$3,
         );
       });
-      delayMs += _kAchievementStaggerMs;
+      delayMs += kAchievementStaggerMs;
     }
 
     // ── UI: Encounter milestone snackbar (after all overlays) ────────────
@@ -652,6 +693,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.deepPurple.withValues(alpha: 0.9),
+            behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 3),
             content: Row(
               children: [
@@ -673,11 +715,11 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
       });
     }
 
-    // ── UI: Share prompt — cap to _kMaxShareDelayMs regardless of chain ──
+    // ── UI: Share prompt — cap to kMaxShareDelayMs regardless of chain ──
     final isSpecialFind =
         dog.rarity == Rarity.rare || dog.rarity == Rarity.legendary;
     final shareDelayMs =
-        (delayMs + (isSpecialFind ? 500 : 300)).clamp(0, _kMaxShareDelayMs);
+        (delayMs + (isSpecialFind ? 500 : 300)).clamp(0, kMaxShareDelayMs);
     if (isSpecialFind) {
       // Auto-show share sheet for rare/legendary finds
       Future.delayed(Duration(milliseconds: shareDelayMs), () {
@@ -691,6 +733,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: bgCard,
+            behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 4),
             content: const Text(
               'New breed added!',
@@ -729,94 +772,50 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
             children: [
               // ── Camera preview or error state ──
               if (_camReady && _cam != null)
-                GestureDetector(
-                  key: _viewfinderKey,
-                  onScaleStart: (_) => _baseZoom = _currentZoom,
-                  onScaleUpdate: (details) {
-                    final newZoom =
-                        (_baseZoom * details.scale).clamp(_minZoom, _maxZoom);
-                    if ((newZoom - _currentZoom).abs() > 0.05) {
-                      _currentZoom = newZoom;
-                      _cam?.setZoomLevel(
-                        _currentZoom,
-                      ); // fire-and-forget to avoid HAL race
-                      setState(() {});
-                    }
-                  },
-                  onTapUp: (details) {
-                    final box = _viewfinderKey.currentContext
-                        ?.findRenderObject() as RenderBox?;
-                    if (box == null) return;
-                    final size = box.size;
-                    final nx =
-                        (details.localPosition.dx / size.width).clamp(0.0, 1.0);
-                    final ny = (details.localPosition.dy / size.height)
-                        .clamp(0.0, 1.0);
-                    unawaited(
-                      _handleFocusTap(Offset(nx, ny), details.localPosition),
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.circular(24),
+                AnimatedOpacity(
+                  opacity: _camReady ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                  child: GestureDetector(
+                    key: _viewfinderKey,
+                    onScaleStart: (_) => _baseZoom = _currentZoom,
+                    onScaleUpdate: (details) {
+                      final newZoom =
+                          (_baseZoom * details.scale).clamp(_minZoom, _maxZoom);
+                      if ((newZoom - _currentZoom).abs() > 0.05) {
+                        _currentZoom = newZoom;
+                        _cam?.setZoomLevel(
+                          _currentZoom,
+                        ); // fire-and-forget to avoid HAL race
+                        setState(() {});
+                      }
+                    },
+                    onTapUp: (details) {
+                      final box = _viewfinderKey.currentContext
+                          ?.findRenderObject() as RenderBox?;
+                      if (box == null) return;
+                      final size = box.size;
+                      final nx = (details.localPosition.dx / size.width)
+                          .clamp(0.0, 1.0);
+                      final ny = (details.localPosition.dy / size.height)
+                          .clamp(0.0, 1.0);
+                      unawaited(
+                        _handleFocusTap(Offset(nx, ny), details.localPosition),
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(24),
+                      ),
+                      child: CameraPreview(_cam!),
                     ),
-                    child: CameraPreview(_cam!),
                   ),
                 )
               else
-                GestureDetector(
-                  onTap: _cameraError != null ? _initCamera : null,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: bgCard,
-                      borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(24),
-                      ),
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            _cameraError != null
-                                ? Icons.videocam_off_rounded
-                                : Icons.camera_alt,
-                            size: 64,
-                            color: Colors.white24,
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            _cameraError != null
-                                ? 'Camera not available'
-                                : 'Camera loading...',
-                            style: const TextStyle(
-                              color: Colors.white54,
-                              fontSize: 16,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          if (_cameraError != null) ...[
-                            const SizedBox(height: 8),
-                            const Text(
-                              'Tap to retry',
-                              style:
-                                  TextStyle(color: Colors.amber, fontSize: 14),
-                            ),
-                          ] else ...[
-                            const SizedBox(height: 12),
-                            const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white24,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
+                _CameraLoadingWidget(
+                  cameraError: _cameraError,
+                  onRetry: _initCamera,
+                  onGallery: _pickFromGallery,
                 ),
 
               // ── Shutter flash overlay (always mounted so animation plays) ──
@@ -877,16 +876,17 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
                   ),
                 ),
 
-              // ── Daily challenge progress pill — shown only for new users ──
-              const Positioned(
-                bottom: 130,
-                left: 0,
-                right: 0,
-                child: Center(child: _DailyChallengePill()),
-              ),
+              // ── Daily challenge progress pill — hidden while coach mark is active ──
+              if (_hasSeenCoachMark)
+                const Positioned(
+                  bottom: 130,
+                  left: 0,
+                  right: 0,
+                  child: Center(child: _DailyChallengePill()),
+                ),
 
-              // ── First-time tip (#7) ──
-              if (!_camReady || _identifying)
+              // ── First-time tip (#7) — hidden while coach mark is active ──
+              if (!_camReady || _identifying || !_hasSeenCoachMark)
                 const SizedBox.shrink()
               else
                 const _FirstTimeTip(),
@@ -926,18 +926,74 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
                           const Text(
                             'Gallery',
                             style:
-                                TextStyle(color: Colors.white54, fontSize: 10),
+                                TextStyle(color: Colors.white70, fontSize: 10),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(width: 28),
-                    // Main capture button (center)
-                    CaptureButton(
-                      onTap: _takePhoto,
-                      isProcessing: _identifying,
-                      mode: CaptureMode.photo,
-                    ),
+                    // Main capture button (center) — wrapped with coach mark on first visit
+                    if (_hasSeenCoachMark)
+                      CaptureButton(
+                        onTap: _takePhoto,
+                        isProcessing: _identifying,
+                        mode: CaptureMode.photo,
+                      )
+                    else
+                      Stack(
+                        alignment: Alignment.center,
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned(
+                            top: -44,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.amber,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Text(
+                                'Start here.',
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 88,
+                            height: 88,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.amber,
+                                width: 3,
+                              ),
+                            ),
+                          )
+                              .animate(onPlay: (c) => c.repeat())
+                              .scale(
+                                begin: const Offset(0.85, 0.85),
+                                end: const Offset(1.45, 1.45),
+                                duration: 900.ms,
+                                curve: Curves.easeOut,
+                              )
+                              .fadeOut(
+                                duration: 900.ms,
+                                curve: Curves.easeOut,
+                              ),
+                          CaptureButton(
+                            onTap: _takePhoto,
+                            isProcessing: _identifying,
+                            mode: CaptureMode.photo,
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -1011,8 +1067,8 @@ class _BreedSearchDialogState extends State<_BreedSearchDialog> {
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Type breed name...',
-                  hintStyle: const TextStyle(color: Colors.white38),
-                  prefixIcon: const Icon(Icons.search, color: Colors.white38),
+                  hintStyle: const TextStyle(color: Colors.white70),
+                  prefixIcon: const Icon(Icons.search, color: Colors.white70),
                   filled: true,
                   fillColor: Colors.white.withValues(alpha: 0.06),
                   border: OutlineInputBorder(
@@ -1030,7 +1086,7 @@ class _BreedSearchDialogState extends State<_BreedSearchDialog> {
                           padding: EdgeInsets.all(24),
                           child: Text(
                             'No breeds match your search',
-                            style: TextStyle(color: Colors.white38),
+                            style: TextStyle(color: Colors.white70),
                           ),
                         ),
                       )
@@ -1053,7 +1109,7 @@ class _BreedSearchDialogState extends State<_BreedSearchDialog> {
                               child: const Center(
                                 child: Icon(
                                   Icons.pets,
-                                  color: Colors.white54,
+                                  color: Colors.white70,
                                   size: 18,
                                 ),
                               ),
@@ -1068,7 +1124,7 @@ class _BreedSearchDialogState extends State<_BreedSearchDialog> {
                             subtitle: Text(
                               dog.habitat,
                               style: const TextStyle(
-                                color: Colors.white38,
+                                color: Colors.white70,
                                 fontSize: 11,
                               ),
                               maxLines: 1,
@@ -1151,6 +1207,144 @@ class _DailyChallengePill extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ── Camera loading / error placeholder ─────────────────────────────────
+class _CameraLoadingWidget extends StatefulWidget {
+  final String? cameraError;
+  final VoidCallback onRetry;
+  final VoidCallback onGallery;
+
+  const _CameraLoadingWidget({
+    required this.cameraError,
+    required this.onRetry,
+    required this.onGallery,
+  });
+
+  @override
+  State<_CameraLoadingWidget> createState() => _CameraLoadingWidgetState();
+}
+
+class _CameraLoadingWidgetState extends State<_CameraLoadingWidget> {
+  static const _tips = [
+    'Point at any dog to identify it!',
+    'Try the Gallery for saved photos',
+    'Discover $kDeployedBreedCount breeds!',
+    'Earn XP for every new breed',
+  ];
+
+  int _tipIndex = 0;
+  Timer? _tipTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.cameraError == null) {
+      _tipTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+        if (mounted) {
+          setState(() => _tipIndex = (_tipIndex + 1) % _tips.length);
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _tipTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hasError = widget.cameraError != null;
+
+    return Semantics(
+      label: hasError
+          ? 'Camera is not available.'
+          : 'Camera is loading. Please wait.',
+      child: GestureDetector(
+        onTap: hasError ? widget.onRetry : null,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: bgCard,
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(24),
+            ),
+          ),
+          child: Center(
+            child: hasError ? _buildErrorState() : _buildLoadingState(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(
+          Icons.videocam_off_rounded,
+          size: 64,
+          color: Colors.white70,
+        ),
+        const SizedBox(height: 12),
+        const Text(
+          'Camera not available',
+          style: TextStyle(color: textSecondary, fontSize: 16),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Tap to retry',
+          style: TextStyle(color: Colors.amber, fontSize: 14),
+        ),
+        const SizedBox(height: 16),
+        TextButton.icon(
+          onPressed: widget.onGallery,
+          icon: const Icon(Icons.photo_library_rounded, size: 18),
+          label: const Text('Use Gallery instead'),
+          style: TextButton.styleFrom(foregroundColor: accent),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.pets, size: 80, color: accent)
+            .animate(onPlay: (c) => c.repeat(reverse: true))
+            .scale(
+              begin: const Offset(1.0, 1.0),
+              end: const Offset(1.05, 1.05),
+              duration: 2000.ms,
+              curve: Curves.easeInOut,
+            ),
+        const SizedBox(height: 16),
+        const Text(
+          'Preparing camera...',
+          style: TextStyle(color: textSecondary, fontSize: 16),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 20),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 400),
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+          child: Text(
+            '\u{1F4A1} ${_tips[_tipIndex]}',
+            key: ValueKey<int>(_tipIndex),
+            style: const TextStyle(color: textMuted, fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
     );
   }
 }
