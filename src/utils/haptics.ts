@@ -1,7 +1,10 @@
-// Tiny haptic helper for mobile feedback. Calls navigator.vibrate when
-// available, no-ops otherwise. Restricted to deck mutations and
-// pin/unpin (not every click) so the device doesn't buzz on filter
-// taps or modal opens.
+// Tiny haptic helper for mobile feedback. On native Android uses
+// Capacitor Haptics; on web falls back to navigator.vibrate(8).
+// Restricted to deck mutations and pin/unpin — not filter taps or
+// modal opens.
+
+import { Capacitor } from "@capacitor/core";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 let reduceMotion: boolean | null = null;
 
@@ -12,10 +15,12 @@ function prefersReducedMotion(): boolean {
   return reduceMotion;
 }
 
-// 8ms feels like a satisfying tick on Android Chrome — not a buzz.
-// Anything ≥20ms reads as alarm. Desktop browsers ignore this entirely.
 export function tap(): void {
   if (prefersReducedMotion()) return;
+  if (Capacitor.isNativePlatform()) {
+    Haptics.impact({ style: ImpactStyle.Light });
+    return;
+  }
   if (typeof navigator === "undefined" || !navigator.vibrate) return;
   navigator.vibrate(8);
 }
