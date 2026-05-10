@@ -641,8 +641,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          // Question
-          _buildQuestion(q),
+          // Question (with fade transition between questions)
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            switchInCurve: Curves.easeOut,
+            switchOutCurve: Curves.easeIn,
+            child: KeyedSubtree(
+              key: ValueKey<int>(_currentIndex),
+              child: _buildQuestion(q),
+            ),
+          ),
           const SizedBox(height: 16),
 
           // Inline hint callout (persists until answer is locked)
@@ -750,7 +758,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             Text(
               q.type.prompt,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -895,14 +903,20 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.purple.withValues(alpha: 0.8),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white24),
+                    ),
+                    child: const Text(
                       'VS',
                       style: TextStyle(
-                        color: Colors.amber,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 12,
                       ),
                     ),
                   ),
@@ -1235,11 +1249,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                   Expanded(
                     child: Text(
                       q.options[index],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
                     ),
                   ),
                   if (trailingIcon != null)
@@ -1430,23 +1443,32 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                   value: '+$totalXp',
                   label: 'XP earned',
                   color: Colors.amber,
-                ),
+                )
+                    .animate()
+                    .fadeIn(delay: 400.ms)
+                    .slideY(begin: 0.2, duration: 300.ms),
                 const SizedBox(width: 24),
                 _ResultStat(
                   icon: Icons.local_fire_department,
                   value: '${_bestStreak}x',
                   label: 'Best streak',
                   color: Colors.orange,
-                ),
+                )
+                    .animate()
+                    .fadeIn(delay: 550.ms)
+                    .slideY(begin: 0.2, duration: 300.ms),
                 const SizedBox(width: 24),
                 _ResultStat(
                   icon: Icons.category,
                   value: '${_questions!.map((q) => q.type).toSet().length}',
                   label: 'Q types',
                   color: Colors.purple,
-                ),
+                )
+                    .animate()
+                    .fadeIn(delay: 700.ms)
+                    .slideY(begin: 0.2, duration: 300.ms),
               ],
-            ).animate().fadeIn(delay: 400.ms),
+            ),
             const SizedBox(height: 24),
             OutlinedButton.icon(
               onPressed: () => _showReview(context),
