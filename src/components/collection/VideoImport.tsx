@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CollectionEntry } from "../../types/card";
 import { extractFrames, ExtractedFrame } from "../../services/video-processor";
 import {
@@ -18,7 +18,8 @@ export default function VideoImport({ allCards, onImport }: Props) {
   const [stage, setStage] = useState<Stage>("idle");
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
-  const [apiKey, setApiKey] = useState(getStoredApiKey());
+  const [apiKey, setApiKey] = useState("");
+  useEffect(() => { getStoredApiKey().then(setApiKey); }, []);
   const [error, setError] = useState("");
   const [results, setResults] = useState<CollectionEntry[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
@@ -38,7 +39,7 @@ export default function VideoImport({ allCards, onImport }: Props) {
       return;
     }
 
-    setStoredApiKey(apiKey.trim());
+    await setStoredApiKey(apiKey.trim());
     setError("");
 
     try {

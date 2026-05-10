@@ -1,24 +1,25 @@
 import { useState, useEffect, useCallback } from "react";
 import { Deck, DeckCard } from "../types/card";
+import { storageGet, storageSet } from "../utils/storage";
 
 const STORAGE_KEY = "tcgp-decks";
 
-function loadDecks(): Deck[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
 export function useDecks() {
-  const [decks, setDecks] = useState<Deck[]>(loadDecks);
+  const [decks, setDecks] = useState<Deck[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [activeDeckId, setActiveDeckId] = useState<string | null>(null);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(decks));
-  }, [decks]);
+    storageGet(STORAGE_KEY)
+      .then((raw) => { if (raw) setDecks(JSON.parse(raw)); })
+      .catch(() => {})
+      .finally(() => setLoaded(true));
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    storageSet(STORAGE_KEY, JSON.stringify(decks));
+  }, [decks, loaded]);
 
   const activeDeck = decks.find((d) => d.id === activeDeckId) || null;
 
