@@ -285,18 +285,19 @@ class SupabasePackService {
       // Count members per pack
       final results = <PackRemote>[];
       for (final pack in packs as List) {
+        final p = pack as Map<String, dynamic>;
         final members = await _client
             .from('pack_members')
             .select('id')
-            .eq('pack_id', pack['id'] as String);
+            .eq('pack_id', p['id'] as String);
 
         results.add(
           PackRemote(
-            id: pack['id'] as String,
-            name: pack['name'] as String,
-            inviteCode: pack['invite_code'] as String,
-            createdBy: pack['created_by'] as String,
-            createdAt: DateTime.parse(pack['created_at'] as String),
+            id: p['id'] as String,
+            name: p['name'] as String,
+            inviteCode: p['invite_code'] as String,
+            createdBy: p['created_by'] as String,
+            createdAt: DateTime.parse(p['created_at'] as String),
             memberCount: (members as List).length,
           ),
         );

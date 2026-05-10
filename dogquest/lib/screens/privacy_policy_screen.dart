@@ -35,7 +35,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             const Text(
-              'Last updated: March 2026',
+              'Last updated: May 2026',
               style: TextStyle(color: Colors.white38, fontSize: 13),
             ),
             const SizedBox(height: 20),
@@ -110,24 +110,27 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _heading('5. Third-Party Services'),
             const SizedBox(height: 8),
             _body(
-              'Hound uses the following third-party services to enhance '
-              'your experience:',
+              'Hound uses the following third-party services:',
             ),
             const SizedBox(height: 8),
             _bullet(
-              'Dog breed reference images are loaded from various image '
-              'sources. Your IP address may be visible to image hosting '
-              'servers when images are fetched.',
+              'Firebase Analytics and Crashlytics (Google) to understand app '
+              'usage patterns and diagnose crashes. This includes anonymous '
+              'usage events, crash reports, and basic device information.',
             ),
             _bullet(
-              'Dog breed audio samples are provided for educational purposes. '
-              'Your IP address may be visible to third-party servers when audio '
-              'is played.',
+              'AdMob (Google) to display advertisements. AdMob may collect '
+              'device identifiers and usage data to serve relevant ads. You '
+              'can opt out of personalized ads in your device settings.',
             ),
-            const SizedBox(height: 8),
-            _body(
-              'We do not use any advertising SDKs, analytics trackers, or '
-              'social media integrations.',
+            _bullet(
+              'Supabase for account authentication and data sync when you '
+              'create an account. Your email and collection data are stored '
+              'on Supabase servers.',
+            ),
+            _bullet(
+              'Dog breed reference images are loaded from Wikimedia Commons. '
+              'Your IP address may be visible to image hosting servers.',
             ),
             const SizedBox(height: 24),
             _heading('6. Data Sharing'),

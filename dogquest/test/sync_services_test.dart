@@ -274,8 +274,11 @@ void main() {
       when(() => mockAuth.currentSession).thenReturn(null);
 
       // The documented guard: if (_client.auth.currentSession == null) return
-      expect(mockAuth.currentSession, isNull,
-          reason: 'No session means pull sync must be skipped');
+      expect(
+        mockAuth.currentSession,
+        isNull,
+        reason: 'No session means pull sync must be skipped',
+      );
     });
 
     test('syncAll proceeds when a valid session is present', () {
@@ -327,8 +330,11 @@ void main() {
       final sessionPresent = mockAuth.currentSession != null;
       // The router fires the clear when both conditions hold:
       final shouldClear = sessionPresent && offlineModeBeforeAuth;
-      expect(shouldClear, isTrue,
-          reason: 'session+offline_mode → router must schedule the clear');
+      expect(
+        shouldClear,
+        isTrue,
+        reason: 'session+offline_mode → router must schedule the clear',
+      );
     });
 
     test('offline → online → offline: flag round-trips correctly', () {
@@ -344,15 +350,21 @@ void main() {
 
       // 2. User taps "Continue Offline" -> sets the flag.
       offlineMode = true;
-      expect(hasSession || offlineMode, isTrue,
-          reason: 'router lets the user through in offline mode');
+      expect(
+        hasSession || offlineMode,
+        isTrue,
+        reason: 'router lets the user through in offline mode',
+      );
 
       // 3. User authenticates. The router safety net (sec-C1) clears the
       //    flag once a session appears.
       hasSession = true;
       if (hasSession && offlineMode) offlineMode = false; // mirrors router
-      expect(offlineMode, isFalse,
-          reason: 'authenticated session must invalidate offline_mode');
+      expect(
+        offlineMode,
+        isFalse,
+        reason: 'authenticated session must invalidate offline_mode',
+      );
 
       // 4. User signs out, taps "Continue Offline" again -> flag back on.
       hasSession = false;
@@ -370,24 +382,33 @@ void main() {
       final local = DateTime.parse(ts);
 
       // Guard: skip if local is NOT before server
-      expect(local.isBefore(server), isFalse,
-          reason: 'Equal timestamps → local is current, skip write');
+      expect(
+        local.isBefore(server),
+        isFalse,
+        reason: 'Equal timestamps → local is current, skip write',
+      );
     });
 
     test('skips write when local updated_at is newer than server', () {
       final server = DateTime.parse('2026-03-10T08:00:00Z');
       final local = DateTime.parse('2026-03-15T12:00:00Z');
 
-      expect(local.isBefore(server), isFalse,
-          reason: 'Local is newer → already up to date, skip write');
+      expect(
+        local.isBefore(server),
+        isFalse,
+        reason: 'Local is newer → already up to date, skip write',
+      );
     });
 
     test('writes when local updated_at is older than server', () {
       final server = DateTime.parse('2026-03-15T12:00:00Z');
       final local = DateTime.parse('2026-03-10T08:00:00Z');
 
-      expect(local.isBefore(server), isTrue,
-          reason: 'Server is newer → write the server value to local');
+      expect(
+        local.isBefore(server),
+        isTrue,
+        reason: 'Server is newer → write the server value to local',
+      );
     });
   });
 
@@ -398,14 +419,14 @@ void main() {
     test('uses server count when server > local', () {
       const local = 10;
       const server = 25;
-      final resolved = local >= server ? local : server;
+      const resolved = local >= server ? local : server;
       expect(resolved, equals(25));
     });
 
     test('uses local count when local >= server', () {
       const local = 30;
       const server = 20;
-      final resolved = local >= server ? local : server;
+      const resolved = local >= server ? local : server;
       expect(resolved, equals(30));
     });
   });

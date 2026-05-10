@@ -24,8 +24,10 @@ void showAchievementSnackBar(
                 style:
                     TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
               ),
-              Text(achievement.$2,
-                  style: const TextStyle(color: Colors.white70)),
+              Text(
+                achievement.$2,
+                style: const TextStyle(color: Colors.white70),
+              ),
             ],
           ),
         ],

@@ -6,23 +6,27 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'package:dogquest/services/data_consent_service.dart';
 
-/// A reusable banner ad widget for DogQuest.
+/// A reusable banner ad widget for Hound.
 ///
 /// Displays a 320x50 AdMob banner ad. Falls back to Google's test ad unit
 /// in debug mode. Silently handles load failures without showing error UI.
-class DogQuestBannerAd extends StatefulWidget {
-  const DogQuestBannerAd({super.key});
+class HoundBannerAd extends StatefulWidget {
+  const HoundBannerAd({super.key});
 
   @override
-  State<DogQuestBannerAd> createState() => _DogQuestBannerAdState();
+  State<HoundBannerAd> createState() => _HoundBannerAdState();
 }
 
-class _DogQuestBannerAdState extends State<DogQuestBannerAd> {
+class _HoundBannerAdState extends State<HoundBannerAd> {
+  /// Google's documented test banner ad unit. Used in debug only.
+  /// Source: https://developers.google.com/admob/android/test-ads
   static const String _testAdUnitId = 'ca-app-pub-3940256099942544/6300978111';
 
+  /// Production banner ID — MUST be passed via --dart-define in release.
+  /// Empty default prevents serving Google's test unit to real users
+  /// when an ADMOB_BANNER_ID isn't configured.
   static const String _configuredAdUnitId = String.fromEnvironment(
     'ADMOB_BANNER_ID',
-    defaultValue: _testAdUnitId,
   );
 
   BannerAd? _bannerAd;
@@ -49,6 +53,15 @@ class _DogQuestBannerAdState extends State<DogQuestBannerAd> {
   }
 
   void _loadAd() {
+    if (_adUnitId.isEmpty) {
+      developer.log(
+        'HoundBannerAd skipped: ADMOB_BANNER_ID not configured '
+        'for this build (expected in release without --dart-define).',
+        name: 'HoundBannerAd',
+        level: 700, // INFO
+      );
+      return;
+    }
     _bannerAd = BannerAd(
       adUnitId: _adUnitId,
       size: AdSize.banner,
@@ -63,8 +76,8 @@ class _DogQuestBannerAdState extends State<DogQuestBannerAd> {
         },
         onAdFailedToLoad: (ad, error) {
           developer.log(
-            'DogQuestBannerAd failed to load: ${error.message}',
-            name: 'DogQuestBannerAd',
+            'HoundBannerAd failed to load: ${error.message}',
+            name: 'HoundBannerAd',
             level: 900, // WARNING
           );
           ad.dispose();

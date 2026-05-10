@@ -10,7 +10,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
 
     <application
-        android:label="DogQuest"
+        android:label="Hound"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
@@ -37,12 +37,23 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="com.dogquest.app" android:host="login-callback"/>
+                <data android:scheme="com.hound.app" android:host="login-callback"/>
             </intent-filter>
         </activity>
         <meta-data
             android:name="flutterEmbedding"
             android:value="2"/>
+
+        <!-- AdMob App ID. Using Google's documented test App ID so the
+             MobileAdsInitProvider can initialize without crashing. The
+             SDK requires APPLICATION_ID at the manifest level even when
+             ad unit IDs are env-driven. Replace with real Hound AdMob
+             App ID before Play Store launch (register com.hound.app in
+             AdMob console first). Test ID source:
+             https://developers.google.com/admob/android/test-ads -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
 
         <!-- flutter_local_notifications: re-schedule after device reboot -->
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />

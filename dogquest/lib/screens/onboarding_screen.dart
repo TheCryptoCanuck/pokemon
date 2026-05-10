@@ -157,8 +157,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () =>
-                                unawaited(_startAsGuest('onboarding_completed')),
+                            onPressed: () => unawaited(
+                                _startAsGuest('onboarding_completed')),
                             child: const Text('Start scanning →'),
                           ),
                         ),
@@ -167,9 +167,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           width: double.infinity,
                           child: TextButton(
                             onPressed: () {
-                              ref
-                                  .read(analyticsProvider)
-                                  .track('onboarding_completed', {'path': 'account'});
+                              ref.read(analyticsProvider).track(
+                                  'onboarding_completed', {'path': 'account'});
                               OnboardingScreen.markComplete();
                               widget.onComplete();
                             },

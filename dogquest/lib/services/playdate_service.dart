@@ -115,7 +115,13 @@ class PlaydateService {
 
   PlaydateService(this._client);
 
-  String get _userId => _client.auth.currentUser!.id;
+  String get _userId {
+    final uid = _client.auth.currentUser?.id;
+    if (uid == null) {
+      throw StateError('No authenticated user — session expired');
+    }
+    return uid;
+  }
 
   // ── Create ──────────────────────────────────────────────────────────────
 

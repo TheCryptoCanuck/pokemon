@@ -10,7 +10,8 @@ void main() {
   setUp(() async {
     Hive.init('./test_hive_pack');
     box = await Hive.openBox(
-        'test_pack_${DateTime.now().millisecondsSinceEpoch}');
+      'test_pack_${DateTime.now().millisecondsSinceEpoch}',
+    );
     service = PackService(box);
   });
 
@@ -31,7 +32,10 @@ void main() {
         createdAt: DateTime(2026, 3, 1),
         members: [
           PackMember(
-              name: 'Alice', role: 'alpha', joinedAt: DateTime(2026, 3, 1)),
+            name: 'Alice',
+            role: 'alpha',
+            joinedAt: DateTime(2026, 3, 1),
+          ),
         ],
       );
       service.createPack(pack);
@@ -41,14 +45,16 @@ void main() {
     });
 
     test('addMember appends to members list', () {
-      service.createPack(Pack(
-        name: 'My Pack',
-        inviteCode: 'XYZ789',
-        createdAt: DateTime.now(),
-        members: [
-          PackMember(name: 'Owner', role: 'alpha', joinedAt: DateTime.now())
-        ],
-      ));
+      service.createPack(
+        Pack(
+          name: 'My Pack',
+          inviteCode: 'XYZ789',
+          createdAt: DateTime.now(),
+          members: [
+            PackMember(name: 'Owner', role: 'alpha', joinedAt: DateTime.now()),
+          ],
+        ),
+      );
       service.addMember(PackMember(name: 'Bob', joinedAt: DateTime.now()));
       expect(service.pack!.members.length, 2);
       expect(service.pack!.members[1].name, 'Bob');
@@ -60,58 +66,67 @@ void main() {
     });
 
     test('removeMember removes by name', () {
-      service.createPack(Pack(
-        name: 'Pack',
-        inviteCode: 'AAA',
-        createdAt: DateTime.now(),
-        members: [
-          PackMember(name: 'A', role: 'alpha', joinedAt: DateTime.now()),
-          PackMember(name: 'B', joinedAt: DateTime.now()),
-          PackMember(name: 'C', joinedAt: DateTime.now()),
-        ],
-      ));
+      service.createPack(
+        Pack(
+          name: 'Pack',
+          inviteCode: 'AAA',
+          createdAt: DateTime.now(),
+          members: [
+            PackMember(name: 'A', role: 'alpha', joinedAt: DateTime.now()),
+            PackMember(name: 'B', joinedAt: DateTime.now()),
+            PackMember(name: 'C', joinedAt: DateTime.now()),
+          ],
+        ),
+      );
       service.removeMember('B');
       expect(service.pack!.members.length, 2);
       expect(service.pack!.members.map((m) => m.name), isNot(contains('B')));
     });
 
     test('updateMember replaces member by original name', () {
-      service.createPack(Pack(
-        name: 'Pack',
-        inviteCode: 'BBB',
-        createdAt: DateTime.now(),
-        members: [
-          PackMember(name: 'Alice', role: 'alpha', joinedAt: DateTime.now()),
-        ],
-      ));
+      service.createPack(
+        Pack(
+          name: 'Pack',
+          inviteCode: 'BBB',
+          createdAt: DateTime.now(),
+          members: [
+            PackMember(name: 'Alice', role: 'alpha', joinedAt: DateTime.now()),
+          ],
+        ),
+      );
       service.updateMember(
         'Alice',
         PackMember(
-            name: 'Alice',
-            role: 'alpha',
-            avatarEmoji: '\u{1F469}',
-            joinedAt: DateTime.now()),
+          name: 'Alice',
+          role: 'alpha',
+          avatarEmoji: '\u{1F469}',
+          joinedAt: DateTime.now(),
+        ),
       );
       expect(service.pack!.members[0].avatarEmoji, '\u{1F469}');
     });
 
     test('deletePack removes all pack data', () {
-      service.createPack(Pack(
-        name: 'Pack',
-        inviteCode: 'CCC',
-        createdAt: DateTime.now(),
-      ));
+      service.createPack(
+        Pack(
+          name: 'Pack',
+          inviteCode: 'CCC',
+          createdAt: DateTime.now(),
+        ),
+      );
       expect(service.hasPack, isTrue);
       service.deletePack();
       expect(service.hasPack, isFalse);
     });
 
     test('recordWeeklyActivity accumulates within same week', () {
-      service.createPack(Pack(
-        name: 'Pack',
-        inviteCode: 'DDD',
-        createdAt: DateTime.now(),
-      ));
+      service.createPack(
+        Pack(
+          name: 'Pack',
+          inviteCode: 'DDD',
+          createdAt: DateTime.now(),
+        ),
+      );
       service.recordWeeklyActivity(breeds: 3, xp: 100);
       service.recordWeeklyActivity(breeds: 2, xp: 50);
       final p = service.pack!;
@@ -128,7 +143,10 @@ void main() {
         createdAt: DateTime.now(),
         members: [
           PackMember(
-              name: 'A', dogNames: ['Rex', 'Max'], joinedAt: DateTime.now()),
+            name: 'A',
+            dogNames: ['Rex', 'Max'],
+            joinedAt: DateTime.now(),
+          ),
           PackMember(name: 'B', dogNames: ['Buddy'], joinedAt: DateTime.now()),
         ],
       );
@@ -180,7 +198,10 @@ void main() {
         weeklyXpEarned: 200,
         members: [
           PackMember(
-              name: 'Alice', role: 'alpha', joinedAt: DateTime(2026, 3, 1)),
+            name: 'Alice',
+            role: 'alpha',
+            joinedAt: DateTime(2026, 3, 1),
+          ),
         ],
       );
       final restored = Pack.fromJson(original.toJson());

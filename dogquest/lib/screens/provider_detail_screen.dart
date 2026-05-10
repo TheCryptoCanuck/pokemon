@@ -459,7 +459,7 @@ class _PartnerDiscountBox extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'DogQuest Members save $discountPercent%!',
+                  'Hound Members save $discountPercent%!',
                   style: TextStyle(
                     color: Colors.amber.withValues(alpha: 0.85),
                     fontSize: 13,
@@ -510,7 +510,7 @@ const _mockReviews = [
   _MockReview(
     author: 'Linda P.',
     rating: 5.0,
-    text: 'The DogQuest partner discount is a great perk! '
+    text: 'The Hound partner discount is a great perk! '
         'Excellent service and my Labrador always comes home happy.',
     timeAgo: '2 weeks ago',
   ),

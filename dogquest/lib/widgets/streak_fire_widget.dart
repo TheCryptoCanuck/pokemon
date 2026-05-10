@@ -50,7 +50,40 @@ class _StreakFireWidgetState extends State<StreakFireWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.streak <= 0) return const SizedBox.shrink();
+    // Dormant state — streak is 0 but keep the widget visible as a CTA.
+    if (widget.streak <= 0) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.04),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white12),
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '\u{1F525}',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white24,
+                decoration: TextDecoration.none,
+              ),
+            ),
+            SizedBox(width: 6),
+            Text(
+              'Start streak',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.white38,
+                fontWeight: FontWeight.w500,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     final intensity = _intensity;
     final glowRadius = 8.0 + intensity * 24.0;

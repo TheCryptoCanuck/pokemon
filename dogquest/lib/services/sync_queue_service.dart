@@ -100,10 +100,13 @@ class SyncQueueService {
     required String operation,
     required Map<String, dynamic> data,
   }) async {
-    assert(
-      operation == 'insert' || operation == 'update' || operation == 'delete',
-      'operation must be insert, update, or delete',
-    );
+    if (operation != 'insert' &&
+        operation != 'update' &&
+        operation != 'delete') {
+      throw ArgumentError(
+        'operation must be insert, update, or delete — got "$operation"',
+      );
+    }
 
     final item = SyncQueueItem(
       id: _uuid.v4(),

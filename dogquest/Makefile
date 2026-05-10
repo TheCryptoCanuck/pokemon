@@ -1,9 +1,9 @@
-# DogQuest CLI — Unified Build & Deploy
+# Hound CLI — Unified Build & Deploy
 # Usage: make <target>
 
 SHELL := /bin/bash
 ADB := C:/Users/Administrator/AppData/Local/Android/Sdk/platform-tools/adb.exe
-APP_ID := com.dogquest.app
+APP_ID := com.hound.app
 APK := build/app/outputs/flutter-apk/app-debug.apk
 RELEASE_APK := build/app/outputs/flutter-apk/app-release.apk
 
@@ -15,7 +15,7 @@ RELEASE_APK := build/app/outputs/flutter-apk/app-release.apk
 
 # ── Help ──────────────────────────────────────────────────────────────
 help: ## Show all available commands
-	@echo "DogQuest CLI"
+	@echo "Hound CLI"
 	@echo "============"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -24,11 +24,20 @@ help: ## Show all available commands
 build: ## Build debug APK
 	flutter build apk --debug
 
-build-release: ## Build release APK (requires SUPABASE_URL, SUPABASE_ANON_KEY, SENTRY_DSN)
+build-release: ## Build release APK (requires SUPABASE_URL, SUPABASE_ANON_KEY)
 	flutter build apk --release \
 		--dart-define=ENV=production \
 		--dart-define=SUPABASE_URL=$${SUPABASE_URL:?SUPABASE_URL must be set} \
 		--dart-define=SUPABASE_ANON_KEY=$${SUPABASE_ANON_KEY:?SUPABASE_ANON_KEY must be set} \
+		--dart-define=API_BASE_URL=$${API_BASE_URL:-https://placeholder.example.com} \
+		--dart-define=SENTRY_DSN=$${SENTRY_DSN:-}
+
+build-aab: ## Build release AAB for Play Store (requires SUPABASE_URL, SUPABASE_ANON_KEY)
+	flutter build appbundle --release \
+		--dart-define=ENV=production \
+		--dart-define=SUPABASE_URL=$${SUPABASE_URL:?SUPABASE_URL must be set} \
+		--dart-define=SUPABASE_ANON_KEY=$${SUPABASE_ANON_KEY:?SUPABASE_ANON_KEY must be set} \
+		--dart-define=API_BASE_URL=$${API_BASE_URL:-https://placeholder.example.com} \
 		--dart-define=SENTRY_DSN=$${SENTRY_DSN:-}
 
 analyze: ## Run Flutter static analysis
@@ -64,14 +73,14 @@ kill: ## Force stop app
 
 # ── Logging ───────────────────────────────────────────────────────────
 logs: ## Show recent Flutter logs (last 100 lines)
-	$(ADB) logcat -d -t 100 | grep -iE "flutter|dogquest|tflite|error|exception" | \
+	$(ADB) logcat -d -t 100 | grep -iE "flutter|hound|tflite|error|exception" | \
 		grep -v "chromium\|InputMethod\|ViewRoot\|Bluetooth\|EglImage\|userfaultfd\|ManagedChannel"
 
 logs-live: ## Stream live Flutter logs
-	$(ADB) logcat | grep -iE "flutter|dogquest"
+	$(ADB) logcat | grep -iE "flutter|hound"
 
 logs-id: ## Show identification/ML logs
-	$(ADB) logcat -d -t 200 | grep -iE "DOGQUEST_ID\|entropy\|identify\|tflite"
+	$(ADB) logcat -d -t 200 | grep -iE "HOUND_ID\|entropy\|identify\|tflite"
 
 logs-clear: ## Clear device logcat
 	$(ADB) logcat -c
@@ -139,7 +148,7 @@ check: lint analyze test ## Gate: format check + analyze + test
 # ── Interactive Menu ─────────────────────────────────────────────────
 menu: ## Interactive workflow menu
 	@echo ""
-	@echo "DogQuest — Choose a workflow:"
+	@echo "Hound — Choose a workflow:"
 	@echo "─────────────────────────────"
 	@echo "  1) Build debug APK"
 	@echo "  2) Build release APK"
@@ -181,7 +190,7 @@ verify-deploy: ## Verify app is running on device
 	@$(ADB) shell dumpsys package $(APP_ID) 2>/dev/null | grep -E "versionName|versionCode|firstInstall|lastUpdate" || true
 	@echo ""
 	@echo "── Recent Logs (last 20) ──"
-	@$(ADB) logcat -d -t 20 | grep -iE "flutter|dogquest" | \
+	@$(ADB) logcat -d -t 20 | grep -iE "flutter|hound" | \
 		grep -v "chromium\|InputMethod\|ViewRoot" || echo "(no matching log lines)"
 
 # ── Model Lifecycle ──────────────────────────────────────────────────
@@ -260,7 +269,7 @@ wire-sentry: ## Phase 4: build + install with Sentry DSN — usage: make wire-se
 	fi
 	flutter build apk --debug --dart-define=SENTRY_DSN=$(SENTRY_DSN)
 	adb install -r build/app/outputs/flutter-apk/app-debug.apk
-	adb shell am start -n com.dogquest.app/.MainActivity
+	adb shell am start -n com.hound.app/.MainActivity
 	@echo ""
 	@echo "Next: trigger any error path in the debug build, watch Sentry dashboard for the event."
 
@@ -278,7 +287,7 @@ close-t1: verify-c3 c2-verify ## Phase 1+2: run the auto-verifiable T1 closes
 	@echo "── Manual / external steps remaining ──"
 	@echo "  Jesse-side:"
 	@echo "    a. C1 Supabase RLS: dashboard → Functions → sync_sightings (uses auth.uid()?), Tables → sightings → Policies (auth.uid() = user_id?)"
-	@echo "    b. On-device cluster verify: photograph Yorkie/Poodle/Husky in DogQuest, confirm cluster preferred names + no warnings in 'make logs-id'"
+	@echo "    b. On-device cluster verify: photograph Yorkie/Poodle/Husky in Hound, confirm cluster preferred names + no warnings in 'make logs-id'"
 	@echo "    c. Sentry signup at sentry.io, copy DSN, then: make wire-sentry SENTRY_DSN=<dsn>"
 	@echo "  Claude Code:"
 	@echo "    d. Read scripts/close_t1.md, execute Phase 4 + 5 + 6 + 7"

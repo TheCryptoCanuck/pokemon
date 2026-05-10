@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:dogquest/models/dog_friendship.dart';
+import 'package:dogquest/models/my_dog_profile.dart';
 import 'package:dogquest/services/dog_friendship_service.dart';
 
 class NeighborhoodGrid extends StatefulWidget {
@@ -45,7 +46,7 @@ class _NeighborhoodGridState extends State<NeighborhoodGrid> {
                 const Icon(Icons.park, color: Color(0xFFD4874E), size: 16),
                 const SizedBox(width: 6),
                 Text(
-                  '${widget.myDogs.isNotEmpty ? widget.myDogs.first.name : "Your"} Park',
+                  '${widget.myDogs.isNotEmpty ? (widget.myDogs.first as MyDogProfile).name : "Your"} Park',
                   style: const TextStyle(
                     color: Color(0xFFD4874E),
                     fontSize: 12,
@@ -115,7 +116,7 @@ class _NeighborhoodGridState extends State<NeighborhoodGrid> {
                             ? 1
                             : 2;
                     if (homeIdx < widget.myDogs.length) {
-                      final dog = widget.myDogs[homeIdx];
+                      final dog = widget.myDogs[homeIdx] as MyDogProfile;
                       return Expanded(
                         child: Container(
                           height: 68,

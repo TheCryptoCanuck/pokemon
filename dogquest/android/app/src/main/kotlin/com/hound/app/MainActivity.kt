@@ -1,4 +1,4 @@
-package com.dogquest.app
+package com.hound.app
 
 import io.flutter.embedding.android.FlutterActivity
 

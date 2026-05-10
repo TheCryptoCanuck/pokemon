@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Central security manager for DogQuest.
+/// Central security manager for Hound.
 /// Handles root/jailbreak detection, debug protection, and app integrity checks.
 class SecurityManager {
   SecurityManager._();

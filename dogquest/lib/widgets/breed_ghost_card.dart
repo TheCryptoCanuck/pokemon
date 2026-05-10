@@ -29,7 +29,7 @@ class BreedGhostCard extends StatelessWidget {
           const Center(
             child: Icon(
               Icons.help_outline,
-              color: Colors.white30,
+              color: Colors.white54,
               size: 40,
             ),
           ),

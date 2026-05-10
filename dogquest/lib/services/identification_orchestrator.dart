@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
@@ -21,6 +23,7 @@ import 'package:dogquest/services/player_service.dart';
 import 'package:dogquest/services/seasonal_event_service.dart';
 import 'package:dogquest/services/sighting_service.dart';
 import 'package:dogquest/services/dog_social_service.dart';
+import 'package:dogquest/services/exam_service.dart';
 
 final _log = Logger('IdentificationOrchestrator');
 
@@ -249,9 +252,15 @@ class IdentificationOrchestrator {
 
     final seasonalMultiplier = seasonalSvc.currentXpMultiplier;
     final dogGroup = familySvc.familyOf(dog);
-    final familyBonus = dogGroup != null
+    final collectionBonus = dogGroup != null
         ? (familySvc.progressFor(dogGroup.id)?.xpBonus ?? 1.0)
         : 1.0;
+    final examSvc = _ref.read(examServiceProvider);
+    final examBonus =
+        dogGroup != null ? examSvc.multiplierForGroup(dogGroup.id) : 1.0;
+    // Exam certification supersedes collection bonus — take whichever is higher.
+    final familyBonus =
+        collectionBonus > examBonus ? collectionBonus : examBonus;
 
     final streakMultiplier = _ref.read(playerProvider).streakXpMultiplier;
     final comboMultiplier = _ref.read(comboProvider).multiplier;
@@ -301,16 +310,19 @@ class IdentificationOrchestrator {
     final milestoneText = sightingSvc.encounterMilestoneText(dog.name);
 
     // ── Backend sync (fire-and-forget) ──────────────────────────────────
-    _ref
-        .read(backendSyncProvider)
-        .syncDogToCollection(dog.name, confidence: confidence, source: source)
-        .then((resp) {
-      if (resp != null) {
-        _log.info('Backend sync complete for ${dog.name}');
-      }
-    }).catchError((e) {
-      _log.warning('Backend sync error: $e');
-    });
+    // Intentionally not awaited: sync failure must not block the UI response.
+    unawaited(
+      _ref
+          .read(backendSyncProvider)
+          .syncDogToCollection(dog.name, confidence: confidence, source: source)
+          .then((resp) {
+        if (resp != null) {
+          _log.info('Backend sync complete for ${dog.name}');
+        }
+      }).catchError((e) {
+        _log.warning('Backend sync error: $e');
+      }),
+    );
 
     return IdentificationOutcome(
       alreadyOwned: alreadyOwned,

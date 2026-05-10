@@ -99,7 +99,7 @@ class SupabaseAuthService {
     try {
       final success = await _client.auth.signInWithOAuth(
         provider,
-        redirectTo: 'com.dogquest.app://login-callback',
+        redirectTo: 'com.hound.app://login-callback',
       );
       _log.info('OAuth sign in initiated: ${provider.name}');
       return success;

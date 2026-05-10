@@ -137,7 +137,8 @@ class _DogDetailSheetState extends State<DogDetailSheet> {
                   color: dog.rarity.color.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                      color: dog.rarity.color.withValues(alpha: 0.4)),
+                    color: dog.rarity.color.withValues(alpha: 0.4),
+                  ),
                 ),
                 child: Center(
                   child: Column(
@@ -175,7 +176,8 @@ class _DogDetailSheetState extends State<DogDetailSheet> {
                             .then((_) => widget.player.play())
                             .catchError((e) {
                           _log.fine(
-                              'Audio playback failed for ${dog.name}: $e');
+                            'Audio playback failed for ${dog.name}: $e',
+                          );
                         });
                       },
                       icon: const Icon(Icons.volume_up),
@@ -196,8 +198,10 @@ class _DogDetailSheetState extends State<DogDetailSheet> {
                             ),
                             title: const Row(
                               children: [
-                                Text('\u{1F4A1}',
-                                    style: TextStyle(fontSize: 24)),
+                                Text(
+                                  '\u{1F4A1}',
+                                  style: TextStyle(fontSize: 24),
+                                ),
                                 SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
@@ -269,7 +273,7 @@ class _DogDetailSheetState extends State<DogDetailSheet> {
     }
     if (dog.rarity == Rarity.legendary) {
       facts.add(
-        'The ${dog.name} is one of the rarest breeds you can find in DogQuest. Only 3% of encounters yield a legendary dog!',
+        'The ${dog.name} is one of the rarest breeds you can find in Hound. Only 3% of encounters yield a legendary dog!',
       );
     }
     if (dog.rarity == Rarity.rare) {

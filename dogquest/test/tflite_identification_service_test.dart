@@ -315,7 +315,7 @@ void main() {
 
     test('near-uniform 100-class distribution is rejected', () {
       // One class at 2%, the rest share 98% equally. normEntropy still > 0.97.
-      final small = (1.0 - 0.02) / 99;
+      const small = (1.0 - 0.02) / 99;
       final scores = [0.02, ...List<double>.filled(99, small)];
       final out = _mirrorBuildResults(scores);
       expect(out.rejected, isTrue);
@@ -324,7 +324,7 @@ void main() {
 
     test('clear 70% winner with 9-class residual is NOT rejected by entropy',
         () {
-      final rest = 0.30 / 9;
+      const rest = 0.30 / 9;
       final scores = [0.70, ...List<double>.filled(9, rest)];
       final out = _mirrorBuildResults(scores);
       expect(out.rejectionReason, isNot(equals('entropy')));
@@ -342,7 +342,7 @@ void main() {
         0.04,
         0.03,
         0.02,
-        0.01
+        0.01,
       ];
       final out = _mirrorBuildResults(scores);
       expect(out.rejectionReason, isNot(equals('entropy')));
@@ -355,8 +355,11 @@ void main() {
       for (final n in [3, 7, 50]) {
         final scores = List<double>.filled(n, 1.0 / n);
         final out = _mirrorBuildResults(scores);
-        expect(out.rejected, isTrue,
-            reason: 'uniform $n-class should be rejected');
+        expect(
+          out.rejected,
+          isTrue,
+          reason: 'uniform $n-class should be rejected',
+        );
         expect(out.rejectionReason, equals('entropy'));
       }
     });
@@ -365,7 +368,7 @@ void main() {
         'threshold is strictly > 0.97, so scores at exactly 0.97 are not rejected',
         () {
       // A discriminative 15-class distribution has normEntropy well below 0.97.
-      final rest = 0.35 / 14;
+      const rest = 0.35 / 14;
       final scores = [0.65, ...List<double>.filled(14, rest)];
       final out = _mirrorBuildResults(scores);
       expect(out.rejectionReason, isNot(equals('entropy')));
@@ -673,8 +676,8 @@ void main() {
         decodeUint8(uint8Raw3),
       ]);
 
-      final expected0 = (204 / 255.0 + 196 / 255.0 + 210 / 255.0) / 3;
-      final expected1 = (51 / 255.0 + 59 / 255.0 + 45 / 255.0) / 3;
+      const expected0 = (204 / 255.0 + 196 / 255.0 + 210 / 255.0) / 3;
+      const expected1 = (51 / 255.0 + 59 / 255.0 + 45 / 255.0) / 3;
       expect(avg[0], closeTo(expected0, 1e-9));
       expect(avg[1], closeTo(expected1, 1e-9));
     });
@@ -780,34 +783,34 @@ void main() {
   // ───────────────────────────────────────────────────────────────────────────
 
   group('_matchLabelToDog guard logic', () {
-    bool _guardPasses(String label) =>
+    bool guardPasses(String label) =>
         label.isNotEmpty && !label.startsWith('_');
 
     test('empty label is rejected', () {
-      expect(_guardPasses(''), isFalse);
+      expect(guardPasses(''), isFalse);
     });
 
     test('underscore-prefixed labels are rejected', () {
-      expect(_guardPasses('_background_'), isFalse);
-      expect(_guardPasses('_'), isFalse);
-      expect(_guardPasses('_unknown'), isFalse);
+      expect(guardPasses('_background_'), isFalse);
+      expect(guardPasses('_'), isFalse);
+      expect(guardPasses('_unknown'), isFalse);
     });
 
     test('normal breed labels pass the guard', () {
-      expect(_guardPasses('Golden Retriever'), isTrue);
-      expect(_guardPasses('labrador retriever'), isTrue);
-      expect(_guardPasses('beagle'), isTrue);
+      expect(guardPasses('Golden Retriever'), isTrue);
+      expect(guardPasses('labrador retriever'), isTrue);
+      expect(guardPasses('beagle'), isTrue);
     });
 
     test('label with underscore in the middle is NOT rejected', () {
       // Only labels STARTING with an underscore are filtered.
-      expect(_guardPasses('some_label'), isTrue);
-      expect(_guardPasses('flat_coated_retriever'), isTrue);
+      expect(guardPasses('some_label'), isTrue);
+      expect(guardPasses('flat_coated_retriever'), isTrue);
     });
 
     test('whitespace-only label is not empty — passes guard', () {
       // The real method does not trim; whitespace-only is non-empty.
-      expect(_guardPasses('   '), isTrue);
+      expect(guardPasses('   '), isTrue);
     });
   });
 
@@ -841,8 +844,10 @@ void main() {
       test('confidence 0.90 yields ConfidenceTier.high', () {
         expect(
           IdentificationResult(
-                  dog: _dog('Poodle'), confidence: 0.90, source: 'ml')
-              .confidenceTier,
+            dog: _dog('Poodle'),
+            confidence: 0.90,
+            source: 'ml',
+          ).confidenceTier,
           equals(ConfidenceTier.high),
         );
       });
@@ -852,8 +857,10 @@ void main() {
           () {
         expect(
           IdentificationResult(
-                  dog: _dog('Bulldog'), confidence: 0.34, source: 'ml')
-              .confidenceTier,
+            dog: _dog('Bulldog'),
+            confidence: 0.34,
+            source: 'ml',
+          ).confidenceTier,
           equals(ConfidenceTier.medium),
         );
       });
@@ -861,8 +868,10 @@ void main() {
       test('confidence 0.20 yields ConfidenceTier.medium (lower boundary)', () {
         expect(
           IdentificationResult(
-                  dog: _dog('Beagle'), confidence: 0.20, source: 'ml')
-              .confidenceTier,
+            dog: _dog('Beagle'),
+            confidence: 0.20,
+            source: 'ml',
+          ).confidenceTier,
           equals(ConfidenceTier.medium),
         );
       });
@@ -880,8 +889,10 @@ void main() {
           () {
         expect(
           IdentificationResult(
-                  dog: _dog('Chihuahua'), confidence: 0.19, source: 'ml')
-              .confidenceTier,
+            dog: _dog('Chihuahua'),
+            confidence: 0.19,
+            source: 'ml',
+          ).confidenceTier,
           equals(ConfidenceTier.low),
         );
       });
@@ -889,8 +900,10 @@ void main() {
       test('confidence 0.03 (minConfidence) yields ConfidenceTier.low', () {
         expect(
           IdentificationResult(
-                  dog: _dog('Basenji'), confidence: 0.03, source: 'ml')
-              .confidenceTier,
+            dog: _dog('Basenji'),
+            confidence: 0.03,
+            source: 'ml',
+          ).confidenceTier,
           equals(ConfidenceTier.low),
         );
       });
@@ -898,8 +911,10 @@ void main() {
       test('confidence 0.0 yields ConfidenceTier.low', () {
         expect(
           IdentificationResult(
-                  dog: _dog('Shih Tzu'), confidence: 0.0, source: 'ml')
-              .confidenceTier,
+            dog: _dog('Shih Tzu'),
+            confidence: 0.0,
+            source: 'ml',
+          ).confidenceTier,
           equals(ConfidenceTier.low),
         );
       });
@@ -909,8 +924,10 @@ void main() {
       test('source "ml" → isUnrecognized is false', () {
         expect(
           IdentificationResult(
-                  dog: _dog('Boxer'), confidence: 0.75, source: 'ml')
-              .isUnrecognized,
+            dog: _dog('Boxer'),
+            confidence: 0.75,
+            source: 'ml',
+          ).isUnrecognized,
           isFalse,
         );
       });
@@ -941,9 +958,15 @@ void main() {
     group('isCloseToAlternative', () {
       test('gap < 0.10 → isCloseToAlternative returns true', () {
         final top1 = IdentificationResult(
-            dog: _dog('Lab'), confidence: 0.50, source: 'ml');
+          dog: _dog('Lab'),
+          confidence: 0.50,
+          source: 'ml',
+        );
         final top2 = IdentificationResult(
-            dog: _dog('Golden'), confidence: 0.45, source: 'ml');
+          dog: _dog('Golden'),
+          confidence: 0.45,
+          source: 'ml',
+        );
         expect(top1.isCloseToAlternative(top2), isTrue);
       });
 
@@ -951,23 +974,38 @@ void main() {
         // 0.50 - 0.39 = 0.11, which is safely above the 0.10 threshold.
         // Avoids the IEEE 754 issue where 0.50 - 0.40 ≈ 0.09999... < 0.10.
         final top1 = IdentificationResult(
-            dog: _dog('Lab'), confidence: 0.50, source: 'ml');
+          dog: _dog('Lab'),
+          confidence: 0.50,
+          source: 'ml',
+        );
         final top2 = IdentificationResult(
-            dog: _dog('Golden'), confidence: 0.39, source: 'ml');
+          dog: _dog('Golden'),
+          confidence: 0.39,
+          source: 'ml',
+        );
         expect(top1.isCloseToAlternative(top2), isFalse);
       });
 
       test('gap > 0.10 → isCloseToAlternative returns false', () {
         final top1 = IdentificationResult(
-            dog: _dog('Lab'), confidence: 0.72, source: 'ml');
+          dog: _dog('Lab'),
+          confidence: 0.72,
+          source: 'ml',
+        );
         final top2 = IdentificationResult(
-            dog: _dog('Golden'), confidence: 0.12, source: 'ml');
+          dog: _dog('Golden'),
+          confidence: 0.12,
+          source: 'ml',
+        );
         expect(top1.isCloseToAlternative(top2), isFalse);
       });
 
       test('null other → isCloseToAlternative returns false', () {
         final result = IdentificationResult(
-            dog: _dog('Lab'), confidence: 0.50, source: 'ml');
+          dog: _dog('Lab'),
+          confidence: 0.50,
+          source: 'ml',
+        );
         expect(result.isCloseToAlternative(null), isFalse);
       });
     });
@@ -1030,7 +1068,7 @@ void main() {
 
   group('realistic model output scenarios', () {
     test('production v3 model: clear winner at 72% — accepted', () {
-      final residual = 0.08 / 148;
+      const residual = 0.08 / 148;
       final scores = [
         0.72, // German Shepherd
         0.12, // Belgian Malinois

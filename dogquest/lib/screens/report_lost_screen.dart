@@ -223,7 +223,7 @@ class _ReportLostScreenState extends ConsumerState<ReportLostScreen> {
             ),
             const SizedBox(height: 12),
             const Text(
-              'Every DogQuest user who scans a stray will automatically check against this report. We hope to bring them home soon.',
+              'Every Hound user who scans a stray will automatically check against this report. We hope to bring them home soon.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white38,

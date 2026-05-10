@@ -7,9 +7,47 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:303605946397:android:975c77db46ead8fa8dcef4",
+        "android_client_info": {
+          "package_name": "com.aviquest.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7ZNfAcXd0kt8nnsQ_FMp6qdpk879bRyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:303605946397:android:01946f97240882558dcef4",
         "android_client_info": {
           "package_name": "com.dogquest.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7ZNfAcXd0kt8nnsQ_FMp6qdpk879bRyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303605946397:android:7d62a7f1320af1a08dcef4",
+        "android_client_info": {
+          "package_name": "com.hound.app"
         }
       },
       "oauth_client": [],

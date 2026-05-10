@@ -20,7 +20,7 @@ class UserGreeting extends ConsumerWidget {
     final username =
         playerBox.get('cached_username', defaultValue: null) as String?;
     final displayName =
-        (username != null && username.isNotEmpty) ? username : 'Doger';
+        (username != null && username.isNotEmpty) ? username : 'Dog Lover';
     final playerState = ref.watch(playerProvider);
     final customPhotoPath = Hive.box('dogquest_player_stats')
         .get('custom_avatar_path', defaultValue: '') as String;

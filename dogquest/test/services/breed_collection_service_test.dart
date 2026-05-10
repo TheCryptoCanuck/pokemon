@@ -15,21 +15,25 @@ void main() {
     });
 
     test('adding breeds increases spotted count', () {
-      const state = DogMasteryState(sightingCounts: {
-        'Pug': 1,
-        'Beagle': 2,
-        'Corgi': 1,
-      });
+      const state = DogMasteryState(
+        sightingCounts: {
+          'Pug': 1,
+          'Beagle': 2,
+          'Corgi': 1,
+        },
+      );
       expect(state.totalSpotted, 3);
     });
 
     test('progression through all tiers', () {
-      const state = DogMasteryState(sightingCounts: {
-        'A': 1, // spotted
-        'B': 3, // familiar
-        'C': 5, // expert
-        'D': 10, // master
-      });
+      const state = DogMasteryState(
+        sightingCounts: {
+          'A': 1, // spotted
+          'B': 3, // familiar
+          'C': 5, // expert
+          'D': 10, // master
+        },
+      );
       expect(state.totalSpotted, 4); // all have 1+
       expect(state.totalFamiliar, 3); // B, C, D have 3+
       expect(state.totalExpert, 2); // C, D have 5+

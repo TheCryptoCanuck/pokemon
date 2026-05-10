@@ -10,6 +10,7 @@ import 'package:dogquest/constants.dart';
 import 'package:dogquest/services/dog_service.dart';
 import 'package:dogquest/services/kennel_service.dart';
 import 'package:dogquest/widgets/dog_detail_sheet.dart';
+import 'package:dogquest/widgets/exam_group_cta.dart';
 
 class FieldGuideScreen extends ConsumerStatefulWidget {
   const FieldGuideScreen({super.key});
@@ -62,63 +63,72 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
         // Quiz mode launcher
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-          child: GestureDetector(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              context.push('/quiz');
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.amber.withValues(alpha: 0.15),
-                    Colors.green.withValues(alpha: 0.08),
+          child: Semantics(
+            button: true,
+            label: 'Dog Quiz — Test your dog knowledge',
+            child: GestureDetector(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                context.push('/quiz');
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.amber.withValues(alpha: 0.15),
+                      Colors.green.withValues(alpha: 0.08),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border:
+                      Border.all(color: Colors.amber.withValues(alpha: 0.4)),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child:
+                          const Icon(Icons.quiz, color: Colors.amber, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Dog Quiz',
+                            style: TextStyle(
+                              color: Colors.amber,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Test your dog knowledge — earn bonus XP!',
+                            style:
+                                TextStyle(color: Colors.white70, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.amber,
+                      size: 16,
+                    ),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.amber.withValues(alpha: 0.4)),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child:
-                        const Icon(Icons.quiz, color: Colors.amber, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Dog Quiz',
-                          style: TextStyle(
-                            color: Colors.amber,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          'Test your dog knowledge — earn bonus XP!',
-                          style: TextStyle(color: Colors.white54, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.amber,
-                    size: 16,
-                  ),
-                ],
               ),
             ),
           ).animate().fadeIn(),
         ),
+        const SizedBox(height: 4),
+        const ExamGroupRow(),
         const SizedBox(height: 8),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -128,13 +138,13 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               hintText: 'Search species...',
-              hintStyle: const TextStyle(color: Colors.white38),
-              prefixIcon: const Icon(Icons.search, color: Colors.white38),
+              hintStyle: const TextStyle(color: Colors.white70),
+              prefixIcon: const Icon(Icons.search, color: Colors.white70),
               suffixIcon: _guideSearch.isNotEmpty
                   ? IconButton(
                       icon: const Icon(
                         Icons.close,
-                        color: Colors.white38,
+                        color: Colors.white70,
                         size: 20,
                       ),
                       onPressed: () {
@@ -199,14 +209,14 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
                       const Icon(
                         Icons.search_off,
                         size: 48,
-                        color: Colors.white24,
+                        color: Colors.white70,
                       ),
                       const SizedBox(height: 12),
                       Text(
                         _guideSearch.isNotEmpty
                             ? 'No breeds matching "$_guideSearch"'
                             : 'No ${_guideRarityFilter?.name ?? ''} breeds found',
-                        style: const TextStyle(color: Colors.white38),
+                        style: const TextStyle(color: Colors.white70),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -266,7 +276,7 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
                             Text(
                               _formatBreedInfo(dog.habitat),
                               style: const TextStyle(
-                                color: Colors.white54,
+                                color: Colors.white70,
                                 fontSize: 12,
                               ),
                             ),
@@ -315,7 +325,7 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
                               )
                             : const Icon(
                                 Icons.chevron_right,
-                                color: Colors.white24,
+                                color: Colors.white70,
                               ),
                         onTap: () => DogDetailSheet.show(
                           context,
@@ -343,7 +353,8 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
             setState(() => _collectedFilter = selected ? null : collected),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          constraints: const BoxConstraints(minHeight: 44),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: selected ? color.withValues(alpha: 0.2) : bgCard,
             borderRadius: BorderRadius.circular(20),
@@ -369,7 +380,8 @@ class _FieldGuideScreenState extends ConsumerState<FieldGuideScreen> {
         onTap: () => setState(() => _guideRarityFilter = rarity),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          constraints: const BoxConstraints(minHeight: 44),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: selected ? color.withValues(alpha: 0.2) : bgCard,
             borderRadius: BorderRadius.circular(20),

@@ -265,7 +265,7 @@ class DogService {
         audioUrl: '',
         lore:
             'You found something we\'ve never seen before! This species isn\'t in our database yet. '
-            'Your discovery has been logged and will help us grow DogQuest.',
+            'Your discovery has been logged and will help us grow Hound.',
         habitat: 'Unknown',
         conservationStatus: 'Unknown',
         rarity: Rarity.unknown,

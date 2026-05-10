@@ -198,7 +198,7 @@ class _ShareLostDogScreenState extends State<ShareLostDogScreen> {
         text: 'MISSING DOG: ${widget.report.dogName}'
             '${widget.report.breed != null ? ' (${widget.report.breed})' : ''}'
             ' - Last seen: ${widget.report.lastSeenLocation ?? 'Unknown'}'
-            '. If you see this dog, please open DogQuest and scan!',
+            '. If you see this dog, please open Hound and scan!',
       );
     } catch (e) {
       if (mounted) {

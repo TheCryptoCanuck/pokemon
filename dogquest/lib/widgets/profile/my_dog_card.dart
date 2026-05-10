@@ -65,8 +65,11 @@ class MyDogCard extends ConsumerWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios,
-                  color: Colors.amber, size: 16),
+              const Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.amber,
+                size: 16,
+              ),
             ],
           ),
         ),

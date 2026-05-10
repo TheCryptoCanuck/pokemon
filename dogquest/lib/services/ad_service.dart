@@ -6,7 +6,7 @@ import 'package:logging/logging.dart';
 /// Riverpod provider for the [AdService] singleton.
 final adServiceProvider = Provider<AdService>((ref) => AdService());
 
-/// Manages interstitial ad loading and display for DogQuest.
+/// Manages interstitial ad loading and display for Hound.
 ///
 /// Frequency cap: shows an interstitial after every 3rd breed identification.
 /// Time cap: at most one interstitial per 5 minutes.
@@ -37,17 +37,28 @@ class AdService {
 
   static final _log = Logger('AdService');
 
-  /// Test ad-unit ID used in debug builds and as the production default.
+  /// Google's documented test ad-unit ID. Used in debug builds only.
+  /// Source: https://developers.google.com/admob/android/test-ads
   static const _testInterstitialId = 'ca-app-pub-3940256099942544/1033173712';
 
-  /// Resolved ad-unit ID respecting build-time override and debug mode.
+  /// Production ad-unit ID — MUST be passed via --dart-define in release.
+  /// Empty default keeps test-ad fallout out of production: a release build
+  /// without ADMOB_INTERSTITIAL_ID returns empty, which `_adUnitId` skips
+  /// rather than serving Google's test unit to real users (policy risk).
+  static const _configuredInterstitialId = String.fromEnvironment(
+    'ADMOB_INTERSTITIAL_ID',
+  );
+
+  /// Resolved ad-unit ID. In debug, always test. In release, only the
+  /// configured ID — never the test fallback (returns empty string if
+  /// unconfigured; callers must check `isAdUnitConfigured`).
   static String get _adUnitId {
     if (kDebugMode) return _testInterstitialId;
-    return const String.fromEnvironment(
-      'ADMOB_INTERSTITIAL_ID',
-      defaultValue: _testInterstitialId,
-    );
+    return _configuredInterstitialId;
   }
+
+  /// True when an ad-unit ID is available for the current build mode.
+  static bool get isAdUnitConfigured => _adUnitId.isNotEmpty;
 
   /// Minimum duration between two interstitial displays.
   static const _minInterval = Duration(minutes: 5);
@@ -136,6 +147,13 @@ class AdService {
   // ---------------------------------------------------------------------------
 
   void _loadInterstitial() {
+    if (!isAdUnitConfigured) {
+      _log.fine(
+        'Skipping interstitial load: ADMOB_INTERSTITIAL_ID not configured '
+        'for this build (expected in release without --dart-define).',
+      );
+      return;
+    }
     try {
       InterstitialAd.load(
         adUnitId: _adUnitId,

@@ -89,7 +89,7 @@ class RemotePackHeader extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Share.share(
-                      'Join my pack "${pack.name}" on DogQuest! Use invite code: ${pack.inviteCode}',
+                      'Join my pack "${pack.name}" on Hound! Use invite code: ${pack.inviteCode}',
                     );
                   },
                   child:

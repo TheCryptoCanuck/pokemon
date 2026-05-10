@@ -50,19 +50,27 @@ MockBox buildBox({
       .thenReturn(streakSavers);
   when(() => box.get('achievements', defaultValue: any(named: 'defaultValue')))
       .thenReturn(achievements);
-  when(() => box.get('quizzes_completed',
-      defaultValue: any(named: 'defaultValue'))).thenReturn(quizzesCompleted);
-  when(() => box.get('quiz_perfect_scores',
-      defaultValue: any(named: 'defaultValue'))).thenReturn(quizPerfectScores);
-  when(() =>
-          box.get('total_sightings', defaultValue: any(named: 'defaultValue')))
-      .thenReturn(totalSightings);
-  when(() =>
-          box.get('selected_avatar', defaultValue: any(named: 'defaultValue')))
-      .thenReturn(selectedAvatar);
-  when(() =>
-          box.get('last_active_date', defaultValue: any(named: 'defaultValue')))
-      .thenReturn(lastActiveDate);
+  when(
+    () => box.get(
+      'quizzes_completed',
+      defaultValue: any(named: 'defaultValue'),
+    ),
+  ).thenReturn(quizzesCompleted);
+  when(
+    () => box.get(
+      'quiz_perfect_scores',
+      defaultValue: any(named: 'defaultValue'),
+    ),
+  ).thenReturn(quizPerfectScores);
+  when(
+    () => box.get('total_sightings', defaultValue: any(named: 'defaultValue')),
+  ).thenReturn(totalSightings);
+  when(
+    () => box.get('selected_avatar', defaultValue: any(named: 'defaultValue')),
+  ).thenReturn(selectedAvatar);
+  when(
+    () => box.get('last_active_date', defaultValue: any(named: 'defaultValue')),
+  ).thenReturn(lastActiveDate);
 
   // Writes are fire-and-forget; ignore them.
   when(() => box.put(any(), any())).thenAnswer((_) async {});
@@ -380,7 +388,9 @@ void main() {
       expect(notifier.state.bestStreak, 8);
       expect(notifier.state.streakSavers, 2);
       expect(
-          notifier.state.unlockedAchievements, {'first_dog', 'five_species'});
+        notifier.state.unlockedAchievements,
+        {'first_dog', 'five_species'},
+      );
       expect(notifier.state.quizzesCompleted, 3);
       expect(notifier.state.quizPerfectScores, 1);
       expect(notifier.state.totalSightings, 15);
@@ -862,7 +872,7 @@ void main() {
 
     test('endangered_spotter unlocked for Critically Endangered', () {
       final collectedDogs = [
-        makeDog(conservationStatus: 'Critically Endangered')
+        makeDog(conservationStatus: 'Critically Endangered'),
       ];
       final notifier = buildNotifier();
       final unlocked =
@@ -1145,7 +1155,8 @@ void main() {
 
     test('does not include previously unlocked achievements in return', () {
       final notifier = buildNotifier(
-          achievements: ['first_dog', 'rare_find', 'legendary_find']);
+        achievements: ['first_dog', 'rare_find', 'legendary_find'],
+      );
       final result = notifier.addXpForDog(makeDog(rarity: Rarity.legendary), 1);
       for (final key in ['first_dog', 'rare_find', 'legendary_find']) {
         expect(result, isNot(contains(key)));

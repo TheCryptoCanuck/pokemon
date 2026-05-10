@@ -40,6 +40,7 @@ import 'package:dogquest/services/my_dog_service.dart';
 import 'package:dogquest/services/dog_friendship_service.dart';
 import 'package:dogquest/services/pack_service.dart';
 import 'package:dogquest/services/breed_collection_service.dart';
+import 'package:dogquest/services/exam_service.dart';
 import 'package:dogquest/services/dog_social_service.dart';
 import 'package:dogquest/services/mystery_reward_service.dart';
 import 'package:dogquest/services/smart_notification_service.dart';
@@ -238,6 +239,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
   String? _fatalError;
   bool _showApp = false;
   double _appOpacity = 0.0;
+  bool _splashDismissed = false;
 
   // Streak event info captured during initialization
   int _brokenStreakValue = 0;
@@ -299,6 +301,10 @@ class _AppBootstrapState extends State<AppBootstrap> {
         await Future.delayed(const Duration(milliseconds: 50));
         if (mounted) {
           setState(() => _appOpacity = 1.0);
+          // Remove splash from tree after crossfade completes
+          Future.delayed(const Duration(milliseconds: 600), () {
+            if (mounted) setState(() => _splashDismissed = true);
+          });
         }
         // Show migration dialog first, then streak dialog
         if (_needsMigration) {
@@ -529,15 +535,16 @@ class _AppBootstrapState extends State<AppBootstrap> {
       textDirection: TextDirection.ltr,
       child: Stack(
         children: [
-          // Splash stays mounted until app fades in fully
-          MaterialApp(
-            home: SplashScreen(
-              statusStream: _statusController.stream,
-              progressStream: _progressController.stream,
+          // Splash stays mounted until app fades in fully, then removed
+          if (!_splashDismissed)
+            MaterialApp(
+              home: SplashScreen(
+                statusStream: _statusController.stream,
+                progressStream: _progressController.stream,
+              ),
+              theme: ThemeData.dark(),
+              debugShowCheckedModeBanner: false,
             ),
-            theme: ThemeData.dark(),
-            debugShowCheckedModeBanner: false,
-          ),
           // App fades in over the splash
           if (_showApp && _overrides != null)
             AnimatedOpacity(
@@ -680,18 +687,22 @@ Future<_InitResult> _initializeServices(
     Hive.openBox<Map>('dogquest_pending_syncs'), // [2]
     Hive.openBox('dogquest_collections'), // [3]
     Hive.openBox('dogquest_social'), // [4]
-    Hive.openBox('hound_prefs'), // [5] first-run state (hasCompletedFirstScan, localSightingsCount)
+    Hive.openBox(
+        'hound_prefs'), // [5] first-run state (hasCompletedFirstScan, localSightingsCount)
+    Hive.openBox('dogquest_exams'), // [6] breed group exam results
   ]);
   final kennelBox = boxResults[0] as Box<String>;
   final playerBox = boxResults[1];
   final pendingSyncBox = boxResults[2] as Box<Map>;
   final socialBox = boxResults[4];
+  final examBox = boxResults[6];
 
   final kennelSvc = KennelService(kennelBox);
   final playerNotifier = PlayerNotifier(playerBox);
   final dailyDogSvc = DailyDogService(dogSvc, playerBox);
   kennelSvc.setDogService(dogSvc);
   final dogGroupSvc = DogGroupService(dogSvc, kennelSvc);
+  final examSvc = ExamService(examBox);
   final breedCollectionSvc = BreedCollectionService(playerBox, kennelSvc);
 
   // Open the sightings box with AES encryption before SightingService
@@ -786,6 +797,7 @@ Future<_InitResult> _initializeServices(
       analyticsProvider.overrideWithValue(analytics),
       dailyDogServiceProvider.overrideWithValue(dailyDogSvc),
       dogGroupServiceProvider.overrideWithValue(dogGroupSvc),
+      examServiceProvider.overrideWithValue(examSvc),
       breedCollectionServiceProvider.overrideWithValue(breedCollectionSvc),
       sightingServiceProvider.overrideWithValue(sightingSvc),
       apiClientProvider.overrideWithValue(apiClient),
@@ -839,6 +851,9 @@ class HoundApp extends StatelessWidget {
             textStyle:
                 const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
+        ),
+        snackBarTheme: const SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: bgNav,

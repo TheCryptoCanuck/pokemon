@@ -84,8 +84,11 @@ class _Decision {
   final String? rejectionReason; // 'entropy' | 'gap'
   final List<_Entry> accepted;
 
-  const _Decision(
-      {required this.rejected, this.rejectionReason, this.accepted = const []});
+  const _Decision({
+    required this.rejected,
+    this.rejectionReason,
+    this.accepted = const [],
+  });
 }
 
 class _Entry {
@@ -273,7 +276,7 @@ void main() {
         0.04,
         0.03,
         0.02,
-        0.01
+        0.01,
       ];
       final out = _mirrorBuildResults(scores);
       expect(out.rejectionReason, isNot(equals('entropy')));
@@ -287,8 +290,11 @@ void main() {
       for (final n in [3, 7, 50]) {
         final scores = List<double>.filled(n, 1.0 / n);
         final out = _mirrorBuildResults(scores);
-        expect(out.rejected, isTrue,
-            reason: 'uniform $n-class should be rejected');
+        expect(
+          out.rejected,
+          isTrue,
+          reason: 'uniform $n-class should be rejected',
+        );
         expect(out.rejectionReason, equals('entropy'));
       }
     });
@@ -390,8 +396,10 @@ void main() {
       final out = _mirrorBuildResults([0.10, 0.60, 0.20, 0.08, 0.02]);
       expect(out.rejected, isFalse);
       for (int i = 0; i < out.accepted.length - 1; i++) {
-        expect(out.accepted[i].prob,
-            greaterThanOrEqualTo(out.accepted[i + 1].prob));
+        expect(
+          out.accepted[i].prob,
+          greaterThanOrEqualTo(out.accepted[i + 1].prob),
+        );
       }
     });
 
@@ -699,8 +707,10 @@ void main() {
     test('confidence 0.50 yields ConfidenceTier.high', () {
       expect(
         IdentificationResult(
-                dog: _dog('Poodle'), confidence: 0.50, source: 'ml')
-            .confidenceTier,
+          dog: _dog('Poodle'),
+          confidence: 0.50,
+          source: 'ml',
+        ).confidenceTier,
         equals(ConfidenceTier.high),
       );
     });
@@ -708,8 +718,10 @@ void main() {
     test('confidence 0.90 yields ConfidenceTier.high', () {
       expect(
         IdentificationResult(
-                dog: _dog('Poodle'), confidence: 0.90, source: 'ml')
-            .confidenceTier,
+          dog: _dog('Poodle'),
+          confidence: 0.90,
+          source: 'ml',
+        ).confidenceTier,
         equals(ConfidenceTier.high),
       );
     });
@@ -719,8 +731,10 @@ void main() {
         () {
       expect(
         IdentificationResult(
-                dog: _dog('Bulldog'), confidence: 0.34, source: 'ml')
-            .confidenceTier,
+          dog: _dog('Bulldog'),
+          confidence: 0.34,
+          source: 'ml',
+        ).confidenceTier,
         equals(ConfidenceTier.medium),
       );
     });
@@ -728,8 +742,10 @@ void main() {
     test('confidence 0.20 yields ConfidenceTier.medium (lower boundary)', () {
       expect(
         IdentificationResult(
-                dog: _dog('Beagle'), confidence: 0.20, source: 'ml')
-            .confidenceTier,
+          dog: _dog('Beagle'),
+          confidence: 0.20,
+          source: 'ml',
+        ).confidenceTier,
         equals(ConfidenceTier.medium),
       );
     });
@@ -747,8 +763,10 @@ void main() {
         () {
       expect(
         IdentificationResult(
-                dog: _dog('Chihuahua'), confidence: 0.19, source: 'ml')
-            .confidenceTier,
+          dog: _dog('Chihuahua'),
+          confidence: 0.19,
+          source: 'ml',
+        ).confidenceTier,
         equals(ConfidenceTier.low),
       );
     });
@@ -756,8 +774,10 @@ void main() {
     test('confidence 0.10 yields ConfidenceTier.low', () {
       expect(
         IdentificationResult(
-                dog: _dog('Dachshund'), confidence: 0.10, source: 'ml')
-            .confidenceTier,
+          dog: _dog('Dachshund'),
+          confidence: 0.10,
+          source: 'ml',
+        ).confidenceTier,
         equals(ConfidenceTier.low),
       );
     });
@@ -765,8 +785,10 @@ void main() {
     test('confidence 0.0 yields ConfidenceTier.low', () {
       expect(
         IdentificationResult(
-                dog: _dog('Shih Tzu'), confidence: 0.0, source: 'ml')
-            .confidenceTier,
+          dog: _dog('Shih Tzu'),
+          confidence: 0.0,
+          source: 'ml',
+        ).confidenceTier,
         equals(ConfidenceTier.low),
       );
     });
@@ -793,10 +815,10 @@ void main() {
     test('isUnrecognized is false for source "manual"', () {
       expect(
         IdentificationResult(
-                dog: _dog('Golden Retriever'),
-                confidence: 0.80,
-                source: 'manual')
-            .isUnrecognized,
+          dog: _dog('Golden Retriever'),
+          confidence: 0.80,
+          source: 'manual',
+        ).isUnrecognized,
         isFalse,
       );
     });
@@ -820,18 +842,24 @@ void main() {
     });
 
     test('xp is 1.5x baseXp (rounded) for uncommon rarity', () {
-      expect(_dog('Border Collie', rarity: Rarity.uncommon, baseXp: 20).xp,
-          equals(30));
+      expect(
+        _dog('Border Collie', rarity: Rarity.uncommon, baseXp: 20).xp,
+        equals(30),
+      );
     });
 
     test('xp is 2x baseXp for rare rarity', () {
       expect(
-          _dog('Afghan Hound', rarity: Rarity.rare, baseXp: 20).xp, equals(40));
+        _dog('Afghan Hound', rarity: Rarity.rare, baseXp: 20).xp,
+        equals(40),
+      );
     });
 
     test('xp is 5x baseXp for legendary rarity', () {
-      expect(_dog('Tibetan Mastiff', rarity: Rarity.legendary, baseXp: 20).xp,
-          equals(100));
+      expect(
+        _dog('Tibetan Mastiff', rarity: Rarity.legendary, baseXp: 20).xp,
+        equals(100),
+      );
     });
 
     test('fromJson with missing rarity defaults to common', () {

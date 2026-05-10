@@ -63,7 +63,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.pets, size: 72, color: Colors.white30),
+                const Icon(Icons.pets, size: 72, color: Colors.white54),
                 const SizedBox(height: 20),
                 const Text(
                   'Your collection starts here',
@@ -76,7 +76,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                 const SizedBox(height: 8),
                 const Text(
                   'Identify your first dog to begin!',
-                  style: TextStyle(color: Colors.white54, fontSize: 15),
+                  style: TextStyle(color: Colors.white70, fontSize: 15),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton.icon(
@@ -150,398 +150,420 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
           rarityCounts[b.rarity] = (rarityCounts[b.rarity] ?? 0) + 1;
         }
 
-        return CustomScrollView(
-          slivers: [
-            // Stats header
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                child: Column(
-                  children: [
-                    // Collection progress bar — keyed to deployed breed count
-                    Row(
-                      children: [
-                        Text(
-                          '${box.length}',
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber,
-                          ),
-                        ),
-                        Text(
-                          ' / $kDeployedBreedCount breeds',
-                          style: const TextStyle(
-                            color: textSecondary,
-                            fontSize: 14,
-                          ),
-                        ),
-                        const Spacer(),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '${(box.length / kDeployedBreedCount * 100).toStringAsFixed(1)}%',
-                              style: const TextStyle(
-                                color: Colors.amber,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                              ),
-                            ),
-                            Text(
-                              '$kTargetBreedCount coming',
-                              style: const TextStyle(
-                                color: textMuted,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ).animate().fadeIn(),
-                    const SizedBox(height: 6),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: LinearProgressIndicator(
-                        value: box.length / kDeployedBreedCount,
-                        minHeight: 8,
-                        backgroundColor: bgCard,
-                        valueColor:
-                            const AlwaysStoppedAnimation<Color>(Colors.amber),
-                      ),
-                    ).animate().fadeIn(delay: 50.ms),
-                    const SizedBox(height: 10),
-                    // Rarity breakdown chips
-                    Row(
-                      children: [
-                        for (final r in [
-                          Rarity.common,
-                          Rarity.uncommon,
-                          Rarity.rare,
-                          Rarity.legendary,
-                        ])
-                          Padding(
-                            padding: const EdgeInsets.only(right: 6),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 3,
-                              ),
-                              decoration: BoxDecoration(
-                                color: r.color.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                '${rarityCounts[r] ?? 0} ${r.name}',
-                                style: TextStyle(
-                                  color: r.color,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Kennel'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.menu_book),
+                tooltip: 'Field Guide',
+                onPressed: () => context.push('/guide'),
+              ),
+            ],
+          ),
+          body: CustomScrollView(
+            slivers: [
+              // Stats header
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: Column(
+                    children: [
+                      // Collection progress bar — keyed to deployed breed count
+                      Row(
+                        children: [
+                          Text(
+                            '${box.length}',
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.amber,
                             ),
                           ),
-                      ],
-                    ).animate().fadeIn(delay: 100.ms),
-                    const SizedBox(height: 10),
-                    // Search field
-                    TextField(
-                      controller: _searchController,
-                      onChanged: (v) => setState(() => _searchQuery = v.trim()),
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
-                      decoration: InputDecoration(
-                        hintText: 'Search breeds…',
-                        hintStyle: const TextStyle(
-                          color: Colors.white38,
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.white38,
-                          size: 20,
-                        ),
-                        suffixIcon: _searchQuery.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                  color: Colors.white38,
-                                  size: 18,
-                                ),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                              )
-                            : null,
-                        filled: true,
-                        fillColor: Colors.white.withValues(alpha: 0.05),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 0,
-                          horizontal: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    // Controls row
-                    Row(
-                      children: [
-                        // View mode toggle
-                        _viewToggle(),
-                        const SizedBox(width: 8),
-                        // Rarity filter chips (only visible in grid mode)
-                        if (_viewMode == KennelViewMode.grid)
-                          Expanded(
-                            child: ShaderMask(
-                              shaderCallback: (bounds) => const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Colors.white,
-                                  Colors.white,
-                                  Colors.transparent,
-                                ],
-                                stops: [0.0, 0.85, 1.0],
-                              ).createShader(bounds),
-                              blendMode: BlendMode.dstIn,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: [
-                                    _filterChip(
-                                      null,
-                                      'All',
-                                      Colors.white70,
-                                    ),
-                                    ...Rarity.values
-                                        .where(
-                                          (r) => r != Rarity.unknown,
-                                        )
-                                        .map(
-                                          (r) => _filterChip(
-                                            r,
-                                            r.name[0].toUpperCase() +
-                                                r.name.substring(1),
-                                            r.color,
-                                          ),
-                                        ),
-                                  ],
-                                ),
-                              ),
+                          const Text(
+                            ' / $kDeployedBreedCount breeds',
+                            style: TextStyle(
+                              color: textSecondary,
+                              fontSize: 14,
                             ),
-                          )
-                        else
+                          ),
                           const Spacer(),
-                        if (_viewMode == KennelViewMode.grid) ...[
-                          const SizedBox(width: 4),
-                          // Sort dropdown
-                          PopupMenuButton<KennelSortMode>(
-                            onSelected: (mode) =>
-                                setState(() => _sortMode = mode),
-                            icon: const Icon(
-                              Icons.sort,
-                              color: Colors.white54,
-                              size: 20,
-                            ),
-                            itemBuilder: (_) => [
-                              const PopupMenuItem(
-                                value: KennelSortMode.recent,
-                                child: Text('Recent'),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '${(box.length / kDeployedBreedCount * 100).toStringAsFixed(1)}%',
+                                style: const TextStyle(
+                                  color: Colors.amber,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
                               ),
-                              const PopupMenuItem(
-                                value: KennelSortMode.name,
-                                child: Text('Name'),
-                              ),
-                              const PopupMenuItem(
-                                value: KennelSortMode.rarity,
-                                child: Text('Rarity'),
+                              const Text(
+                                '$kTargetBreedCount coming',
+                                style: TextStyle(
+                                  color: textMuted,
+                                  fontSize: 10,
+                                ),
                               ),
                             ],
                           ),
                         ],
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // View content
-            if (_viewMode == KennelViewMode.families)
-              SliverToBoxAdapter(
-                child: _buildFamiliesSection(familySvc),
-              )
-            else if (_viewMode == KennelViewMode.collections)
-              SliverToBoxAdapter(
-                child: _buildCollectionsSection(),
-              )
-            else ...[
-              // Dog grid
-              if (gridDogs.isEmpty)
-                SliverFillRemaining(
-                  child: Center(
-                    child: Text(
-                      _searchQuery.isNotEmpty
-                          ? 'No breeds match "$_searchQuery"'
-                          : 'No ${_filterRarity?.name ?? ''} dogs in your kennel yet',
-                      style: const TextStyle(color: Colors.white38),
-                    ),
-                  ),
-                )
-              else
-                SliverPadding(
-                  padding: const EdgeInsets.all(16),
-                  sliver: SliverGrid(
-                    delegate: SliverChildBuilderDelegate(
-                      (c, i) {
-                        final dog = gridDogs[i];
-                        final owned = kennelSvc.contains(dog.name);
-
-                        if (!owned) {
-                          return BreedGhostCard(dog: dog)
-                              .animate(autoPlay: !_hasAnimated)
-                              .fadeIn(
-                                delay: Duration(
-                                  milliseconds: (i * 40).clamp(0, 500),
+                      ).animate().fadeIn(),
+                      const SizedBox(height: 6),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: LinearProgressIndicator(
+                          value: box.length / kDeployedBreedCount,
+                          minHeight: 8,
+                          backgroundColor: bgCard,
+                          valueColor:
+                              const AlwaysStoppedAnimation<Color>(Colors.amber),
+                        ),
+                      ).animate().fadeIn(delay: 50.ms),
+                      const SizedBox(height: 10),
+                      // Rarity breakdown chips
+                      Row(
+                        children: [
+                          for (final r in [
+                            Rarity.common,
+                            Rarity.uncommon,
+                            Rarity.rare,
+                            Rarity.legendary,
+                          ])
+                            Padding(
+                              padding: const EdgeInsets.only(right: 6),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 3,
                                 ),
-                              )
-                              .scale(
-                                begin: const Offset(0.9, 0.9),
-                              );
-                        }
-
-                        return GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            DogDetailSheet.show(
-                              context,
-                              dog,
-                              _player,
-                              source: 'kennel',
-                            );
-                          },
-                          child: Card(
-                            color: bgCard,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              side: BorderSide(
-                                color: dog.rarity.color.withValues(alpha: 0.6),
-                                width: 1.5,
+                                decoration: BoxDecoration(
+                                  color: r.color.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  '${rarityCounts[r] ?? 0} ${r.name}',
+                                  style: TextStyle(
+                                    color: r.color,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
-                            clipBehavior: Clip.antiAlias,
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                CachedNetworkImage(
-                                  imageUrl: dog.imageUrl,
-                                  httpHeaders: const {
-                                    'User-Agent':
-                                        'Hound/1.0 (dog identification app)',
+                        ],
+                      ).animate().fadeIn(delay: 100.ms),
+                      const SizedBox(height: 10),
+                      // Search field
+                      TextField(
+                        controller: _searchController,
+                        onChanged: (v) =>
+                            setState(() => _searchQuery = v.trim()),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 14),
+                        decoration: InputDecoration(
+                          hintText: 'Search breeds…',
+                          hintStyle: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.white70,
+                            size: 20,
+                          ),
+                          suffixIcon: _searchQuery.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.white70,
+                                    size: 18,
+                                  ),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    setState(() => _searchQuery = '');
                                   },
-                                  fit: BoxFit.contain,
-                                  placeholder: (_, __) => Shimmer.fromColors(
-                                    baseColor: bgCard,
-                                    highlightColor: const Color(0xFF3A2F2A),
-                                    child: Container(
-                                      color: bgCard,
-                                    ),
-                                  ),
-                                  errorWidget: (_, __, ___) => const Icon(
-                                    Icons.broken_image,
-                                    color: Colors.white24,
+                                )
+                              : null,
+                          filled: true,
+                          fillColor: Colors.white.withValues(alpha: 0.05),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0,
+                            horizontal: 12,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      // Controls row
+                      Row(
+                        children: [
+                          // View mode toggle
+                          _viewToggle(),
+                          const SizedBox(width: 8),
+                          // Rarity filter chips (only visible in grid mode)
+                          if (_viewMode == KennelViewMode.grid)
+                            Expanded(
+                              child: ShaderMask(
+                                shaderCallback: (bounds) =>
+                                    const LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [
+                                    Colors.white,
+                                    Colors.white,
+                                    Colors.transparent,
+                                  ],
+                                  stops: [0.0, 0.85, 1.0],
+                                ).createShader(bounds),
+                                blendMode: BlendMode.dstIn,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      _filterChip(
+                                        null,
+                                        'All',
+                                        Colors.white70,
+                                      ),
+                                      ...Rarity.values
+                                          .where(
+                                            (r) => r != Rarity.unknown,
+                                          )
+                                          .map(
+                                            (r) => _filterChip(
+                                              r,
+                                              r.name[0].toUpperCase() +
+                                                  r.name.substring(1),
+                                              r.color,
+                                            ),
+                                          ),
+                                    ],
                                   ),
                                 ),
-                                // Share button (top-right)
-                                Positioned(
-                                  top: 6,
-                                  right: 6,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      HapticFeedback.lightImpact();
-                                      BreedShareSheet.show(
-                                        context,
-                                        dog,
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black54,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: const Icon(
-                                        Icons.share,
-                                        color: Colors.white70,
-                                        size: 14,
-                                      ),
-                                    ),
-                                  ),
+                              ),
+                            )
+                          else
+                            const Spacer(),
+                          if (_viewMode == KennelViewMode.grid) ...[
+                            const SizedBox(width: 4),
+                            // Sort dropdown
+                            PopupMenuButton<KennelSortMode>(
+                              onSelected: (mode) =>
+                                  setState(() => _sortMode = mode),
+                              icon: const Icon(
+                                Icons.sort,
+                                color: Colors.white70,
+                                size: 20,
+                              ),
+                              itemBuilder: (_) => [
+                                const PopupMenuItem(
+                                  value: KennelSortMode.recent,
+                                  child: Text('Recent'),
                                 ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  right: 0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.transparent,
-                                          Colors.black.withValues(
-                                            alpha: 0.8,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.all(8),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          dog.name,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Text(
-                                          dog.rarity.name,
-                                          style: TextStyle(
-                                            color: dog.rarity.color,
-                                            fontSize: 11,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                const PopupMenuItem(
+                                  value: KennelSortMode.name,
+                                  child: Text('Name'),
+                                ),
+                                const PopupMenuItem(
+                                  value: KennelSortMode.rarity,
+                                  child: Text('Rarity'),
                                 ),
                               ],
                             ),
-                          ),
-                        );
-                      },
-                      childCount: gridDogs.length,
-                    ),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.1,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                    ),
+                          ],
+                        ],
+                      ),
+                    ],
                   ),
                 ),
+              ),
+              // View content
+              if (_viewMode == KennelViewMode.families)
+                SliverToBoxAdapter(
+                  child: _buildFamiliesSection(familySvc),
+                )
+              else if (_viewMode == KennelViewMode.collections)
+                SliverToBoxAdapter(
+                  child: _buildCollectionsSection(),
+                )
+              else ...[
+                // Dog grid
+                if (gridDogs.isEmpty)
+                  SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        _searchQuery.isNotEmpty
+                            ? 'No breeds match "$_searchQuery"'
+                            : 'No ${_filterRarity?.name ?? ''} dogs in your kennel yet',
+                        style: const TextStyle(color: Colors.white70),
+                      ),
+                    ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.all(16),
+                    sliver: SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                        (c, i) {
+                          final dog = gridDogs[i];
+                          final owned = kennelSvc.contains(dog.name);
+
+                          if (!owned) {
+                            return BreedGhostCard(dog: dog)
+                                .animate(autoPlay: !_hasAnimated)
+                                .fadeIn(
+                                  delay: Duration(
+                                    milliseconds: (i * 40).clamp(0, 500),
+                                  ),
+                                )
+                                .scale(
+                                  begin: const Offset(0.9, 0.9),
+                                );
+                          }
+
+                          return Semantics(
+                            button: true,
+                            label: '${dog.name}, ${dog.rarity.name} breed',
+                            child: GestureDetector(
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                DogDetailSheet.show(
+                                  context,
+                                  dog,
+                                  _player,
+                                  source: 'kennel',
+                                );
+                              },
+                              child: Card(
+                                color: bgCard,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  side: BorderSide(
+                                    color:
+                                        dog.rarity.color.withValues(alpha: 0.6),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    CachedNetworkImage(
+                                      imageUrl: dog.imageUrl,
+                                      httpHeaders: const {
+                                        'User-Agent':
+                                            'Hound/1.0 (dog identification app)',
+                                      },
+                                      fit: BoxFit.contain,
+                                      placeholder: (_, __) =>
+                                          Shimmer.fromColors(
+                                        baseColor: bgCard,
+                                        highlightColor: const Color(0xFF3A2F2A),
+                                        child: Container(
+                                          color: bgCard,
+                                        ),
+                                      ),
+                                      errorWidget: (_, __, ___) => const Icon(
+                                        Icons.broken_image,
+                                        color: Colors.white24,
+                                      ),
+                                    ),
+                                    // Share button (top-right)
+                                    Positioned(
+                                      top: 6,
+                                      right: 6,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          HapticFeedback.lightImpact();
+                                          BreedShareSheet.show(
+                                            context,
+                                            dog,
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black54,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: const Icon(
+                                            Icons.share,
+                                            color: Colors.white70,
+                                            size: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              Colors.transparent,
+                                              Colors.black.withValues(
+                                                alpha: 0.8,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              dog.name,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              dog.rarity.name,
+                                              style: TextStyle(
+                                                color: dog.rarity.color,
+                                                fontSize: 11,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        childCount: gridDogs.length,
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.1,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                      ),
+                    ),
+                  ),
+              ],
             ],
-          ],
+          ),
         );
       },
     );
@@ -576,35 +598,44 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
 
   Widget _viewToggleItem(KennelViewMode mode, IconData icon, String label) {
     final selected = _viewMode == mode;
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.lightImpact();
-        setState(() => _viewMode = mode);
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        decoration: BoxDecoration(
-          color: selected
-              ? Colors.amber.withValues(alpha: 0.15)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon,
-                color: selected ? Colors.amber : Colors.white54, size: 14),
-            const SizedBox(width: 3),
-            Text(
-              label,
-              style: TextStyle(
+    return Semantics(
+      button: true,
+      label: '$label view',
+      selected: selected,
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          setState(() => _viewMode = mode);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          constraints: const BoxConstraints(minHeight: 44),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+          decoration: BoxDecoration(
+            color: selected
+                ? Colors.amber.withValues(alpha: 0.15)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
                 color: selected ? Colors.amber : Colors.white54,
-                fontSize: 11,
-                fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                size: 14,
               ),
-            ),
-          ],
+              const SizedBox(width: 3),
+              Text(
+                label,
+                style: TextStyle(
+                  color: selected ? Colors.amber : Colors.white54,
+                  fontSize: 11,
+                  fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -636,7 +667,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
               const Spacer(),
               Text(
                 '$completedCount/${collections.length} complete',
-                style: const TextStyle(color: Colors.white38, fontSize: 12),
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
               ),
             ],
           ),
@@ -714,7 +745,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                               Text(
                                 collection.description,
                                 style: const TextStyle(
-                                  color: Colors.white38,
+                                  color: Colors.white70,
                                   fontSize: 11,
                                 ),
                               ),
@@ -729,7 +760,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                               style: TextStyle(
                                 color: cp.isComplete
                                     ? collection.color
-                                    : Colors.white54,
+                                    : Colors.white70,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
                               ),
@@ -739,7 +770,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                               style: TextStyle(
                                 color: cp.isComplete
                                     ? collection.color.withValues(alpha: 0.7)
-                                    : Colors.white24,
+                                    : Colors.white70,
                                 fontSize: 10,
                               ),
                             ),
@@ -820,7 +851,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                                   style: TextStyle(
                                     color: isCollected
                                         ? Colors.white
-                                        : Colors.white38,
+                                        : Colors.white70,
                                     fontSize: 11,
                                     fontWeight: isCollected
                                         ? FontWeight.w500
@@ -865,7 +896,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
               const Spacer(),
               Text(
                 '${progress.where((p) => p.isComplete).length}/${progress.length} complete',
-                style: const TextStyle(color: Colors.white38, fontSize: 12),
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
               ),
             ],
           ),
@@ -921,7 +952,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                               Text(
                                 fp.family.description,
                                 style: const TextStyle(
-                                  color: Colors.white38,
+                                  color: Colors.white70,
                                   fontSize: 11,
                                 ),
                               ),
@@ -933,7 +964,7 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
                           style: TextStyle(
                             color: fp.isComplete
                                 ? fp.family.color
-                                : Colors.white54,
+                                : Colors.white70,
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
                           ),
@@ -981,7 +1012,8 @@ class _KennelScreenState extends ConsumerState<KennelScreen> {
         onTap: () => setState(() => _filterRarity = rarity),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          constraints: const BoxConstraints(minHeight: 44),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(
             color: selected ? color.withValues(alpha: 0.2) : bgCard,
             borderRadius: BorderRadius.circular(14),

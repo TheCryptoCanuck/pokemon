@@ -28,7 +28,7 @@ class TermsOfServiceScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'DogQuest Terms of Service',
+              'Hound Terms of Service',
               style: TextStyle(
                 color: Colors.amber,
                 fontSize: 22,
@@ -46,7 +46,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             _heading('1. Acceptance of Terms'),
             const SizedBox(height: 8),
             _body(
-              'By downloading, installing, or using the DogQuest application '
+              'By downloading, installing, or using the Hound application '
               '("the App"), you agree to be bound by these Terms of Service '
               '("Terms"). If you do not agree to these Terms, do not use the '
               'App. We reserve the right to update these Terms at any time. '
@@ -59,7 +59,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             _heading('2. Description of Service'),
             const SizedBox(height: 8),
             _body(
-              'DogQuest is a mobile application that uses on-device machine '
+              'Hound is a mobile application that uses on-device machine '
               'learning to identify dog breeds from photos. The App also '
               'provides gamification features, social features, lost dog '
               'reporting, breed information, and community interactions. '
@@ -104,7 +104,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             const SizedBox(height: 4),
             _body(
               'You retain full ownership of all User Content you submit. '
-              'By submitting User Content, you grant DogQuest a non-exclusive, '
+              'By submitting User Content, you grant Hound a non-exclusive, '
               'worldwide, royalty-free, sublicensable license to use, display, '
               'reproduce, and distribute your User Content solely for the '
               'purpose of operating, promoting, and improving the App. This '
@@ -204,7 +204,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   _body(
-                    'Dog breed identification provided by DogQuest is for '
+                    'Dog breed identification provided by Hound is for '
                     'entertainment and informational purposes only. It is NOT '
                     'a substitute for professional veterinary advice, diagnosis, '
                     'or treatment. Breed identification results may be inaccurate '
@@ -223,7 +223,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             const SizedBox(height: 8),
             _body(
               'The lost dog reporting feature is provided as a community service '
-              'tool. DogQuest does not guarantee the accuracy, completeness, or '
+              'tool. Hound does not guarantee the accuracy, completeness, or '
               'effectiveness of lost dog reports. We are not responsible for '
               'the outcome of any lost dog situation. Submitting knowingly false '
               'lost dog reports is a violation of these Terms and may result in '
@@ -236,7 +236,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             const SizedBox(height: 8),
             _body(
               'The App, including its design, code, machine learning models, '
-              'graphics, icons, and branding, is the property of DogQuest and '
+              'graphics, icons, and branding, is the property of Hound and '
               'is protected by applicable intellectual property laws. You may '
               'not copy, modify, distribute, or create derivative works based '
               'on the App without our prior written consent.',
@@ -247,7 +247,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             _heading('10. Limitation of Liability'),
             const SizedBox(height: 8),
             _body(
-              'To the maximum extent permitted by applicable law, DogQuest and '
+              'To the maximum extent permitted by applicable law, Hound and '
               'its developers, officers, and affiliates shall not be liable for '
               'any indirect, incidental, special, consequential, or punitive '
               'damages, including but not limited to:',
@@ -263,7 +263,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             const SizedBox(height: 8),
             _body(
               'In no event shall our total liability to you exceed the amount '
-              'you have paid to DogQuest in the twelve (12) months preceding '
+              'you have paid to Hound in the twelve (12) months preceding '
               'the claim, or fifty US dollars (\$50), whichever is greater.',
             ),
             const SizedBox(height: 24),

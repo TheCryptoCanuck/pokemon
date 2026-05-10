@@ -40,19 +40,17 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   @override
   Widget build(BuildContext context) {
-    final localSightings =
-        Hive.box('hound_prefs').get('localSightingsCount', defaultValue: 0)
-            as int;
-    if (localSightings == 0) return const _FeaturedBreedsView();
+    final localSightings = Hive.box('hound_prefs')
+        .get('localSightingsCount', defaultValue: 0) as int;
+    if (localSightings < 1) return const _FeaturedBreedsView();
 
     return Column(
       children: [
         // Toggle bar
-        SizedBox(
-          height: 42,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: Row(
             children: [
               MapTabButton(
                 label: 'Hood',
@@ -63,7 +61,7 @@ class _MapTabState extends ConsumerState<MapTab> {
               ),
               const SizedBox(width: 6),
               MapTabButton(
-                label: 'Log',
+                label: 'Sighting Log',
                 icon: Icons.history,
                 tabIndex: 1,
                 selectedTab: _selectedTab,
@@ -71,7 +69,7 @@ class _MapTabState extends ConsumerState<MapTab> {
               ),
               const SizedBox(width: 6),
               MapTabButton(
-                label: 'Breeds',
+                label: 'Locations',
                 icon: Icons.map_outlined,
                 tabIndex: 2,
                 selectedTab: _selectedTab,
@@ -1257,8 +1255,11 @@ class _SightingInfoCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(Icons.access_time,
-                        size: 12, color: Colors.white38,),
+                    const Icon(
+                      Icons.access_time,
+                      size: 12,
+                      color: Colors.white38,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       timeAgo(sighting.timestamp),

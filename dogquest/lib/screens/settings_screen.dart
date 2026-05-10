@@ -830,36 +830,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               child: Column(
                 children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: const LinearGradient(
-                        colors: [Colors.amber, Color(0xFFD4874E)],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.amber.withValues(alpha: 0.3),
-                          blurRadius: 12,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'A',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(
+                      'assets/app_icon.png',
+                      width: 64,
+                      height: 64,
                     ),
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'DogQuest v0.1.0',
+                    'Hound v0.1.0',
                     style: TextStyle(
                       color: Colors.amber,
                       fontWeight: FontWeight.bold,

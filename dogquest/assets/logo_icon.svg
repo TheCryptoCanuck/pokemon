@@ -1,0 +1,32 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background: dark forest green rounded square -->
+  <rect width="200" height="200" rx="44" fill="#0F1A10"/>
+
+  <!-- Paw print (white) -->
+
+  <!-- Toe 1 — far left, angled outward -->
+  <ellipse cx="58" cy="92" rx="16" ry="19" fill="white" transform="rotate(-22 58 92)"/>
+
+  <!-- Toe 2 — centre-left -->
+  <ellipse cx="84" cy="74" rx="17" ry="21" fill="white" transform="rotate(-8 84 74)"/>
+
+  <!-- Toe 3 — centre-right -->
+  <ellipse cx="116" cy="74" rx="17" ry="21" fill="white" transform="rotate(8 116 74)"/>
+
+  <!-- Toe 4 — far right, angled outward -->
+  <ellipse cx="142" cy="92" rx="16" ry="19" fill="white" transform="rotate(22 142 92)"/>
+
+  <!-- Main metacarpal pad — slightly heart-shaped via two overlapping ellipses -->
+  <ellipse cx="100" cy="140" rx="36" ry="30" fill="white"/>
+  <!-- Heart notch at top of main pad -->
+  <ellipse cx="87"  cy="118" rx="16" ry="14" fill="white"/>
+  <ellipse cx="113" cy="118" rx="16" ry="14" fill="white"/>
+  <!-- Fill in the V between them -->
+  <rect x="84" y="114" width="32" height="16" fill="white"/>
+
+  <!-- Quest spark — 4-point amber star, top-right corner -->
+  <polygon points="160,28 163,37 172,40 163,43 160,52 157,43 148,40 157,37"
+           fill="#D4874E"/>
+  <polygon points="160,32 162,38 168,40 162,42 160,48 158,42 152,40 158,38"
+           fill="#E8A96E" opacity="0.55"/>
+</svg>

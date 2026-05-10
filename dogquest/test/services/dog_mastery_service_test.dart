@@ -82,12 +82,14 @@ void main() {
     });
 
     test('levelFor returns correct level based on count', () {
-      const state = DogMasteryState(sightingCounts: {
-        'Dog1': 1,
-        'Dog3': 3,
-        'Dog5': 5,
-        'Dog10': 10,
-      });
+      const state = DogMasteryState(
+        sightingCounts: {
+          'Dog1': 1,
+          'Dog3': 3,
+          'Dog5': 5,
+          'Dog10': 10,
+        },
+      );
       expect(state.levelFor('Dog1'), DogMasteryLevel.spotted);
       expect(state.levelFor('Dog3'), DogMasteryLevel.familiar);
       expect(state.levelFor('Dog5'), DogMasteryLevel.expert);
@@ -95,30 +97,36 @@ void main() {
     });
 
     test('totalMastered counts only dogs with 10+ sightings', () {
-      const state = DogMasteryState(sightingCounts: {
-        'A': 10,
-        'B': 15,
-        'C': 9,
-        'D': 5,
-      });
+      const state = DogMasteryState(
+        sightingCounts: {
+          'A': 10,
+          'B': 15,
+          'C': 9,
+          'D': 5,
+        },
+      );
       expect(state.totalMastered, 2);
     });
 
     test('totalExpert counts dogs with 5+ sightings', () {
-      const state = DogMasteryState(sightingCounts: {
-        'A': 10,
-        'B': 5,
-        'C': 4,
-      });
+      const state = DogMasteryState(
+        sightingCounts: {
+          'A': 10,
+          'B': 5,
+          'C': 4,
+        },
+      );
       expect(state.totalExpert, 2);
     });
 
     test('masteredDogs returns names of dogs with 10+ sightings', () {
-      const state = DogMasteryState(sightingCounts: {
-        'Alpha': 10,
-        'Beta': 5,
-        'Gamma': 12,
-      });
+      const state = DogMasteryState(
+        sightingCounts: {
+          'Alpha': 10,
+          'Beta': 5,
+          'Gamma': 12,
+        },
+      );
       expect(state.masteredDogs, containsAll(['Alpha', 'Gamma']));
       expect(state.masteredDogs, isNot(contains('Beta')));
     });

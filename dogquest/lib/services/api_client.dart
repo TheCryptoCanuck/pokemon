@@ -14,12 +14,13 @@ class ApiClient {
   static const String _baseUrl = String.fromEnvironment('API_BASE_URL');
 
   static void assertBaseUrl() {
-    assert(
-      _baseUrl.isNotEmpty,
-      'API_BASE_URL must be set via --dart-define=API_BASE_URL=https://... '
-      'The old 10.0.2.2 default has been removed; it only worked on Android '
-      'emulators and would silently fail on iOS and physical devices.',
-    );
+    if (_baseUrl.isEmpty) {
+      throw ArgumentError(
+        'API_BASE_URL must be set via --dart-define=API_BASE_URL=https://... '
+        'The old 10.0.2.2 default has been removed; it only worked on Android '
+        'emulators and would silently fail on iOS and physical devices.',
+      );
+    }
   }
 
   ApiClient({
@@ -62,7 +63,7 @@ class ApiClient {
         LogInterceptor(
           requestBody: false,
           responseBody: false,
-          logPrint: (obj) => debugPrint('[Dio] $obj'),
+          logPrint: (obj) => _log.fine('$obj'),
         ),
       );
     }

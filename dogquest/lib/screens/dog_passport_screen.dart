@@ -154,7 +154,7 @@ class _DogPassportScreenState extends ConsumerState<DogPassportScreen> {
 
       await Share.shareXFiles(
         [XFile(file.path)],
-        text: 'Check out my dog\'s DogQuest Passport!',
+        text: 'Check out my dog\'s Hound Passport!',
       );
     } catch (e) {
       if (mounted) {

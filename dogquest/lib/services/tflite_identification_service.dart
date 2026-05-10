@@ -15,25 +15,87 @@ import 'package:dogquest/services/shared_tflite_service.dart';
 /// v5: 260x260 for EfficientNetB2 (was 224 for B0).
 const int _kInputSize = 260;
 
-/// Top-level function for [compute] — runs image preprocessing in a separate
-/// isolate.  Returns flat Uint8List tensors for TTA (test-time augmentation).
+/// Estimate subject (dog) size in the image using downsampled luminance variance
+/// and edge density. Returns a score in [0.0, 1.0] where:
+///   - 0.0 = very small/distant subject or blank image
+///   - 0.5 = neutral/unknown
+///   - 1.0 = subject fills most of frame
 ///
-/// v5.1 optimized TTA: 3 variants (center tight, center flipped, center zoomed-out).
-/// Each tensor is a flat Uint8List of length _kInputSize * _kInputSize * 3 (RGB).
-/// Using flat Uint8List instead of nested List<int> reduces:
-///   - Memory: ~600KB vs ~30-40MB (50x reduction)
-///   - Serialization: Uint8List transfers as raw bytes via SendPort
-///   - GC pressure: 3 buffers vs 2M+ boxed objects
+/// Algorithm:
+///   1. Downsample to 64x64 using average interpolation
+///   2. Convert each pixel to grayscale luminance (0.299*r + 0.587*g + 0.114*b)
+///   3. Compute variance of luminances across the image
+///   4. Compute edge density: count interior pixels with (|dx| + |dy|) / 2 > 15.0
+///   5. Return (variance / 2000.0 + edgeDensity).clamp(0.0, 1.0)
+double _estimateSubjectSize(Uint8List bytes) {
+  try {
+    final image = img.decodeImage(bytes);
+    if (image == null) return 0.5;
+
+    final downsampled = img.copyResize(
+      image,
+      width: 64,
+      height: 64,
+      interpolation: img.Interpolation.average,
+    );
+
+    final lum = List<double>.filled(64 * 64, 0.0);
+    for (int y = 0; y < 64; y++) {
+      for (int x = 0; x < 64; x++) {
+        final pixel = downsampled.getPixel(x, y);
+        final r = pixel.r.toDouble();
+        final g = pixel.g.toDouble();
+        final b = pixel.b.toDouble();
+        lum[y * 64 + x] = 0.299 * r + 0.587 * g + 0.114 * b;
+      }
+    }
+
+    double mean = 0.0;
+    for (final l in lum) {
+      mean += l;
+    }
+    mean /= lum.length;
+
+    double variance = 0.0;
+    for (final l in lum) {
+      final diff = l - mean;
+      variance += diff * diff;
+    }
+    variance /= lum.length;
+
+    int edgeCount = 0;
+    const int interiorTotal = 62 * 62;
+    for (int y = 1; y < 63; y++) {
+      for (int x = 1; x < 63; x++) {
+        final gx = (lum[(y * 64) + (x + 1)] - lum[(y * 64) + (x - 1)]).abs();
+        final gy = (lum[((y + 1) * 64) + x] - lum[((y - 1) * 64) + x]).abs();
+        final avgGrad = (gx + gy) / 2.0;
+        if (avgGrad > 15.0) {
+          edgeCount++;
+        }
+      }
+    }
+
+    final edgeDensity = edgeCount / interiorTotal;
+    final score = ((variance / 2000.0) + edgeDensity).clamp(0.0, 1.0);
+    return score;
+  } catch (_) {
+    return 0.5;
+  }
+}
+
+/// Top-level function for [compute] — runs image preprocessing in a separate
+/// isolate. Returns flat Uint8List tensors for TTA (test-time augmentation).
+///
+/// v5.1 TTA: 5 variants (center tight, horizontal flip, 1.15x, 1.5x, 1.8x zoomed-out).
 List<Uint8List> _preprocessImage(Uint8List bytes) {
   final image = img.decodeImage(bytes);
   if (image == null) {
     throw Exception('Failed to decode image in isolate');
   }
 
-  // EXIF orientation
   var oriented = img.bakeOrientation(image);
 
-  // Build flat tensor from an Image region
   Uint8List buildFlatTensor(img.Image src) {
     final resized = (src.width == _kInputSize && src.height == _kInputSize)
         ? src
@@ -41,7 +103,7 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
             src,
             width: _kInputSize,
             height: _kInputSize,
-            interpolation: img.Interpolation.linear,
+            interpolation: img.Interpolation.cubic,
           );
     final flat = Uint8List(_kInputSize * _kInputSize * 3);
     int offset = 0;
@@ -62,7 +124,7 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
 
   final tensors = <Uint8List>[];
 
-  // Variant 1: tight center crop (scale shorter edge to _kInputSize)
+  // Variant 1: tight center crop
   final tightScale = _kInputSize / shortEdge;
   final tightW = (w * tightScale).round();
   final tightH = (h * tightScale).round();
@@ -70,7 +132,7 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
     oriented,
     width: tightW,
     height: tightH,
-    interpolation: img.Interpolation.linear,
+    interpolation: img.Interpolation.cubic,
   );
   final tightCrop = img.copyCrop(
     tight,
@@ -84,7 +146,7 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
   // Variant 2: horizontal flip of tight center crop
   tensors.add(buildFlatTensor(img.flipHorizontal(tightCrop)));
 
-  // Variant 3: slightly zoomed-out center crop (1.15x gives context)
+  // Variant 3: 1.15x zoomed-out center crop
   final looseTarget = (_kInputSize * 1.15).round();
   final looseScale = looseTarget / shortEdge;
   final looseW = (w * looseScale).round();
@@ -93,7 +155,7 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
     oriented,
     width: looseW,
     height: looseH,
-    interpolation: img.Interpolation.linear,
+    interpolation: img.Interpolation.cubic,
   );
   final looseCrop = img.copyCrop(
     loose,
@@ -104,36 +166,62 @@ List<Uint8List> _preprocessImage(Uint8List bytes) {
   );
   tensors.add(buildFlatTensor(looseCrop));
 
-  return tensors; // 3 tensors, ~600KB total
+  // Variant 4: 1.5x zoomed-out center crop
+  final looseTarget15 = (_kInputSize * 1.5).round();
+  final looseScale15 = looseTarget15 / shortEdge;
+  final looseW15 = (w * looseScale15).round();
+  final looseH15 = (h * looseScale15).round();
+  final loose15 = img.copyResize(
+    oriented,
+    width: looseW15,
+    height: looseH15,
+    interpolation: img.Interpolation.cubic,
+  );
+  final looseCrop15 = img.copyCrop(
+    loose15,
+    x: (looseW15 - _kInputSize) ~/ 2,
+    y: (looseH15 - _kInputSize) ~/ 2,
+    width: _kInputSize,
+    height: _kInputSize,
+  );
+  tensors.add(buildFlatTensor(looseCrop15));
+
+  // Variant 5: 1.8x zoomed-out center crop
+  final looseTarget18 = (_kInputSize * 1.8).round();
+  final looseScale18 = looseTarget18 / shortEdge;
+  final looseW18 = (w * looseScale18).round();
+  final looseH18 = (h * looseScale18).round();
+  final loose18 = img.copyResize(
+    oriented,
+    width: looseW18,
+    height: looseH18,
+    interpolation: img.Interpolation.cubic,
+  );
+  final looseCrop18 = img.copyCrop(
+    loose18,
+    x: (looseW18 - _kInputSize) ~/ 2,
+    y: (looseH18 - _kInputSize) ~/ 2,
+    width: _kInputSize,
+    height: _kInputSize,
+  );
+  tensors.add(buildFlatTensor(looseCrop18));
+
+  return tensors;
 }
 
 final _log = Logger('TfliteIdentificationService');
 
 /// Dog identification using an on-device TFLite classifier.
-///
-/// Expects:
-///   - Shared TFLite model from [SharedTfliteService]
-///   - `assets/dog_labels.txt`   — one label per line (scientific or common name)
-///
-/// Compatible with Google's AIY Vision Dog Classifier V1 and similar models
-/// trained on iNaturalist/NADogs data with 224×224 input.
 class TfliteIdentificationService implements IdentificationService {
   final DogService _dogService;
   final SharedTfliteService _sharedTflite;
   List<String> _labels = [];
   bool _loaded = false;
 
-  /// Pre-computed label → Dog cache (O(1) lookup, built at model load time).
   Map<String, Dog?> _labelCache = {};
 
-  /// Number of top predictions to return.
   static const _topK = 3;
-
-  /// Minimum confidence to include in results (low because label smoothing
-  /// flattens distributions; uniform for 151 classes = 0.66%).
   static const _minConfidence = 0.03;
-
-  /// Enable Test-Time Augmentation (original + horizontal flip, averaged).
   static const bool _enableTTA = true;
 
   TfliteIdentificationService(this._dogService, this._sharedTflite);
@@ -141,14 +229,8 @@ class TfliteIdentificationService implements IdentificationService {
   @override
   bool get isModelLoaded => _loaded;
 
-  /// Load the TFLite model and labels from assets.
-  /// Returns true if successful, false if model files are missing.
-  ///
-  /// This method ensures the shared TFLite service is loaded, then loads
-  /// labels and builds the label cache.
   Future<bool> loadModel() async {
     try {
-      // Ensure the shared interpreter is loaded (idempotent)
       final modelLoaded = await _sharedTflite.loadModel();
       if (!modelLoaded) {
         _loaded = false;
@@ -156,7 +238,6 @@ class TfliteIdentificationService implements IdentificationService {
       }
 
       _labels = await _loadLabels();
-      // Pre-resolve all labels to Dog objects once at load time
       _labelCache = {
         for (final label in _labels)
           label: _dogService.lookupByCommonName(label),
@@ -196,27 +277,22 @@ class TfliteIdentificationService implements IdentificationService {
     }
 
     try {
-      // 1. Read image bytes and preprocess off the main isolate
       final bytes = await imageFile.readAsBytes();
-      final tensors = await compute(_preprocessImage, bytes);
+      final subjectSizeScore = _estimateSubjectSize(bytes);
+      _log.info(
+          'SUBJ_SIZE_ESTIMATE: score=${subjectSizeScore.toStringAsFixed(2)}, '
+          'hint=${subjectSizeScore < 0.35 ? "SMALL_SUBJECT" : "OK"}');
 
-      // v5.1: tensors are flat Uint8List, 3 variants (tight, flipped, zoomed-out)
+      final tensors = await compute(_preprocessImage, bytes);
       final flatTensors = _enableTTA ? tensors : [tensors[0]];
 
-      // 2. Run inference on the main isolate (fast native call)
       final outputTensor = interpreter.getOutputTensor(0);
       final outputShape = outputTensor.shape;
       final numClasses = outputShape.last;
       final isUint8 = outputTensor.type == TensorType.uint8;
-      // Accumulator for averaged scores
       final avgScores = List<double>.filled(numClasses, 0.0);
 
       for (final flatInput in flatTensors) {
-        // Pass flat Uint8List directly — tflite_flutter has fast paths for
-        // Uint8List in both getInputShapeIfDifferent (skips shape check) and
-        // convertObjectToBytes (returns as-is). Avoids creating 270K+ nested
-        // List objects from reshape().
-
         late final List output;
         if (isUint8) {
           output = List.filled(numClasses, 0).reshape([1, numClasses]);
@@ -233,21 +309,20 @@ class TfliteIdentificationService implements IdentificationService {
         }
       }
 
-      // Average across all variants
       final count = flatTensors.length.toDouble();
       for (int i = 0; i < numClasses; i++) {
         avgScores[i] /= count;
       }
 
-      _log.info('TTA: ran ${flatTensors.length} variant(s)');
-      return _buildResults(avgScores);
+      _log.info('TTA: ran ${flatTensors.length} variant(s), '
+          'subject_size=${subjectSizeScore.toStringAsFixed(2)}');
+      return _buildResults(avgScores, subjectSizeScore: subjectSizeScore);
     } catch (e, st) {
       _log.severe('Identification failed', e, st);
       return [];
     }
   }
 
-  /// Apply softmax to raw logits to get probabilities.
   List<double> _softmax(List<double> logits) {
     final maxLogit = logits.reduce((a, b) => a > b ? a : b);
     final exps = logits.map((l) => math.exp(l - maxLogit)).toList();
@@ -257,16 +332,18 @@ class TfliteIdentificationService implements IdentificationService {
 
   /// Build ranked [IdentificationResult] list from raw model output scores.
   ///
-  /// Uses the same simple, proven algorithm as AviQuest:
-  ///   - Entropy-based rejection for non-dog / ambiguous photos
-  ///   - Simple confidence thresholds
-  ///   - Raw probability as confidence (no normalization)
-  List<IdentificationResult> _buildResults(List<double> scores) {
-    // Check if scores look like logits (can be negative) or probabilities
+  /// Features:
+  ///   - Entropy-based rejection for nearly-uniform distributions
+  ///   - Entropy-aware top-K truncation (top-1/2/3 based on uncertainty)
+  ///   - Gap-rejection skipped for small/distant subjects
+  ///   - LOW_SIGNAL_RESULT logging for field diagnosis
+  List<IdentificationResult> _buildResults(
+    List<double> scores, {
+    double subjectSizeScore = 0.5,
+  }) {
     final hasNegative = scores.any((s) => s < 0);
     final probs = hasNegative ? _softmax(scores) : scores;
 
-    // --- Entropy-based rejection for non-dog / ambiguous photos ---
     double entropy = 0.0;
     for (final p in probs) {
       if (p > 0) entropy -= p * math.log(p);
@@ -275,7 +352,6 @@ class TfliteIdentificationService implements IdentificationService {
     final double normalizedEntropy =
         maxEntropy > 0 ? entropy / maxEntropy : 0.0;
 
-    // Create indexed entries and sort by probability descending
     final indexed =
         List.generate(probs.length, (i) => (index: i, prob: probs[i]));
     indexed.sort((a, b) => b.prob.compareTo(a.prob));
@@ -284,7 +360,6 @@ class TfliteIdentificationService implements IdentificationService {
     final double top2Prob = indexed.length > 1 ? indexed[1].prob : 0.0;
     final double confidenceGap = topProb - top2Prob;
 
-    // --- Debug logging ---
     _log.info('Entropy: ${normalizedEntropy.toStringAsFixed(3)}, '
         'top-1: ${(topProb * 100).toStringAsFixed(1)}%, '
         'top-2: ${(top2Prob * 100).toStringAsFixed(1)}%, '
@@ -305,10 +380,7 @@ class TfliteIdentificationService implements IdentificationService {
           'label="$label" -> "$dogName"');
     }
 
-    // --- Rejection logic ---
-    // This is a dog-only classifier (151 breeds). Every output IS a dog breed.
-    // Only reject truly uniform distributions where the model has zero signal.
-    // Uniform for 151 classes = ~0.66% each, entropy = 1.0.
+    // Reject nearly-uniform distributions (no signal)
     if (normalizedEntropy > 0.97) {
       _log.info(
         'Rejected: entropy ${normalizedEntropy.toStringAsFixed(3)} > 0.97 — nearly uniform',
@@ -316,21 +388,29 @@ class TfliteIdentificationService implements IdentificationService {
       return [];
     }
 
-    // Confidence-gap rejection: if top-1 is very close to top-2, the model
-    // can't distinguish — likely a non-dog or ambiguous photo.
-    // Only apply when top-1 confidence is also very low.
-    if (topProb < 0.05 && confidenceGap < 0.01) {
+    // Entropy-aware top-K: reduce noise for uncertain predictions
+    final int dynamicTopK;
+    if (normalizedEntropy > 0.90) {
+      dynamicTopK = 1;
+    } else if (normalizedEntropy > 0.80) {
+      dynamicTopK = 2;
+    } else {
+      dynamicTopK = _topK;
+    }
+
+    // Gap-rejection: skip for small/distant subjects
+    if (topProb < 0.05 && confidenceGap < 0.01 && subjectSizeScore >= 0.35) {
       _log.info(
           'Rejected: low confidence ${(topProb * 100).toStringAsFixed(1)}% '
-          'with tiny gap ${(confidenceGap * 100).toStringAsFixed(2)}%');
+          'with tiny gap ${(confidenceGap * 100).toStringAsFixed(2)}% '
+          '(subject_size=${subjectSizeScore.toStringAsFixed(2)})');
       return [];
     }
 
-    // --- Build results with simple min confidence ---
     final results = <IdentificationResult>[];
     final seen = <String>{};
 
-    for (final entry in indexed.take(_topK * 2)) {
+    for (final entry in indexed.take(dynamicTopK * 2)) {
       if (entry.prob < _minConfidence) break;
       if (entry.index >= _labels.length) continue;
 
@@ -348,7 +428,7 @@ class TfliteIdentificationService implements IdentificationService {
         ),
       );
 
-      if (results.length >= _topK) break;
+      if (results.length >= dynamicTopK) break;
     }
 
     if (results.isNotEmpty) {
@@ -357,6 +437,14 @@ class TfliteIdentificationService implements IdentificationService {
       _log.info(
         'HOUND_ID: RESULT -> ${results.map((r) => '${r.dog.name} ${(r.confidence * 100).toStringAsFixed(1)}%').join(', ')}',
       );
+
+      if (results.first.confidence < 0.15) {
+        _log.info(
+            'LOW_SIGNAL_RESULT: entropy=${normalizedEntropy.toStringAsFixed(3)}, '
+            'top1=${(results.first.confidence * 100).toStringAsFixed(1)}%, '
+            'subjectSize=${subjectSizeScore.toStringAsFixed(2)}, '
+            'action=${normalizedEntropy > 0.85 ? "GUIDE_USER_CLOSER" : "UNCERTAIN_MATCH"}');
+      }
     } else {
       _log.info('No label matches — returning unrecognized sentinel');
       return _unrecognizedResult();
@@ -365,8 +453,6 @@ class TfliteIdentificationService implements IdentificationService {
     return results;
   }
 
-  /// Return a sentinel result list that tells the UI the model detected a dog
-  /// but could not match it to any known breed in our database.
   List<IdentificationResult> _unrecognizedResult() {
     final placeholder = _dogService.unknownDog('Unknown Breed');
     return [
@@ -378,8 +464,6 @@ class TfliteIdentificationService implements IdentificationService {
     ];
   }
 
-  /// Match a model label to a Dog in our database.
-  /// Uses pre-computed cache (O(1)) built at model load time.
   Dog? _matchLabelToDog(String label) {
     if (label.isEmpty || label.startsWith('_')) return null;
     return _labelCache[label];

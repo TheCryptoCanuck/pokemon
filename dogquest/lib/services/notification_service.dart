@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:logging/logging.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -10,6 +10,8 @@ import 'package:timezone/timezone.dart' as tz;
 /// Uses flutter_local_notifications — no Firebase/FCM required.
 /// All scheduling is on-device with exact alarms that survive reboots.
 class NotificationService {
+  static final _log = Logger('NotificationService');
+
   static final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
@@ -47,13 +49,13 @@ class NotificationService {
     final status = await Permission.notification.status;
     if (status.isDenied) {
       final result = await Permission.notification.request();
-      debugPrint('[Notifications] Permission result: $result');
+      _log.fine('Permission result: $result');
     }
   }
 
   /// Callback when user taps a notification.
   static void _onNotificationTapped(NotificationResponse response) {
-    debugPrint('[Notifications] Tapped: ${response.payload}');
+    _log.fine('Tapped: ${response.payload}');
   }
 
   // ─── Streak Reminder (8 PM daily) ───────────────────────────────────────
@@ -82,13 +84,13 @@ class NotificationService {
       matchDateTimeComponents: DateTimeComponents.time,
       payload: 'streak_reminder',
     );
-    debugPrint('[Notifications] Streak reminder scheduled for 8:00 PM daily');
+    _log.fine('Streak reminder scheduled for 8:00 PM daily');
   }
 
   /// Cancel the streak reminder.
   static Future<void> cancelStreakReminder() async {
     await _plugin.cancel(_streakNotificationId);
-    debugPrint('[Notifications] Streak reminder cancelled');
+    _log.fine('Streak reminder cancelled');
   }
 
   // ─── Daily Dog Alert (9 AM daily) ─────────────────────────────────────
@@ -116,15 +118,13 @@ class NotificationService {
       matchDateTimeComponents: DateTimeComponents.time,
       payload: 'daily_dog',
     );
-    debugPrint(
-      '[Notifications] Daily dog reminder scheduled for 9:00 AM daily',
-    );
+    _log.fine('Daily dog reminder scheduled for 9:00 AM daily');
   }
 
   /// Cancel the daily dog alert.
   static Future<void> cancelDailyDogReminder() async {
     await _plugin.cancel(_dailyDogNotificationId);
-    debugPrint('[Notifications] Daily dog reminder cancelled');
+    _log.fine('Daily dog reminder cancelled');
   }
 
   // ─── Utility ───────────────────────────────────────────────────────────
@@ -132,7 +132,7 @@ class NotificationService {
   /// Cancel all scheduled notifications (e.g. on logout).
   static Future<void> cancelAll() async {
     await _plugin.cancelAll();
-    debugPrint('[Notifications] All notifications cancelled');
+    _log.fine('All notifications cancelled');
   }
 
   /// Returns the next occurrence of [hour]:[minute] in local timezone.

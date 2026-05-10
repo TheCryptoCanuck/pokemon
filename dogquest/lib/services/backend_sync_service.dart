@@ -15,25 +15,25 @@ class BackendSyncService {
     String source = 'ml',
     bool isRetry = false,
   }) async {
-    // Backend not configured for DogQuest yet
+    // Backend not configured for Hound yet
     return null;
   }
 
   /// Fetch user profile from backend.
   Future<Map<String, dynamic>?> fetchProfile() async {
-    // Backend not configured for DogQuest yet
+    // Backend not configured for Hound yet
     return null;
   }
 
   /// Fetch user collection from backend.
   Future<Map<String, dynamic>?> fetchCollection() async {
-    // Backend not configured for DogQuest yet
+    // Backend not configured for Hound yet
     return null;
   }
 
   /// Attempt to flush all pending syncs.
   Future<void> flushPendingSyncs() async {
-    // Backend not configured for DogQuest yet
+    // Backend not configured for Hound yet
     return;
   }
 }

@@ -54,3 +54,19 @@ supplemental_dogs_quarantine_v2/
 # Android Gradle build cache + machine-local paths
 android/.gradle/
 android/local.properties
+
+# Local agent / orchestration state — not meant to be tracked
+.swarm/
+.claude-flow/
+.claude/settings.local.json
+.claude/.cache/
+.claude/state/
+
+# Cowork / agent review scratch dirs
+.full-review/
+.full-review-archive-*/
+outputs/
+
+# Editor-generated diff dumps
+*.orig
+*.rej

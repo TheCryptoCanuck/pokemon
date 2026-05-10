@@ -1,0 +1,26 @@
+<svg viewBox="0 0 480 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Paw icon, scaled to fit 120px tall -->
+  <g transform="translate(0, 0) scale(0.6)">
+    <rect width="200" height="200" rx="44" fill="#0F1A10"/>
+    <ellipse cx="58"  cy="92"  rx="16" ry="19" fill="white" transform="rotate(-22 58 92)"/>
+    <ellipse cx="84"  cy="74"  rx="17" ry="21" fill="white" transform="rotate(-8 84 74)"/>
+    <ellipse cx="116" cy="74"  rx="17" ry="21" fill="white" transform="rotate(8 116 74)"/>
+    <ellipse cx="142" cy="92"  rx="16" ry="19" fill="white" transform="rotate(22 142 92)"/>
+    <ellipse cx="100" cy="140" rx="36" ry="30" fill="white"/>
+    <ellipse cx="87"  cy="118" rx="16" ry="14" fill="white"/>
+    <ellipse cx="113" cy="118" rx="16" ry="14" fill="white"/>
+    <rect x="84" y="114" width="32" height="16" fill="white"/>
+    <polygon points="160,28 163,37 172,40 163,43 160,52 157,43 148,40 157,37" fill="#D4874E"/>
+    <polygon points="160,32 162,38 168,40 162,42 160,48 158,42 152,40 158,38" fill="#E8A96E" opacity="0.55"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="136" y="58"
+        font-family="'SF Pro Display', 'Helvetica Neue', Arial, sans-serif"
+        font-size="56" font-weight="700" letter-spacing="-1"
+        fill="#D4874E">Hound</text>
+  <text x="137" y="80"
+        font-family="'SF Pro Text', 'Helvetica Neue', Arial, sans-serif"
+        font-size="13" font-weight="400" letter-spacing="2.5"
+        fill="#539548">IDENTIFY · COLLECT · EXPLORE</text>
+</svg>

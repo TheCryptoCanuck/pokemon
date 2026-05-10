@@ -251,7 +251,7 @@ class MyDogProfileScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'DogQuest member since ${_formatDate(dog.createdAt)}',
+                          'Hound member since ${_formatDate(dog.createdAt)}',
                           style: const TextStyle(
                             color: Colors.white38,
                             fontSize: 12,

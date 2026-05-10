@@ -100,9 +100,9 @@ class MarketplaceScreen extends ConsumerWidget {
 
           // -- Category Grid --
           const _SectionHeader(
-                  title: 'Browse Categories', icon: Icons.grid_view)
-              .animate()
-              .fadeIn(duration: 400.ms, delay: 400.ms),
+            title: 'Browse Categories',
+            icon: Icons.grid_view,
+          ).animate().fadeIn(duration: 400.ms, delay: 400.ms),
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -662,7 +662,7 @@ class _PartnerCTA extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Become a DogQuest Partner',
+                  'Become a Hound Partner',
                   style: TextStyle(
                     color: textPrimary,
                     fontWeight: FontWeight.bold,

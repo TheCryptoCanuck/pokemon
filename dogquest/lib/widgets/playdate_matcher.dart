@@ -310,8 +310,10 @@ class _PlaydateMatcherState extends ConsumerState<PlaydateMatcher> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx, false),
-                  child: const Text('Cancel',
-                      style: TextStyle(color: textSecondary)),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: textSecondary),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: accent),

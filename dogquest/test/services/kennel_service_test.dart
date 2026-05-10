@@ -11,9 +11,9 @@ import 'package:dogquest/services/kennel_service.dart';
 // Fakes / Mocks
 // ---------------------------------------------------------------------------
 
-/// Mocktail mock for the Hive Box<String> type.
+/// Mocktail mock for the Hive `Box<String>` type.
 ///
-/// Box<String> is a concrete Hive class with no abstract interface, so we
+/// `Box<String>` is a concrete Hive class with no abstract interface, so we
 /// extend Mock and mix in the generic type directly. Mocktail stubs are set
 /// per-test so each test controls exactly what the box reports.
 class MockBox extends Mock implements Box<String> {}

@@ -10,7 +10,6 @@ import 'package:dogquest/constants.dart';
 import 'package:dogquest/helpers/game_helpers.dart';
 import 'package:dogquest/services/activity_tracker_service.dart';
 import 'package:dogquest/services/kennel_service.dart';
-import 'package:dogquest/services/dog_group_service.dart';
 import 'package:dogquest/services/dog_mastery_service.dart';
 import 'package:dogquest/services/dog_service.dart';
 import 'package:dogquest/services/player_service.dart';
@@ -27,6 +26,8 @@ import 'package:dogquest/widgets/rarity_collection_wheel.dart';
 import 'package:dogquest/widgets/recommended_dogs_strip.dart';
 import 'package:dogquest/widgets/streak_fire_widget.dart';
 import 'package:dogquest/widgets/weekly_mission_card.dart';
+import 'package:dogquest/services/exam_service.dart';
+import 'package:dogquest/widgets/exam_badge_grid.dart';
 import 'package:dogquest/widgets/xp_bar.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -37,7 +38,6 @@ class ProfileScreen extends ConsumerWidget {
     final playerState = ref.watch(playerProvider);
     final kennelSvc = ref.read(kennelServiceProvider);
     final dogSvc = ref.read(dogServiceProvider);
-    final familySvc = ref.read(dogGroupServiceProvider);
     final sightingSvc = ref.read(sightingServiceProvider);
     final seasonalSvc = ref.read(seasonalEventServiceProvider);
     final masteryState = ref.watch(dogMasteryProvider);
@@ -121,31 +121,6 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ],
           ).animate().fadeIn(delay: 100.ms),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              _StatTile(
-                icon: Icons.quiz,
-                value: '${playerState.quizzesCompleted}',
-                label: 'Quizzes',
-                color: const Color(0xFF2196F3),
-              ),
-              const SizedBox(width: 10),
-              _StatTile(
-                icon: Icons.account_tree,
-                value: '${familySvc.completedFamilies}',
-                label: 'Families',
-                color: const Color(0xFFFF9800),
-              ),
-              const SizedBox(width: 10),
-              _StatTile(
-                icon: Icons.workspace_premium,
-                value: '${masteryState.totalMastered}',
-                label: 'Mastered',
-                color: Colors.amber,
-              ),
-            ],
-          ).animate().fadeIn(delay: 150.ms),
 
           // ─── Level Progress Ring (Demoted) ──────────────────────
           const SizedBox(height: 20),
@@ -157,29 +132,27 @@ class ProfileScreen extends ConsumerWidget {
           ).animate().fadeIn(),
           const SizedBox(height: 20),
 
-          // ─── My Dog Card ────────────────────────────────────────
-          if (!isExperienced || myDogSvc.dogs.isNotEmpty) ...[
-            _MyDogCard(),
-            const SizedBox(height: 4),
+          // ─── Progressive CTA — show one card based on user state ──
+          if (!isExperienced) ...[
+            () {
+              final isOffline = Hive.box('dogquest_player_stats')
+                  .get('offline_mode', defaultValue: false) as bool;
+              Widget? ctaCard;
+              if (myDogSvc.dogs.isEmpty) {
+                ctaCard = _MyDogCard();
+              } else if (packSvc.pack == null) {
+                ctaCard = _PackCard();
+              } else if (isOffline) {
+                ctaCard = _buildSignInPrompt(context);
+              }
+              if (ctaCard != null) {
+                return Column(
+                  children: [ctaCard, const SizedBox(height: 8)],
+                );
+              }
+              return const SizedBox.shrink();
+            }(),
           ],
-
-          // ─── Pack Card ──────────────────────────────────────────
-          if (!isExperienced || packSvc.pack != null) ...[
-            _PackCard(),
-            const SizedBox(height: 8),
-          ],
-
-          // ─── Sign-in Prompt (Offline) ──────────────────────────
-          if (!isExperienced &&
-              Hive.box('dogquest_player_stats')
-                      .get('offline_mode', defaultValue: false) ==
-                  true)
-            _buildSignInPrompt(context),
-          if (!isExperienced &&
-              Hive.box('dogquest_player_stats')
-                      .get('offline_mode', defaultValue: false) ==
-                  true)
-            const SizedBox(height: 8),
 
           // Best streak + streak savers
           if (playerState.bestStreak > 1 || playerState.streakSavers > 0) ...[
@@ -214,20 +187,38 @@ class ProfileScreen extends ConsumerWidget {
           const PersonalInsightsCard(),
           const SizedBox(height: 12),
 
-          // ─── Daily Challenges ───────────────────────────────────
-          const DailyChallengesCard(),
-          const SizedBox(height: 6),
-
-          // ─── Weekly Mission ─────────────────────────────────────
-          const WeeklyMissionCard(),
+          // ─── Daily Challenges + Weekly Mission ──────────────────
+          _DisclosureSection(
+            headerIcon: Icons.emoji_events_outlined,
+            headerTitle: 'Daily Challenges',
+            initiallyExpanded: true,
+            child: Column(
+              children: const [
+                DailyChallengesCard(),
+                SizedBox(height: 6),
+                WeeklyMissionCard(),
+              ],
+            ),
+          ),
           const SizedBox(height: 16),
 
-          // ─── Recommended Dogs ──────────────────────────────────
-          const RecommendedDogsStrip(),
+          // ─── Dogs to Find ──────────────────────────────────────
+          const _DisclosureSection(
+            headerIcon: Icons.pets,
+            headerTitle: 'Dogs to Find',
+            child: RecommendedDogsStrip(),
+          ),
           const SizedBox(height: 24),
 
           // ─── Next Achievements (progress hints — always visible) ──
           ..._buildNextAchievements(playerState, kennelSvc, dogSvc),
+
+          // ─── Exam Certifications ──────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: ExamBadgeGrid(),
+          ),
+          const SizedBox(height: 8),
 
           // ─── Achievements Grid — behind "See all" ───────────────
           _DisclosureSection(
@@ -260,7 +251,9 @@ class ProfileScreen extends ConsumerWidget {
               children: [
                 // Collection + Mastery Row
                 const _SectionHeader(
-                    title: 'Collection', icon: Icons.collections_bookmark),
+                  title: 'Collection',
+                  icon: Icons.collections_bookmark,
+                ),
                 const SizedBox(height: 12),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +299,8 @@ class ProfileScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: CollectionHeatmap(
-                      activityData: ref.watch(activityMapProvider)),
+                    activityData: ref.watch(activityMapProvider),
+                  ),
                 ).animate().fadeIn(delay: 300.ms),
                 const SizedBox(height: 24),
 
@@ -362,7 +356,9 @@ class ProfileScreen extends ConsumerWidget {
                             Text(
                               'Every breed identified helps grow the Hound community.',
                               style: TextStyle(
-                                  color: Colors.white54, fontSize: 12),
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),
@@ -420,11 +416,11 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 2),
                 const Text(
                   'Sign in to sync your collection.',
-                  style: TextStyle(color: Colors.white54, fontSize: 11),
+                  style: TextStyle(color: Colors.white70, fontSize: 11),
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
-                  height: 30,
+                  height: 44,
                   child: ElevatedButton(
                     onPressed: () => context.push('/login'),
                     style: ElevatedButton.styleFrom(
@@ -681,7 +677,7 @@ class ProfileScreen extends ConsumerWidget {
                               valueColor: AlwaysStoppedAnimation<Color>(
                                 hint.progress >= 0.75
                                     ? Colors.amber
-                                    : Colors.white38,
+                                    : Colors.white70,
                               ),
                             ),
                           ),
@@ -697,7 +693,7 @@ class ProfileScreen extends ConsumerWidget {
                           style: TextStyle(
                             color: hint.progress >= 0.75
                                 ? Colors.amber
-                                : Colors.white38,
+                                : Colors.white70,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -705,7 +701,7 @@ class ProfileScreen extends ConsumerWidget {
                         Text(
                           hint.hint,
                           style: const TextStyle(
-                            color: Colors.white30,
+                            color: Colors.white70,
                             fontSize: 9,
                           ),
                         ),
@@ -732,29 +728,34 @@ class _CommunityChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.06),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white12),
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.people_rounded, color: Colors.white70, size: 16),
-            SizedBox(width: 5),
-            Text(
-              'Community',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+    return Semantics(
+      button: true,
+      label: 'Community',
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 44),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.06),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white12),
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.people_rounded, color: Colors.white70, size: 16),
+              SizedBox(width: 5),
+              Text(
+                'Community',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -771,12 +772,14 @@ class _DisclosureSection extends StatefulWidget {
   final String headerTitle;
   final String? headerBadge;
   final Widget child;
+  final bool initiallyExpanded;
 
   const _DisclosureSection({
     required this.headerIcon,
     required this.headerTitle,
     required this.child,
     this.headerBadge,
+    this.initiallyExpanded = false,
   });
 
   @override
@@ -785,6 +788,12 @@ class _DisclosureSection extends StatefulWidget {
 
 class _DisclosureSectionState extends State<_DisclosureSection> {
   bool _expanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _expanded = widget.initiallyExpanded;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -823,7 +832,7 @@ class _DisclosureSectionState extends State<_DisclosureSection> {
                     child: Text(
                       widget.headerBadge!,
                       style: const TextStyle(
-                        color: Colors.white38,
+                        color: Colors.white70,
                         fontSize: 11,
                       ),
                     ),
@@ -835,7 +844,7 @@ class _DisclosureSectionState extends State<_DisclosureSection> {
                   duration: const Duration(milliseconds: 200),
                   child: const Icon(
                     Icons.keyboard_arrow_down_rounded,
-                    color: Colors.white38,
+                    color: Colors.white70,
                     size: 22,
                   ),
                 ),
@@ -921,7 +930,7 @@ class _AchievementTile extends StatelessWidget {
             emoji,
             style: const TextStyle(
               fontSize: 20,
-              color: Colors.white24,
+              color: Colors.white70,
             ),
           ),
           const SizedBox(width: 8),
@@ -935,7 +944,7 @@ class _AchievementTile extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white38,
+                    color: Colors.white70,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -945,7 +954,7 @@ class _AchievementTile extends StatelessWidget {
                   condition,
                   style: const TextStyle(
                     fontSize: 10,
-                    color: Colors.white24,
+                    color: Colors.white70,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -1024,7 +1033,7 @@ class _StatTile extends StatelessWidget {
             ),
             Text(
               label,
-              style: const TextStyle(color: Colors.white54, fontSize: 11),
+              style: const TextStyle(color: Colors.white70, fontSize: 11),
             ),
           ],
         ),
@@ -1158,7 +1167,7 @@ class _MasterySummary extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           '${mastery.sightingCounts.length}/$totalDogs tracked',
-          style: const TextStyle(color: Colors.white30, fontSize: 10),
+          style: const TextStyle(color: Colors.white70, fontSize: 10),
         ),
       ],
     );
@@ -1172,7 +1181,7 @@ class _UserGreeting extends ConsumerWidget {
     final username =
         playerBox.get('cached_username', defaultValue: null) as String?;
     final displayName =
-        (username != null && username.isNotEmpty) ? username : 'Doger';
+        (username != null && username.isNotEmpty) ? username : 'Dog Lover';
     final playerState = ref.watch(playerProvider);
     final customPhotoPath = Hive.box('dogquest_player_stats')
         .get('custom_avatar_path', defaultValue: '') as String;
@@ -1214,19 +1223,39 @@ class _UserGreeting extends ConsumerWidget {
                     border: Border.all(color: Colors.white24, width: 1),
                   ),
                   child:
-                      const Icon(Icons.edit, size: 10, color: Colors.white54),
+                      const Icon(Icons.edit, size: 10, color: Colors.white70),
                 ),
               ),
             ],
           ),
         ),
         const SizedBox(width: 12),
-        Text(
-          'Hello, $displayName!',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Hello, $displayName!',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              () {
+                final examSvc = ref.read(examServiceProvider);
+                final displayTitle = examSvc.prestigeTitle ?? playerState.title;
+                return Text(
+                  displayTitle,
+                  style: TextStyle(
+                    color:
+                        examSvc.prestigeTitle != null ? examGold : Colors.amber,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                );
+              }(),
+            ],
           ),
         ),
       ],
@@ -1330,7 +1359,7 @@ class _AvatarPickerSheet extends StatelessWidget {
         const SizedBox(height: 4),
         const Text(
           'Unlock more by collecting breeds and earning achievements',
-          style: TextStyle(color: Colors.white38, fontSize: 12),
+          style: TextStyle(color: Colors.white70, fontSize: 12),
         ),
         const SizedBox(height: 16),
         Expanded(
@@ -1461,7 +1490,7 @@ class _AvatarPickerSheet extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: unlocked ? Colors.white38 : Colors.white12,
+                            color: unlocked ? Colors.white70 : Colors.white12,
                             fontSize: 9,
                           ),
                         ),
@@ -1528,13 +1557,16 @@ class _MyDogCard extends ConsumerWidget {
                     SizedBox(height: 2),
                     Text(
                       'Create a profile for your furry friend — earn 50 XP!',
-                      style: TextStyle(color: Colors.white54, fontSize: 12),
+                      style: TextStyle(color: Colors.white70, fontSize: 12),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios,
-                  color: Colors.amber, size: 16),
+              const Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.amber,
+                size: 16,
+              ),
             ],
           ),
         ),
@@ -1609,7 +1641,7 @@ class _MyDogCard extends ConsumerWidget {
                               const Text(
                                 ' \u2022 ',
                                 style: TextStyle(
-                                  color: Colors.white24,
+                                  color: Colors.white70,
                                   fontSize: 12,
                                 ),
                               ),
@@ -1617,7 +1649,7 @@ class _MyDogCard extends ConsumerWidget {
                               Text(
                                 '${dog.ageYears} yr${dog.ageYears == 1 ? '' : 's'}',
                                 style: const TextStyle(
-                                  color: Colors.white54,
+                                  color: Colors.white70,
                                   fontSize: 12,
                                 ),
                               ),
@@ -1649,7 +1681,7 @@ class _MyDogCard extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right, color: Colors.white24),
+                  const Icon(Icons.chevron_right, color: Colors.white70),
                 ],
               ),
             ),
@@ -1744,7 +1776,7 @@ class _PackCard extends ConsumerWidget {
                     SizedBox(height: 2),
                     Text(
                       'Create a family group to share dogs & track stats together',
-                      style: TextStyle(color: Colors.white54, fontSize: 12),
+                      style: TextStyle(color: Colors.white70, fontSize: 12),
                     ),
                   ],
                 ),
@@ -1803,7 +1835,7 @@ class _PackCard extends ConsumerWidget {
                   const SizedBox(height: 2),
                   Text(
                     '${pack.members.length} member${pack.members.length == 1 ? '' : 's'} \u2022 ${pack.totalDogs} dog${pack.totalDogs == 1 ? '' : 's'}',
-                    style: const TextStyle(color: Colors.white54, fontSize: 12),
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                 ],
               ),
@@ -1825,7 +1857,7 @@ class _PackCard extends ConsumerWidget {
                 ),
               ),
             const SizedBox(width: 8),
-            const Icon(Icons.chevron_right, color: Colors.white24),
+            const Icon(Icons.chevron_right, color: Colors.white70),
           ],
         ),
       ),

@@ -837,7 +837,7 @@ class _MyDogWizardScreenState extends ConsumerState<MyDogWizardScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            'Welcome to DogQuest!',
+            'Welcome to Hound!',
             style: TextStyle(
               color: Colors.amber,
               fontSize: 16,

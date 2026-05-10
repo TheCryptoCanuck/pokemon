@@ -22,7 +22,7 @@ class NetworkDogImage extends StatelessWidget {
     return CachedNetworkImage(
       imageUrl: url,
       httpHeaders: const {
-        'User-Agent': 'DogQuest/1.0 (dog identification app)',
+        'User-Agent': 'Hound/1.0 (dog identification app)',
       },
       height: height,
       width: width ?? double.infinity,

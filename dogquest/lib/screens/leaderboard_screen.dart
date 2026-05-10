@@ -12,6 +12,7 @@ import 'package:dogquest/services/kennel_service.dart';
 import 'package:dogquest/services/dog_mastery_service.dart';
 import 'package:dogquest/services/dog_service.dart';
 import 'package:dogquest/services/combo_service.dart';
+import 'package:dogquest/services/exam_service.dart';
 
 class LeaderboardScreen extends ConsumerStatefulWidget {
   const LeaderboardScreen({super.key});
@@ -544,14 +545,21 @@ class _AllTimeTab extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            player.title,
-                            style: const TextStyle(
-                              color: Colors.amber,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          () {
+                            final examSvc = ref.read(examServiceProvider);
+                            final displayTitle =
+                                examSvc.prestigeTitle ?? player.title;
+                            return Text(
+                              displayTitle,
+                              style: TextStyle(
+                                color: examSvc.prestigeTitle != null
+                                    ? examGold
+                                    : Colors.amber,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          }(),
                           const SizedBox(height: 4),
                           Text(
                             '${player.xp} / ${player.xpForNextLevel} XP to next level',

@@ -89,7 +89,7 @@ class MarketplaceProvider {
     this.tags = const [],
   });
 
-  /// Whether this provider offers a DogQuest partner discount.
+  /// Whether this provider offers a Hound partner discount.
   bool get hasDiscount => partnerDiscount != null && partnerDiscount! > 0;
 
   /// Formatted discount string for display (e.g. "15% off").

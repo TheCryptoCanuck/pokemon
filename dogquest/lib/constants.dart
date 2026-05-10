@@ -51,6 +51,12 @@ const textSecondary = Colors.white70;
 const textMuted = Color(0xFFB0B8B0); // Muted on dark bg
 const textHint = Color(0xFF8A948A); // Hint on dark bg
 
+// ─── Exam Tier Colors ────────────────────────────────────────────────────────
+
+const examBronze = Color(0xFFCD7F32);
+const examSilver = Color(0xFFC0C0C0);
+const examGold = Color(0xFFFFD700);
+
 // ─── Unlockable Avatars ──────────────────────────────────────────────────────
 
 class AvatarOption {

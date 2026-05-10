@@ -28,6 +28,7 @@ import 'package:dogquest/screens/lost_dog_hub_screen.dart';
 import 'package:dogquest/screens/social_hub_screen.dart';
 import 'package:dogquest/screens/report_lost_screen.dart';
 import 'package:dogquest/screens/scan_stray_screen.dart';
+import 'package:dogquest/screens/field_guide_screen.dart';
 import 'package:dogquest/screens/lost_dog_map_screen.dart';
 // NOTE: imports for shelter_mode_screen, share_lost_dog_screen, marketplace_screen,
 // service_list_screen, provider_detail_screen, reunion_celebration_screen, and
@@ -117,6 +118,10 @@ final router = GoRouter(
       path: '/register',
       builder: (_, __) => const RegisterScreen(),
     ),
+    GoRoute(
+      path: '/guide',
+      redirect: (_, __) => '/breeds',
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
           HomeShell(navigationShell: navigationShell),
@@ -142,32 +147,17 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/lost-dog',
-              builder: (_, __) => const LostDogHubScreen(),
-              routes: [
-                GoRoute(
-                  path: 'report',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (_, __) => const ReportLostScreen(),
-                ),
-                GoRoute(
-                  path: 'scan',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (_, __) => const ScanStrayScreen(),
-                ),
-                GoRoute(
-                  path: 'map',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (_, __) => const LostDogMapScreen(),
-                ),
-              ],
+              path: '/breeds',
+              builder: (_, __) => const FieldGuideScreen(),
             ),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-                path: '/profile', builder: (_, __) => const ProfileScreen(),),
+              path: '/profile',
+              builder: (_, __) => const ProfileScreen(),
+            ),
           ],
         ),
       ],
@@ -212,6 +202,28 @@ final router = GoRouter(
       parentNavigatorKey: rootNavigatorKey,
       builder: (_, __) => const DogsNearbyScreen(),
     ),
+    GoRoute(
+      path: '/lost-dog',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, __) => const LostDogHubScreen(),
+      routes: [
+        GoRoute(
+          path: 'report',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (_, __) => const ReportLostScreen(),
+        ),
+        GoRoute(
+          path: 'scan',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (_, __) => const ScanStrayScreen(),
+        ),
+        GoRoute(
+          path: 'map',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (_, __) => const LostDogMapScreen(),
+        ),
+      ],
+    ),
     // /lost-dog/share, /shelter-mode, /marketplace, /marketplace/category/:name,
     // and /marketplace/provider/:id routes removed pending those screens being
     // committed. Restore alongside the imports above. (T5-feature-restore)
@@ -237,15 +249,24 @@ final router = GoRouter(
     GoRoute(
       path: '/quiz',
       parentNavigatorKey: rootNavigatorKey,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        child: const QuizScreen(),
-        transitionsBuilder: (context, animation, _, child) => SlideTransition(
-          position: Tween(begin: const Offset(0, 1), end: Offset.zero).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+      pageBuilder: (context, state) {
+        // Exam mode: /quiz?examGroup=sporting&examTier=bronze
+        final examGroup = state.uri.queryParameters['examGroup'];
+        final examTierStr = state.uri.queryParameters['examTier'];
+        return CustomTransitionPage(
+          child: QuizScreen(
+            examGroupId: examGroup,
+            examTierName: examTierStr,
           ),
-          child: child,
-        ),
-      ),
+          transitionsBuilder: (context, animation, _, child) => SlideTransition(
+            position:
+                Tween(begin: const Offset(0, 1), end: Offset.zero).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            ),
+            child: child,
+          ),
+        );
+      },
     ),
     // /reunion-celebration route removed pending reunion_celebration_screen
     // being committed. (T5-feature-restore)

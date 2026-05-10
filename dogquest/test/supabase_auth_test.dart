@@ -38,11 +38,13 @@ void main() {
         final mockUser = MockUser();
         final mockResponse = MockAuthResponse();
         when(() => mockResponse.user).thenReturn(mockUser);
-        when(() => mockAuth.signUp(
-              email: any(named: 'email'),
-              password: any(named: 'password'),
-              data: any(named: 'data'),
-            )).thenAnswer((_) async => mockResponse);
+        when(
+          () => mockAuth.signUp(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+            data: any(named: 'data'),
+          ),
+        ).thenAnswer((_) async => mockResponse);
 
         final result = await authService.signUp(
           email: 'test@example.com',
@@ -52,19 +54,23 @@ void main() {
         );
 
         expect(result.user, equals(mockUser));
-        verify(() => mockAuth.signUp(
-              email: 'test@example.com',
-              password: 'password123',
-              data: {'username': 'testuser', 'display_name': 'Test User'},
-            )).called(1);
+        verify(
+          () => mockAuth.signUp(
+            email: 'test@example.com',
+            password: 'password123',
+            data: {'username': 'testuser', 'display_name': 'Test User'},
+          ),
+        ).called(1);
       });
 
       test('throws SupabaseAuthException on auth error', () async {
-        when(() => mockAuth.signUp(
-              email: any(named: 'email'),
-              password: any(named: 'password'),
-              data: any(named: 'data'),
-            )).thenThrow(AuthException('User already registered'));
+        when(
+          () => mockAuth.signUp(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+            data: any(named: 'data'),
+          ),
+        ).thenThrow(const AuthException('User already registered'));
 
         expect(
           () => authService.signUp(
@@ -77,11 +83,13 @@ void main() {
       });
 
       test('maps "user already registered" to friendly message', () async {
-        when(() => mockAuth.signUp(
-              email: any(named: 'email'),
-              password: any(named: 'password'),
-              data: any(named: 'data'),
-            )).thenThrow(AuthException('User already registered'));
+        when(
+          () => mockAuth.signUp(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+            data: any(named: 'data'),
+          ),
+        ).thenThrow(const AuthException('User already registered'));
 
         try {
           await authService.signUp(
@@ -103,10 +111,12 @@ void main() {
         final mockResponse = MockAuthResponse();
         when(() => mockResponse.user).thenReturn(mockUser);
         when(() => mockResponse.session).thenReturn(mockSession);
-        when(() => mockAuth.signInWithPassword(
-              email: any(named: 'email'),
-              password: any(named: 'password'),
-            )).thenAnswer((_) async => mockResponse);
+        when(
+          () => mockAuth.signInWithPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenAnswer((_) async => mockResponse);
 
         final result = await authService.signIn(
           email: 'test@example.com',
@@ -118,10 +128,12 @@ void main() {
       });
 
       test('throws SupabaseAuthException on invalid credentials', () async {
-        when(() => mockAuth.signInWithPassword(
-              email: any(named: 'email'),
-              password: any(named: 'password'),
-            )).thenThrow(AuthException('Invalid login credentials'));
+        when(
+          () => mockAuth.signInWithPassword(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenThrow(const AuthException('Invalid login credentials'));
 
         try {
           await authService.signIn(email: 'x@x.com', password: 'wrong');

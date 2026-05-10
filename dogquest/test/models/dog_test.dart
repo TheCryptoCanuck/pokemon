@@ -23,8 +23,10 @@ void main() {
       expect(dog.scientificName, equals('Canis lupus familiaris (Sporting)'));
       expect(dog.imageUrl, equals('https://example.com/lab.jpg'));
       expect(dog.audioUrl, equals('https://example.com/lab.mp3'));
-      expect(dog.lore,
-          equals('The world\'s most popular dog breed for over 30 years.'));
+      expect(
+        dog.lore,
+        equals('The world\'s most popular dog breed for over 30 years.'),
+      );
       expect(dog.habitat, equals('Sporting Group | Origin: Canada'));
       expect(dog.conservationStatus, equals('Domesticated'));
       expect(dog.rarity, equals(Rarity.common));
@@ -241,7 +243,9 @@ void main() {
 
       expect(json['name'], equals('Labrador Retriever'));
       expect(
-          json['scientificName'], equals('Canis lupus familiaris (Sporting)'));
+        json['scientificName'],
+        equals('Canis lupus familiaris (Sporting)'),
+      );
       expect(json['imageUrl'], equals('https://example.com/lab.jpg'));
       expect(json['audioUrl'], equals('https://example.com/lab.mp3'));
       expect(json['lore'], equals('The world\'s most popular dog breed.'));

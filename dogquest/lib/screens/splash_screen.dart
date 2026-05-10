@@ -19,7 +19,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   bool _showLogo = false;
   bool _showTitle = false;
-  bool _showTagline = false;
   bool _showProgress = false;
 
   @override
@@ -31,9 +30,6 @@ class _SplashScreenState extends State<SplashScreen> {
       setState(() => _showLogo = true);
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted) setState(() => _showTitle = true);
-      });
-      Future.delayed(const Duration(milliseconds: 900), () {
-        if (mounted) setState(() => _showTagline = true);
       });
       Future.delayed(const Duration(milliseconds: 1200), () {
         if (mounted) setState(() => _showProgress = true);
@@ -62,8 +58,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   borderRadius: BorderRadius.circular(32),
                   child: Image.asset(
                     'assets/splash_logo.png',
-                    width: 140,
-                    height: 140,
+                    width: 280,
+                    height: 280,
+                    semanticLabel: 'Hound app logo',
                   ),
                 ),
               ),
@@ -88,24 +85,6 @@ class _SplashScreenState extends State<SplashScreen> {
                     fontWeight: FontWeight.bold,
                     letterSpacing: 2,
                   ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 6),
-
-            // Tagline — fade
-            AnimatedOpacity(
-              opacity: _showTagline ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 800),
-              curve: Curves.easeIn,
-              child: const Text(
-                'Discover. Identify. Collect.',
-                style: TextStyle(
-                  color: Colors.amber,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 1.5,
                 ),
               ),
             ),
@@ -136,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                 value: value > 0 ? value : null,
                                 minHeight: 4,
                                 backgroundColor:
-                                    Colors.white.withValues(alpha: 0.06),
+                                    Colors.white.withValues(alpha: 0.15),
                                 valueColor: const AlwaysStoppedAnimation<Color>(
                                   Colors.amber,
                                 ),
@@ -158,8 +137,13 @@ class _SplashScreenState extends State<SplashScreen> {
                             status,
                             key: ValueKey(status),
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              fontSize: 12,
+                              color: status == 'Ready!'
+                                  ? accent
+                                  : Colors.white.withValues(alpha: 0.7),
+                              fontSize: status == 'Ready!' ? 13 : 12,
+                              fontWeight: status == 'Ready!'
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
                             ),
                           ),
                         );

@@ -339,7 +339,9 @@ class _RemoteFeedCard extends ConsumerWidget {
                         Text(
                           post.breedName!,
                           style: const TextStyle(
-                              color: textSecondary, fontSize: 12),
+                            color: textSecondary,
+                            fontSize: 12,
+                          ),
                         ),
                     ],
                   ),
@@ -396,8 +398,11 @@ class _RemoteFeedCard extends ConsumerWidget {
                   onToggled: onLikeToggled,
                 ),
                 const SizedBox(width: 16),
-                const Icon(Icons.comment_outlined,
-                    color: textSecondary, size: 18),
+                const Icon(
+                  Icons.comment_outlined,
+                  color: textSecondary,
+                  size: 18,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   '${post.commentCount}',

@@ -53,13 +53,15 @@ void main() {
       generator = SocialPostGenerator(mockSocial);
 
       // Default: createPost is a no-op future
-      when(() => mockSocial.createPost(
-            postType: any(named: 'postType'),
-            content: any(named: 'content'),
-            breedName: any(named: 'breedName'),
-            photoUrl: any(named: 'photoUrl'),
-            metadata: any(named: 'metadata'),
-          )).thenAnswer((_) async {});
+      when(
+        () => mockSocial.createPost(
+          postType: any(named: 'postType'),
+          content: any(named: 'content'),
+          breedName: any(named: 'breedName'),
+          photoUrl: any(named: 'photoUrl'),
+          metadata: any(named: 'metadata'),
+        ),
+      ).thenAnswer((_) async {});
     });
 
     // Helper that drains the microtask queue so fire-and-forget _fire() callbacks run.
@@ -69,12 +71,14 @@ void main() {
       generator.onBreedDiscovered('Golden Retriever');
       await pump();
 
-      verify(() => mockSocial.createPost(
-            postType: 'breed_discovered',
-            content: any(named: 'content'),
-            breedName: 'Golden Retriever',
-            metadata: any(named: 'metadata'),
-          )).called(1);
+      verify(
+        () => mockSocial.createPost(
+          postType: 'breed_discovered',
+          content: any(named: 'content'),
+          breedName: 'Golden Retriever',
+          metadata: any(named: 'metadata'),
+        ),
+      ).called(1);
     });
 
     test(
@@ -83,19 +87,23 @@ void main() {
       generator.onBreedDiscovered('Xoloitzcuintli', rarity: 'legendary');
       await pump();
 
-      verify(() => mockSocial.createPost(
-            postType: 'breed_discovered',
-            content: any(named: 'content'),
-            breedName: 'Xoloitzcuintli',
-            metadata: any(named: 'metadata'),
-          )).called(1);
+      verify(
+        () => mockSocial.createPost(
+          postType: 'breed_discovered',
+          content: any(named: 'content'),
+          breedName: 'Xoloitzcuintli',
+          metadata: any(named: 'metadata'),
+        ),
+      ).called(1);
 
-      verify(() => mockSocial.createPost(
-            postType: 'rare_find',
-            content: any(named: 'content'),
-            breedName: 'Xoloitzcuintli',
-            metadata: any(named: 'metadata'),
-          )).called(1);
+      verify(
+        () => mockSocial.createPost(
+          postType: 'rare_find',
+          content: any(named: 'content'),
+          breedName: 'Xoloitzcuintli',
+          metadata: any(named: 'metadata'),
+        ),
+      ).called(1);
     });
 
     test('onStreakMilestone fires at milestone day 7 but not at day 8',
@@ -103,33 +111,39 @@ void main() {
       generator.onStreakMilestone(7);
       await pump();
 
-      verify(() => mockSocial.createPost(
-            postType: 'streak_milestone',
-            content: any(named: 'content'),
-            metadata: any(named: 'metadata'),
-          )).called(1);
+      verify(
+        () => mockSocial.createPost(
+          postType: 'streak_milestone',
+          content: any(named: 'content'),
+          metadata: any(named: 'metadata'),
+        ),
+      ).called(1);
 
       clearInteractions(mockSocial);
 
       generator.onStreakMilestone(8);
       await pump();
 
-      verifyNever(() => mockSocial.createPost(
-            postType: any(named: 'postType'),
-            content: any(named: 'content'),
-            metadata: any(named: 'metadata'),
-          ));
+      verifyNever(
+        () => mockSocial.createPost(
+          postType: any(named: 'postType'),
+          content: any(named: 'content'),
+          metadata: any(named: 'metadata'),
+        ),
+      );
     });
 
     test('onLevelUp creates level_up post with correct metadata', () async {
       generator.onLevelUp(10, 'Expert');
       await pump();
 
-      final captured = verify(() => mockSocial.createPost(
-            postType: captureAny(named: 'postType'),
-            content: any(named: 'content'),
-            metadata: captureAny(named: 'metadata'),
-          )).captured;
+      final captured = verify(
+        () => mockSocial.createPost(
+          postType: captureAny(named: 'postType'),
+          content: any(named: 'content'),
+          metadata: captureAny(named: 'metadata'),
+        ),
+      ).captured;
 
       // captured = [postType, metadata] interleaved by mocktail
       expect(captured[0], 'level_up');

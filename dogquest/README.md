@@ -1,6 +1,6 @@
-# DogQuest
+# Hound
 
-Flutter-based dog breed identification and collection game for Android. Point your camera at any dog (yours, a stranger's, a photo) and DogQuest's on-device TFLite model identifies the breed, awards XP, and adds it to your collection. Forked from AviQuest (bird identification).
+Flutter-based dog breed identification and collection game for Android. Point your camera at any dog (yours, a stranger's, a photo) and Hound's on-device TFLite model identifies the breed, awards XP, and adds it to your collection.
 
 The deployed model identifies **150 dog breeds** (v5.1 EfficientNetB2, ~10.8 MB, 87.2% accuracy on the Stanford val set). The in-training v6 (EfficientNetV2-S) targets **294 breeds**.
 
@@ -80,7 +80,7 @@ dogquest/
 
 ## Build target
 
-- **App ID**: `com.dogquest.app`
+- **App ID**: `com.hound.app`
 - **Min Android**: 21 (Android 5.0)
 - **Target Android**: 34 (Android 14)
 - **Flutter SDK**: `>=3.0.0 <4.0.0`

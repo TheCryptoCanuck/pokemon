@@ -29,7 +29,8 @@ class AuthService {
           'password': password,
         },
       );
-      final token = response.data['access_token'] as String;
+      final token =
+          (response.data as Map<String, dynamic>)['access_token'] as String;
       await _api.saveToken(token);
       Hive.box('dogquest_player_stats').put('has_auth_token', true);
       _log.info('Registered successfully: $username');
@@ -55,7 +56,8 @@ class AuthService {
           'password': password,
         },
       );
-      final token = response.data['access_token'] as String;
+      final token =
+          (response.data as Map<String, dynamic>)['access_token'] as String;
       await _api.saveToken(token);
       Hive.box('dogquest_player_stats').put('has_auth_token', true);
       _log.info('Logged in successfully');

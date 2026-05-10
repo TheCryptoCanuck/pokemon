@@ -153,7 +153,7 @@ class LostDogPosterCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'DOGQUEST',
+                'HOUND',
                 style: TextStyle(
                   color: _red,
                   fontSize: 11,
@@ -422,7 +422,7 @@ class LostDogPosterCard extends StatelessWidget {
                   border: Border.all(color: _red.withValues(alpha: 0.3)),
                 ),
                 child: const Text(
-                  'If you see this dog, open\nDogQuest and scan!',
+                  'If you see this dog, open\nHound and scan!',
                   style: TextStyle(
                     color: _redLight,
                     fontSize: 11,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Network Security Configuration for DogQuest
+  Network Security Configuration for Hound
   - Enforces HTTPS for all network communication
   - Restricts cleartext (HTTP) traffic
   - Pins trusted domains for media resources

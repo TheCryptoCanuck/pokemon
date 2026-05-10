@@ -58,8 +58,12 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
         onConflict: 'breed_name',
       );
 
-      // Check membership
-      final uid = client.auth.currentUser!.id;
+      // Guard: session may have expired between cold start and this call.
+      final uid = client.auth.currentUser?.id;
+      if (uid == null) {
+        if (mounted) setState(() => _loadingCommunity = false);
+        return;
+      }
       final membership = await client
           .from('breed_community_memberships')
           .select('id')
@@ -98,7 +102,8 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
   Future<void> _toggleMembership() async {
     final client = _client;
     if (client == null) return;
-    final uid = client.auth.currentUser!.id;
+    final uid = client.auth.currentUser?.id;
+    if (uid == null) return;
 
     if (_isMember) {
       await client
@@ -128,12 +133,15 @@ class _BreedCommunityScreenState extends ConsumerState<BreedCommunityScreen> {
     final client = _client;
     if (client == null) return;
 
+    final uid = client.auth.currentUser?.id;
+    if (uid == null) return;
     await client.from('breed_community_posts').insert({
       'breed_name': widget.breedName,
-      'user_id': client.auth.currentUser!.id,
+      'user_id': uid,
       'content': text,
     });
     _postController.clear();
+    if (!mounted) return;
     FocusScope.of(context).unfocus();
     await _loadCommunityData();
   }
@@ -656,8 +664,10 @@ class _StatTile extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            Text(label,
-                style: const TextStyle(color: textSecondary, fontSize: 11)),
+            Text(
+              label,
+              style: const TextStyle(color: textSecondary, fontSize: 11),
+            ),
           ],
         ),
       ),

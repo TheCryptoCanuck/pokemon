@@ -6,7 +6,7 @@ import 'package:dogquest/constants.dart';
 import 'package:dogquest/services/analytics_service.dart';
 import 'package:dogquest/widgets/connection_status_banner.dart';
 
-const _tabLabels = ['Sightings', 'Identify', 'Kennel', 'Field Guide', 'Me'];
+const _tabLabels = ['Discover', 'Identify', 'Kennel', 'Breeds', 'Me'];
 
 class HomeShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -43,6 +43,7 @@ class HomeShell extends ConsumerWidget {
           final fromTab = _tabLabels[navigationShell.currentIndex];
           final toTab = _tabLabels[i];
           if (fromTab != toTab) {
+            ScaffoldMessenger.of(context).clearSnackBars();
             ref.read(analyticsProvider).track('tab_navigated', {
               'from_tab': fromTab,
               'to_tab': toTab,
@@ -55,8 +56,9 @@ class HomeShell extends ConsumerWidget {
         },
         items: [
           const BottomNavigationBarItem(
-            icon: Icon(Icons.location_on_outlined),
-            label: 'Sightings',
+            icon: Icon(Icons.explore_outlined),
+            activeIcon: Icon(Icons.explore),
+            label: 'Discover',
           ),
           BottomNavigationBarItem(
             icon: Container(
@@ -79,14 +81,20 @@ class HomeShell extends ConsumerWidget {
             label: 'Identify',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.collections),
+            icon: Icon(Icons.collections_outlined),
+            activeIcon: Icon(Icons.collections),
             label: 'Kennel',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Field Guide',
+            icon: Icon(Icons.menu_book_outlined),
+            activeIcon: Icon(Icons.menu_book),
+            label: 'Breeds',
           ),
-          const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Me',
+          ),
         ],
       ),
     );

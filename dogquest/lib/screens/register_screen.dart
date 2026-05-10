@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:dogquest/constants.dart';
+import 'package:dogquest/services/kennel_service.dart';
 import 'package:dogquest/services/supabase_auth_service.dart';
 import 'package:dogquest/services/supabase_user_service.dart';
 
@@ -110,6 +111,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
       // Clear offline mode
       Hive.box('dogquest_player_stats').put('offline_mode', false);
+
+      // Recover any breed scanned as a guest during this session
+      final prefs = Hive.box('hound_prefs');
+      final pendingBreed = prefs.get('pendingBreedResult') as String?;
+      if (pendingBreed != null && pendingBreed.isNotEmpty) {
+        unawaited(prefs.delete('pendingBreedResult'));
+        try {
+          ref.read(kennelServiceProvider).add(pendingBreed);
+        } catch (_) {}
+      }
+
       if (!mounted) return;
       context.go('/onboarding');
     } on SupabaseAuthException catch (e) {
@@ -148,7 +160,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ).animate().fadeIn(delay: 100.ms),
                     const SizedBox(height: 8),
                     const Text(
-                      'Join DogQuest and start your collection',
+                      'Join Hound and start your collection',
                       style: TextStyle(color: Colors.white54),
                     ).animate().fadeIn(delay: 200.ms),
                     const SizedBox(height: 32),

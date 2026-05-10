@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
@@ -182,9 +184,12 @@ class SocialPostGenerator {
   void _fire(Future<void> Function() action) {
     if (_social == null) return;
 
-    action().catchError((Object error, StackTrace stack) {
-      _log.warning('Failed to create social post', error, stack);
-    });
+    // Intentionally not awaited: social post failures must not block callers.
+    unawaited(
+      action().catchError((Object error, StackTrace stack) {
+        _log.warning('Failed to create social post', error, stack);
+      }),
+    );
   }
 }
 

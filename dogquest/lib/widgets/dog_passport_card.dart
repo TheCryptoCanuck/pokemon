@@ -33,7 +33,7 @@ class DogPassportCard extends StatelessWidget {
 
   String get _qrData {
     final data = {
-      'app': 'DogQuest',
+      'app': 'Hound',
       'id': _passportId,
       'name': profile.name,
       'breed': profile.breed ?? 'Unknown',
@@ -158,7 +158,7 @@ class DogPassportCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'DOGQUEST',
+                'HOUND',
                 style: TextStyle(
                   color: Color(0xFFD4874E),
                   fontSize: 11,

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:dogquest/models/dog.dart';
+import 'package:dogquest/models/exam_result.dart' show ExamTier;
 import 'package:dogquest/services/dog_group_service.dart' show families;
 
 // ─── Quiz Types ──────────────────────────────────────────────────────────────
@@ -601,6 +602,46 @@ class QuizEngine {
     }
   }
 
+  /// Question-type pool for breed group exam tiers.
+  /// Bronze: visual/easy types. Silver: medium mix. Gold: all types, expert-heavy.
+  List<QuizType> weightedTypesForExam(ExamTier tier) => switch (tier) {
+        ExamTier.bronze => [
+            QuizType.nameFromPhoto,
+            QuizType.nameFromPhoto,
+            QuizType.nameFromPhoto,
+            QuizType.photoFromName,
+            QuizType.photoFromName,
+            QuizType.sizeFromPhoto,
+            QuizType.groupFromBreed,
+          ],
+        ExamTier.silver => [
+            QuizType.nameFromPhoto,
+            QuizType.photoFromName,
+            QuizType.sizeFromPhoto,
+            QuizType.traitMatch,
+            QuizType.traitMatch,
+            QuizType.exerciseFromPhoto,
+            QuizType.originFromBreed,
+            QuizType.lifespanGuess,
+            QuizType.weightGuess,
+          ],
+        ExamTier.gold => [
+            QuizType.nameFromPhoto,
+            QuizType.traitMatch,
+            QuizType.oddOneOut,
+            QuizType.oddOneOut,
+            QuizType.lifespanGuess,
+            QuizType.silhouetteRound,
+            QuizType.silhouetteRound,
+            QuizType.weightGuess,
+            QuizType.originFromBreed,
+            QuizType.breedFromClue,
+            QuizType.breedFromClue,
+            QuizType.compareBreeds,
+            QuizType.compareBreeds,
+          ],
+      };
+
   QuizQuestion makeQuestionOfType(
     QuizType type,
     List<Dog> pool,
@@ -639,83 +680,35 @@ class QuizEngine {
 
   // ─── Fun Facts ──────────────────────────────────────────────────────────────
 
-  /// Generate a rich, educational fun fact for the answered question.
+  /// Generate a fun fact for the answered question.
+  /// Always prefer the breed's unique `lore` field; fall back to a
+  /// type-specific tidbit only when lore is missing or too short.
   String getFunFact(QuizQuestion q) {
     final dog = q.correctDog;
+    final hasLore = dog.lore.isNotEmpty && dog.lore.length > 20;
+
+    // Most question types: just show lore. It's the best content we have.
+    if (hasLore) return dog.lore;
+
+    // Fallback for breeds with no/short lore — build something from data.
     final origin = parseOrigin(dog.habitat);
+    final group = _extractGroup(dog.habitat);
+    final traits = dog.temperamentTraits;
 
-    switch (q.type) {
-      case QuizType.nameFromPhoto:
-      case QuizType.silhouetteRound:
-      case QuizType.photoFromName:
-        // Rotate between lore, origin fact, and health fact
-        final variants = <String>[
-          if (dog.lore.isNotEmpty && dog.lore.length > 10) dog.lore,
-          if (origin != 'Unknown')
-            '${dog.name} originated in $origin. They\'re a ${dog.sizeCategory} breed weighing ${dog.weight.isEmpty ? "varies" : dog.weight}.',
-          if (dog.healthPredispositions.isNotEmpty)
-            '${dog.name} owners should watch for ${dog.healthPredispositions.take(2).join(' and ')}. Regular vet checkups are key!',
-          if (dog.dietNotes.isNotEmpty) dog.dietNotes,
-        ];
-        if (variants.isEmpty) {
-          return '${dog.name} is a ${dog.sizeCategory} ${dog.rarity.label.toLowerCase()} breed.';
-        }
-        return variants[rng.nextInt(variants.length)];
-
-      case QuizType.sizeFromPhoto:
-        return '${dog.name} weighs ${dog.weight.isEmpty ? "varies by individual" : dog.weight} and needs ${dog.exerciseNeeds} exercise. ${dog.groomingNeeds == "high" ? "They also need frequent grooming!" : ""}';
-
-      case QuizType.traitMatch:
-        final allTraits = dog.temperamentTraits.join(', ');
-        return '${dog.name} is known for being $allTraits. ${dog.exerciseNeeds == "high" || dog.exerciseNeeds == "very high" ? "They need plenty of activity to stay happy!" : "They are relatively easy-going."}';
-
-      case QuizType.oddOneOut:
-        final otherDogs =
-            q.photoDogs?.where((d) => d.name != dog.name).toList() ?? [];
-        final majoritySize =
-            otherDogs.isNotEmpty ? otherDogs.first.sizeCategory : 'medium';
-        return '${dog.name} is a ${dog.sizeCategory} breed among $majoritySize-sized dogs. Size affects lifespan: smaller breeds often live longer!';
-
-      case QuizType.groupFromBreed:
-        if (origin != 'Unknown') {
-          return '${dog.name} from $origin belongs to the ${_extractGroup(dog.habitat)}. They were bred for specific working roles that shaped their temperament.';
-        }
-        return '${dog.name} belongs to the ${_extractGroup(dog.habitat)}. Breed groups help classify dogs by their original purpose.';
-
-      case QuizType.lifespanGuess:
-        return '${dog.name} typically lives ${dog.lifespan.isEmpty ? "10-13 years" : dog.lifespan}. ${dog.sizeCategory == "giant" || dog.sizeCategory == "large" ? "Larger breeds generally have shorter lifespans." : "Smaller breeds tend to live longer than larger ones."} Exercise needs: ${dog.exerciseNeeds}.';
-
-      case QuizType.exerciseFromPhoto:
-        final exerciseDesc = switch (dog.exerciseNeeds) {
-          'low' => 'Short walks and indoor play are enough',
-          'moderate' => 'Daily walks and regular play sessions are ideal',
-          'high' => 'They need vigorous daily exercise like running or hiking',
-          'very high' => 'Bred for endurance, they need intense daily activity',
-          _ => 'Regular exercise is important',
-        };
-        return '$exerciseDesc for a ${dog.name}. ${dog.dietNotes.isNotEmpty ? dog.dietNotes : ""}';
-
-      case QuizType.weightGuess:
-        return '${dog.name} weighs ${dog.weight.isEmpty ? "varies" : dog.weight}. ${dog.sizeCategory == "giant" ? "Giant breeds need special nutrition for their joints." : dog.sizeCategory == "small" ? "Small breeds have faster metabolisms." : "Proper weight management prevents many health issues."}';
-
-      case QuizType.originFromBreed:
-        return '${dog.name} comes from $origin! ${dog.lore.isNotEmpty && dog.lore.length > 10 ? dog.lore : "Every breed carries traits shaped by its homeland."}';
-
-      case QuizType.breedFromClue:
-        if (dog.healthPredispositions.isNotEmpty) {
-          return 'Health watch: ${dog.name} owners should be aware of ${dog.healthPredispositions.join(", ")}. Grooming: ${dog.groomingNeeds}.';
-        }
-        return '${dog.name} is a ${dog.sizeCategory} breed. Grooming: ${dog.groomingNeeds}. Exercise: ${dog.exerciseNeeds}.';
-
-      case QuizType.compareBreeds:
-        final dogs = q.photoDogs ?? [];
-        if (dogs.length >= 2) {
-          final a = dogs[0];
-          final b = dogs[1];
-          return '${a.name} lives ${a.lifespan.isEmpty ? "~12 years" : a.lifespan} while ${b.name} lives ${b.lifespan.isEmpty ? "~12 years" : b.lifespan}. Size matters: ${a.sizeCategory} vs ${b.sizeCategory}.';
-        }
-        return '${dog.name} typically lives ${dog.lifespan.isEmpty ? "10-13 years" : dog.lifespan}.';
+    if (traits.isNotEmpty && origin != 'Unknown') {
+      return '${dog.name} hails from $origin and is part of the $group. '
+          'Known for being ${traits.take(3).join(", ")}.';
     }
+    if (origin != 'Unknown') {
+      return '${dog.name} is a ${dog.sizeCategory} breed from $origin, '
+          'part of the $group.';
+    }
+    if (traits.isNotEmpty) {
+      return '${dog.name} is a ${dog.sizeCategory} breed known for being '
+          '${traits.take(3).join(", ")}.';
+    }
+    return '${dog.name} is a ${dog.sizeCategory} '
+        '${dog.rarity.label.toLowerCase()} breed.';
   }
 
   String _extractGroup(String habitat) {

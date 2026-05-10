@@ -564,8 +564,11 @@ class _LocalNearbyCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 12),
                       ],
-                      const Icon(Icons.visibility,
-                          size: 12, color: textSecondary),
+                      const Icon(
+                        Icons.visibility,
+                        size: 12,
+                        color: textSecondary,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         '$sightingCount sighting${sightingCount != 1 ? "s" : ""}',
@@ -573,8 +576,11 @@ class _LocalNearbyCard extends StatelessWidget {
                             const TextStyle(color: textSecondary, fontSize: 12),
                       ),
                       const SizedBox(width: 12),
-                      const Icon(Icons.access_time,
-                          size: 12, color: textSecondary),
+                      const Icon(
+                        Icons.access_time,
+                        size: 12,
+                        color: textSecondary,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         _timeAgo(lastSeen),
@@ -620,8 +626,10 @@ class _StatChip extends StatelessWidget {
             fontSize: 16,
           ),
         ),
-        Text(subtitle,
-            style: const TextStyle(color: textSecondary, fontSize: 11)),
+        Text(
+          subtitle,
+          style: const TextStyle(color: textSecondary, fontSize: 11),
+        ),
       ],
     );
   }

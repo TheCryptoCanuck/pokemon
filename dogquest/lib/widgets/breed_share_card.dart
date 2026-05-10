@@ -57,7 +57,7 @@ class BreedShareCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
             child: Column(
               children: [
-                // Top bar: DogQuest branding
+                // Top bar: Hound branding
                 Row(
                   children: [
                     Container(
@@ -78,7 +78,7 @@ class BreedShareCard extends StatelessWidget {
                           Icon(Icons.pets, color: Colors.amber, size: 14),
                           SizedBox(width: 6),
                           Text(
-                            'DogQuest',
+                            'Hound',
                             style: TextStyle(
                               color: Colors.amber,
                               fontWeight: FontWeight.bold,

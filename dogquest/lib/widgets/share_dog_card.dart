@@ -150,7 +150,7 @@ class ShareDogCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'DogQuest',
+                              'Hound',
                               style: TextStyle(
                                 color: Colors.amber,
                                 fontWeight: FontWeight.bold,

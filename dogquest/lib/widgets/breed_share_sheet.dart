@@ -77,7 +77,7 @@ class _BreedShareSheetContentState
       await Share.shareXFiles(
         [XFile(file.path)],
         text:
-            'I spotted a ${dog.name} on DogQuest! ${dog.rarity == Rarity.legendary ? "LEGENDARY find!" : dog.rarity == Rarity.rare ? "Rare find!" : ""}',
+            'I spotted a ${dog.name} on Hound! ${dog.rarity == Rarity.legendary ? "LEGENDARY find!" : dog.rarity == Rarity.rare ? "Rare find!" : ""}',
       );
 
       _trackShare('generic');
@@ -100,7 +100,7 @@ class _BreedShareSheetContentState
       // and handle story formatting automatically from the image
       await Share.shareXFiles(
         [XFile(file.path)],
-        text: 'Spotted on DogQuest!',
+        text: 'Spotted on Hound!',
       );
 
       _trackShare('stories');

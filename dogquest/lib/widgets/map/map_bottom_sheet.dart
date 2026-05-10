@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dogquest/constants.dart';
+import 'package:dogquest/models/dog.dart';
 import 'package:dogquest/services/sighting_service.dart';
 
 /// Info card shown at the bottom of the Live Map when a sighting marker is tapped.
@@ -17,8 +18,9 @@ class MapBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rarityColor = dog?.rarity?.color ?? Colors.amber;
-    final rarityLabel = dog?.rarity?.label ?? '';
+    final Dog? typedDog = dog as Dog?;
+    final rarityColor = typedDog?.rarity.color ?? Colors.amber;
+    final rarityLabel = typedDog?.rarity.label ?? '';
     final confidence = (sighting.confidence * 100).toStringAsFixed(0);
 
     return Container(

@@ -43,8 +43,11 @@ void main() {
 
     test('every Dog has a non-empty name', () {
       for (final dog in service.all) {
-        expect(dog.name, isNotEmpty,
-            reason: 'Dog with empty name found in dogs.json');
+        expect(
+          dog.name,
+          isNotEmpty,
+          reason: 'Dog with empty name found in dogs.json',
+        );
       }
     });
 
@@ -58,8 +61,11 @@ void main() {
         Rarity.legendary,
       };
       for (final dog in service.all) {
-        expect(validRarities, contains(dog.rarity),
-            reason: '${dog.name} has unexpected rarity: ${dog.rarity}');
+        expect(
+          validRarities,
+          contains(dog.rarity),
+          reason: '${dog.name} has unexpected rarity: ${dog.rarity}',
+        );
       }
     });
 
@@ -72,13 +78,14 @@ void main() {
     test('all four rarity tiers are represented in the loaded data', () {
       final rarities = service.all.map((d) => d.rarity).toSet();
       expect(
-          rarities,
-          containsAll([
-            Rarity.common,
-            Rarity.uncommon,
-            Rarity.rare,
-            Rarity.legendary,
-          ]));
+        rarities,
+        containsAll([
+          Rarity.common,
+          Rarity.uncommon,
+          Rarity.rare,
+          Rarity.legendary,
+        ]),
+      );
     });
 
     test('loads at least 100 breeds (sanity check for dogs.json completeness)',
@@ -111,8 +118,10 @@ void main() {
 
     test('returns dogs of each rarity tier by exact name', () {
       expect(service.lookup('German Shepherd')?.rarity, equals(Rarity.common));
-      expect(service.lookup('Bernese Mountain Dog')?.rarity,
-          equals(Rarity.uncommon));
+      expect(
+        service.lookup('Bernese Mountain Dog')?.rarity,
+        equals(Rarity.uncommon),
+      );
       expect(service.lookup('Afghan Hound')?.rarity, equals(Rarity.rare));
       expect(service.lookup('Catalburun')?.rarity, equals(Rarity.legendary));
     });
@@ -341,12 +350,18 @@ void main() {
       final expected = pair[1];
       test('alias "$input" resolves to "$expected"', () {
         final dog = service.lookupByCommonName(input);
-        expect(dog, isNotNull,
-            reason: 'alias "$input" returned null — '
-                '"$expected" may be missing from dogs.json');
-        expect(dog!.name, equals(expected),
-            reason: 'alias "$input" resolved to "${dog.name}" '
-                'instead of "$expected"');
+        expect(
+          dog,
+          isNotNull,
+          reason: 'alias "$input" returned null — '
+              '"$expected" may be missing from dogs.json',
+        );
+        expect(
+          dog!.name,
+          equals(expected),
+          reason: 'alias "$input" resolved to "${dog.name}" '
+              'instead of "$expected"',
+        );
       });
     }
   });
@@ -368,17 +383,22 @@ void main() {
 
     test('"african hunting dog" alias maps to Pharaoh Hound', () {
       final dog = service.lookupByCommonName('african hunting dog');
-      expect(dog, isNotNull,
-          reason: '"african hunting dog" alias returned null');
+      expect(
+        dog,
+        isNotNull,
+        reason: '"african hunting dog" alias returned null',
+      );
       expect(dog!.name, equals('Pharaoh Hound'));
     });
 
     test('"eskimo dog" alias maps to Siberian Husky (not American Eskimo)', () {
       final dog = service.lookupByCommonName('eskimo dog');
       expect(dog, isNotNull, reason: '"eskimo dog" alias returned null');
-      expect(dog!.name, equals('Siberian Husky'),
-          reason:
-              'ImageNet "Eskimo dog" labels sled dogs, not American Eskimo');
+      expect(
+        dog!.name,
+        equals('Siberian Husky'),
+        reason: 'ImageNet "Eskimo dog" labels sled dogs, not American Eskimo',
+      );
     });
   });
 
@@ -391,12 +411,15 @@ void main() {
         'labrador retriever',
         'LABRADOR RETRIEVER',
         'Labrador Retriever',
-        'lAbRaDor rEtRiEvEr'
+        'lAbRaDor rEtRiEvEr',
       ]) {
         final dog = service.lookupByCommonName(variant);
         expect(dog, isNotNull, reason: 'variant "$variant" returned null');
-        expect(dog!.name, equals('Labrador Retriever'),
-            reason: 'variant "$variant" resolved to wrong breed');
+        expect(
+          dog!.name,
+          equals('Labrador Retriever'),
+          reason: 'variant "$variant" resolved to wrong breed',
+        );
       }
     });
 
@@ -515,9 +538,9 @@ void main() {
       expect(dog.baseXp, equals(100));
     });
 
-    test('lore mentions DogQuest by name', () {
+    test('lore mentions Hound by name', () {
       final dog = service.unknownDog('Any Name');
-      expect(dog.lore, contains('DogQuest'));
+      expect(dog.lore, contains('Hound'));
     });
 
     test('scientificName indicates species is not yet in the database', () {
@@ -591,11 +614,13 @@ void main() {
         counts[rarity] = (counts[rarity] ?? 0) + 1;
       }
       // Allow ±8% tolerance around the target proportions.
-      expect(counts[Rarity.common]!, inInclusiveRange(520, 680)); // target 60%
+      expect(counts[Rarity.common], inInclusiveRange(520, 680)); // target 60%
       expect(
-          counts[Rarity.uncommon]!, inInclusiveRange(170, 330)); // target 25%
-      expect(counts[Rarity.rare]!, inInclusiveRange(40, 200)); // target 12%
-      expect(counts[Rarity.legendary]!, inInclusiveRange(0, 110)); // target  3%
+        counts[Rarity.uncommon],
+        inInclusiveRange(170, 330),
+      ); // target 25%
+      expect(counts[Rarity.rare], inInclusiveRange(40, 200)); // target 12%
+      expect(counts[Rarity.legendary], inInclusiveRange(0, 110)); // target  3%
     });
   });
 

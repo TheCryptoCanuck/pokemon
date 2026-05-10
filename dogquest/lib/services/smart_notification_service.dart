@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:logging/logging.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 /// Contextual, personalized notification scheduler for Hound.
@@ -14,6 +14,8 @@ import 'package:timezone/timezone.dart' as tz;
 /// plugin is already initialized by [NotificationService.init].
 class SmartNotificationService {
   SmartNotificationService._(); // prevent instantiation
+
+  static final _log = Logger('SmartNotificationService');
 
   static final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
@@ -76,7 +78,7 @@ class SmartNotificationService {
       _scheduleWeeklyMissionReminder(),
     ]);
 
-    debugPrint('[SmartNotifications] All smart notifications scheduled');
+    _log.fine('All smart notifications scheduled');
   }
 
   /// Cancel all smart notifications.
@@ -88,7 +90,7 @@ class SmartNotificationService {
       _plugin.cancel(_comebackId),
       _plugin.cancel(_weeklyReminderId),
     ]);
-    debugPrint('[SmartNotifications] All smart notifications cancelled');
+    _log.fine('All smart notifications cancelled');
   }
 
   // ─── Individual Schedulers ─────────────────────────────────────────────
@@ -110,9 +112,7 @@ class SmartNotificationService {
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: 'smart_streak_risk',
     );
-    debugPrint(
-      '[SmartNotifications] Streak at risk scheduled for $scheduledDate',
-    );
+    _log.fine('Streak at risk scheduled for $scheduledDate');
   }
 
   /// 2. Morning Motivation — 8 AM daily.
@@ -146,9 +146,7 @@ class SmartNotificationService {
       matchDateTimeComponents: DateTimeComponents.time,
       payload: 'smart_morning_motivation',
     );
-    debugPrint(
-      '[SmartNotifications] Morning motivation scheduled for $scheduledDate',
-    );
+    _log.fine('Morning motivation scheduled for $scheduledDate');
   }
 
   /// 3. Challenge Expiring — 9 PM if 1 or 2 of 3 challenges are done.
@@ -175,9 +173,7 @@ class SmartNotificationService {
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: 'smart_challenge_expiring',
     );
-    debugPrint(
-      '[SmartNotifications] Challenge expiring scheduled for $scheduledDate',
-    );
+    _log.fine('Challenge expiring scheduled for $scheduledDate');
   }
 
   /// 4. Comeback — fires 48 hours after this scheduling call.
@@ -196,7 +192,7 @@ class SmartNotificationService {
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: 'smart_comeback',
     );
-    debugPrint('[SmartNotifications] Comeback scheduled for $scheduledDate');
+    _log.fine('Comeback scheduled for $scheduledDate');
   }
 
   /// 5. Weekly Mission Reminder — Monday at 10 AM.
@@ -215,9 +211,7 @@ class SmartNotificationService {
       matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
       payload: 'smart_weekly_mission',
     );
-    debugPrint(
-      '[SmartNotifications] Weekly mission reminder scheduled for $scheduledDate',
-    );
+    _log.fine('Weekly mission reminder scheduled for $scheduledDate');
   }
 
   // ─── Time Helpers ──────────────────────────────────────────────────────

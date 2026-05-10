@@ -126,10 +126,10 @@ dogquest/
 # Quick build & install (or use Makefile targets)
 flutter build apk --debug
 adb install -r build/app/outputs/flutter-apk/app-debug.apk
-adb shell am start -n com.dogquest.app/.MainActivity
+adb shell am start -n com.hound.app/.MainActivity
 ```
 
-- **App ID**: `com.dogquest.app`
+- **App ID**: `com.hound.app`
 - **Makefile**: 30+ targets — run `make help` or `make menu` for interactive selection
 - Key targets: `make build`, `make install`, `make logs`, `make test`, `make lint`, `make screenshots`
 
@@ -137,8 +137,19 @@ adb shell am start -n com.dogquest.app/.MainActivity
 
 - Offline login accepts any password if email matches (`auth_service.dart:71-80`) — will be replaced by Supabase Auth
 - PII (username, email) in unencrypted Hive box while JWT is encrypted (`auth_service.dart:27-30`)
-- Default dev API URL ships in release builds if `--dart-define` omitted (`api_client.dart:16`)
+- `API_BASE_URL` is now MANDATORY via `--dart-define=API_BASE_URL=https://...`. The old `10.0.2.2` default has been removed and `api_client.dart:14-23` asserts non-empty at app startup. Pass a placeholder URL (e.g. `https://example.com`) for smoke tests where API calls aren't exercised. (Hardened 2026-04-28 — supersedes the prior "default ships in release" issue.)
+- `SUPABASE_URL` and `SUPABASE_ANON_KEY` are now MANDATORY via `--dart-define`. Hard-coded defaults removed from `lib/main.dart:109-117`; `_assertSupabaseEnv()` guards startup. Same hardening pattern as `API_BASE_URL`. Pass placeholders for unconfigured local builds (e.g. `--dart-define=SUPABASE_URL=https://example.supabase.co --dart-define=SUPABASE_ANON_KEY=placeholder`). (Hardened 2026-04-30 / ENV-001.)
+- AdMob ad-unit IDs (`ADMOB_INTERSTITIAL_ID`, `ADMOB_BANNER_ID`) follow the same pattern: empty default in release, debug-only fallback to Google's documented test units. Release builds without dart-defines short-circuit ad loads with an info log instead of serving test placeholders to real users (AdMob policy risk). `lib/services/ad_service.dart:40-50` + `lib/widgets/dogquest_banner_ad.dart:21-26`. (Hardened 2026-04-30 / ENV-002.)
 - 10 files over 800 lines remain (down from earlier; `quiz_screen.dart` 1,648 → 1,042 via TASK-046; `lost_dog_hub_screen.dart` 1,665 → 127 via 2026-04-25 god-class extraction; `lost_dog_map_screen.dart` 1,390 → 870 via Phase 4a 2026-04-25). Largest remaining: `profile_screen.dart` 1,268, `pack_screen.dart` 1,253. T5 polish queue.
+- **Config validation backlog (Sprint 10, 2026-04-30)** — see `outputs/config_validate_findings.md` and `outputs/next_steps_plan.md`. 7 fixes shipped to working tree (ENV-001/002/003, DEPS-001, GIT-001/002, CI-001) awaiting commit. Critical deferred items: SUPA-001 (RPC functions trust `p_user_id`), CI-002 (release.yml targets aviquest), magic-link auth path. All three are week-1 must-land per the 23-day closed-beta plan.
+
+## Hound rebrand status (2026-04-28)
+
+- **CI #16 GREEN** on `phase-1/social-backend-realtime` — first green CI run since CI #6, ~4 weeks of broken CI cleared via Phase 7 T5 fixes (Offset cast, Provider import, _PhotoPlaceholder.build conflict, kDeployedBreedCount inline, 6 unused-symbol cleanups).
+- **6 commits shipped** to origin: rebrand finalization (4 strings) + 5 supporting CI-unblockers (T5 god-class fix, Phase 7 logic fixes, mechanical cleanup, F2 fallout, kDeployedBreedCount inline). See `.second_brain/03_Projects/Active_Tasks.md` Sprint 7.
+- **Working-tree-only fixes** awaiting commit alongside the larger rebrand pile (Sprint 9): `AndroidManifest.xml` AdMob APPLICATION_ID meta-data (test ID `ca-app-pub-3940256099942544~3347511713`), `dog_found_dialog.dart` dispose-race fix (cache `_analytics` in initState), `smoke_channels.ps1` verification utility.
+- **Verified on-device:** launcher icon = "Hound", `HOUND_ID:` log tag, privacy email = `jesseg.8899@gmail.com`. Source-verified: 4 notification channel IDs (`hound_streak`/`hound_daily_dog`/`hound_smart`/`hound_lost_dog_alerts`), 8+ share text strings ("Join my pack on Hound!", "I found a ... on Hound!", etc.).
+- **Deferred items** (out of scope for the rebrand smoke): Hive box prefixes (`dogquest_*` 32+ refs), pubspec `name: dogquest`, `key.properties` (`keyAlias=dogquest`, keystore filename), `dogquest_banner_ad.dart` filename (class is `HoundBannerAd`), `dogquest-ci.yml` workflow filename, real AdMob production App ID, `hound.app` domain + email forwarding, iOS rebrand (no `ios/` exists). All tracked in Active_Tasks Sprint 9.
 
 ## Notable Conventions
 
@@ -149,3 +160,86 @@ adb shell am start -n com.dogquest.app/.MainActivity
 - Primary routes: `/identify`, `/kennel`, `/profile`, `/quiz`, `/map`, `/social`, `/pack`, `/passport`
 - Dog-themed achievements, player titles, avatars
 - Headline features: Pack, Dog Friendships, Neighborhood Map, Dog Passport, Lost Dog, Social Layer, Demo Mode
+
+---
+
+## Cowork Skills Reference
+
+Load the skill(s) listed for the task type before writing any code. Multiple skills can be active simultaneously — load all that apply.
+
+### UI / Design
+
+| Task | Skill(s) to Load |
+|------|-----------------|
+| Review any screen for UX issues before touching it | `ui-design:design-review` |
+| Change any color, contrast, or type size | `ui-design:visual-design-foundations` |
+| Add or update color/size tokens in `constants.dart` | `ui-design:design-system-patterns` |
+| Write or rewrite any user-facing string (labels, CTAs, subtitles) | `ui-design:ux-copy` |
+| Fix chip row / filter overflow or any scrollable layout | `ui-design:responsive-design` |
+| Move, stage, or animate a gamification reveal | `ui-design:interaction-design` |
+| Build a new card, list tile, or grid cell widget | `ui-design:web-component-design` |
+| WCAG contrast or screen-reader audit on changed screens | `ui-design:accessibility-compliance` + `ui-design:accessibility-review` |
+| Post-phase screenshot accessibility check | `ui-design:accessibility-review` |
+
+### Design Critique Backlog (2026-04-29)
+
+Open fixes from the live-device critique session (Splash, Camera, Kennel, Field Guide, Profile). Full agent briefings in `hound_design_agent_report.docx`.
+
+**Phase 1 — tokens + atoms (parallel, no deps):**
+- Kennel stats contrast (`constants.dart` color tokens) → `ui-design:visual-design-foundations` + `ui-design:design-system-patterns`
+- Splash: remove duplicate tagline, fix `Ready!` contrast → `ui-design:design-review` + `ui-design:ux-copy`
+- Profile header icon contrast (Community / Search / Settings) → `ui-design:accessibility-compliance`
+- Field Guide: replace `Canis lupus familiaris` with AKC group + origin tag → `ui-design:ux-copy` + `ui-design:design-review`
+
+**Phase 2 — component layer (after Phase 1 CI green):**
+- `BreedGhostCard` widget — ghost-collection pattern for undiscovered breeds → `ui-design:web-component-design`
+- `ChipRow` overflow fix — shared Kennel + Field Guide widget → `ui-design:responsive-design`
+- `XPBar` hero widget + Pack ring demotion on Profile → `ui-design:design-system-patterns`
+- CTA card icon unification on Profile → `ui-design:visual-design-foundations`
+
+**Phase 3 — screen logic + QA (after Phase 2 CI green):**
+- Camera: move combo + flash challenge overlays off viewfinder → result screen → `ui-design:interaction-design`
+- Profile: engagement gate — suppress onboarding CTAs for level > 5 or sightings > 20 → `engineering:system-design`
+- Accessibility audit pass on all 5 changed screens → `ui-design:accessibility-review`
+- Widget tests for all new components → `engineering:testing-strategy`
+
+### Engineering
+
+| Task | Skill(s) to Load |
+|------|-----------------|
+| Add or refactor a Riverpod provider or service | `engineering:system-design` |
+| Pre-merge code review (Dart style, Riverpod patterns, CLAUDE.md compliance) | `engineering:code-review` |
+| Write widget or unit tests | `engineering:testing-strategy` |
+| Debug a regression or unexpected behavior | `developer-essentials:debugging-strategies` + `engineering:debug` |
+| Pre-deploy checklist before pushing to CI | `engineering:deploy-checklist` |
+| Final multi-dimensional review before merging to main | `comprehensive-review:full-review` |
+
+### Architecture & Backend (Supabase phase)
+
+| Task | Skill(s) to Load |
+|------|-----------------|
+| Design Supabase schema (users, dogs, social graph) | `database-design:postgresql` |
+| Design REST or realtime API surface | `backend-development:api-design-principles` |
+| Auth migration — local Hive → Supabase Auth | `developer-essentials:auth-implementation-patterns` |
+| Real-time social feed / dogs nearby | `backend-development:microservices-patterns` |
+| CI/CD pipeline work (GitHub Actions) | `cicd-automation:github-actions-templates` |
+
+### Agent Orchestration
+
+| Task | Skill(s) to Load |
+|------|-----------------|
+| Spawn parallel implementer agents for a phase | `agent-teams:parallel-feature-development` |
+| Coordinate agents that share a file (e.g. `profile_screen.dart`) | `agent-teams:task-coordination-strategies` — use `team-lead` agent type |
+| Multi-dimensional code review across agents | `agent-teams:multi-reviewer-patterns` |
+| Debug with competing hypotheses | `agent-teams:parallel-debugging` |
+
+### Verification Checklist (run after every phase)
+
+```bash
+cd dogquest
+dart analyze                          # zero errors required
+dart format --output=none .           # zero changed files required
+flutter test test/widgets/            # Phase 3+ only
+```
+
+After code checks pass: run `capture_screens.bat`, read the PNG outputs, then invoke `ui-design:accessibility-review` on the screenshots before marking the phase complete and pushing to CI.

@@ -9,7 +9,8 @@ void main() {
   setUp(() async {
     Hive.init('./test_hive_combo');
     box = await Hive.openBox(
-        'test_combo_${DateTime.now().millisecondsSinceEpoch}');
+      'test_combo_${DateTime.now().millisecondsSinceEpoch}',
+    );
     notifier = ComboNotifier(box);
   });
 
