@@ -774,10 +774,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                         fit: StackFit.expand,
                         children: [
                           ColorFiltered(
+                            // Very dark grayscale — shows outline/shape only.
+                            // JPEG photos have no alpha, so zeroing RGB
+                            // produces a solid black rectangle. Instead we
+                            // map each channel to ~8% luminance so the dog's
+                            // silhouette is barely visible against the dark
+                            // background.
                             colorFilter: const ColorFilter.matrix(<double>[
-                              0, 0, 0, 0, 0, //
-                              0, 0, 0, 0, 0, //
-                              0, 0, 0, 0, 0, //
+                              0.03, 0.03, 0.03, 0, 0, //
+                              0.03, 0.03, 0.03, 0, 0, //
+                              0.03, 0.03, 0.03, 0, 0, //
                               0, 0, 0, 1, 0, //
                             ]),
                             child: NetworkDogImage(
@@ -1117,11 +1123,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                         vertical: 6,
                       ),
                       child: Text(
-                        dogs[i].name,
+                        _answered ? dogs[i].name : '?',
                         style: TextStyle(
                           color: _answered && isCorrect
                               ? Colors.green
-                              : Colors.white,
+                              : Colors.white70,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
