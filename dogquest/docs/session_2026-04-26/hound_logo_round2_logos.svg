@@ -1,0 +1,361 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1100" font-family="Inter, system-ui, sans-serif">
+  <defs>
+    <radialGradient id="starGlow2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#F2C49A" stop-opacity="0.5"/>
+      <stop offset="60%" stop-color="#D4874E" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#D4874E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="1100" fill="#0A1410"/>
+
+  <!-- Header -->
+  <text x="60" y="56" fill="#F5F2EC" font-size="26" font-weight="700">Hound — Round 2</text>
+  <text x="60" y="84" fill="#B8B4AB" font-size="14">A · "h" + sitting dog (recommended)    B · Hound profile    C · The Peek    D · Scent → star</text>
+  <text x="60" y="106" fill="#7A766F" font-size="12">Top: app icon @ 280px.   Mid: launcher @ 96px.   Bottom: full lockup with tagline.</text>
+
+  <!-- ============================================================================== -->
+  <!-- A · The "h" that's also a sitting dog -->
+  <!-- ============================================================================== -->
+  <g transform="translate(60,150)">
+    <!-- App icon @ 280 -->
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#D4874E" stroke-width="2.5"/>
+    <!--
+      Lowercase 'h' — heavy weight, the curve over the top reads as a sitting dog's head + neck.
+      Built from rectangles for the back/leg verticals and an arc for the head curve.
+      Tiny dark dot on the curve = the dog's eye.
+    -->
+    <g transform="translate(140,140)" fill="#D4874E">
+      <!-- left vertical (the "back" of the sitting dog) -->
+      <rect x="-72" y="-90" width="36" height="180" rx="6"/>
+      <!-- right vertical (the "front leg") -->
+      <rect x="36" y="-12" width="36" height="102" rx="6"/>
+      <!-- arch over the top — connects left vertical to right vertical (head + neck) -->
+      <!-- Built as a thick curved path -->
+      <path d="M -36 -12
+               L -36 -54
+               C -36 -84  -8 -100  18 -100
+               C 50 -100  72 -78   72 -48
+               L 72 -12
+               L 36 -12
+               L 36 -42
+               C 36 -56   24 -64   12 -64
+               C 0 -64   -12 -56  -12 -42
+               L -12 -12
+               Z"/>
+    </g>
+    <!-- The "eye" — the visual punchline. Tiny dark dot on the arch. -->
+    <circle cx="158" cy="60" r="5" fill="#0A1410"/>
+
+    <!-- Subtle "tail" — a tiny amber wedge behind the back vertical (only visible at hero scale) -->
+    <path d="M 60 75 L 50 65 L 50 85 Z" fill="#D4874E"/>
+  </g>
+
+  <!-- A: launcher @ 96 -->
+  <g transform="translate(60,470)">
+    <rect width="96" height="96" rx="22" fill="#0F1A10" stroke="#2C4030" stroke-width="1"/>
+    <g transform="translate(48,48) scale(0.34)" fill="#D4874E">
+      <rect x="-72" y="-90" width="36" height="180" rx="6"/>
+      <rect x="36" y="-12" width="36" height="102" rx="6"/>
+      <path d="M -36 -12 L -36 -54 C -36 -84 -8 -100 18 -100 C 50 -100 72 -78 72 -48 L 72 -12 L 36 -12 L 36 -42 C 36 -56 24 -64 12 -64 C 0 -64 -12 -56 -12 -42 L -12 -12 Z"/>
+    </g>
+    <circle cx="54" cy="36" r="2" fill="#0A1410"/>
+    <text x="120" y="20" fill="#B8B4AB" font-size="11">@ 96px launcher:</text>
+    <text x="120" y="38" fill="#F5F2EC" font-size="13" font-weight="700">Reads as a strong "h".</text>
+    <text x="120" y="56" fill="#7A766F" font-size="11">Eye dot survives the downscale</text>
+    <text x="120" y="70" fill="#7A766F" font-size="11">— it's the punchline.</text>
+  </g>
+
+  <!-- A: full lockup -->
+  <g transform="translate(60,610)">
+    <text x="0" y="44" fill="#D4874E" font-size="56" font-weight="900" letter-spacing="-2">hound</text>
+    <text x="0" y="74" fill="#539548" font-size="11" font-weight="700" letter-spacing="3">BOOP · IDENTIFY · COLLECT</text>
+  </g>
+
+  <!-- A: caption -->
+  <g transform="translate(60,720)">
+    <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">A · THE "h" + SITTING DOG</text>
+    <text x="0" y="22" fill="#B8B4AB" font-size="12">The letter is the dog. The dog is the letter.</text>
+    <text x="0" y="38" fill="#B8B4AB" font-size="12">Eye dot is the visual punchline. Lineage:</text>
+    <text x="0" y="54" fill="#B8B4AB" font-size="12">Stripe S, Notion N, Spotify circle.</text>
+    <text x="0" y="78" fill="#8DC681" font-size="11" font-weight="700">RECOMMENDED · highest brand confidence per pixel</text>
+  </g>
+
+  <!-- ============================================================================== -->
+  <!-- B · Hound profile silhouette -->
+  <!-- ============================================================================== -->
+  <g transform="translate(360,150)">
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#2C4030" stroke-width="2"/>
+    <!--
+      Side-profile bloodhound silhouette, facing right.
+      Single filled path. Long droopy ear, soft snout.
+    -->
+    <g fill="#F5F2EC">
+      <path d="M 70 130
+               C 70 90  100 65  140 65
+               C 175 65  198 80  208 105
+               L 240 110
+               C 252 112  254 125  246 132
+               L 218 138
+               L 195 142
+               L 178 144
+               L 178 165
+               C 178 195  170 218  150 230
+               C 130 240  108 235  100 218
+               C 92 200  92 178  92 158
+               L 92 145
+               Z"/>
+    </g>
+    <!-- nose -->
+    <circle cx="245" cy="124" r="5" fill="#0A1410"/>
+    <!-- eye -->
+    <circle cx="178" cy="115" r="4" fill="#0A1410"/>
+    <!-- subtle mouth line -->
+    <path d="M 195 142 L 218 138" stroke="#0A1410" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.5"/>
+  </g>
+
+  <!-- B: launcher @ 96 -->
+  <g transform="translate(360,470)">
+    <rect width="96" height="96" rx="22" fill="#0F1A10" stroke="#2C4030" stroke-width="1"/>
+    <g transform="translate(48,48) scale(0.34) translate(-140,-140)" fill="#F5F2EC">
+      <path d="M 70 130 C 70 90 100 65 140 65 C 175 65 198 80 208 105 L 240 110 C 252 112 254 125 246 132 L 218 138 L 195 142 L 178 144 L 178 165 C 178 195 170 218 150 230 C 130 240 108 235 100 218 C 92 200 92 178 92 158 L 92 145 Z"/>
+    </g>
+    <text x="120" y="20" fill="#B8B4AB" font-size="11">@ 96px launcher:</text>
+    <text x="120" y="38" fill="#F5F2EC" font-size="13" font-weight="700">Silhouette holds.</text>
+    <text x="120" y="56" fill="#7A766F" font-size="11">Eye + nose dots may need to</text>
+    <text x="120" y="70" fill="#7A766F" font-size="11">drop out at this scale.</text>
+  </g>
+
+  <g transform="translate(360,610)">
+    <text x="0" y="44" fill="#F5F2EC" font-size="56" font-weight="900" letter-spacing="-2">hound</text>
+    <text x="0" y="74" fill="#539548" font-size="11" font-weight="700" letter-spacing="3">BOOP · IDENTIFY · COLLECT</text>
+  </g>
+
+  <g transform="translate(360,720)">
+    <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">B · HOUND PROFILE</text>
+    <text x="0" y="22" fill="#B8B4AB" font-size="12">Side-view bloodhound silhouette.</text>
+    <text x="0" y="38" fill="#B8B4AB" font-size="12">Specifically a HOUND, not a generic dog.</text>
+    <text x="0" y="54" fill="#B8B4AB" font-size="12">Lineage: Lacoste croc, Penguin Books.</text>
+    <text x="0" y="78" fill="#7AB8C9" font-size="11" font-weight="700">SAFE PICK · most "obviously a dog"</text>
+  </g>
+
+  <!-- ============================================================================== -->
+  <!-- C · The Peek -->
+  <!-- ============================================================================== -->
+  <g transform="translate(660,150)">
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#2C4030" stroke-width="2"/>
+    <!--
+      Top of a hound head poking up from the bottom edge.
+      The icon tile is the "surface" the hound is peeking over.
+    -->
+    <!-- Head dome -->
+    <path d="M 30 230
+             C 70 175  100 168  140 168
+             C 180 168  210 175  250 230
+             L 250 280
+             L 30 280 Z"
+          fill="#F5F2EC"/>
+    <!-- Ear (left) — long, hangs to the side, half-visible above the head dome -->
+    <path d="M 50 230
+             C 38 200  42 175  60 168
+             C 75 165  82 180  78 200
+             C 76 215  68 222  58 224 Z"
+          fill="#F5F2EC"/>
+    <!-- Ear (right) — mirror -->
+    <path d="M 230 230
+             C 242 200  238 175  220 168
+             C 205 165  198 180  202 200
+             C 204 215  212 222  222 224 Z"
+          fill="#F5F2EC"/>
+    <!-- Eyes -->
+    <circle cx="108" cy="208" r="7" fill="#0A1410"/>
+    <circle cx="172" cy="208" r="7" fill="#0A1410"/>
+    <!-- Eye highlights (the "i'm watching you") -->
+    <circle cx="110" cy="206" r="2" fill="#F5F2EC"/>
+    <circle cx="174" cy="206" r="2" fill="#F5F2EC"/>
+    <!-- Nose — amber, the BOOP target -->
+    <ellipse cx="140" cy="240" rx="14" ry="9" fill="#D4874E"/>
+    <!-- nose highlight -->
+    <ellipse cx="135" cy="237" rx="3" ry="2" fill="#F2C49A"/>
+  </g>
+
+  <g transform="translate(660,470)">
+    <rect width="96" height="96" rx="22" fill="#0F1A10" stroke="#2C4030" stroke-width="1"/>
+    <g transform="translate(48,48) scale(0.34) translate(-140,-140)">
+      <path d="M 30 230 C 70 175 100 168 140 168 C 180 168 210 175 250 230 L 250 280 L 30 280 Z" fill="#F5F2EC"/>
+      <path d="M 50 230 C 38 200 42 175 60 168 C 75 165 82 180 78 200 C 76 215 68 222 58 224 Z" fill="#F5F2EC"/>
+      <path d="M 230 230 C 242 200 238 175 220 168 C 205 165 198 180 202 200 C 204 215 212 222 222 224 Z" fill="#F5F2EC"/>
+      <circle cx="108" cy="208" r="7" fill="#0A1410"/>
+      <circle cx="172" cy="208" r="7" fill="#0A1410"/>
+      <ellipse cx="140" cy="240" rx="14" ry="9" fill="#D4874E"/>
+    </g>
+    <text x="120" y="20" fill="#B8B4AB" font-size="11">@ 96px launcher:</text>
+    <text x="120" y="38" fill="#F5F2EC" font-size="13" font-weight="700">Reads at a glance.</text>
+    <text x="120" y="56" fill="#7A766F" font-size="11">Amber nose pops as the focal</text>
+    <text x="120" y="70" fill="#7A766F" font-size="11">point — invites the BOOP.</text>
+  </g>
+
+  <g transform="translate(660,610)">
+    <text x="0" y="44" fill="#F5F2EC" font-size="56" font-weight="900" letter-spacing="-2">hound</text>
+    <text x="0" y="74" fill="#539548" font-size="11" font-weight="700" letter-spacing="3">BOOP · IDENTIFY · COLLECT</text>
+  </g>
+
+  <g transform="translate(660,720)">
+    <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">C · THE PEEK</text>
+    <text x="0" y="22" fill="#B8B4AB" font-size="12">Hound peeking over the bottom edge.</text>
+    <text x="0" y="38" fill="#B8B4AB" font-size="12">Tile is the surface — your tap is the BOOP.</text>
+    <text x="0" y="54" fill="#B8B4AB" font-size="12">Most personality of the four.</text>
+    <text x="0" y="78" fill="#F2C49A" font-size="11" font-weight="700">PERSONALITY PICK · pairs with BOOP tagline</text>
+  </g>
+
+  <!-- ============================================================================== -->
+  <!-- D · Scent trail to star -->
+  <!-- ============================================================================== -->
+  <g transform="translate(960,150)">
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#2C4030" stroke-width="2"/>
+
+    <!-- Star at upper-right with glow -->
+    <circle cx="220" cy="60" r="46" fill="url(#starGlow2)"/>
+    <g transform="translate(220,60)" fill="#D4874E">
+      <path d="M 0 -22 L 5 -5 L 22 0 L 5 5 L 0 22 L -5 5 L -22 0 L -5 -5 Z"/>
+    </g>
+
+    <!-- Scent trail dots — 5 dots arcing from lower-left up to the star -->
+    <g fill="#D4874E">
+      <circle cx="60"  cy="220" r="9"/>
+      <circle cx="95"  cy="190" r="7.5" opacity="0.85"/>
+      <circle cx="135" cy="160" r="6"   opacity="0.75"/>
+      <circle cx="170" cy="125" r="5"   opacity="0.65"/>
+      <circle cx="195" cy="92"  r="4"   opacity="0.55"/>
+    </g>
+
+    <!-- Optional: a tiny faint "sniff" arc connecting the dots — dashed amber -->
+    <path d="M 60 220 Q 110 210 135 160 Q 170 110 220 60"
+          stroke="#D4874E" stroke-width="1" fill="none" stroke-dasharray="2 6" opacity="0.35"/>
+  </g>
+
+  <g transform="translate(960,470)">
+    <rect width="96" height="96" rx="22" fill="#0F1A10" stroke="#2C4030" stroke-width="1"/>
+    <g transform="translate(48,48) scale(0.34) translate(-140,-140)">
+      <g transform="translate(220,60)" fill="#D4874E">
+        <path d="M 0 -22 L 5 -5 L 22 0 L 5 5 L 0 22 L -5 5 L -22 0 L -5 -5 Z"/>
+      </g>
+      <g fill="#D4874E">
+        <circle cx="60" cy="220" r="9"/>
+        <circle cx="95" cy="190" r="7.5"/>
+        <circle cx="135" cy="160" r="6"/>
+        <circle cx="170" cy="125" r="5"/>
+        <circle cx="195" cy="92" r="4"/>
+      </g>
+    </g>
+    <text x="120" y="20" fill="#B8B4AB" font-size="11">@ 96px launcher:</text>
+    <text x="120" y="38" fill="#F5F2EC" font-size="13" font-weight="700">Star + dots survive.</text>
+    <text x="120" y="56" fill="#7A766F" font-size="11">Most abstract — needs the</text>
+    <text x="120" y="70" fill="#7A766F" font-size="11">wordmark to anchor meaning.</text>
+  </g>
+
+  <g transform="translate(960,610)">
+    <text x="0" y="44" fill="#F5F2EC" font-size="56" font-weight="900" letter-spacing="-2">hound</text>
+    <text x="0" y="74" fill="#539548" font-size="11" font-weight="700" letter-spacing="3">BOOP · IDENTIFY · COLLECT</text>
+  </g>
+
+  <g transform="translate(960,720)">
+    <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">D · SCENT → STAR</text>
+    <text x="0" y="22" fill="#B8B4AB" font-size="12">A hound following a trail to its star.</text>
+    <text x="0" y="38" fill="#B8B4AB" font-size="12">Pure abstraction — zero literal dog.</text>
+    <text x="0" y="54" fill="#B8B4AB" font-size="12">Most "logo" of the four.</text>
+    <text x="0" y="78" fill="#7AB8C9" font-size="11" font-weight="700">FUTURE-PROOF · works for any pet</text>
+  </g>
+
+  <!-- ============================================================================== -->
+  <!-- Side-by-side comparison strip at bottom -->
+  <!-- ============================================================================== -->
+  <g transform="translate(60,860)">
+    <rect width="1180" height="200" rx="20" fill="#15231A" stroke="#2C4030"/>
+    <text x="24" y="36" fill="#F5F2EC" font-size="16" font-weight="700">Side-by-side at launcher size — pick what reads at-a-glance from your home screen</text>
+
+    <g transform="translate(24,60)">
+      <!-- Repeat each at 64px on a phone-grid mockup -->
+      <g>
+        <rect width="64" height="64" rx="14" fill="#0F1A10"/>
+        <g transform="translate(32,32) scale(0.22)" fill="#D4874E">
+          <rect x="-72" y="-90" width="36" height="180" rx="6"/>
+          <rect x="36" y="-12" width="36" height="102" rx="6"/>
+          <path d="M -36 -12 L -36 -54 C -36 -84 -8 -100 18 -100 C 50 -100 72 -78 72 -48 L 72 -12 L 36 -12 L 36 -42 C 36 -56 24 -64 12 -64 C 0 -64 -12 -56 -12 -42 L -12 -12 Z"/>
+        </g>
+        <text x="32" y="86" fill="#B8B4AB" font-size="10" text-anchor="middle">A · h-dog</text>
+      </g>
+
+      <g transform="translate(110,0)">
+        <rect width="64" height="64" rx="14" fill="#0F1A10"/>
+        <g transform="translate(32,32) scale(0.22) translate(-140,-140)" fill="#F5F2EC">
+          <path d="M 70 130 C 70 90 100 65 140 65 C 175 65 198 80 208 105 L 240 110 C 252 112 254 125 246 132 L 218 138 L 195 142 L 178 144 L 178 165 C 178 195 170 218 150 230 C 130 240 108 235 100 218 C 92 200 92 178 92 158 L 92 145 Z"/>
+        </g>
+        <text x="32" y="86" fill="#B8B4AB" font-size="10" text-anchor="middle">B · profile</text>
+      </g>
+
+      <g transform="translate(220,0)">
+        <rect width="64" height="64" rx="14" fill="#0F1A10"/>
+        <g transform="translate(32,32) scale(0.22) translate(-140,-140)">
+          <path d="M 30 230 C 70 175 100 168 140 168 C 180 168 210 175 250 230 L 250 280 L 30 280 Z" fill="#F5F2EC"/>
+          <path d="M 50 230 C 38 200 42 175 60 168 C 75 165 82 180 78 200 C 76 215 68 222 58 224 Z" fill="#F5F2EC"/>
+          <path d="M 230 230 C 242 200 238 175 220 168 C 205 165 198 180 202 200 C 204 215 212 222 222 224 Z" fill="#F5F2EC"/>
+          <circle cx="108" cy="208" r="7" fill="#0A1410"/>
+          <circle cx="172" cy="208" r="7" fill="#0A1410"/>
+          <ellipse cx="140" cy="240" rx="14" ry="9" fill="#D4874E"/>
+        </g>
+        <text x="32" y="86" fill="#B8B4AB" font-size="10" text-anchor="middle">C · peek</text>
+      </g>
+
+      <g transform="translate(330,0)">
+        <rect width="64" height="64" rx="14" fill="#0F1A10"/>
+        <g transform="translate(32,32) scale(0.22) translate(-140,-140)">
+          <g transform="translate(220,60)" fill="#D4874E">
+            <path d="M 0 -22 L 5 -5 L 22 0 L 5 5 L 0 22 L -5 5 L -22 0 L -5 -5 Z"/>
+          </g>
+          <g fill="#D4874E">
+            <circle cx="60" cy="220" r="9"/>
+            <circle cx="95" cy="190" r="7.5"/>
+            <circle cx="135" cy="160" r="6"/>
+            <circle cx="170" cy="125" r="5"/>
+            <circle cx="195" cy="92" r="4"/>
+          </g>
+        </g>
+        <text x="32" y="86" fill="#B8B4AB" font-size="10" text-anchor="middle">D · trail</text>
+      </g>
+
+      <!-- Side-by-side with neighbours: pretend other apps for context -->
+      <g transform="translate(500,0)">
+        <text x="0" y="-12" fill="#7A766F" font-size="11">In-context (next to other launcher icons):</text>
+        <rect width="64" height="64" rx="14" fill="#1A73E8"/>
+        <text x="32" y="42" fill="#F5F2EC" font-size="32" font-weight="700" text-anchor="middle">G</text>
+
+        <rect x="80" width="64" height="64" rx="14" fill="#25D366"/>
+        <circle cx="112" cy="32" r="20" fill="#0A1410"/>
+
+        <!-- Direction A in context -->
+        <g transform="translate(160,0)">
+          <rect width="64" height="64" rx="14" fill="#0F1A10"/>
+          <g transform="translate(32,32) scale(0.22)" fill="#D4874E">
+            <rect x="-72" y="-90" width="36" height="180" rx="6"/>
+            <rect x="36" y="-12" width="36" height="102" rx="6"/>
+            <path d="M -36 -12 L -36 -54 C -36 -84 -8 -100 18 -100 C 50 -100 72 -78 72 -48 L 72 -12 L 36 -12 L 36 -42 C 36 -56 24 -64 12 -64 C 0 -64 -12 -56 -12 -42 L -12 -12 Z"/>
+          </g>
+        </g>
+
+        <rect x="240" width="64" height="64" rx="14" fill="#FF3B30"/>
+        <text x="272" y="42" fill="#F5F2EC" font-size="28" text-anchor="middle">♫</text>
+
+        <rect x="320" width="64" height="64" rx="14" fill="#FFB300"/>
+        <circle cx="352" cy="32" r="14" fill="none" stroke="#0A1410" stroke-width="3"/>
+
+        <text x="0" y="86" fill="#B8B4AB" font-size="10">Sample home-screen row · A is the dark amber-on-green tile, third from left</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(60,1080)">
+    <text x="0" y="0" fill="#7A766F" font-size="11">SVG paths are structural sketches — final shipped logo for any direction needs a designer pass in Illustrator/Figma to true up curve tangents and proportions. Wordmark uses a heavy system sans as a stand-in for the production typeface (Inter Black / Söhne / Söhne Mono).</text>
+  </g>
+</svg>

@@ -65,6 +65,88 @@ Long-form durable memory for the DogQuest project. Rebuilt 2026-04-25 evening af
 - **`git stash -u` on Windows can lose deeply-nested untracked files** during the CRLF warning flood. Use `git worktree add` for diagnostic checkouts.
 - **Cowork sandbox has no Dart toolchain.** All `.dart` edits via Edit/Write tools need Windows-side verification before "shipped" claims.
 - **Cowork file-upload UI dedups by filename.** Re-uploading the same filename caches stale content. Inline-paste for short outputs.
+- **Cowork sandbox excludes the monorepo root.** Only `dogquest/` is mounted; `AviQuest-/` (the git root) is NOT. Git commands cannot run from the sandbox at all — Jesse runs them in PowerShell from `AviQuest-`. Pattern: I do file triage + edits in the sandbox; Jesse executes per-finding-ID `git add` / `git commit` / `git push` sequences I generate.
+
+## Project conventions (durable, DogQuest-specific)
+
+- **`assert()` is banned for any guard that must fire in production** (established 2026-05-01). `assert(condition, 'msg')` is compiled out entirely in Dart release builds — it's a complete no-op for production users. Always use `if (!condition) throw ArgumentError('msg')` for programmer-error cases (bad inputs, invalid params) and `if (!condition) throw StateError('msg')` for runtime state violations (session expired, required service not initialized). Apply this in any new service, main.dart entrypoint, or validation method. Three instances found and fixed in Sprint 12: `main.dart` (`_assertSupabaseEnv`), `api_client.dart` (`assertBaseUrl`), `sync_queue_service.dart` (operation validation).
+- **`_userId` service getter pattern** (established 2026-05-01). Services that require auth use a private getter: `String get _userId { final uid = _client.auth.currentUser?.id; if (uid == null) throw StateError('No authenticated user — session expired'); return uid; }`. Never `currentUser!.id` — JWT expiry returns null, not an exception, so `!` crashes. The `throw StateError` in the getter is cleaner than cascading nullable returns at every call site.
+- **DogQuest's own docs are AviQuest-free** (established 2026-04-26). `dogquest/CLAUDE.md` and `dogquest/README.md` do NOT mention AviQuest, `aviquest/`, `aviquest-web/`, the fork lineage, or the literal `AviQuest-/` path. Use placeholders like `<repo-root>/` or "the monorepo root, one directory above `dogquest/`" instead. Vault-side files (`.second_brain/`) and the monorepo root may still reference AviQuest as factual context. Scrub policy applies to docs INSIDE `dogquest/` only.
+- **Trust subagent zero-ref claims with skepticism.** Delegated code-search agents produce false-positive orphan claims when they grep only one casing of a Dart symbol (CamelCase OR snake_case). Always verify with both: `grep -E "ClassName|snake_case_basename"` before any delete decision. Established 2026-04-26 after Explore reported 4 false-positive orphans that all had live refs visible only via the alternate casing.
+- **Don't write integration tests from the Cowork sandbox.** No `flutter test` available; no way to verify the test compiles or passes. False-confidence risk: shipping a broken test that fails CI on Jesse's push. Document the test gap as a follow-up task instead. Logged as a tech-debt entry (e.g. C-Lost-A integration test). Established 2026-04-26.
+- **Hotfix widget changes need corresponding test updates.** When a hotfix changes a widget's visual property (alpha, color, size), grep `test/` for the widget's test file and update assertions in the same commit. The breed_ghost_card border alpha change (0.25→0.55) was caught only at deploy-checklist time because the test wasn't updated alongside the hotfix. Established 2026-05-09.
+- **After deleting any class/function, check for orphaned imports.** Grep the file for each symbol from the deleted code's imports. If the only match is the import line itself, the import is dead. Five orphaned imports survived in `identify_screen.dart` after `_DailyDogPill` + `_PriorityContextBanner` removal until caught by `dart analyze`. Established 2026-05-09.
+- **In `State<T>` classes, use `if (!mounted) return;` — NOT `if (!context.mounted) return;`.** The analyzer treats `context.mounted` as checking a different object ("unrelated 'mounted' check") when it expects `State.mounted`. Both are nearly equivalent at runtime, but the lint fires on `context.mounted` in State classes. Reserve `context.mounted` for non-State contexts (functions receiving a BuildContext). Established 2026-05-09.
+- **Parallel agent lint cleanup: 3 agents, file-ownership boundaries, zero conflicts.** For mechanical lint fixes (trailing commas, const, curly braces, avoid_dynamic_calls), decompose by file cluster with zero overlap. Each agent gets a self-contained file list and lint category set. The `avoid_dynamic_calls` category is the riskiest — requires understanding surrounding types to cast correctly (e.g., `dog as Dog?`, `pack as Map<String, dynamic>`). Brief agents with explicit type hints for dynamic casts. Established 2026-05-09.
+- **Subagent import-removal needs cross-symbol grep, not just type/class names.** When a subagent recommends "delete this unused import," the grep that justified the call must also check for top-level constants, enums, and re-exports reachable through that import. Established 2026-04-28: F2 agent removed `dog_service.dart` import from `dog_found_dialog.dart` after grepping `DogService` / `dogServiceProvider`, but missed that `kDeployedBreedCount` (top-level const) was reached through the same import on origin's tree. CI broke twice before the fix landed (inline the literal). Subagent briefs for import-removal should now include: "grep for all symbols defined in the imported file, not just the file's primary class".
+
+## Interaction design conventions (2026-05-10)
+
+- **Pill entrance animations**: `.animate().fadeIn(delay: Xms).slideY(begin: 0.3, delay: Xms, duration: 280ms, curve: Curves.easeOut)` — standard stagger for context info pills in `dog_found_dialog.dart`. Combo pill: 570ms, flash pill: 630ms.
+- **XP countup**: `TweenAnimationBuilder<int>` with `IntTween(begin: 0, end: value)`, 1000ms, `Curves.easeOut`. Wrap in `.animate().fadeIn(delay: 400.ms)`.
+- **Result dialog transition**: `showGeneralDialog` (not `showDialog`) with `transitionDuration: 380ms`, `SlideTransition(Offset(0, 0.08)→Offset.zero)` + `FadeTransition`, `CurvedAnimation(curve: Curves.easeOutCubic)`.
+
+## Environment quirks (Windows + Cowork) — supplements
+
+- **Cowork sandbox blocks `rm`/`rmdir` on mounted user directories.** `Operation not permitted` on any destructive filesystem op against the mount. Workaround: `mv` to a `_trash/` dir in the sandbox, then `Remove-Item -Recurse -Force _trash` from PowerShell on the Windows side. The sandbox CAN create, move, and write — just not delete.
+- **PowerShell `Remove-Item` syntax, not cmd.exe.** `Remove-Item -Recurse -Force <path>` replaces `rmdir /s /q`. `Remove-Item <path1>, <path2>` replaces `del`. Jesse's terminal is PowerShell 5.x — cmd.exe builtins (`rmdir`, `del` with `/s /q` flags) error out. This is a recurring trap when generating cleanup instructions.
+
+- **adb path on Jesse's machine:** `C:\Users\Administrator\AppData\Local\Android\sdk\platform-tools\adb.exe`. Not on PATH by default. Quick add to user PATH: `[Environment]::SetEnvironmentVariable("Path", "$([Environment]::GetEnvironmentVariable('Path', 'User'));$sdkPath", "User")` then reopen terminal. Or use Flutter's wrappers: `flutter install --debug` and `flutter logs` work without adb on PATH.
+- **Test device:** Sony XQ CT54 (deviceId `QV770SJQCQ`), Android 14 (API 34), Adreno GPU. USB Debugging enabled. Visible to `flutter devices`.
+- **Multi-line commit messages in PowerShell** — use here-string written to file, then `git commit -F`:
+  ```powershell
+  @"
+  subject line
+
+  body paragraph
+  "@ | Out-File -FilePath commit-msg.txt -Encoding utf8
+  git commit -F commit-msg.txt
+  Remove-Item commit-msg.txt
+  ```
+  `git commit -m "..."` with embedded newlines hangs at the `>>` continuation prompt because PowerShell can't tell when the string is closed. Multiple `-m` flags work as a fallback (each becomes a paragraph) but here-string preserves formatting. Note: `Out-File -Encoding utf8` writes a UTF-8 BOM in PS 5.x; the BOM lands in the commit message but is invisible in `git log`. Use `[System.IO.File]::WriteAllText(...)` for BOM-free writes.
+- **AdMob `MobileAdsInitProvider` requires APPLICATION_ID meta-data in AndroidManifest** even when ad unit IDs are env-driven. Without it, the SDK initializes via a `ContentProvider` at app launch and throws `IllegalStateException: Missing application ID` before the Dart entrypoint runs. Test ID for development: `ca-app-pub-3940256099942544~3347511713` (Google-published, won't serve real ads). Real production ID requires registering the package in an AdMob console.
+
+- **adb screenshot workflow: use `adb pull`, not `cmd.exe >` redirect.** `adb exec-out screencap -p > file.png` via cmd.exe corrupts binary PNG data (CRLF line-ending injection). Correct pattern: `adb shell screencap /sdcard/screen.png && adb pull /sdcard/screen.png ./screen.png`. Device in use: Sony XQ-CT54 (model QV770SJQCQ).
+
+## Workflow preferences (supplements, 2026-04-29)
+
+- **`dart format .` then `dart format --output=none .`** — always two steps. The first WRITES formatting; the second VERIFIES (dry run, reports changes but writes nothing). Never skip step 1. `--output=none` alone produces zero disk changes. Logged as Failure_Patterns entry `dart-format-output-none-is-dry-run`.
+- **Parallel agent file ownership works well for design sprints.** Phase 2 ran 4 agents across 6 files with zero merge conflicts. Key: each agent owns non-overlapping files. When two agents must touch the same file (e.g., `profile_screen.dart`), merge them into one sequential agent rather than risking Edit conflicts.
+- **ShaderMask + LinearGradient + BlendMode.dstIn** is the right pattern for right-edge fade on scrollable rows. 6-line wrapper, not worth extracting to a widget.
+- **Widget tests can be written from Cowork sandbox** (unlike integration tests). Pure widget tests don't need `flutter test` to verify compilation — they follow predictable patterns with `WidgetTester` + `pumpWidget` + `find.*` + `expect`. Risk is lower than integration tests because the patterns are mechanical.
+- **`flutter_animate` `autoPlay: false` leaves widget at animation INITIAL state permanently** — NOT snapped to final state. A `fadeIn` widget with `autoPlay: false` is opacity 0 forever. Only use `autoPlay: !_hasAnimated` on ghost/unowned cards for first-load stagger. Remove `.animate()` entirely from owned/promoted card paths so they render at full opacity immediately on mount. (Kennel grid hotfix 2026-05-01.)
+- **`BoxFit.contain` for collection photo cards** (not `BoxFit.cover`). Wikimedia `thumb.php` images are landscape; `cover` center-crops them into near-square cards and hides the dog's body. `contain` letterboxes with the dark card background — acceptable tradeoff for showing the full animal. Use `cover` only when the photo is portrait or the card is explicitly landscape.
+
+## Navigation conventions (2026-05-01)
+
+5-tab bottom nav: Discover / Identify / Kennel / Lost Dogs / Me.
+
+Icons (active icon = same icon or filled variant, selectedItemColor: Colors.amber handles tinting):
+- Discover: `Icons.explore_outlined` / `Icons.explore`
+- Identify: amber circle container with `Icons.camera_alt` (special treatment, unchanged)
+- Kennel: `Icons.collections_outlined` / `Icons.collections`
+- Lost Dogs: `Icons.radar` (active: same with explicit amber via `Color.withValues`)
+- Me: `Icons.person_outline` / `Icons.person`
+
+Field Guide is NOT a bottom-nav tab. It lives as an `IconButton(icon: Icon(Icons.menu_book))` in the Kennel screen AppBar → `context.push('/guide')`.
+
+User explicitly rejected `Icons.search` (magnifying glass) for Lost Dogs. Do not propose it again.
+
+## PowerShell script execution (supplements, 2026-05-01)
+
+- Local scripts require `.\` prefix (backslash, not `/`): `.\_deploy.bat` not `./deploy.bat`.
+- The deploy script filename has an underscore prefix: `_deploy.bat`. Running `deploy.bat` fails because the file does not exist.
+- Without `.\`, PowerShell does not search the current directory for executables.
+
+## Exam System Conventions (2026-05-10)
+
+- **ExamTier enum** in `exam_result.dart`: bronze (60% pass, 5m cooldown, 1.25× XP), silver (75%, 15m, 1.5×), gold (85%, 30m, 2.0×). Has `.next` getter for progression.
+- **Hive box**: `dogquest_exams`. Key format: `{groupId}_{tier}` (e.g. `sporting_bronze`).
+- **Color constants** in `constants.dart`: `examGold`, `examSilver`, `examBronze`.
+- **Prestige title**: `ExamService.prestigeTitle` — "Canine Scholar" (all 7 Gold) or "{Group} Specialist" (first single Gold). UI composes with `?? playerState.title`.
+- **XP multiplier**: `max(collectionBonus, examBonus)` — non-stacking.
+- **IIFE pattern**: Prefer `() { ... }()` over `Builder` in ConsumerWidget scope when `ref` is already available.
+- **Analytics events**: `exam_attempted`, `exam_passed`, `canine_scholar_achieved` — tracked via `ref.read(analyticsProvider).track()`.
 
 ## Related Notes
 

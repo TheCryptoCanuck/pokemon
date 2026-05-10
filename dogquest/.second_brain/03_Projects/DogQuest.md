@@ -36,6 +36,16 @@ Practical implications:
 
 Ship a polished, monetized, social dog-ID app to the Play Store with a 296-breed TFLite model, working sync, and a complete gamification + social loop. Phase 4 launch is the immediate target; Phase 5 growth follows.
 
+## Current Status (2026-04-26 — vault hygiene session)
+
+- **14 modified-but-unstaged files RESOLVED** via per-finding-ID commits. Branch went from "5 commits ahead of origin" baseline to staged sequence covering: C-Lost-A scanStray remote-corpus fix, Phase 4a lost-dog UI tail, comp-review re-run snapshot, DogQuest.md monorepo addendum, orphan deletes, CLAUDE.md AviQuest scrub + monorepo addendum. Plus Group X (additional 5 lost-dog files surfaced after first commit batch), 3 T5-feature-restore un-strips, 2 confirmed orphan-service deletes.
+- **C-Lost-A SHIPPED** (pending push). `scanStray()` now consults remote Supabase corpus via `getActiveNearby` RPC + radius filter; matches dedupe by ID against local Hive results. Verified end-to-end by code-reviewer agent. Test coverage gap (integration test for the remote branch) logged as tech-debt.
+- **C-Lost-2 (GDPR consent gate) and pgvector RPC migration** filed as separate open items in Active_Tasks. C-Lost-2 blocks public Play Store, not closed beta.
+- **DogQuest CLAUDE.md is now AviQuest-free** (project policy established 2026-04-26 — see Memory.md project conventions). Vault files and monorepo root may still reference AviQuest as factual context.
+- **T5-feature-restore: 3/8 sites un-stripped** (`help_find_tab.dart` × 2, `lost_dog_map_controller.dart` × 1). 5 remain across `main.dart` (3), `router.dart` (1), `sync_services_test.dart` (1) — all flagged "OPEN — re-verify" since the underlying service files now exist on disk; compile-error status not verified this session.
+- **Subagent verification pattern**: Explore agent reported 4 false-positive orphans (CamelCase-only grep). Caught via parent-side broader regex. Logged as Failure_Patterns entry + Memory.md project convention.
+- **Sandbox-bound workflow established**: Cowork mounts only `dogquest/`; git runs only from Jesse's PowerShell at `AviQuest-`. Pattern is now documented in Memory.md, Compressed_Insights.md, and the monorepo addenda in CLAUDE.md and DogQuest.md.
+
 ## Current Status (2026-04-25 night — lost-dog spec + full-app comp review re-run)
 
 - **Lost-dog improvement spec** shipped via 4-agent parallel investigation. `docs/session_2026-04-26/lost_dog_improvements_spec.md` distills ~70 findings into 3 user-facing decisions: matching honesty (softmax-as-fingerprint structurally weak), network-vs-self matching (`scanStray` only matches local Hive, never the remote corpus), GDPR timing (2 Critical findings before public Play Store).

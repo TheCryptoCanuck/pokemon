@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" font-family="Inter, system-ui, sans-serif">
+  <!-- Page background -->
+  <rect width="1200" height="720" fill="#0A1410"/>
+
+  <!-- Title strip -->
+  <text x="60" y="60" fill="#F5F2EC" font-size="28" font-weight="700">DogQuest — Logo direction mockups</text>
+  <text x="60" y="88" fill="#B8B4AB" font-size="14">A · North Star Paw  (recommended)    B · Trail Tracker    C · Constellation Paw</text>
+
+  <!-- ============ DIRECTION A: NORTH STAR PAW ============ -->
+  <g transform="translate(60,140)">
+    <!-- App icon tile -->
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#D4874E" stroke-width="2.5"/>
+    <!-- Paw silhouette: 4 toes + main pad, warm white -->
+    <g fill="#F5F2EC" transform="translate(140,150)">
+      <ellipse cx="-58" cy="-30" rx="22" ry="28"/>
+      <ellipse cx="-20" cy="-52" rx="22" ry="28"/>
+      <ellipse cx="20"  cy="-52" rx="22" ry="28"/>
+      <ellipse cx="58"  cy="-30" rx="22" ry="28"/>
+      <!-- main pad with subtle indent at top -->
+      <path d="M -52 18 Q -52 -16 0 -28 Q 52 -16 52 18 Q 52 64 0 70 Q -52 64 -52 18 Z"/>
+    </g>
+    <!-- 4-point compass star, amber, centred on main pad -->
+    <g transform="translate(140,168)" fill="#D4874E">
+      <path d="M 0 -22 L 6 -6 L 22 0 L 6 6 L 0 22 L -6 6 L -22 0 L -6 -6 Z"/>
+      <circle cx="0" cy="0" r="3" fill="#0F1A10"/>
+    </g>
+    <!-- Sparkle accent top-right -->
+    <g transform="translate(220,72)" fill="#E8A96E">
+      <path d="M 0 -8 L 2 -2 L 8 0 L 2 2 L 0 8 L -2 2 L -8 0 L -2 -2 Z"/>
+    </g>
+
+    <!-- Wordmark below -->
+    <g transform="translate(0,310)">
+      <text x="0" y="32" fill="#F5F2EC" font-size="38" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">DogQuest</text>
+      <text x="0" y="60" fill="#539548" font-size="11" font-weight="700" letter-spacing="2">IDENTIFY · COLLECT · EXPLORE</text>
+    </g>
+
+    <!-- Caption -->
+    <g transform="translate(0,400)">
+      <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">A · NORTH STAR PAW</text>
+      <text x="0" y="22" fill="#B8B4AB" font-size="12">Compass star centred on main pad. Amber rim</text>
+      <text x="0" y="38" fill="#B8B4AB" font-size="12">on paw for definition. Reads "find your dog".</text>
+      <text x="0" y="60" fill="#8DC681" font-size="11" font-weight="700">RECOMMENDED — preserves recognition</text>
+    </g>
+  </g>
+
+  <!-- ============ DIRECTION B: TRAIL TRACKER ============ -->
+  <g transform="translate(460,140)">
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#2C4030" stroke-width="2"/>
+    <!-- Faded paws — trail behind -->
+    <g fill="#F5F2EC" opacity="0.18" transform="translate(80,90) scale(0.45)">
+      <ellipse cx="-58" cy="-30" rx="22" ry="28"/>
+      <ellipse cx="-20" cy="-52" rx="22" ry="28"/>
+      <ellipse cx="20"  cy="-52" rx="22" ry="28"/>
+      <ellipse cx="58"  cy="-30" rx="22" ry="28"/>
+      <path d="M -52 18 Q -52 -16 0 -28 Q 52 -16 52 18 Q 52 64 0 70 Q -52 64 -52 18 Z"/>
+    </g>
+    <g fill="#F5F2EC" opacity="0.35" transform="translate(105,135) scale(0.62)">
+      <ellipse cx="-58" cy="-30" rx="22" ry="28"/>
+      <ellipse cx="-20" cy="-52" rx="22" ry="28"/>
+      <ellipse cx="20"  cy="-52" rx="22" ry="28"/>
+      <ellipse cx="58"  cy="-30" rx="22" ry="28"/>
+      <path d="M -52 18 Q -52 -16 0 -28 Q 52 -16 52 18 Q 52 64 0 70 Q -52 64 -52 18 Z"/>
+    </g>
+    <!-- Foreground paw, solid -->
+    <g fill="#F5F2EC" transform="translate(160,180) scale(0.95)">
+      <ellipse cx="-58" cy="-30" rx="22" ry="28"/>
+      <ellipse cx="-20" cy="-52" rx="22" ry="28"/>
+      <ellipse cx="20"  cy="-52" rx="22" ry="28"/>
+      <ellipse cx="58"  cy="-30" rx="22" ry="28"/>
+      <path d="M -52 18 Q -52 -16 0 -28 Q 52 -16 52 18 Q 52 64 0 70 Q -52 64 -52 18 Z"/>
+    </g>
+    <!-- Small amber ground-shadow under foreground paw -->
+    <ellipse cx="160" cy="252" rx="58" ry="6" fill="#D4874E" opacity="0.35"/>
+
+    <g transform="translate(0,310)">
+      <text x="0" y="32" fill="#F5F2EC" font-size="38" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">DogQuest</text>
+      <text x="0" y="60" fill="#539548" font-size="11" font-weight="700" letter-spacing="2">IDENTIFY · COLLECT · EXPLORE</text>
+    </g>
+
+    <g transform="translate(0,400)">
+      <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">B · TRAIL TRACKER</text>
+      <text x="0" y="22" fill="#B8B4AB" font-size="12">Three paws receding into distance.</text>
+      <text x="0" y="38" fill="#B8B4AB" font-size="12">Strong outdoor signal but loses compactness</text>
+      <text x="0" y="54" fill="#B8B4AB" font-size="12">at small launcher sizes.</text>
+    </g>
+  </g>
+
+  <!-- ============ DIRECTION C: CONSTELLATION PAW ============ -->
+  <g transform="translate(860,140)">
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#2C4030" stroke-width="2"/>
+    <!-- Background scattered stars -->
+    <g fill="#F2C49A" opacity="0.45">
+      <circle cx="40" cy="55" r="1.5"/>
+      <circle cx="240" cy="40" r="2"/>
+      <circle cx="60" cy="220" r="1.2"/>
+      <circle cx="245" cy="200" r="1.5"/>
+      <circle cx="200" cy="60" r="1"/>
+      <circle cx="80" cy="175" r="1.2"/>
+    </g>
+    <!-- Constellation paw: 5 connected dots (4 toes + main pad center) -->
+    <g transform="translate(140,150)">
+      <!-- Connection lines -->
+      <g stroke="#D4874E" stroke-width="2" opacity="0.55" fill="none">
+        <line x1="-60" y1="-30" x2="0" y2="20"/>
+        <line x1="-22" y1="-55" x2="0" y2="20"/>
+        <line x1="22"  y1="-55" x2="0" y2="20"/>
+        <line x1="60"  y1="-30" x2="0" y2="20"/>
+      </g>
+      <!-- Toe stars -->
+      <g fill="#F5F2EC">
+        <circle cx="-60" cy="-30" r="9"/>
+        <circle cx="-22" cy="-55" r="9"/>
+        <circle cx="22"  cy="-55" r="9"/>
+        <circle cx="60"  cy="-30" r="9"/>
+      </g>
+      <!-- Main pad — larger 4-point amber star -->
+      <g transform="translate(0,20)" fill="#D4874E">
+        <path d="M 0 -28 L 8 -8 L 28 0 L 8 8 L 0 28 L -8 8 L -28 0 L -8 -8 Z"/>
+        <circle cx="0" cy="0" r="4" fill="#0F1A10"/>
+      </g>
+    </g>
+
+    <g transform="translate(0,310)">
+      <text x="0" y="32" fill="#F5F2EC" font-size="38" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">DogQuest</text>
+      <text x="0" y="60" fill="#539548" font-size="11" font-weight="700" letter-spacing="2">IDENTIFY · COLLECT · EXPLORE</text>
+    </g>
+
+    <g transform="translate(0,400)">
+      <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">C · CONSTELLATION PAW</text>
+      <text x="0" y="22" fill="#B8B4AB" font-size="12">5 dots form paw shape with star pad.</text>
+      <text x="0" y="38" fill="#B8B4AB" font-size="12">Most distinctive but breaks recognition</text>
+      <text x="0" y="54" fill="#B8B4AB" font-size="12">with current installed users' launcher icon.</text>
+    </g>
+  </g>
+
+  <!-- Footer key -->
+  <g transform="translate(60,640)">
+    <text x="0" y="0" fill="#7A766F" font-size="11">Background: surface0 #0A1410 · Tile: surface1 #0F1A10 · Paw: textPrimary #F5F2EC · Star: amber500 #D4874E · Tagline: forest500 #539548</text>
+    <text x="0" y="20" fill="#7A766F" font-size="11">Wordmark uses Georgia italic as a stand-in for Fraunces 700 italic — final asset will use the Fraunces variable font from Google Fonts.</text>
+  </g>
+</svg>

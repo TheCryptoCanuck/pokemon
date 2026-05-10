@@ -337,6 +337,244 @@ Use for durable decisions.
   Related project: DogQuest
   Score: 0.9
 
+- Date: 2026-04-26
+  Decision: `dogquest/CLAUDE.md` and `dogquest/README.md` must be AviQuest-free. No mention of `aviquest/`, `aviquest-web/`, the fork lineage, the literal `C:\Users\Administrator\AviQuest-\` path, BirdNET, `/aviary` route, or any "Differences from AviQuest" framing. Use placeholders (`<repo-root>/`) and present DogQuest as a standalone project. Vault-side files (`.second_brain/`) and monorepo-root files MAY reference AviQuest as factual context.
+  Reason: Jesse 2026-04-26 vault hygiene session. DogQuest's own docs should not advertise the predecessor-app heritage; readers (including AI assistants picking up the project) should see DogQuest as the primary project.
+  Related project: DogQuest
+  Score: 0.85
+
+- Date: 2026-04-26
+  Decision: When committing a feature surface that spans multiple files in a single review pass, ALL the cross-referenced files commit together as one logical unit (Group X pattern). For C-Lost-A specifically: `lost_dog_service.dart`, `scan_stray_screen.dart`, `lost_dog_report.dart`, `supabase_lost_dog_service.dart`, `lost_dog_report_card.dart`, `remote_lost_dog_card.dart`, `lost_dog_service_test.dart` are one feature surface. Splitting them risks CI breakage — un-strip commits that depend on Group X must come AFTER it.
+  Reason: vault hygiene session 2026-04-26. The original triage missed Group X because the user's screenshot only listed the "first wave" of modified files; subsequent `git status` after Step 6 surfaced 5 more lost-dog files. Lesson: in a multi-pass triage where the user runs git in another window, the file list grows incrementally — confirm completeness with a fresh `git status` before claiming triage is done.
+  Related project: DogQuest
+  Score: 0.8
+
+- Date: 2026-04-26
+  Decision: Don't author `flutter_test` integration tests from the Cowork sandbox. The sandbox lacks the Dart toolchain, so I cannot verify the test compiles, runs, or passes. False-confidence risk: shipping a syntactically-broken test that breaks CI on Jesse's push. Document the test gap as an Active_Tasks follow-up entry instead.
+  Reason: vault hygiene session 2026-04-26. C-Lost-A integration test was identified as missing; the agent assessment recommended writing it. Memory.md preference "If uncertain: say I don't know — don't generate confidently" applies. Better to log the gap than ship unverified test code.
+  Related project: DogQuest
+  Score: 0.8
+
+- Date: 2026-04-26
+  Decision: For mocking Supabase-backed services in Dart unit tests, use the **repository abstraction** pattern (subclass-and-override the application service, NOT the postgrest types). Same approach planned for T5-B-redesign. Direct mocking of `PostgrestBuilder` is broken because it `extends Future<dynamic>`, not `Future<List<dynamic>>` — the wrapper-based approach was tried in T5-B and failed to compile against `supabase_flutter` 2.10.2.
+  Reason: T5-B history (commit `568794d`) shipped as SKIP after the wrapper attempt failed. The right shape: introduce a thin repository interface in `lib/services/`, refactor the service to depend on it, mock the interface in tests. C-Lost-A integration test will follow the same pattern when written.
+  Related project: DogQuest
+  Score: 0.8
+
+- Date: 2026-04-28
+  Decision: **Hound rebrand finalization (small batch) — 6 commits to origin, CI #16 GREEN — first green CI run since CI #6 (4 weeks of broken CI cleared).** Surgical 4-string rebrand commit shipped under `22c3d553`: notification channel IDs renamed (`dogquest_streak` → `hound_streak`, `dogquest_daily_dog` → `hound_daily_dog`, `dogquest_smart` → `hound_smart`), TFLite log tag renamed (`DOGQUEST_ID:` → `HOUND_ID:`), privacy policy contact email updated (`support@dogquest.app` → `jesseg.8899@gmail.com`), `Hound_Rebrand_Runbook.md` added. Plus 5 supporting commits to clear CI: `336edf28` (lost_dog_detail_sheet `_PhotoPlaceholder.build` static/instance conflict — renamed `forReport`), `cfc96ea2` (Phase 7 / F1 logic fixes: Offset wrap, onError refactor, Riverpod import, `dogquest_lost_dog_alerts` → `hound_lost_dog_alerts`), `5951952` (Phase 7 / F2 cleanup: 6 unused fields/params/imports/locals), `b397b31` (F2 fallout: restore + drop), `669d6ab` (inline `kDeployedBreedCount` literal as `150`).
+  Distinction from deferred items: notification channel IDs are NOT Hive prefixes despite sharing the `dogquest_` prefix. Hive box names remain deferred. Pubspec name, key.properties, dogquest_banner_ad.dart filename, dogquest-ci.yml workflow filename also remain deferred per established scope.
+  Closed-beta-readiness deltas: app launches on `com.hound.app` package; identifies dogs (TFLite v5.1 healthy, 7 IDs logged with `HOUND_ID:` tag); Firebase + Crashlytics + Supabase init clean; brand surfaces verified (launcher icon, log tag, privacy email, share strings).
+  Related project: DogQuest Hound rebrand
+  Score: 0.95
+
+- Date: 2026-04-28
+  Decision: **`jesseg.8899@gmail.com` is the privacy/ToS contact email until `hound.app` domain is registered.** Privacy Policy `:214` and ToS `:314` both use the personal Gmail. Cleaner alternative `support@hound.app` is deferred to Sprint 2 / pre-public-launch task (requires domain registration ~$12/yr + Cloudflare Email Routing setup, ~30 min one-time). Closed beta with 5-10 testers does not warrant the domain spend yet.
+  Trade-off: personal email exposed in legal docs. Acceptable for closed beta; must swap before public Play Store launch. Reviewer (comprehensive-review:code-reviewer) flagged this as "low-risk, monitor for spam." Followup: when `hound.app` domain lands, update both contact lines + remove this decision.
+  Related project: DogQuest Hound rebrand
+  Score: 0.7
+
+- Date: 2026-04-28
+  Decision: **Test AdMob App ID `ca-app-pub-3940256099942544~3347511713` in AndroidManifest until production AdMob registered.** Required because `google_mobile_ads` SDK initializes via a `ContentProvider` at app launch — without `<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" .../>` it throws `IllegalStateException: Missing application ID` and the app dies before reaching Dart. Test ID is Google-published documentation (https://developers.google.com/admob/android/test-ads) and won't serve real ads. Real production ID requires registering `com.hound.app` in an AdMob console (separate Sprint 2 task, ~30 min web UI work).
+  Manifest edit is in working-tree-only state currently (alongside the larger ~75-file rebrand pile). Will commit alongside the focused rebrand-finalization sprint.
+  Related project: DogQuest Hound rebrand / Android setup
+  Score: 0.85
+
+- Date: 2026-04-28
+  Decision: **Source-level verification accepted as conclusive for rebrand smoke when source is deterministic.** When verifying brand-string surfaces (notification channel IDs, log tags, share text strings, contact emails), reading the source code via Read tool + targeted grep is sufficient — the runtime can only display strings the source declares. On-device dumpsys / Settings UI verification adds belt-and-suspenders confirmation but is finicky across Android versions/OEMs (channel registration is lazy in `flutter_local_notifications` — fires on first notification, not on schedule). For deterministic surfaces, source verification + CI green = rebrand confirmed at the level any verification can reach.
+  This decision shaped Phase 6 of the rebrand: smoke checks a/b/d (UI, log, in-app screen) verified on-device; c/e (notification channels, share text) verified at source level after Jesse couldn't reach them in the UI in the limited test window. Five of six smoke surfaces confirmed; sixth (magic-link login) skipped because no backend. Net: rebrand is end-to-end shipped at the verifiable level.
+  Related project: DogQuest verification methodology
+  Score: 0.8
+
+- Date: 2026-04-28
+  Decision: **Two-commit pattern preferred for "logic fixes + mechanical cleanup" pairs.** When a session produces both (a) substantive logic changes (fix X, refactor Y, add import) and (b) mechanical deletions (remove unused imports, drop dead fields, delete orphan locals), commit them as TWO separate commits even when they could fit one. Rationale: if the cleanup over-removes (subagent grep miss, unused symbol that wasn't actually unused), surgical revert preserves the logic fixes. The Phase 7 session is the canonical proof — F2's cleanup commit (`5951952`) over-removed `dog_service.dart` import → CI broke → could have reverted JUST F2 and left F1's logic fixes intact. Did the simpler "fix forward" instead, but the option mattered.
+  Pattern: Commit 1 = `fix(scope): logic changes` (each touch motivated by a specific finding); Commit 2 = `chore: mechanical cleanup` (each removal verified by independent grep). Two `here-string → Out-File → git commit -F` invocations, two pushes — or one push containing both commits. CI failure attribution becomes obvious from the commit graph.
+  Related project: DogQuest commit hygiene / general workflow
+  Score: 0.8
+
+- Date: 2026-04-29
+  Decision: **Design critique conducted via live-device screenshots → 10 findings across 5 screens (Splash, Camera, Kennel, Field Guide, Profile).** Findings classified: 2 critical (Kennel stats contrast, Splash duplicate tagline + Ready! contrast), 5 moderate (Camera overlay clutter, Field Guide taxonomy, Profile header icon contrast, XPBar prominence, CTA card icon inconsistency), 3 minor (BreedGhostCard absent, ChipRow overflow, Pack ring on Profile). Benchmarked against Dog Scanner, PuppyDex, Duolingo, Seek. Decomposed into 3 gated phases for parallel agent execution.
+  Reference: `hound_design_agent_report.docx` (dogquest workspace root) — full agent spawn prompts, file ownership map, verification protocol.
+  Related project: DogQuest design polish / Sprint 9
+  Score: 0.9
+
+- Date: 2026-04-29
+  Decision: **`hound_design_agent_report.docx` adopted as the canonical agent execution brief for design sprint work.** Contains: 10-finding severity table with skill + agent columns, skills catalogue, 3-phase parallel execution plan, copy-paste agent spawn prompts for Phase 1 agents A–D, file ownership map (no-conflict guarantee), and verification protocol. Word format chosen so the brief can be reviewed and annotated outside of Cowork. Generated via Node.js `docx` library per SKILL.md.
+  Related project: DogQuest design tooling / workflow
+  Score: 0.8
+
+- Date: 2026-04-29
+  Decision: **Cowork Skills Reference section added to `dogquest/CLAUDE.md` as permanent agent-loading reference.** Every task type (UI/Design, Engineering, Architecture/Backend, Agent Orchestration) now has a table mapping the task description to the exact skill(s) to load before writing code. Design Critique Backlog (2026-04-29) embedded inline with per-fix skill assignments and phase gating. Any agent loading CLAUDE.md will know exactly which skills to load for any given task — eliminates the "agent forgets to load skill" failure mode.
+  Related project: DogQuest workflow conventions
+  Score: 0.85
+
+- Date: 2026-04-29
+  Decision: **Sprint 9 Phase 2 — BreedGhostCard for undiscovered breeds in Kennel grid.** All 150 breeds now shown in Kennel grid, not just collected ones. Data source: `dogSvc.filter(rarity: _filterRarity, search: _searchQuery)` with collected-first sort (`kennelSvc.contains(a.name)` comparator). Uncollected breeds render as `BreedGhostCard`: bgCard background, dimmed rarity border (alpha 0.25 vs 0.6 for collected), centered `Icons.help_outline`, bottom gradient with muted breed name and rarity label. Pattern inspired by Duolingo's locked-lesson UX — shows progress target without spoiling the discovery moment.
+  Reason: Kennel only showed collected breeds, giving no sense of what's left. Ghost cards create a "gotta catch 'em all" visual without revealing breed images.
+  Related project: DogQuest design polish / Sprint 9
+  Score: 0.85
+
+- Date: 2026-04-29
+  Decision: **Sprint 9 Phase 2 — XpBar replaces LevelProgressRing as hero widget on Profile.** `XpBar` (linear progress bar showing level, XP fraction, accent fill, optional streak bonus) promoted to top position in profile layout. `LevelProgressRing` (circular ring) demoted below stats grid. Layout order: XpBar → Stats Grid → LevelProgressRing → MyDogCard → PackCard → Sign-in.
+  Reason: Linear progress bar is more scannable at a glance than a circular ring. Duolingo and most gamification apps use linear XP bars as the primary progress indicator. The ring is still useful for detailed level info but shouldn't be the first thing users see.
+  Related project: DogQuest design polish / Sprint 9
+  Score: 0.8
+
+- Date: 2026-04-29
+  Decision: **Sprint 9 Phase 2 — Amber unification for all Profile CTA card icons.** All three CTA cards (My Dog Profile, Pack, Offline/Backup) now use size-28 amber icons. PackCard CTA accent changed from purple (`#7C4DFF`) to amber to match. Offline card header renamed "Offline mode" → "Back up your collection" (action-oriented copy).
+  Reason: Mixed icon colors (amber + purple + grey) created visual noise. Amber is the established gamification accent in DogQuest. Unified weight/color reads as a coherent set.
+  Related project: DogQuest design polish / Sprint 9
+  Score: 0.75
+
+- Date: 2026-04-29
+  Decision: **Sprint 9 Phase 2 — ShaderMask right-fade for chip row overflow.** Kennel and Field Guide filter chip rows wrapped in `ShaderMask(shaderCallback: LinearGradient(stops: [0.0, 0.85, 1.0], colors: [white, white, transparent]), blendMode: BlendMode.dstIn)` around existing `SingleChildScrollView`. Provides a visual affordance that the row scrolls horizontally. Chose ShaderMask over a separate widget because the pattern is 6 lines of wrapper, not worth a new file.
+  Reason: Chip rows overflow on narrow screens. The fade-to-transparent right edge signals scrollability without adding a scroll indicator.
+  Related project: DogQuest design polish / Sprint 9
+  Score: 0.75
+
+- Date: 2026-04-29
+  Decision: **Sprint 9 Phase 3 — Engagement gate thresholds: `level > 5 || sightings > 20`.** Profile suppresses empty-state onboarding CTAs (My Dog card, Pack card, sign-in prompt) for experienced users who haven't used those features. Threshold is OR-gated (either condition suffices). If the user HAS dogs or a pack, those cards still show regardless of experience level — the gate only hides empty-state CTAs, not populated feature cards.
+  Reason: New users need onboarding nudges; experienced users find them patronizing. The thresholds are low enough to catch users who've engaged meaningfully (level 5 ≈ 15-20 identifications, 20 sightings ≈ active user). OR gate means either engagement signal suffices.
+  Related project: DogQuest design polish / Sprint 9
+  Score: 0.8
+
+- Date: 2026-04-29
+  Decision: **Sprint 9 Phase 3 — Camera viewfinder decluttered; context overlays moved to result screen.** Removed `_PriorityContextBanner` (combo counter) and `ComboCounter` Positioned widgets from camera Stack in `identify_screen.dart`. Added `_contextInfoRow()` to `dog_found_dialog.dart` that renders combo pill ("🔥 2x Combo") and flash challenge pill when active. Class definitions preserved in identify_screen.dart for potential future use.
+  Reason: Camera viewfinder should be clean — viewfinder + shutter only, like Dog Scanner. Context info (combo state, flash challenge progress) is more useful AFTER identification, when the user can see how the result interacts with their active challenges.
+  Related project: DogQuest design polish / Sprint 9
+  Score: 0.85
+
+- Date: 2026-04-29
+  Decision: **`dart format .` (write) then `dart format --output=none .` (verify) is the required two-step pattern.** `--output=none` is a dry run that does NOT format files. Previous instructions used only `--output=none` as the verification step, which was correct — but the FORMATTING step (`dart format .` without flags) was sometimes omitted from commit instructions. Both steps are now mandatory in all Cowork-generated verification blocks.
+  Reason: Phase 2 committed unformatted code because only `--output=none` was run (check-only). Required a fixup commit.
+  Related project: DogQuest workflow / general
+  Score: 0.7
+
+- Date: 2026-04-30
+  Decision: **23-day closed-beta plan adopted as the working roadmap.** Source: `dogquest/outputs/next_steps_plan.md`. Synthesized from 6 parallel specialist-agent proposals (mobile, backend, ML, UI, deployment, test). Five parallel tracks: A=Flutter, B=Supabase, C=UI, D=CI/release, E=ML/v6, F=Tests. Beta success criteria are 7 items (CI green without continue-on-error, branch protection on, release pipeline builds dogquest APK with 6 dart-defines, SUPA-001 fixed, magic-link auth e2e, accessibility AA on 5 critique screens, fresh-install identifies on Sony XQ-CT54). Three week-1 must-land items gate everything: SUPA-001 (drop p_user_id from RPCs), CI-002 (retarget release.yml to dogquest), magic-link auth path. v6 model is NOT a beta gate — Track E runs in parallel and ships v5.1 if accuracy <84% top-1.
+  Reason: Six agents each picked their own "highest leverage" (T5-feature-restore, SUPA-001, v6 retrain, Phase 3 verify, CI-002, T5-B redesign) — all correct in their domain. Resolution via sequencing rather than picking. Critical-path identification follows from "blocks other tracks + small effort" intersection.
+  Related project: DogQuest closed-beta delivery
+  Score: 0.9
+
+- Date: 2026-04-30
+  Decision: **Firebase App Distribution chosen for closed-beta distribution channel.** Selected over Play Store closed beta (enrollment overhead) and raw APK gdrive sharing (no access control). Setup: 1 day; release.yml adds Firebase Hosting upload step; testers install via emailed link. Audit trail + rollback via dashboard.
+  Reason: Closed beta = 5-10 friends/family (Tier 4 in Active_Tasks). Play Store closed beta needs full enrollment + review for what's effectively a private group. Raw APK loses access control. Firebase App Distribution is the lightweight middle path; same project (`aviquest-508a6`) already in pubspec.
+  Related project: DogQuest CI/release / closed beta
+  Score: 0.85
+
+- Date: 2026-04-30
+  Decision: **Release tag convention `dq-v*` for dogquest releases.** Distinct from `v*` which currently triggers `release.yml` targeting aviquest. When CI-002 retargets release.yml to dogquest, the trigger changes to `dq-v*` so aviquest release path can stay on `v*` if Jesse keeps the predecessor app running. Semver format: `dq-v0.1.0` matches current `pubspec.yaml` `version: 0.1.0+2`.
+  Reason: Two-app monorepo needs distinct release trigger prefixes. Otherwise tagging `v0.2.0` would build both apps (or trigger collision in release.yml).
+  Related project: DogQuest CI/release
+  Score: 0.8
+
+- Date: 2026-04-30
+  Decision: **`backend/` directory is safe to delete after rotating any service that ever used the `SECRET_KEY`** (`b397fc5fe6253e2716dd40c229c2cfe94badf71bc15b7c2e36b285bb87c2a403`). Audit (security-auditor agent, Pass 2 of config-validate session): zero live references in `dogquest/lib/` or `aviquest/lib/`. Now gitignored at monorepo root via GIT-002. If the SECRET_KEY was purely local-dev (FastAPI predecessor that never ran in production), no rotation needed — just delete. If unsure, archive to zip first then delete.
+  Reason: AviQuest fork's FastAPI backend; replaced by Supabase. Active_Tasks Tier 4 doesn't need it. Disk space + review-grep clutter + the real-looking SECRET_KEY are reasons to remove. Path: `Compress-Archive` → `Remove-Item -Recurse -Force`.
+  Related project: monorepo cleanup
+  Score: 0.85
+
+- Date: 2026-04-30
+  Decision: **TF-001 (terraform vs Supabase architectural drift) deferred to post-beta.** Three options documented: (a) deprecate (archive `infrastructure/terraform/` to legacy/branch or delete), (b) repurpose for Supabase project provisioning via `supabase/supabase` Terraform provider, (c) strip auth/database/api modules and keep only cdn/monitoring. No decision forced now because terraform isn't running in CI for any beta-blocking purpose. Beta ships without terraform changes.
+  Reason: Terraform provisions Cognito + DynamoDB + Lambda + API Gateway, but Supabase replaced that stack. Decision is strategic (which infra layer is truth) and shouldn't block 23-day plan. Revisit after closed-beta feedback informs whether the app needs ancillary AWS infra (CDN, monitoring) or is fully Supabase-resident.
+  Related project: monorepo infrastructure
+  Score: 0.8
+
+- Date: 2026-04-30
+  Decision: **v6 model accuracy gate set at ≥84% top-1, ≥94% top-5, ECE <0.08 on held-out.** Fail any → ship v5.1 (87.2% on 150 breeds), defer v6 to post-beta. Threshold derived from v5.1's 87.2% on 150 classes minus expected 2-3pt drop from class-count scaling to 294. Below 84% suggests training instability beyond class-count effect, requiring more debug than the 23-day window allows. ml-engineer agent recommends Quantization-Aware Training (QAT) instead of post-training quantization for the retrain — the prior 296-output `dog_model_v6_broken_calibration.tflite` failed because PTQ without representative calibration data produced miscalibrated confidence outputs.
+  Reason: v5.1 already works; shipping a worse v6 hurts beta UX. Threshold gives ml-engineer a clear go/no-go without dragging the call into "is this good enough" debates.
+  Related project: ML / v6 deployment readiness
+  Score: 0.85
+
+- Date: 2026-04-30
+  Decision: **Config validation findings hardened: ENV-001/002/003 fixed in source.** ENV-001: `lib/main.dart` removes hard-coded Supabase URL+anon key defaults; `_assertSupabaseEnv()` guards startup. ENV-002: `lib/services/ad_service.dart` + `lib/widgets/dogquest_banner_ad.dart` drop AdMob test-unit fallback in release builds; only debug uses test IDs (release-mode `isAdUnitConfigured` short-circuits load with info log). ENV-003: Crashlytics + Analytics now tagged with `env` custom key/user property. DEPS-001: flutter_lints ^3.0.0 → ^5.0.0. GIT-001 + GIT-002: dogquest and monorepo .gitignore both updated (monorepo root deduped triplicated Cowork block; added backend/, *.tfstate*, **/node_modules/, **/build/). CI-001: dogquest-ci.yml has `paths:` filter for `dogquest/**` + the workflow itself.
+  Reason: All five fixes match the same hardening pattern as API_BASE_URL (CLAUDE.md known issues). Production builds without dart-defines now fail loudly (assert) or silently no-op (ad load skip with info log) instead of silently using dev/test values. Generalizes to: any new --dart-define gets empty default + assert non-empty + debug-only fallback.
+  Related project: DogQuest config / observability
+  Score: 0.9
+
+- Date: 2026-05-01
+  Decision: **Bottom-nav redesigned to 5 tabs: Discover / Identify / Kennel / Lost Dogs / Me.** Removed Field Guide from the nav bar entirely; it is now accessible via an `IconButton(icon: Icon(Icons.menu_book))` in the Kennel screen AppBar (→ `context.push('/guide')`). Lost Dogs replaces the old branch index 3 (`/guide` → `FieldGuideScreen`) with `/lost-dog` → `LostDogHubScreen`. Tab labels changed from `['Sightings', 'Identify', 'Kennel', 'Field Guide', 'Me']` to `['Discover', 'Identify', 'Kennel', 'Lost Dogs', 'Me']`. Icons: Discover=`Icons.explore_outlined`/`Icons.explore`, Kennel=`Icons.collections_outlined`/`Icons.collections`, Lost Dogs=`Icons.radar` (amber active), Me=`Icons.person_outline`/`Icons.person`. Identify tab special amber-circle treatment unchanged.
+  Explicitly rejected: magnifying glass (`Icons.search`) for the Lost Dogs tab. User correction: "should not be a mag glass*".
+  Reason: Field Guide is a reference tab, not a primary action — doesn't justify nav-bar real estate. Lost Dogs is a time-sensitive utility warranting a top-level slot. 'Discover' replaces the ambiguous 'Sightings' label for a cleaner new-user mental model.
+  Files changed: `lib/screens/home_shell.dart` (tab labels + items), `lib/router.dart` (branch 3 rerouted, old push-routes removed), `lib/screens/kennel_screen.dart` (AppBar field-guide entry point added).
+  Related project: DogQuest navigation / UX
+  Score: 0.9
+
+- Date: 2026-05-01
+  Decision: **Sprint 12 — 4-agent parallel audit methodology adopted for security/hygiene sweeps.** Four specialist agents ran in parallel (security-auditor, architect-review, services/backend-architect, widget-lifecycle/code-reviewer), each owning a non-overlapping surface of the codebase. 10 files fixed. 3 confirmed false positives (friends_screen.dart:478, dogs_nearby_screen.dart:63, log_service.dart:32) — all verified by re-reading the surrounding code before implementing any fix.
+  Key learning: before implementing any bang-operator fix from an agent finding, re-read the call site. A `!` inside `x != null ? x! : null` is safe. A `.first` after `if (list.isNotEmpty)` is safe. Agent confidence ≠ correctness on context-dependent patterns.
+  Findings summary: 3 CRITICAL (assert→throw in main.dart + api_client + sync_queue_service; Uint8List vs List<int> for HiveAesCipher in main.dart), 3 HIGH (currentUser!.id null-unsafe in breed_community, photo_upload, playdate services), 2 MEDIUM (unawaited() missing in orchestrator + social generator), 2 LOW (debugPrint in notification services).
+  Audit did NOT use a grep-first approach to confirm false positives were real — the fix for this pattern is to read the file, not just trust the agent output.
+  Related project: DogQuest security / Sprint 12
+  Score: 0.9
+
+- Date: 2026-05-01
+  Decision: **Directory audit — 5-phase cleanup executed.** Root: 25→11 files. Screenshots: 53→0 at root (moved to `screenshots/`). ML scripts: 13→0 at root (moved to `ml/`). Second Brain: 54→26 active files (stub ratio 61%→12%). ~19 GB moved to `_trash/` then deleted via PowerShell. New dirs: `ml/` (consolidated training + audit scripts), `screenshots/` (all .png), `_review/` (originals pending validation), `.second_brain/_Unused/` (5 parked folders). Full report: `AUDIT_REPORT.md`.
+  Reason: Root directory had 25 loose files (ML scripts, screenshots, one-off utilities) making navigation painful. Second Brain was 61% stubs — over-scaffolded Zettelkasten template that accumulated empty files.
+  Related project: DogQuest repo hygiene
+  Score: 0.9
+
+- Date: 2026-05-01
+  Decision: **Second Brain merge strategy — consolidated stubs into 4 single-file references.** `06_Knowledge_Graph/` 7 files → `Knowledge_Index.md`. `04_Agents/` 3 files → `Agent_Roles.md`. `07_Prompts/` 7 files → `Prompt_Library.md`. `10_Templates/` 4 files → `Templates.md`. Duplicate `Compressed_Insights.md` (in both `01_Memory/` and `02_Context/`) merged by appending `02_Context` entries to `01_Memory` version. All originals preserved in `_review/second_brain_originals/` for rollback. 5 unused folders (`05_Daily_Notes/`, `08_Archives/`, `09_Inbox/`, `11_Retrieval/`, `12_Reviews/`) moved to `_Unused/`.
+  Reason: Single consolidated files are easier to grep, load into agent context, and maintain than scattered stubs. Originals preserved because the merge was automated — user should validate before deleting.
+  Related project: DogQuest Second Brain hygiene
+  Score: 0.85
+
+- Date: 2026-05-09
+  Decision: **Deploy checklist code quality gates cleared.** `dart analyze`: 0 errors, 0 warnings (1 error + 2 warnings fixed). `flutter test`: 836 passed, 1 skipped, 0 failed (1 failure fixed). All automated quality gates for `deploy_checklist_closed_beta.md` now pass. Remaining deploy steps are manual: commit ~180 working-tree files, build release APK with dart-defines, smoke test on Sony XQ-CT54, distribute to 5-10 testers.
+  Fixes applied: (1) `identify_screen.dart` — removed dead classes `_DailyDogPill` + `_PriorityContextBanner` (2 warnings), removed unused local `topPadding`, removed 5 orphaned imports. (2) `breed_ghost_card_test.dart` — updated alpha assertion from 64→140 (matching widget's actual 0.55 alpha from Hotfix sprint), fixed `.text`→`.data` property access.
+  Related project: DogQuest closed-beta deploy
+  Score: 0.9
+
+- Date: 2026-05-09
+  Decision: **Batch-fixed all 58 `dart analyze` info-level lints via 3 parallel agents with file-ownership boundaries.** Decomposed 58 infos (0 errors, 0 warnings) into 3 non-overlapping agent workstreams: Agent 1 (screens: identify, kennel, profile, breed_community — trailing commas, const, leading underscores, use_build_context_synchronously), Agent 2 (services + map widgets: map_tab, supabase_pack_service, auth_service, map_bottom_sheet, neighborhood_grid — avoid_dynamic_calls, trailing commas, curly braces), Agent 3 (remaining widgets + tests + helpers: dog_detail_sheet, playdate_matcher, my_dog_card, xp_bar, dog_feed_screen, dogs_nearby_screen, marketplace_screen, router, ui_helpers, kennel_service_test — trailing commas, const, doc comments). Zero Edit conflicts due to strict file-ownership. Post-agent verification: 57/58 fixed on first pass; 1 remaining (`breed_community_screen.dart:145`) required manual correction from `context.mounted` → `mounted`.
+  Lint categories fixed: `require_trailing_commas` (30+), `avoid_dynamic_calls` (15), `curly_braces_in_flow_control_structures` (2), `prefer_const_constructors` (3), `no_leading_underscores_for_local_identifiers` (2), `unintended_html_in_doc_comment` (2), `use_build_context_synchronously` (1), `unused_import` (1).
+  Reason: Deploy checklist targets 0 infos for CI re-tightening (eventually `--fatal-infos`). Parallel agents maximize throughput on mechanical fixes. File-ownership boundaries are the proven pattern for zero-conflict parallel edits.
+  Related project: DogQuest lint hygiene / deploy readiness
+  Score: 0.85
+
+- Date: 2026-05-10
+  Decision: **Sprint 14 Round 3 — coach mark / _FirstTimeTip conflict resolved; pendingBreedResult recovery added to register flow.** (1) `_FirstTimeTip` (kennel-count gate) suppressed while `!_hasSeenCoachMark` — added `|| !_hasSeenCoachMark` to the existing `if (!_camReady || _identifying)` guard. (2) `register_screen.dart` gets same pendingBreedResult recovery block as login_screen: `hound_prefs['pendingBreedResult']` read + cleared + `kennelService.add(name)` called before `context.go('/onboarding')`. Pattern: every auth success path (login + register) must consume and clear the pending breed key.
+  Related project: DogQuest onboarding funnel / closed-beta readiness
+  Score: 0.8
+
+- Date: 2026-05-10
+  Decision: **Sprint 14 onboarding funnel Round 2 — coach mark, graduation gate, pendingBreedResult recovery.** (1) Coach mark: `_hasSeenCoachMark` bool in `_IdentifyScreenState`, initialized from `hound_prefs['hasSeenIdentifyPrompt']`. First-time users see a repeating amber pulse ring + "Start here." label above the `CaptureButton`. Dismissed on first camera/gallery tap (written to hive). (2) Discover graduation: `localSightings == 0` → `localSightings < 1` to match spec semantics. (3) pendingBreedResult: `_GuestSaveCtaState.initState()` writes breed name to hive; `login_screen.dart` reads + clears + adds to kennel (`KennelService.add(String name)`) after successful login. Imports needed: `flutter_animate` + `hive_flutter` in identify_screen, `dart:async` + `kennel_service` in login_screen.
+  Reason: Completing the spec. Coach mark drives first-tap activation. pendingBreedResult recovery captures the guest→account conversion without losing the scan.
+  Related project: DogQuest onboarding funnel / closed-beta readiness
+  Score: 0.85
+
+- Date: 2026-05-10
+  Decision: **Sprint 14 onboarding first-scan funnel shipped.** Guest scan path: "Start scanning →" button on last onboarding page calls `_startAsGuest()` which sets `offline_mode=true` in `dogquest_player_stats` Hive box, then navigates to `/identify`. "Create account" goes to `/login` (existing auth flow). Router already allows `offline_mode=true` as auth bypass. Post-scan: `_GuestSaveCta` widget shown in `DogFoundDialog` when `Supabase.instance.client.auth.currentSession == null`; "Create account →" goes to `/login`, "Maybe later" dismisses inline. Discover tab gate: `localSightingsCount == 0` in `hound_prefs` box → show `_FeaturedBreedsView` with 12 hardcoded breeds (Golden Retriever, German Shepherd, Labrador, French Bulldog, etc.) tapping through to `/breed/:name`. Count incremented in `DogFoundDialog.initState()` (skips mock + unknown sources).
+  Commits: `3aca5cfe` (guest path) + `2b28bf94` (discover gate + CTA) on `phase-1/social-backend-realtime`.
+  Reason: New users landing on an empty Discover tab churned before reaching first scan (the product's core aha moment). Guest path removes auth barrier for first run. Featured breeds fill empty state without requiring a backend call. Post-scan CTA captures account creation intent at the moment of highest motivation.
+  Related project: DogQuest onboarding funnel / closed-beta readiness
+  Score: 0.9
+
+- Date: 2026-05-10
+  Decision: **Prestige title architecture — ExamService.prestigeTitle separate from PlayerState.title.** PlayerState.title is a pure getter with no Riverpod access, so coupling it to ExamService would violate its design. Instead, ExamService owns `prestigeTitle` (returns "Canine Scholar" for all 7 Gold, "{Group} Specialist" for first single Gold, null otherwise). UI sites compose: `examSvc.prestigeTitle ?? playerState.title`. Keeps concerns separated — PlayerState stays pure, ExamService stays self-contained.
+  Reason: PlayerState has no ref/Riverpod access. Adding ExamService as a dependency would require restructuring PlayerState into a notifier. Composition at the UI layer is simpler and reversible.
+  Related project: DogQuest breed group exams
+  Score: 0.9
+
+- Date: 2026-05-10
+  Decision: **Exam XP multiplier — max(collectionBonus, examBonus), non-stacking.** When identifying a breed, the XP multiplier is `max(collectionBonus, examBonus)` rather than additive stacking. Prevents runaway XP inflation from players who have both high collection completion and Gold certifications.
+  Reason: Additive stacking would create exponential XP curves that trivialize late-game progression. Max-wins preserves the value of both systems without compounding.
+  Related project: DogQuest breed group exams
+  Score: 0.85
+
+- Date: 2026-05-10
+  Decision: **IIFE `() { ... }()` over Builder widget in ConsumerWidget/ConsumerStatefulWidget scope.** When `ref` is already available (ConsumerWidget.build or ConsumerStatefulWidget), use an immediately-invoked function expression instead of wrapping in a `Builder(builder: (_) { ... })` widget. Builder adds an unnecessary widget to the tree when the only purpose is scoping local variables.
+  Reason: IIFE is lighter than a widget allocation, avoids confusion about why Builder is used (it's not for context rebinding), and keeps the pattern consistent across the codebase.
+  Related project: DogQuest coding conventions
+  Score: 0.8
+
+- Date: 2026-05-10
+  Decision: **ExamTier.next getter for tier progression.** Added `ExamTier? get next` on the enum: bronze→silver, silver→gold, gold→null. Used by quiz results screen to offer "Take next tier" button immediately after passing. Navigator.pop + 200ms delayed context.push pattern avoids navigation conflicts when transitioning from results to the next exam.
+  Reason: Getter on the enum is the most natural Dart pattern for ordered progression. The delayed push avoids a go_router conflict where pop and push race on the same frame.
+  Related project: DogQuest breed group exams
+  Score: 0.8
+
 ## Related Notes
 
 - [[Strategy]]

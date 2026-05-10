@@ -1,0 +1,332 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1100" font-family="Inter, system-ui, sans-serif">
+  <defs>
+    <linearGradient id="metalGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5F2EC"/>
+      <stop offset="100%" stop-color="#B8B4AB"/>
+    </linearGradient>
+    <radialGradient id="starGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#F2C49A" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#D4874E" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#D4874E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="1100" fill="#0A1410"/>
+
+  <!-- Header -->
+  <text x="60" y="56" fill="#F5F2EC" font-size="26" font-weight="700">DogQuest — non-paw logo directions</text>
+  <text x="60" y="84" fill="#B8B4AB" font-size="14">A · Dog Star (recommended)    B · The Tag    C · The Snout    D · Letter-mark</text>
+  <text x="60" y="106" fill="#7A766F" font-size="12">Top row: app icon @ 280px.   Middle row: app icon @ 96px (launcher scale).   Bottom row: wordmark + tagline.</text>
+
+  <!-- ============================================================================== -->
+  <!-- DIRECTION A: DOG STAR -->
+  <!-- ============================================================================== -->
+  <g transform="translate(60,150)">
+    <!-- App icon @ 280 -->
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#D4874E" stroke-width="2.5"/>
+    <!-- ambient glow -->
+    <circle cx="140" cy="140" r="110" fill="url(#starGlow)"/>
+    <!-- constellation scatter dots -->
+    <g fill="#F2C49A" opacity="0.55">
+      <circle cx="48"  cy="60"  r="1.6"/>
+      <circle cx="232" cy="48"  r="2.0"/>
+      <circle cx="60"  cy="220" r="1.4"/>
+      <circle cx="244" cy="208" r="1.6"/>
+      <circle cx="36"  cy="148" r="1.2"/>
+      <circle cx="252" cy="120" r="1.4"/>
+      <circle cx="200" cy="240" r="1.0"/>
+      <circle cx="80"  cy="40"  r="1.0"/>
+    </g>
+    <!-- 8-point star, amber -->
+    <g transform="translate(140,140)" fill="#D4874E">
+      <path d="M 0 -82 L 14 -22 L 60 -58 L 24 -12 L 82 0 L 24 12 L 60 58 L 14 22 L 0 82 L -14 22 L -60 58 L -24 12 L -82 0 L -24 -12 L -60 -58 L -14 -22 Z"/>
+    </g>
+    <!-- Negative-space dog silhouette inside star (visible at 280 only) -->
+    <g transform="translate(140,142)" fill="#0F1A10">
+      <!-- minimal sitting-dog silhouette: head + body curve -->
+      <path d="M -10 -16 Q -8 -22 0 -22 Q 8 -22 10 -16 L 12 -10 Q 14 -8 12 -4 L 14 8 Q 14 16 6 18 L -6 18 Q -14 16 -14 8 L -12 -4 Q -14 -8 -12 -10 Z"/>
+      <!-- ear flick -->
+      <path d="M 8 -22 L 14 -28 L 12 -18 Z"/>
+    </g>
+  </g>
+
+  <!-- A: launcher scale @ 96 -->
+  <g transform="translate(60,470)">
+    <rect width="96" height="96" rx="22" fill="#0F1A10" stroke="#2C4030" stroke-width="1"/>
+    <g transform="translate(48,48)" fill="#D4874E">
+      <path d="M 0 -28 L 5 -8 L 20 -20 L 8 -4 L 28 0 L 8 4 L 20 20 L 5 8 L 0 28 L -5 8 L -20 20 L -8 4 L -28 0 L -8 -4 L -20 -20 L -5 -8 Z"/>
+    </g>
+    <text x="120" y="18" fill="#B8B4AB" font-size="11">@ 96px launcher:</text>
+    <text x="120" y="36" fill="#F5F2EC" font-size="13" font-weight="700">Just the star — still distinct.</text>
+    <text x="120" y="54" fill="#7A766F" font-size="11">Dog silhouette + constellation</text>
+    <text x="120" y="68" fill="#7A766F" font-size="11">drop out cleanly at small size.</text>
+  </g>
+
+  <!-- A: wordmark -->
+  <g transform="translate(60,610)">
+    <text x="0" y="40" fill="#F5F2EC" font-size="44" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Sirius</text>
+    <text x="0" y="68" fill="#539548" font-size="11" font-weight="700" letter-spacing="2">FIND YOUR DOG STAR</text>
+  </g>
+
+  <!-- A: caption -->
+  <g transform="translate(60,710)">
+    <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">A · DOG STAR</text>
+    <text x="0" y="22" fill="#B8B4AB" font-size="12">Sirius lore. Most ownable concept</text>
+    <text x="0" y="38" fill="#B8B4AB" font-size="12">in the pet-app category. Star alone</text>
+    <text x="0" y="54" fill="#B8B4AB" font-size="12">at small sizes; star + dog silhouette</text>
+    <text x="0" y="70" fill="#B8B4AB" font-size="12">+ scattered constellation at hero scale.</text>
+    <text x="0" y="96" fill="#8DC681" font-size="11" font-weight="700">RECOMMENDED · pairs with name "Sirius" or "Hound"</text>
+  </g>
+
+  <!-- ============================================================================== -->
+  <!-- DIRECTION B: THE TAG -->
+  <!-- ============================================================================== -->
+  <g transform="translate(360,150)">
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#2C4030" stroke-width="2"/>
+    <!-- tag ring at top -->
+    <circle cx="140" cy="62" r="11" fill="none" stroke="#D4874E" stroke-width="3"/>
+    <!-- ring loop down to tag -->
+    <line x1="140" y1="73" x2="140" y2="86" stroke="#D4874E" stroke-width="3"/>
+    <!-- tag body — heart-rounded shape -->
+    <g transform="translate(140,170)">
+      <path d="M 0 -78
+               L 70 -78
+               Q 84 -78 84 -64
+               L 84 50
+               Q 84 64 70 70
+               L 18 78
+               Q 0 82 -18 78
+               L -70 70
+               Q -84 64 -84 50
+               L -84 -64
+               Q -84 -78 -70 -78 Z"
+            fill="url(#metalGrad)"/>
+      <!-- engraved monogram -->
+      <text x="0" y="14" fill="#D4874E" font-size="76" font-weight="800" font-family="Georgia, 'Times New Roman', serif" text-anchor="middle">H</text>
+      <!-- engraved subline -->
+      <text x="0" y="40" fill="#7A766F" font-size="9" font-weight="700" letter-spacing="2" text-anchor="middle">DOGQUEST</text>
+    </g>
+  </g>
+
+  <!-- B: launcher @ 96 -->
+  <g transform="translate(360,470)">
+    <rect width="96" height="96" rx="22" fill="#0F1A10" stroke="#2C4030" stroke-width="1"/>
+    <circle cx="48" cy="22" r="4" fill="none" stroke="#D4874E" stroke-width="1.5"/>
+    <line x1="48" y1="26" x2="48" y2="32" stroke="#D4874E" stroke-width="1.5"/>
+    <g transform="translate(48,58)">
+      <path d="M 0 -26 L 24 -26 Q 30 -26 30 -20 L 30 18 Q 30 24 24 26 L 6 28 Q 0 30 -6 28 L -24 26 Q -30 24 -30 18 L -30 -20 Q -30 -26 -24 -26 Z"
+            fill="url(#metalGrad)"/>
+      <text x="0" y="9" fill="#D4874E" font-size="26" font-weight="800" font-family="Georgia, 'Times New Roman', serif" text-anchor="middle">H</text>
+    </g>
+    <text x="120" y="18" fill="#B8B4AB" font-size="11">@ 96px launcher:</text>
+    <text x="120" y="36" fill="#F5F2EC" font-size="13" font-weight="700">Tag silhouette holds.</text>
+    <text x="120" y="54" fill="#7A766F" font-size="11">Engraved monogram readable</text>
+    <text x="120" y="68" fill="#7A766F" font-size="11">if letterform is heavy enough.</text>
+  </g>
+
+  <g transform="translate(360,610)">
+    <text x="0" y="40" fill="#F5F2EC" font-size="44" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Hound</text>
+    <text x="0" y="68" fill="#539548" font-size="11" font-weight="700" letter-spacing="2">EVERY DOG · TAGGED · HOME</text>
+  </g>
+
+  <g transform="translate(360,710)">
+    <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">B · THE TAG</text>
+    <text x="0" y="22" fill="#B8B4AB" font-size="12">Dog ID tag with engraved monogram.</text>
+    <text x="0" y="38" fill="#B8B4AB" font-size="12">Strongest narrative tie to identification</text>
+    <text x="0" y="54" fill="#B8B4AB" font-size="12">+ collection + lost-dog recovery in one</text>
+    <text x="0" y="70" fill="#B8B4AB" font-size="12">symbol. Premium / caregiver-coded.</text>
+    <text x="0" y="96" fill="#7AB8C9" font-size="11" font-weight="700">STRONG · pick if lost-dog is the headline</text>
+  </g>
+
+  <!-- ============================================================================== -->
+  <!-- DIRECTION C: THE SNOUT -->
+  <!-- ============================================================================== -->
+  <g transform="translate(660,150)">
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#2C4030" stroke-width="2"/>
+    <!-- snout shape: rounded triangle with cleft top, evoking nose pad -->
+    <g transform="translate(140,150)" fill="#F5F2EC">
+      <!-- main snout body -->
+      <path d="M 0 -52
+               Q 10 -54 18 -50
+               Q 76 -34 80 18
+               Q 80 56 38 70
+               Q 0 78 -38 70
+               Q -80 56 -80 18
+               Q -76 -34 -18 -50
+               Q -10 -54 0 -52 Z"
+            />
+    </g>
+    <!-- nostril dots -->
+    <g fill="#0A1410">
+      <ellipse cx="115" cy="148" rx="9" ry="14"/>
+      <ellipse cx="165" cy="148" rx="9" ry="14"/>
+    </g>
+    <!-- gloss highlight (boop spot) — amber, doubles as a sparkle -->
+    <ellipse cx="118" cy="118" rx="14" ry="9" fill="#F2C49A" opacity="0.85"/>
+    <ellipse cx="115" cy="115" rx="6" ry="4" fill="#F5F2EC" opacity="0.95"/>
+    <!-- upper lip cleft suggestion -->
+    <path d="M 140 196 L 140 214" stroke="#0A1410" stroke-width="2"/>
+  </g>
+
+  <g transform="translate(660,470)">
+    <rect width="96" height="96" rx="22" fill="#0F1A10" stroke="#2C4030" stroke-width="1"/>
+    <g transform="translate(48,52)" fill="#F5F2EC">
+      <path d="M 0 -22 Q 6 -23 9 -21 Q 32 -14 33 6 Q 33 22 16 28 Q 0 32 -16 28 Q -33 22 -33 6 Q -32 -14 -9 -21 Q -6 -23 0 -22 Z"/>
+    </g>
+    <g fill="#0A1410">
+      <ellipse cx="38" cy="50" rx="3.5" ry="5"/>
+      <ellipse cx="58" cy="50" rx="3.5" ry="5"/>
+    </g>
+    <ellipse cx="40" cy="40" rx="5" ry="3" fill="#F2C49A" opacity="0.85"/>
+    <text x="120" y="18" fill="#B8B4AB" font-size="11">@ 96px launcher:</text>
+    <text x="120" y="36" fill="#F5F2EC" font-size="13" font-weight="700">Snout reads instantly.</text>
+    <text x="120" y="54" fill="#7A766F" font-size="11">Nostrils + boop highlight</text>
+    <text x="120" y="68" fill="#7A766F" font-size="11">survive the downscale.</text>
+  </g>
+
+  <g transform="translate(660,610)">
+    <text x="0" y="40" fill="#F5F2EC" font-size="44" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Snout</text>
+    <text x="0" y="68" fill="#539548" font-size="11" font-weight="700" letter-spacing="2">BOOP · IDENTIFY · COLLECT</text>
+  </g>
+
+  <g transform="translate(660,710)">
+    <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">C · THE SNOUT</text>
+    <text x="0" y="22" fill="#B8B4AB" font-size="12">Geometric front-view dog nose.</text>
+    <text x="0" y="38" fill="#B8B4AB" font-size="12">100% dog, 0% paw. Tactile, warm,</text>
+    <text x="0" y="54" fill="#B8B4AB" font-size="12">invites the universal "boop the snoot"</text>
+    <text x="0" y="70" fill="#B8B4AB" font-size="12">gesture. Cheapest to execute.</text>
+    <text x="0" y="96" fill="#7AB8C9" font-size="11" font-weight="700">PLAYFUL · pairs with name "Snout"</text>
+  </g>
+
+  <!-- ============================================================================== -->
+  <!-- DIRECTION D: LETTER-MARK -->
+  <!-- ============================================================================== -->
+  <g transform="translate(960,150)">
+    <rect width="280" height="280" rx="60" fill="#0F1A10" stroke="#2C4030" stroke-width="2"/>
+    <!-- Bold H letterform with right leg curling into a tail -->
+    <g transform="translate(140,150)" fill="#D4874E">
+      <!-- left vertical -->
+      <rect x="-72" y="-90" width="32" height="180" rx="4"/>
+      <!-- crossbar -->
+      <rect x="-72" y="-16" width="144" height="32" rx="4"/>
+      <!-- right vertical (top half) -->
+      <rect x="40" y="-90" width="32" height="106" rx="4"/>
+      <!-- right vertical (bottom half) — straight portion before tail -->
+      <rect x="40" y="16" width="32" height="40" rx="4"/>
+      <!-- TAIL CURL — replaces the bottom of the right leg, curling outward + upward -->
+      <path d="M 40 56
+               Q 40 96 80 96
+               Q 120 96 120 56
+               Q 120 30 100 30
+               Q 88 30 88 42
+               Q 88 50 96 52
+               L 92 62
+               Q 76 62 76 46
+               Q 76 22 100 22
+               Q 132 22 132 56
+               Q 132 108 80 108
+               Q 28 108 28 56
+               L 40 56 Z"
+            fill="#D4874E"/>
+    </g>
+  </g>
+
+  <g transform="translate(960,470)">
+    <rect width="96" height="96" rx="22" fill="#0F1A10" stroke="#2C4030" stroke-width="1"/>
+    <g transform="translate(48,52) scale(0.34)" fill="#D4874E">
+      <rect x="-72" y="-90" width="32" height="180" rx="4"/>
+      <rect x="-72" y="-16" width="144" height="32" rx="4"/>
+      <rect x="40" y="-90" width="32" height="106" rx="4"/>
+      <rect x="40" y="16" width="32" height="40" rx="4"/>
+      <path d="M 40 56 Q 40 96 80 96 Q 120 96 120 56 Q 120 30 100 30 Q 88 30 88 42 Q 88 50 96 52 L 92 62 Q 76 62 76 46 Q 76 22 100 22 Q 132 22 132 56 Q 132 108 80 108 Q 28 108 28 56 L 40 56 Z" fill="#D4874E"/>
+    </g>
+    <text x="120" y="18" fill="#B8B4AB" font-size="11">@ 96px launcher:</text>
+    <text x="120" y="36" fill="#F5F2EC" font-size="13" font-weight="700">Letter mark scales perfectly.</text>
+    <text x="120" y="54" fill="#7A766F" font-size="11">Pure vector — favicon to</text>
+    <text x="120" y="68" fill="#7A766F" font-size="11">billboard with zero loss.</text>
+  </g>
+
+  <g transform="translate(960,610)">
+    <text x="0" y="40" fill="#F5F2EC" font-size="44" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Hound</text>
+    <text x="0" y="68" fill="#539548" font-size="11" font-weight="700" letter-spacing="2">FIND THE BREED · FIND THEM HOME</text>
+  </g>
+
+  <g transform="translate(960,710)">
+    <text x="0" y="0" fill="#D4874E" font-size="14" font-weight="700">D · LETTER-MARK</text>
+    <text x="0" y="22" fill="#B8B4AB" font-size="12">Bold H where right leg curls into</text>
+    <text x="0" y="38" fill="#B8B4AB" font-size="12">a dog tail. Pure typographic mark</text>
+    <text x="0" y="54" fill="#B8B4AB" font-size="12">in lineage of Airbnb / Slack.</text>
+    <text x="0" y="70" fill="#B8B4AB" font-size="12">Highest brand confidence move.</text>
+    <text x="0" y="96" fill="#8DC681" font-size="11" font-weight="700">SECOND CHOICE · pair with Direction A</text>
+  </g>
+
+  <!-- ============================================================================== -->
+  <!-- NAMING SHORTLIST STRIP -->
+  <!-- ============================================================================== -->
+  <g transform="translate(60,860)">
+    <rect width="1180" height="200" rx="20" fill="#15231A" stroke="#2C4030"/>
+    <text x="24" y="36" fill="#F5F2EC" font-size="16" font-weight="700">Naming shortlist — top 6 (full rationale in companion .md)</text>
+
+    <g transform="translate(24,60)">
+      <!-- Hound -->
+      <g>
+        <rect width="180" height="120" rx="14" fill="#1A2B1C" stroke="#D4874E" stroke-width="1.5"/>
+        <text x="14" y="34" fill="#D4874E" font-size="22" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Hound</text>
+        <text x="14" y="58" fill="#8DC681" font-size="9" font-weight="700" letter-spacing="1">#1 · RECOMMENDED</text>
+        <text x="14" y="78" fill="#B8B4AB" font-size="10">Verb + noun. Single syllable.</text>
+        <text x="14" y="92" fill="#B8B4AB" font-size="10">Captures pursuit + ID + dog.</text>
+        <text x="14" y="108" fill="#7A766F" font-size="9">TM: likely OK in pet category.</text>
+      </g>
+      <!-- Sirius -->
+      <g transform="translate(196,0)">
+        <rect width="180" height="120" rx="14" fill="#1A2B1C" stroke="#2C4030"/>
+        <text x="14" y="34" fill="#F2C49A" font-size="22" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Sirius</text>
+        <text x="14" y="58" fill="#F2C49A" font-size="9" font-weight="700" letter-spacing="1">#2 · STRONGEST LORE</text>
+        <text x="14" y="78" fill="#B8B4AB" font-size="10">The Dog Star itself.</text>
+        <text x="14" y="92" fill="#B8B4AB" font-size="10">Pairs with Direction A.</text>
+        <text x="14" y="108" fill="#E5634C" font-size="9">TM: Sirius XM risk — lawyer.</text>
+      </g>
+      <!-- DogStar -->
+      <g transform="translate(392,0)">
+        <rect width="180" height="120" rx="14" fill="#1A2B1C" stroke="#2C4030"/>
+        <text x="14" y="34" fill="#F5F2EC" font-size="22" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">DogStar</text>
+        <text x="14" y="58" fill="#7AB8C9" font-size="9" font-weight="700" letter-spacing="1">#3 · SAFE ALT TO SIRIUS</text>
+        <text x="14" y="78" fill="#B8B4AB" font-size="10">Same lore, lower TM risk.</text>
+        <text x="14" y="92" fill="#B8B4AB" font-size="10">Two-word but reads as one.</text>
+        <text x="14" y="108" fill="#7A766F" font-size="9">TM: likely OK with descriptor.</text>
+      </g>
+      <!-- Snout -->
+      <g transform="translate(588,0)">
+        <rect width="180" height="120" rx="14" fill="#1A2B1C" stroke="#2C4030"/>
+        <text x="14" y="34" fill="#F5F2EC" font-size="22" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Snout</text>
+        <text x="14" y="58" fill="#7AB8C9" font-size="9" font-weight="700" letter-spacing="1">#4 · PAIRS WITH C</text>
+        <text x="14" y="78" fill="#B8B4AB" font-size="10">Tactile, warm, dog-only.</text>
+        <text x="14" y="92" fill="#B8B4AB" font-size="10">Caregiver-coded brand pivot.</text>
+        <text x="14" y="108" fill="#7A766F" font-size="9">TM: largely available.</text>
+      </g>
+      <!-- Howl -->
+      <g transform="translate(784,0)">
+        <rect width="180" height="120" rx="14" fill="#1A2B1C" stroke="#2C4030"/>
+        <text x="14" y="34" fill="#F5F2EC" font-size="22" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Howl</text>
+        <text x="14" y="58" fill="#7AB8C9" font-size="9" font-weight="700" letter-spacing="1">#5 · COMMUNITY VIBE</text>
+        <text x="14" y="78" fill="#B8B4AB" font-size="10">Pack-coded, social-feature</text>
+        <text x="14" y="92" fill="#B8B4AB" font-size="10">friendly. "Howl about your dog"</text>
+        <text x="14" y="108" fill="#7A766F" font-size="9">TM: party-app risk; check.</text>
+      </g>
+      <!-- Pawdex -->
+      <g transform="translate(980,0)">
+        <rect width="180" height="120" rx="14" fill="#1A2B1C" stroke="#2C4030"/>
+        <text x="14" y="34" fill="#F5F2EC" font-size="22" font-weight="700" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Pawdex</text>
+        <text x="14" y="58" fill="#7AB8C9" font-size="9" font-weight="700" letter-spacing="1">#6 · GAMIFICATION HEAVY</text>
+        <text x="14" y="78" fill="#B8B4AB" font-size="10">Pokédex pun = instant read.</text>
+        <text x="14" y="92" fill="#B8B4AB" font-size="10">Keeps "paw" in name only.</text>
+        <text x="14" y="108" fill="#7A766F" font-size="9">TM: likely OK.</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(60,1080)">
+    <text x="0" y="0" fill="#7A766F" font-size="11">Wordmarks shown in Georgia italic as a stand-in for Fraunces 700 italic. Final wordmark would use the custom letter-mark approach (Direction D) regardless of icon pick.</text>
+  </g>
+</svg>
