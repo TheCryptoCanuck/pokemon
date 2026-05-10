@@ -58,7 +58,7 @@ export default function CardDisplay({
         onClick
           ? "cursor-pointer hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 active:ring-2 active:ring-blue-400"
           : ""
-      } ${compact ? "w-28" : "w-36"}`}
+      } ${compact ? "w-24 sm:w-28" : "w-28 sm:w-32 md:w-36"}`}
       onClick={onClick}
     >
       <img

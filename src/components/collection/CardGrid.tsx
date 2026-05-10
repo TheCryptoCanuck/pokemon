@@ -20,7 +20,7 @@ export default function CardGrid({
 }: Props) {
   if (cards.length === 0) {
     return (
-      <div className="text-center py-16 animate-slide-up-fade">
+      <div role="status" aria-live="polite" className="text-center py-16 animate-slide-up-fade">
         <div className="text-5xl mb-3" aria-hidden>🔍</div>
         <p className="text-lg text-gray-300">No cards match your filters</p>
         <p className="text-sm text-gray-500 mt-1">

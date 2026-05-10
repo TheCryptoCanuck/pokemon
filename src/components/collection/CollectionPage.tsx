@@ -61,6 +61,14 @@ export default function CollectionPage({
   const totalCards = cards.length;
   const completionPct = totalCards > 0 ? Math.round((totalOwned / totalCards) * 100) : 0;
 
+  const handleClearFilters = () => {
+    setSearch("");
+    setSelectedType("");
+    setSelectedSet("");
+    setSelectedRarity("");
+    setShowOwned("all");
+  };
+
   const rarityStats = useMemo(() => {
     const stats: Record<string, { owned: number; total: number }> = {};
     for (const card of cards) {
@@ -76,7 +84,7 @@ export default function CollectionPage({
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl">
         <div className="bg-slate-800 rounded-lg p-4 text-center">
           <p className="text-3xl font-bold text-white">{totalOwned}</p>
           <p className="text-gray-400 text-sm">Cards Owned</p>
@@ -158,13 +166,7 @@ export default function CollectionPage({
         onAdd={addCard}
         onRemove={removeCard}
         onCardClick={setSelectedCard}
-        onClearFilters={() => {
-          setSearch("");
-          setSelectedType("");
-          setSelectedSet("");
-          setSelectedRarity("");
-          setShowOwned("all");
-        }}
+        onClearFilters={handleClearFilters}
       />
 
       {/* Card modal */}
