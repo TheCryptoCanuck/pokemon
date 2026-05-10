@@ -137,8 +137,12 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
       await _cam!.initialize();
       // Enable auto focus and exposure — not all HALs support these; swallow errors.
       try {
-        await _cam!.setFocusMode(FocusMode.auto).timeout(const Duration(seconds: 2));
-        await _cam!.setExposureMode(ExposureMode.auto).timeout(const Duration(seconds: 2));
+        await _cam!
+            .setFocusMode(FocusMode.auto)
+            .timeout(const Duration(seconds: 2));
+        await _cam!
+            .setExposureMode(ExposureMode.auto)
+            .timeout(const Duration(seconds: 2));
       } catch (_) {}
       if (!mounted) return;
       _minZoom = await _cam!.getMinZoomLevel();
