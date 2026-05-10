@@ -172,7 +172,6 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
     return 'Could not start camera';
   }
 
-
   Future<void> _takePhoto() async {
     _dismissCoachMark();
     if (_identifying) return;
@@ -791,7 +790,6 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen>
                   child: Container(color: Colors.white),
                 ),
               ),
-
 
               // ── Zoom level indicator ──
               if (_currentZoom > _minZoom + 0.05)
