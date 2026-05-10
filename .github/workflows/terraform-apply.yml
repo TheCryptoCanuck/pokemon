@@ -1,0 +1,66 @@
+name: Terraform Apply (manual)
+# CI-005 workaround: apply requires a human to trigger via "Run workflow"
+# in the GitHub Actions UI. It never runs automatically on push.
+# Review the plan from the Infrastructure CI workflow on the PR before running this.
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+      confirmed:
+        description: 'Type YES to confirm you have reviewed the plan'
+        required: true
+        type: string
+
+env:
+  TF_VERSION: '1.7.0'
+
+jobs:
+  guard:
+    name: Confirm intent
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require explicit confirmation
+        run: |
+          if [ "${{ inputs.confirmed }}" != "YES" ]; then
+            echo "::error::Confirmation required. Re-run with confirmed = YES after reviewing the plan."
+            exit 1
+          fi
+
+  terraform-apply:
+    name: Apply (${{ inputs.environment }})
+    needs: guard
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: infrastructure/terraform
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform Init
+        run: terraform init -backend-config=environments/${{ inputs.environment }}/backend.hcl
+
+      - name: Terraform Apply
+        run: |
+          terraform apply \
+            -var-file=environments/${{ inputs.environment }}/terraform.tfvars \
+            -auto-approve

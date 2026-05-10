@@ -1,4 +1,4 @@
-name: Infrastructure CI/CD
+name: Infrastructure CI
 
 on:
   push:
@@ -89,32 +89,6 @@ jobs:
               body: `### Terraform Plan (dev)\n\`\`\`\n${truncated}\n\`\`\``
             });
 
-  terraform-apply-dev:
-    name: Apply (dev)
-    needs: terraform-validate
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    defaults:
-      run:
-        working-directory: infrastructure/terraform
-    environment: dev
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Terraform Init
-        run: terraform init -backend-config=environments/dev/backend.hcl
-
-      - name: Terraform Apply
-        run: terraform apply -var-file=environments/dev/terraform.tfvars -auto-approve
+  # Apply is intentionally absent from this workflow.
+  # Use .github/workflows/terraform-apply.yml (workflow_dispatch only)
+  # to apply changes after reviewing the plan above.
