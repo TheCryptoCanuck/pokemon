@@ -1,0 +1,1450 @@
+{
+  "aidi": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Aidi"
+  },
+  "akita": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Akita"
+  },
+  "alaskan_husky": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Alaskan Husky"
+  },
+  "alaskan_klee_kai": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Alaskan Klee Kai"
+  },
+  "american_bulldog": {
+    "total": 206,
+    "flagged": 206,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "American Bulldog"
+  },
+  "american_eskimo_dog": {
+    "total": 250,
+    "flagged": 248,
+    "correct_top1": 2,
+    "accuracy": 0.8,
+    "flag_rate": 99.2,
+    "label": "American Eskimo Dog"
+  },
+  "american_foxhound": {
+    "total": 250,
+    "flagged": 236,
+    "correct_top1": 14,
+    "accuracy": 5.6,
+    "flag_rate": 94.4,
+    "label": "American Foxhound"
+  },
+  "american_hairless_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "American Hairless Terrier"
+  },
+  "american_pit_bull_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "American Pit Bull Terrier"
+  },
+  "american_water_spaniel": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "American Water Spaniel"
+  },
+  "anatolian_shepherd_dog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Anatolian Shepherd Dog"
+  },
+  "aussiedoodle": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Aussiedoodle"
+  },
+  "australian_cattle_dog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Australian Cattle Dog"
+  },
+  "australian_shepherd": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Australian Shepherd"
+  },
+  "azawakh": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Azawakh"
+  },
+  "azores_cattle_dog": {
+    "total": 217,
+    "flagged": 217,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Azores Cattle Dog"
+  },
+  "barbet": {
+    "total": 250,
+    "flagged": 249,
+    "correct_top1": 1,
+    "accuracy": 0.4,
+    "flag_rate": 99.6,
+    "label": "Barbet"
+  },
+  "belgian_laekenois": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Belgian Laekenois"
+  },
+  "belgian_tervuren": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Belgian Tervuren"
+  },
+  "bergamasco_sheepdog": {
+    "total": 249,
+    "flagged": 249,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Bergamasco Sheepdog"
+  },
+  "bernedoodle": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Bernedoodle"
+  },
+  "bichon_frise": {
+    "total": 250,
+    "flagged": 222,
+    "correct_top1": 24,
+    "accuracy": 9.6,
+    "flag_rate": 88.8,
+    "label": "Bichon Frise"
+  },
+  "biewer_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Biewer Terrier"
+  },
+  "black_mouth_cur": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Black Mouth Cur"
+  },
+  "black_russian_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Black Russian Terrier"
+  },
+  "boerboel": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Boerboel"
+  },
+  "bolognese": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Bolognese"
+  },
+  "boykin_spaniel": {
+    "total": 219,
+    "flagged": 219,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Boykin Spaniel"
+  },
+  "bracco_italiano": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Bracco Italiano"
+  },
+  "bull_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Bull Terrier"
+  },
+  "bulldog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Bulldog"
+  },
+  "bully_kutta": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Bully Kutta"
+  },
+  "canaan_dog": {
+    "total": 115,
+    "flagged": 115,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Canaan Dog"
+  },
+  "cane_corso": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Cane Corso"
+  },
+  "cao_de_agua": {
+    "total": 108,
+    "flagged": 108,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Cao de Agua"
+  },
+  "carolina_dog": {
+    "total": 137,
+    "flagged": 137,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Carolina Dog"
+  },
+  "carpathian_shepherd": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Carpathian Shepherd"
+  },
+  "catahoula_cur": {
+    "total": 238,
+    "flagged": 238,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Catahoula Cur"
+  },
+  "catahoula_leopard_dog": {
+    "total": 204,
+    "flagged": 204,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Catahoula Leopard Dog"
+  },
+  "catalburun": {
+    "total": 124,
+    "flagged": 124,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Catalburun"
+  },
+  "caucasian_shepherd_dog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Caucasian Shepherd Dog"
+  },
+  "cavalier_king_charles_spaniel": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Cavalier King Charles Spaniel"
+  },
+  "cavapoo": {
+    "total": 227,
+    "flagged": 227,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Cavapoo"
+  },
+  "central_asian_shepherd": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Central Asian Shepherd"
+  },
+  "cesky_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Cesky Terrier"
+  },
+  "chinese_crested": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Chinese Crested"
+  },
+  "chinook": {
+    "total": 132,
+    "flagged": 132,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Chinook"
+  },
+  "chippiparai": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Chippiparai"
+  },
+  "cirneco_dell'etna": {
+    "total": 225,
+    "flagged": 225,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Cirneco dell'Etna"
+  },
+  "cockapoo": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Cockapoo"
+  },
+  "combai": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Combai"
+  },
+  "corgipoo": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Corgipoo"
+  },
+  "coton_de_tulear": {
+    "total": 207,
+    "flagged": 207,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Coton de Tulear"
+  },
+  "croatian_sheepdog": {
+    "total": 108,
+    "flagged": 108,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Croatian Sheepdog"
+  },
+  "czechoslovakian_vlcak": {
+    "total": 220,
+    "flagged": 220,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Czechoslovakian Vlcak"
+  },
+  "dachshund": {
+    "total": 249,
+    "flagged": 249,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Dachshund"
+  },
+  "dalmatian": {
+    "total": 241,
+    "flagged": 241,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Dalmatian"
+  },
+  "danish-swedish_farmdog": {
+    "total": 232,
+    "flagged": 232,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Danish-Swedish Farmdog"
+  },
+  "dogue_de_bordeaux": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Dogue de Bordeaux"
+  },
+  "dutch_shepherd": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Dutch Shepherd"
+  },
+  "english_mastiff": {
+    "total": 247,
+    "flagged": 247,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "English Mastiff"
+  },
+  "english_toy_spaniel": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "English Toy Spaniel"
+  },
+  "estrela_mountain_dog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Estrela Mountain Dog"
+  },
+  "eurasier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Eurasier"
+  },
+  "field_spaniel": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Field Spaniel"
+  },
+  "fila_brasileiro": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Fila Brasileiro"
+  },
+  "finnish_lapphund": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Finnish Lapphund"
+  },
+  "finnish_spitz": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Finnish Spitz"
+  },
+  "formosan_mountain_dog": {
+    "total": 205,
+    "flagged": 205,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Formosan Mountain Dog"
+  },
+  "gaddi_kutta": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Gaddi Kutta"
+  },
+  "german_pinscher": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "German Pinscher"
+  },
+  "german_wirehaired_pointer": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "German Wirehaired Pointer"
+  },
+  "glen_of_imaal_terrier": {
+    "total": 228,
+    "flagged": 228,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Glen of Imaal Terrier"
+  },
+  "goldador": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Goldador"
+  },
+  "goldendoodle": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Goldendoodle"
+  },
+  "grand_basset_griffon_vendeen": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Grand Basset Griffon Vendeen"
+  },
+  "greyhound": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Greyhound"
+  },
+  "harrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Harrier"
+  },
+  "havanese": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Havanese"
+  },
+  "havapoo": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Havapoo"
+  },
+  "hmong_bobtail_dog": {
+    "total": 112,
+    "flagged": 112,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Hmong Bobtail Dog"
+  },
+  "hovawart": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Hovawart"
+  },
+  "icelandic_sheepdog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Icelandic Sheepdog"
+  },
+  "irish_red_and_white_setter": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Irish Red and White Setter"
+  },
+  "jack_russell_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Jack Russell Terrier"
+  },
+  "japanese_spitz": {
+    "total": 250,
+    "flagged": 249,
+    "correct_top1": 1,
+    "accuracy": 0.4,
+    "flag_rate": 99.6,
+    "label": "Japanese Spitz"
+  },
+  "jindo": {
+    "total": 222,
+    "flagged": 222,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Jindo"
+  },
+  "jindo_gae": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Jindo Gae"
+  },
+  "jonangi": {
+    "total": 219,
+    "flagged": 219,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Jonangi"
+  },
+  "kai_ken": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Kai Ken"
+  },
+  "kangal": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Kangal"
+  },
+  "kangal_shepherd_dog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Kangal Shepherd Dog"
+  },
+  "kanni": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Kanni"
+  },
+  "karelian_bear_dog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Karelian Bear Dog"
+  },
+  "kishu_ken": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Kishu Ken"
+  },
+  "kooikerhondje": {
+    "total": 227,
+    "flagged": 227,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Kooikerhondje"
+  },
+  "korean_jindo_dog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Korean Jindo Dog"
+  },
+  "labradoodle": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Labradoodle"
+  },
+  "labsky": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Labsky"
+  },
+  "lagotto_romagnolo": {
+    "total": 232,
+    "flagged": 232,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Lagotto Romagnolo"
+  },
+  "lancashire_heeler": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Lancashire Heeler"
+  },
+  "lapponian_herder": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Lapponian Herder"
+  },
+  "large_munsterlander": {
+    "total": 216,
+    "flagged": 216,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Large Munsterlander"
+  },
+  "lowchen": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Lowchen"
+  },
+  "maltipoo": {
+    "total": 237,
+    "flagged": 237,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Maltipoo"
+  },
+  "manchester_terrier": {
+    "total": 201,
+    "flagged": 201,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Manchester Terrier"
+  },
+  "mcnab_dog": {
+    "total": 235,
+    "flagged": 235,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "McNab Dog"
+  },
+  "miniature_american_shepherd": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Miniature American Shepherd"
+  },
+  "mioritic_shepherd": {
+    "total": 118,
+    "flagged": 118,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Mioritic Shepherd"
+  },
+  "morkie": {
+    "total": 236,
+    "flagged": 236,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Morkie"
+  },
+  "mountain_cur": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Mountain Cur"
+  },
+  "mudhol_hound": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Mudhol Hound"
+  },
+  "mudi": {
+    "total": 231,
+    "flagged": 231,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Mudi"
+  },
+  "munchkin_dog": {
+    "total": 215,
+    "flagged": 215,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Munchkin Dog"
+  },
+  "neapolitan_mastiff": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Neapolitan Mastiff"
+  },
+  "new_guinea_singing_dog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "New Guinea Singing Dog"
+  },
+  "norrbottenspets": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Norrbottenspets"
+  },
+  "norwegian_lundehund": {
+    "total": 216,
+    "flagged": 216,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Norwegian Lundehund"
+  },
+  "nova_scotia_duck_tolling_retriever": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Nova Scotia Duck Tolling Retriever"
+  },
+  "perro_de_presa_canario": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Perro de Presa Canario"
+  },
+  "peruvian_inca_orchid": {
+    "total": 217,
+    "flagged": 217,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Peruvian Inca Orchid"
+  },
+  "petit_basset_griffon_vendeen": {
+    "total": 220,
+    "flagged": 220,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Petit Basset Griffon Vendeen"
+  },
+  "pharaoh_hound": {
+    "total": 236,
+    "flagged": 236,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Pharaoh Hound"
+  },
+  "phu_quoc_ridgeback": {
+    "total": 226,
+    "flagged": 226,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Phu Quoc Ridgeback"
+  },
+  "picardy_spaniel": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Picardy Spaniel"
+  },
+  "plott_hound": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Plott Hound"
+  },
+  "polish_lowland_sheepdog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Polish Lowland Sheepdog"
+  },
+  "pomsky": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Pomsky"
+  },
+  "pont-audemer_spaniel": {
+    "total": 232,
+    "flagged": 232,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Pont-Audemer Spaniel"
+  },
+  "poodle": {
+    "total": 197,
+    "flagged": 197,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Poodle"
+  },
+  "portuguese_podengo": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Portuguese Podengo"
+  },
+  "portuguese_water_dog": {
+    "total": 215,
+    "flagged": 215,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Portuguese Water Dog"
+  },
+  "pudelpointer": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Pudelpointer"
+  },
+  "puggle": {
+    "total": 242,
+    "flagged": 242,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Puggle"
+  },
+  "puli": {
+    "total": 221,
+    "flagged": 221,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Puli"
+  },
+  "pumi": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Pumi"
+  },
+  "pyrenean_shepherd": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Pyrenean Shepherd"
+  },
+  "rafeiro_do_alentejo": {
+    "total": 144,
+    "flagged": 144,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Rafeiro do Alentejo"
+  },
+  "rajapalayam": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Rajapalayam"
+  },
+  "rat_terrier": {
+    "total": 220,
+    "flagged": 220,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Rat Terrier"
+  },
+  "rough_collie": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Rough Collie"
+  },
+  "russell_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Russell Terrier"
+  },
+  "russian_toy": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Russian Toy"
+  },
+  "saarloos_wolfdog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Saarloos Wolfdog"
+  },
+  "sapsali": {
+    "total": 223,
+    "flagged": 223,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Sapsali"
+  },
+  "sarplaninac": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Sarplaninac"
+  },
+  "schapendoes": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Schapendoes"
+  },
+  "schnoodle": {
+    "total": 214,
+    "flagged": 214,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Schnoodle"
+  },
+  "segugio_italiano": {
+    "total": 245,
+    "flagged": 245,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Segugio Italiano"
+  },
+  "shar_pei": {
+    "total": 219,
+    "flagged": 219,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Shar Pei"
+  },
+  "sheepadoodle": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Sheepadoodle"
+  },
+  "shiba_inu": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Shiba Inu"
+  },
+  "shikoku": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Shikoku"
+  },
+  "shorkie": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Shorkie"
+  },
+  "silken_windhound": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Silken Windhound"
+  },
+  "sloughi": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Sloughi"
+  },
+  "small_munsterlander": {
+    "total": 210,
+    "flagged": 210,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Small Munsterlander"
+  },
+  "smooth_fox_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Smooth Fox Terrier"
+  },
+  "spanish_water_dog": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Spanish Water Dog"
+  },
+  "spinone_italiano": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Spinone Italiano"
+  },
+  "stabyhoun": {
+    "total": 234,
+    "flagged": 234,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Stabyhoun"
+  },
+  "swedish_vallhund": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Swedish Vallhund"
+  },
+  "tamaskan": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Tamaskan"
+  },
+  "telomian": {
+    "total": 209,
+    "flagged": 209,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Telomian"
+  },
+  "thai_bangkaew": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Thai Bangkaew"
+  },
+  "thai_ridgeback": {
+    "total": 233,
+    "flagged": 233,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Thai Ridgeback"
+  },
+  "tibetan_kyi_apso": {
+    "total": 87,
+    "flagged": 87,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Tibetan Kyi Apso"
+  },
+  "tibetan_spaniel": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Tibetan Spaniel"
+  },
+  "tornjak": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Tornjak"
+  },
+  "tosa_inu": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Tosa Inu"
+  },
+  "toy_fox_terrier": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Toy Fox Terrier"
+  },
+  "toy_terrier": {
+    "total": 52,
+    "flagged": 52,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Toy Terrier"
+  },
+  "treeing_tennessee_brindle": {
+    "total": 245,
+    "flagged": 245,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Treeing Tennessee Brindle"
+  },
+  "treeing_walker_coonhound": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Treeing Walker Coonhound"
+  },
+  "volpino_italiano": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Volpino Italiano"
+  },
+  "wirehaired_pointing_griffon": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Wirehaired Pointing Griffon"
+  },
+  "wirehaired_vizsla": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Wirehaired Vizsla"
+  },
+  "working_kelpie": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Working Kelpie"
+  },
+  "xigou": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Xigou"
+  },
+  "yakutian_laika": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Yakutian Laika"
+  },
+  "yorkipoo": {
+    "total": 250,
+    "flagged": 250,
+    "correct_top1": 0,
+    "accuracy": 0.0,
+    "flag_rate": 100.0,
+    "label": "Yorkipoo"
+  }
+}
