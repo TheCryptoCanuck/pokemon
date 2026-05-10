@@ -1,23 +1,24 @@
 import { useState, useEffect, useCallback } from "react";
 import { CollectionEntry } from "../types/card";
+import { storageGet, storageSet } from "../utils/storage";
 
 const STORAGE_KEY = "tcgp-collection";
 
-function loadCollection(): CollectionEntry[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
 export function useCollection() {
-  const [collection, setCollection] = useState<CollectionEntry[]>(loadCollection);
+  const [collection, setCollection] = useState<CollectionEntry[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(collection));
-  }, [collection]);
+    storageGet(STORAGE_KEY)
+      .then((raw) => { if (raw) setCollection(JSON.parse(raw)); })
+      .catch(() => {})
+      .finally(() => setLoaded(true));
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    storageSet(STORAGE_KEY, JSON.stringify(collection));
+  }, [collection, loaded]);
 
   const addCard = useCallback((cardId: string) => {
     setCollection((prev) => {

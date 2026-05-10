@@ -1,5 +1,6 @@
 import { Card, CollectionEntry, getCardId } from "../types/card";
 import { ExtractedFrame, frameToBase64 } from "./video-processor";
+import { storageGet, storageSet, storageRemove } from "../utils/storage";
 
 const API_URL = "https://api.anthropic.com/v1/messages";
 
@@ -194,14 +195,14 @@ export async function recognizeCards(
 
 const API_KEY_STORAGE = "tcgp-anthropic-key";
 
-export function getStoredApiKey(): string {
-  return localStorage.getItem(API_KEY_STORAGE) || "";
+export async function getStoredApiKey(): Promise<string> {
+  return (await storageGet(API_KEY_STORAGE)) ?? "";
 }
 
-export function setStoredApiKey(key: string) {
+export async function setStoredApiKey(key: string): Promise<void> {
   if (key) {
-    localStorage.setItem(API_KEY_STORAGE, key);
+    await storageSet(API_KEY_STORAGE, key);
   } else {
-    localStorage.removeItem(API_KEY_STORAGE);
+    await storageRemove(API_KEY_STORAGE);
   }
 }
