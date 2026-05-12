@@ -81,7 +81,7 @@ Source: Sprint 1 commit hygiene, 2026-04-25 evening.
 **Closure markers need TWO verifications, not one.** A vault entry claiming `closed via commit abc123` is half-attested if only the commit hash is recorded. Need ALSO: (a) artifact exists on disk at the claimed path, (b) commit hash resolves via `git log --all --oneline -- PATH` from the **repo root** (not from a subdirectory). Both must pass. If only one passes, treat as half-closure: reopen with explicit "audit trail broken" or "artifact missing" framing. Failed in this session via DRIFT-1's 4-pass loop where the commits were real but I mis-queried them with cwd-relative paths.
 Source: DRIFT-1 audit, 2026-04-25 evening.
 
-**`git log -- PATH` is cwd-relative — always specify from repo root.** In a multi-project monorepo (e.g., `TheCryptoCanuck/boring` with `dogquest/` as one of several subprojects), running `git log --all -- .github/` from `dogquest/` queries `dogquest/.github/`, not the repo-root `.github/`. Default to absolute paths or `cd $(git rev-parse --show-toplevel)` first. The DRIFT-1 4-pass saga happened because pass 2 ran from `dogquest/` and got empty results.
+**`git log -- PATH` is cwd-relative — always specify from repo root.** In a multi-project monorepo (e.g., `TheCryptoCanuck/pokemon` with `dogquest/` as one of several subprojects), running `git log --all -- .github/` from `dogquest/` queries `dogquest/.github/`, not the repo-root `.github/`. Default to absolute paths or `cd $(git rev-parse --show-toplevel)` first. The DRIFT-1 4-pass saga happened because pass 2 ran from `dogquest/` and got empty results.
 
 ---
 
@@ -113,7 +113,7 @@ Source: `.github/` false-absence claim, 2026-04-25 evening.
 
 ## Multi-Project Monorepo Quirks
 
-**Repo root ≠ project root in monorepos.** `TheCryptoCanuck/boring` is the git repo; `dogquest/` is one of several Flutter sub-projects (alongside `aviquest/`, `aviquest-web/`, `backend/`, `infrastructure/terraform/`, `ml/`). Implications:
+**Repo root ≠ project root in monorepos.** `TheCryptoCanuck/pokemon` is the git repo; `dogquest/` is one of several Flutter sub-projects (alongside `aviquest/`, `aviquest-web/`, `backend/`, `infrastructure/terraform/`, `ml/`). Implications:
 - Git ops (`git log`, `git stash`, `git status`) run from any subdirectory but interpret paths cwd-relative.
 - `.github/workflows/` lives at the repo root, NOT in `dogquest/`. CI yml files in `dogquest/.github/workflows/` are invisible to GitHub Actions.
 - `working-directory: ./dogquest` in the workflow yml's `defaults.run` is the standard pattern for running flutter commands against the subproject.

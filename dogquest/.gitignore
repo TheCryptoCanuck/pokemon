@@ -55,6 +55,12 @@ audit_report.txt
 dup_analysis.py
 supplemental_dogs_quarantine_v2/
 
+# Large ML archive tarballs — 80+ MB, GitHub flags >50 MB.
+# History rewrite to drop existing copy: see Sprint Archive backlog.
+ml/archive/*.tar.gz
+ml/archive/*.tar.zst
+ml/archive/*.zip
+
 # Android Gradle build cache + machine-local paths
 android/.gradle/
 android/local.properties

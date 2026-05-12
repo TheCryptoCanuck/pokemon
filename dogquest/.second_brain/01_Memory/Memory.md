@@ -40,7 +40,7 @@ Long-form durable memory for the DogQuest project. Rebuilt 2026-04-25 evening af
 ## Project: DogQuest
 
 - Flutter/Dart app for dog breed identification + lost-dog recovery network.
-- Forked from AviQuest (predecessor bird app). Now lives in monorepo `TheCryptoCanuck/boring` (private) alongside `aviquest/`, `aviquest-web/`, `backend/`, `infrastructure/terraform/`, `ml/`, `docs/`, `agents/`, `.ui-design/`.
+- Forked from AviQuest (predecessor bird app). Now lives in monorepo `TheCryptoCanuck/pokemon` (private) alongside `aviquest/`, `aviquest-web/`, `backend/`, `infrastructure/terraform/`, `ml/`, `docs/`, `agents/`, `.ui-design/`.
 - **Repo structure:** git root is `C:\Users\Administrator\AviQuest-\` (NOT `dogquest/`). Flutter project lives in `dogquest/` subdirectory. `.github/workflows/` lives at the repo root with `defaults.run.working-directory: ./dogquest`.
 - Active branch: `phase-1/social-backend-realtime`. As of 2026-04-25 evening: synced with origin.
 - Deployed model: EfficientNetB2 v5.1, 150 breeds, uint8 quantized, 260x260 input. Target: v6 EfficientNetV2-S, 294 breeds (in training).
@@ -97,7 +97,7 @@ Long-form durable memory for the DogQuest project. Rebuilt 2026-04-25 evening af
 
 ## GitHub Actions secrets (set 2026-05-10)
 
-All 5 secrets live in `TheCryptoCanuck/boring` → Settings → Secrets → Actions:
+All 5 secrets live in `TheCryptoCanuck/pokemon` → Settings → Secrets → Actions:
 - `SUPABASE_URL`, `SUPABASE_ANON_KEY` — real project values (see above)
 - `API_BASE_URL` — placeholder `https://placeholder.example.com` (no real API backend yet)
 - `ADMOB_INTERSTITIAL_ID`, `ADMOB_BANNER_ID` — Google test IDs for closed beta; swap for real IDs before production

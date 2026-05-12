@@ -503,7 +503,7 @@ Source: beta launch preparation session.
 - **Privacy policy HTML updated** — `docs/privacy_policy.html` now includes section 6a "Aggregated Sighting Data (Opt-In)" matching the in-app screen.
 - **Camera focus freeze fix committed + pushed** — tap-to-focus disabled (`setFocusPoint` blocks Sony XQ-CT54 HAL synchronously). `identify_screen.dart` committed. CI #27 green: dart format (1m31s ✅), flutter analyze (1m28s ✅), flutter test (1m24s, continue-on-error, non-blocking ✅), build debug APK (13m17s ✅). Total: 14m54s.
 - **Supabase project resumed** — project `hdcpymjnrbelaawhncep` was paused (free tier, ~7 days inactivity). Resumed via dashboard 2026-05-10. Keys retrieved via Management API while paused. Project is live again; will re-pause after inactivity.
-- **GitHub Actions secrets set** — all 5 required secrets added to `TheCryptoCanuck/boring` repo Settings → Secrets → Actions:
+- **GitHub Actions secrets set** — all 5 required secrets added to `TheCryptoCanuck/pokemon` repo Settings → Secrets → Actions:
   - `SUPABASE_URL` = `https://hdcpymjnrbelaawhncep.supabase.co`
   - `SUPABASE_ANON_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY3B5bWpucmJlbGFhd2huY2VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzE0NzcsImV4cCI6MjA4OTEwNzQ3N30.aNRS4K_XuQU1pYm0goq3kmq9aJlPHmRfnRy3FX80T7M`
   - `API_BASE_URL` = `https://placeholder.example.com`

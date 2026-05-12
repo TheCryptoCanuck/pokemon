@@ -166,7 +166,7 @@ Use for durable decisions.
 
 - Date: 2026-04-25 (evening)
   Decision: **OPS-001 closed for real — Run #6 green on origin/phase-1/social-backend-realtime.** All 4 jobs (dart format / flutter analyze / flutter test / build debug APK) pass on a fresh Ubuntu runner. Debug APK uploaded as 14-day artifact. The 4-pass DRIFT-1 saga concluded: commits `c949c92` and `d859f81` ARE real (always were, on the local 18-ahead-of-origin queue); the original "phantom" framing across passes 1-3 was driven by cwd-relative `git log -- .github/` queries from `dogquest/` instead of repo root `AviQuest-/`.
-  Repo context clarified mid-session: `TheCryptoCanuck/boring` is a private monorepo containing `aviquest/`, `aviquest-web/`, `backend/`, `dogquest/`, `docs/`, `infrastructure/terraform/`, `ml/`, `scripts/`, `agents/`, `.ui-design/`. Git root is `AviQuest-/`, NOT `dogquest/`. CI workflow lives at `AviQuest-/.github/workflows/dogquest-ci.yml` with `defaults.run.working-directory: ./dogquest`.
+  Repo context clarified mid-session: `TheCryptoCanuck/pokemon` is a private monorepo containing `aviquest/`, `aviquest-web/`, `backend/`, `dogquest/`, `docs/`, `infrastructure/terraform/`, `ml/`, `scripts/`, `agents/`, `.ui-design/`. Git root is `AviQuest-/`, NOT `dogquest/`. CI workflow lives at `AviQuest-/.github/workflows/dogquest-ci.yml` with `defaults.run.working-directory: ./dogquest`.
   Closed-beta gate now ~5 min from open: only OPS-H-003 branch protection remains (Repo Settings → Branches → require dart format + flutter analyze + build debug APK on `main` and `phase-1/social-backend-realtime`).
   Related project: DogQuest CI / Sprint 2 close-out
   Score: 1.0

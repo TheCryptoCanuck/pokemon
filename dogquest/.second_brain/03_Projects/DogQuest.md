@@ -20,7 +20,7 @@ DogQuest — Flutter dog breed identification app (forked from AviQuest).
 
 ## Repo layout (monorepo)
 
-DogQuest lives in the **`TheCryptoCanuck/boring`** monorepo (private). Sibling projects under the same root: `aviquest/`, `aviquest-web/`, `backend/`, `infrastructure/terraform/`, `ml/`, `docs/`, `agents/`, `.ui-design/`.
+DogQuest lives in the **`TheCryptoCanuck/pokemon`** monorepo (private). Sibling projects under the same root: `aviquest/`, `aviquest-web/`, `backend/`, `infrastructure/terraform/`, `ml/`, `docs/`, `agents/`, `.ui-design/`.
 
 - **Git root:** `C:\Users\Administrator\AviQuest-\` — NOT `dogquest/`. The `dogquest/` directory is a subproject inside the repo.
 - **CI workflows:** live at the repo root in `AviQuest-/.github/workflows/`, NOT `dogquest/.github/`. The DogQuest CI yml uses `defaults.run.working-directory: ./dogquest` to scope `flutter` commands to this subproject.
