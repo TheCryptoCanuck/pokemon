@@ -4,10 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:dogquest/constants.dart';
+import 'package:dogquest/dev/mock_screen_1.dart';
+import 'package:dogquest/dev/mock_screen_5.dart';
+import 'package:dogquest/dev/screenshot_seed.dart';
 import 'package:dogquest/services/auth_service.dart';
 import 'package:dogquest/services/backend_sync_service.dart';
+import 'package:dogquest/services/supabase_auth_service.dart';
 import 'package:dogquest/services/data_consent_service.dart';
-import 'package:dogquest/services/demo_service.dart';
+
 import 'package:dogquest/services/notification_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -22,7 +26,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isClearingCache = false;
   bool _isDeletingSightings = false;
   bool _isDeletingAllData = false;
-  bool _isSeedingDemo = false;
+
   Map<String, dynamic>? _profile;
   bool _loadingProfile = true;
   bool _streakReminders = NotificationService.streakRemindersEnabled;
@@ -101,6 +105,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     } finally {
       if (mounted) setState(() => _isClearingCache = false);
     }
+  }
+
+  Future<void> _handleSeedScreenshots() async {
+    final summary = await seedScreenshotState(ref);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(summary),
+        backgroundColor: const Color(0xFFD4874E),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _handleClearScreenshots() async {
+    final summary = await clearScreenshotState(ref);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(summary),
+        backgroundColor: const Color(0xFFD4874E),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> _handleLogout() async {
@@ -194,122 +222,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         }
       } finally {
         if (mounted) setState(() => _isDeletingSightings = false);
-      }
-    }
-  }
-
-  Future<void> _handleSeedDemo() async {
-    if (_isSeedingDemo) return;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: bgCard,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          'Activate Demo Mode',
-          style: TextStyle(color: Colors.white),
-        ),
-        content: const Text(
-          'This will replace your current data with pre-seeded demo data '
-          '(25+ breeds, sightings, achievements, stats). '
-          'Your existing data will be overwritten.\n\n'
-          'Use "Clear Demo Data" to reset afterwards.',
-          style: TextStyle(color: Colors.white70),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child:
-                const Text('Cancel', style: TextStyle(color: Colors.white54)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child:
-                const Text('Seed Demo', style: TextStyle(color: Colors.amber)),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true && mounted) {
-      setState(() => _isSeedingDemo = true);
-      final success = await DemoService.seedDemoData(ref);
-      if (mounted) {
-        setState(() {
-          _isSeedingDemo = false;
-        });
-        if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Demo data seeded! Redirecting to Kennel...'),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              duration: Duration(seconds: 2),
-            ),
-          );
-          // Navigate to kennel so screens rebuild with fresh Hive data
-          await Future.delayed(const Duration(milliseconds: 500));
-          if (mounted) context.go('/kennel');
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to seed demo data.'),
-              backgroundColor: Colors.red,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        }
-      }
-    }
-  }
-
-  Future<void> _handleClearDemo() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: bgCard,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          'Clear Demo Data',
-          style: TextStyle(color: Colors.white),
-        ),
-        content: const Text(
-          'This will clear all demo data and reset the app to a fresh state. '
-          'This cannot be undone.',
-          style: TextStyle(color: Colors.white70),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child:
-                const Text('Cancel', style: TextStyle(color: Colors.white54)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child:
-                const Text('Clear', style: TextStyle(color: Colors.redAccent)),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true && mounted) {
-      final success = await DemoService.clearDemoData(ref);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              success
-                  ? 'Demo data cleared. App reset to fresh state.'
-                  : 'Failed to clear demo data.',
-            ),
-            backgroundColor: success ? const Color(0xFFD4874E) : Colors.red,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-        if (success) {
-          context.go('/identify');
-        }
       }
     }
   }
@@ -411,8 +323,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       pendingSyncCount = pendingBox.length;
     } catch (_) {}
 
-    final username = _profile?['username'] as String?;
-    final email = _profile?['email'] as String?;
+    // Try backend profile first, fall back to Supabase session
+    String? username = _profile?['username'] as String?;
+    String? email = _profile?['email'] as String?;
+    if ((username == null || email == null) && !isOffline) {
+      try {
+        final authSvc = ref.read(supabaseAuthServiceProvider);
+        final user = authSvc.currentUser;
+        if (user != null) {
+          username ??= user.userMetadata?['username'] as String? ??
+              user.userMetadata?['display_name'] as String?;
+          email ??= user.email;
+        }
+      } catch (_) {}
+    }
 
     return Scaffold(
       backgroundColor: bgDeep,
@@ -456,7 +380,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ? 'Loading...'
                         : email ?? (isOffline ? 'N/A' : 'Unknown'),
                   ),
-                  if (hasToken || !isOffline) ...[
+                  if (isOffline && !hasToken) ...[
+                    const Divider(color: Colors.white10, height: 1, indent: 56),
+                    _actionTile(
+                      icon: Icons.person_add_outlined,
+                      title: 'Create Account',
+                      iconColor: Colors.amber,
+                      titleColor: Colors.amber,
+                      onTap: () => context.push('/register'),
+                    ),
+                    const Divider(color: Colors.white10, height: 1, indent: 56),
+                    _actionTile(
+                      icon: Icons.login,
+                      title: 'Sign In',
+                      iconColor: Colors.white70,
+                      titleColor: Colors.white,
+                      onTap: () => context.push('/login'),
+                    ),
+                  ] else if (hasToken || !isOffline) ...[
                     const Divider(color: Colors.white10, height: 1, indent: 56),
                     _actionTile(
                       icon: Icons.logout,
@@ -737,81 +678,60 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 24),
 
-            // ── Demo Mode Section ──
+            // ── Developer Section (debug builds only) ──
             if (kDebugMode) ...[
-              _sectionHeader('Demo Mode'),
+              _sectionHeader('Developer'),
               const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
                   color: bgCard,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.amber.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
                 ),
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                      child: Row(
-                        children: [
-                          Icon(
-                            DemoService.isDemoMode
-                                ? Icons.science
-                                : Icons.science_outlined,
-                            color: Colors.amber,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              DemoService.isDemoMode
-                                  ? 'Demo mode is active'
-                                  : 'Seeds 25+ breeds, sightings, and stats for investor demos',
-                              style: TextStyle(
-                                color: DemoService.isDemoMode
-                                    ? Colors.amber
-                                    : Colors.white54,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Divider(color: Colors.white10, height: 1, indent: 16),
                     _actionTile(
-                      icon: Icons.play_arrow_rounded,
-                      title: 'Seed Demo Data',
-                      iconColor: Colors.green,
-                      titleColor: Colors.green,
-                      trailing: _isSeedingDemo
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.green,
-                              ),
-                            )
-                          : null,
-                      onTap: _isSeedingDemo ? null : _handleSeedDemo,
+                      icon: Icons.camera_alt_outlined,
+                      title: 'Seed screenshot state',
+                      onTap: _handleSeedScreenshots,
                     ),
-                    if (DemoService.isDemoMode) ...[
-                      const Divider(
-                        color: Colors.white10,
-                        height: 1,
-                        indent: 56,
+                    const Divider(
+                      color: Colors.white10,
+                      height: 1,
+                      indent: 56,
+                    ),
+                    _actionTile(
+                      icon: Icons.restart_alt_rounded,
+                      title: 'Reset screenshot state',
+                      onTap: _handleClearScreenshots,
+                    ),
+                    const Divider(
+                      color: Colors.white10,
+                      height: 1,
+                      indent: 56,
+                    ),
+                    _actionTile(
+                      icon: Icons.photo_camera_front_outlined,
+                      title: 'Open mock screen 1 (camera + prediction)',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const MockScreen1(),
+                        ),
                       ),
-                      _actionTile(
-                        icon: Icons.cleaning_services_rounded,
-                        title: 'Clear Demo Data',
-                        iconColor: Colors.orangeAccent,
-                        titleColor: Colors.orangeAccent,
-                        onTap: _handleClearDemo,
+                    ),
+                    const Divider(
+                      color: Colors.white10,
+                      height: 1,
+                      indent: 56,
+                    ),
+                    _actionTile(
+                      icon: Icons.ios_share_rounded,
+                      title: 'Open mock screen 5 (branded share)',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const MockScreen5(),
+                        ),
                       ),
-                    ],
+                    ),
                   ],
                 ),
               ),
