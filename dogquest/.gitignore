@@ -1,3 +1,7 @@
+# Local environment (secrets — never commit)
+.env.local
+.env
+
 # Keystore and signing
 android/key.properties
 *.jks
@@ -70,3 +74,7 @@ outputs/
 # Editor-generated diff dumps
 *.orig
 *.rej
+
+# Raw screenshot captures (regenerated via scripts/capture_screenshots.ps1)
+screenshots/raw/
+screenshots/mockup_frames/
