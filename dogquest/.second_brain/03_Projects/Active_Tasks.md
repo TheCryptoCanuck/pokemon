@@ -493,6 +493,55 @@ Source: `docs/specs/onboarding_first_scan_spec.md`. Spec goal: every new user re
 
 ---
 
+## Sprint 17 — Closed Beta Push (2026-05-10, IN PROGRESS)
+
+Source: beta launch preparation session.
+
+### SHIPPED
+
+- **Working tree committed + pushed** — 5 commits to `phase-1/social-backend-realtime` covering Sprints 8-15 (app code, new files, beta assets, ML archive, remaining files). Push: `46b20253..2fbbe720`, 198.64 MiB. GitHub LFS warning on `ml/archive/quarantine_v2.tar.gz` (82.66 MB) — consider LFS later.
+- **Privacy policy HTML updated** — `docs/privacy_policy.html` now includes section 6a "Aggregated Sighting Data (Opt-In)" matching the in-app screen.
+- **Camera focus freeze fix committed + pushed** — tap-to-focus disabled (`setFocusPoint` blocks Sony XQ-CT54 HAL synchronously). `identify_screen.dart` committed. CI #27 green: dart format (1m31s ✅), flutter analyze (1m28s ✅), flutter test (1m24s, continue-on-error, non-blocking ✅), build debug APK (13m17s ✅). Total: 14m54s.
+- **Supabase project resumed** — project `hdcpymjnrbelaawhncep` was paused (free tier, ~7 days inactivity). Resumed via dashboard 2026-05-10. Keys retrieved via Management API while paused. Project is live again; will re-pause after inactivity.
+- **GitHub Actions secrets set** — all 5 required secrets added to `TheCryptoCanuck/boring` repo Settings → Secrets → Actions:
+  - `SUPABASE_URL` = `https://hdcpymjnrbelaawhncep.supabase.co`
+  - `SUPABASE_ANON_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY3B5bWpucmJlbGFhd2huY2VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzE0NzcsImV4cCI6MjA4OTEwNzQ3N30.aNRS4K_XuQU1pYm0goq3kmq9aJlPHmRfnRy3FX80T7M`
+  - `API_BASE_URL` = `https://placeholder.example.com`
+  - `ADMOB_INTERSTITIAL_ID` = `ca-app-pub-3940256099942544/1033173712` (Google test ID)
+  - `ADMOB_BANNER_ID` = `ca-app-pub-3940256099942544/6300978111` (Google test ID)
+- **Release AAB built** — `build\app\outputs\bundle\release\app-release.aab` (~75.3 MB). Built locally with placeholder env vars (satisfies non-empty guard). Real Supabase URL/key available but backend calls gracefully degrade anyway.
+
+### PENDING
+
+- **Play Console setup** — Phase 3 of the beta guide: create app listing, upload AAB, set up closed testing track, add tester emails, submit for review. NOT STARTED.
+- **Supabase free-tier keep-alive** — project will pause again after ~7 days inactivity. Either ping an endpoint periodically OR upgrade to Pro before distributing to beta testers who need backend features.
+- **On-device smoke test with final AAB** — test that autofocus works, camera doesn't freeze, identify flow completes with the rebuilt AAB.
+- **Real AdMob App ID** — currently using Google test App ID `ca-app-pub-3940256099942544~3347511713` in AndroidManifest. Register `com.hound.app` in AdMob console before production.
+- **Release AAB rebuild with real secrets** — current AAB has placeholder env vars. When Supabase backend is wired, rebuild with real secrets injected via `--dart-define`. For closed beta (local-first), placeholders are fine.
+
+---
+
+## Sprint 18 — Supabase Auth Wiring (2026-05-10, IN PROGRESS)
+
+Source: Supabase Auth credential setup + signup flow session.
+
+### SHIPPED (working tree, awaiting rebuild + on-device verification)
+
+- **`.env.local` configured** — real Supabase URL + publishable key, placeholder API_BASE_URL, empty SENTRY_DSN. Used by `build_debug.ps1` for `--dart-define` injection.
+- **`build_debug.ps1` rewritten** — entire file replaced with ASCII-only content via Write tool. Fixed PowerShell 5.x parse error caused by UTF-8 em-dash characters. Loads `.env.local` and passes `--dart-define` flags to `flutter build apk --debug`. Awaiting user verification that the rewritten script runs.
+- **Supabase Site URL updated** — changed from `http://localhost:3000` to `com.hound.app://login-callback` in Supabase dashboard → Auth → URL Configuration. Confirmation email links now redirect to the Android app.
+- **Email confirmation disabled** — Supabase dashboard → Auth → Sign In / Providers → "Confirm email" = OFF. Free-tier rate limit (2/hr project-wide) was blocking testing. Temporary — re-enable with custom SMTP before public beta.
+- **Settings screen Supabase fallback** — `settings_screen.dart` now falls back to `supabaseAuthServiceProvider.currentUser` for email + username when `BackendSyncService.fetchProfile()` returns null (stub). Import added: `supabase_auth_service.dart`.
+
+### PENDING
+
+- **Rebuild + on-device test** — run `.\build_debug.ps1 -Install` to verify: (a) script runs without parse errors, (b) app launches, (c) signup flow works with email confirmation disabled, (d) Settings screen shows username and email from Supabase session.
+- **Username in userMetadata** — check whether `RegisterScreen` stores username in Supabase `userMetadata` during signup. If not, Settings username will still show "Unknown" even with the fallback. Fix: add `data: {'username': usernameController.text}` to the Supabase `signUp()` call.
+- **Re-enable email confirmation** — before public beta. Requires: (a) configure custom SMTP in Supabase dashboard, (b) toggle "Confirm email" back ON, (c) test end-to-end with the custom SMTP provider.
+- **Custom SMTP setup** — free-tier limit is 2 emails/hr project-wide. Options: Resend (free tier: 100 emails/day), Postmark, SendGrid. Supabase dashboard → Auth → SMTP Settings.
+
+---
+
 ## Sprint 16 — Interaction Design Polish (2026-05-10, SHIPPED)
 
 Invoked via `/ui-design:interaction-design`. Three changes committed as `46b20253 feat(interaction): pill entrance animations, XP countup, custom dialog slide-up transition` on `phase-1/social-backend-realtime`, pushed to origin.
@@ -550,12 +599,115 @@ Invoked via `/ui-design:interaction-design`. Three changes committed as `46b2025
 
 ---
 
+## Sprint 16 — Google Play Console Store Listing (2026-05-11, IN PROGRESS)
+
+**Branch:** `phase-1/social-backend-realtime` (working tree)
+
+### Completed Decisions (Play Console Strategy)
+
+1. **Category Selected:** Books & Reference (not Lifestyle). Rationale: Google Play uses fixed category taxonomy with embedded tags; Lifestyle doesn't include dog/pet tags; Books & Reference includes Reference/Encyclopedia tags suitable for breed-reference positioning.
+2. **Messaging Strategy:** "Gamified Discovery" — balancing dog breed reference/utility with collection/leveling engagement mechanics. Short description: `"Discover every dog breed. Snap a photo. Level up your knowledge."` (67 chars, meets 80-char soft limit).
+3. **Reference Taxonomy:** asasa.txt uploaded and validated — confirms all 336 Play Store categories + valid tags per category. Books & Reference + Reference/Encyclopedia tags verified and selected.
+
+### In Progress (Next Steps)
+
+- **TASK-001:** Paste expanded full description (~3500 chars) into Play Console form — encompasses: breed reference utility, app features (photo capture, level progression, exams/certifications), gamification hooks (collection, leaderboard, prestige titles), target audience (students, educators, pet-curious, dog enthusiasts)
+- **TASK-002:** Upload 4-8 screenshots with messaging overlays — per screenshot strategy tested: identify screen (feature highlight), found breed detail (reference learning), leaderboard (gamification), collection grid (completion hook), exam badge (certification prestige), quiz mode (engagement).
+- **TASK-003:** Confirm Books & Reference category + Reference/Encyclopedia tags in form submission
+- **TASK-004:** Complete contact details form (name, email, support website, privacy policy link)
+- **TASK-005:** Upload release AAB file (app-release.aab ~75.3 MB, built 2026-05-10 with placeholder env vars)
+- **TASK-006:** Create internal testing track with 5-10 tester email invitations
+- **TASK-007:** Submit store listing for review (Play Console does 24-48 hr account verification; review gate on Play Store account age)
+
+### Blocking Item
+
+- Play Console account verification: New account created 2026-05-10; verification window 24-48 hrs. Cannot submit listing until account verified.
+- Timeline: Expect verification completion 2026-05-12 morning, then submit listing
+
+### Related Decisions
+
+- See Decisions.md dated 2026-05-11 for full rationale (category selection, messaging strategy, short description)
+- See Failure_Patterns.md new entry: category-selection-cannot-rely-on-preset-names (pattern logged from this session)
+
+---
+
+---
+
+## Sprint 17 — Play Store Screenshot Pipeline (2026-05-11 later, MOSTLY SHIPPED)
+
+**Branch:** `phase-1/social-backend-realtime` (working tree)
+**Goal:** Produce 18 framed Play Store screenshots (6 screens × Pixel 7 + Galaxy S24 + 10" tablet) + finalize listing copy.
+
+### Shipped (in working tree, not yet committed — pending `dart format lib` + `dart analyze lib` clean)
+
+- **TASK-001 — Breed-details chips row in `DogFoundDialog`**
+  Status: WORKING TREE
+  Files: `lib/widgets/dog_found_dialog.dart` (chips row at line 466, helpers at 795-867)
+  Renders size/origin/temperament chips between lore and XP. Defensive `Dog.habitat` parser ("<Group> Group | Origin: <Country>"). Hidden when `isUnknown`.
+
+- **TASK-002 — Screenshot seed function**
+  Status: WORKING TREE
+  Files: `lib/dev/screenshot_seed.dart` (NEW)
+  `seedScreenshotState(WidgetRef)`: kDebugMode-gated, adds 47 breeds (first 47 from `dogService.all`), bumps player to Level 4 / 1850 XP / 12-day streak / 4 unlocked achievements, calls `playerProvider.notifier.reload()`. Paired `clearScreenshotState` resets. No-ops in release builds.
+
+- **TASK-003 — Flutter mock widgets for non-shipping screens**
+  Status: WORKING TREE
+  Files: `lib/dev/mock_screen_1.dart` (NEW, camera + live prediction overlay), `lib/dev/mock_screen_5.dart` (NEW, branded share UI with friend avatars + social icons)
+  Both use real `NetworkDogImage` + actual design tokens. Pivoted from Figma mocks for visual consistency + no MCP dependency.
+
+- **TASK-004 — Developer section in Settings**
+  Status: WORKING TREE
+  Files: `lib/screens/settings_screen.dart` (4 new actions in a `if (kDebugMode)` section: Seed / Reset / Open mock 1 / Open mock 5; handlers `_handleSeedScreenshots` / `_handleClearScreenshots`)
+  Wired via `MaterialPageRoute<void>` push for the mocks. Imports `dev/screenshot_seed.dart`, `dev/mock_screen_1.dart`, `dev/mock_screen_5.dart`, `flutter/foundation.dart`.
+
+- **TASK-005 — Capture pipeline tooling**
+  Status: WORKING TREE
+  Files: `scripts/capture_screenshots.ps1` (NEW, interactive PowerShell wrapping `adb shell screencap` + `adb pull`), `screenshots/README.md` (NEW, full pipeline doc with click-paths per screen).
+  Accepts `-DeviceLabel pixel7|galaxy_s24|tablet_10` and `-OnlyScreen N`. Output: `screenshots/raw/<deviceLabel>/S{N}_{slug}.png`.
+
+- **TASK-006 — Marketing copy + Play Store listing**
+  Status: WORKING TREE
+  Files: `screenshots/copy.md` (NEW, headline picks per screen + typography rules + rejection rationale), `store-listing/play_store_listing.md` (NEW, title 27 chars / short 70 chars / full 2512 chars + per-screenshot captions + pre-submit checklist + open items)
+  Title `"Hound: Dog Breed Identifier"`. Short desc `"Identify 150+ dog breeds with on-device AI. Collect, level up, no ads."` (supersedes Sprint 16 draft `"Discover every dog breed. Snap a photo. Level up your knowledge."` — either defensible; new wins on specificity).
+
+- **TASK-007 — Brand + a11y review**
+  Status: WORKING TREE
+  Files: `screenshots/brand_review.md` (NEW)
+  1 Blocker resolved (privacy-claim drift — "No tracking" → disclosed analytics + opt-out). 2 High flagged for user decision (v6 timing softening, friends-mock confidence). 2 Medium: confidence-label drift between mock and shipping result card; achievement keys may render as raw if registry doesn't recognize seeded keys. WCAG 2.1 AA pre-pass on mocks passes; final on-image contrast pass deferred until framing.
+
+### Pending (user action required)
+
+- **TASK-008 — Run `dart format lib` + `dart analyze lib` clean**
+  Note: `dart format .` crashes on stale worktree path `.\.claude\worktrees\xenodochial-nash-590e92\UsersAdministratorpokemon-fixes\android\app\build\intermediates\desugar_graph\...` — not caused by my edits, but blocks the `.` form. Workaround: scope to `lib` (or `lib test`) only.
+
+- **TASK-009 — Capture raw PNGs on Pixel 7 / Galaxy S24 / 10" tablet AVDs**
+  Requires: emulator + `.\build_debug.ps1 -Install` + interactive `scripts/capture_screenshots.ps1` per device label. 18 raw PNGs total.
+
+- **TASK-010 — Frame in Canva + overlay marketing copy**
+  Manual web Canva (or Hotpot.ai). Canva MCP loaded but `upload-asset-from-url` requires a public URL — local PNGs not directly usable through MCP. Output to `screenshots/final/<deviceLabel>/`.
+
+- **TASK-011 — Final on-image contrast a11y pass on framed assets**
+  Verify each headline-vs-background region ≥ 4.5:1 (WCAG AA). Add 40% black gradient behind text if any region fails.
+
+- **TASK-012 — Commit shipped working tree**
+  Suggested per-finding commits: one for chips row, one for `lib/dev/` + Settings wiring, one for `scripts/` + `screenshots/` docs.
+
+### Open decisions (need Jesse's call)
+
+1. **v6 ship date confidence.** Listing claims "294 breeds in training." Soften if v6 > ~6 weeks out.
+2. **Friends feature confidence.** Mock screen 5 implies friends. Keep if shipping social within ~90 days; else swap to quiz screen.
+3. **`google_mobile_ads` dependency.** Listing says "No ads. Ever." Confirm v5.1 ships without ad units (test IDs only) OR remove the dep before submit.
+4. **Privacy policy URL** — required Play Console field. Confirm `lib/screens/privacy_policy_screen.dart` is also hosted at a public URL.
+5. **Achievement label rendering** — seed uses keys `['first_breed', 'streak_7', 'pack_starter', 'rare_find']`. Verify on first capture that they render with human-readable labels rather than raw keys; swap if needed.
+
+---
+
 ## Related Notes
 
 - `.full-review/05-final-report.md` — comprehensive review final report (2026-04-25 evening).
 - [[Decisions]] — recovered from stash@{2}.
 - [[DogQuest]] — repo overview at `dogquest/CLAUDE.md`.
-- [[Failure_Patterns]] — vault-claim-trust + don't-infer-absence-from-partial-listings.
+- [[Failure_Patterns]] — vault-claim-trust + don't-infer-absence-from-partial-listings + screenshot-pipeline session entries.
 
 ## Vault recovery note (2026-04-25)
 

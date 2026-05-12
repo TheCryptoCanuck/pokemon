@@ -207,6 +207,16 @@ Source: Jesse 2026-04-26 — "i dont want anything mentioning aviquest in the md
 
 ---
 
+## Google Play Store Listing: Category Taxonomy & Messaging Strategy
+
+Google Play enforces a **fixed taxonomy of 336 categories**, each with hard-coded valid tags (not dynamic filtering). Categories are preset and cannot be edited; tag validation is mandatory before category selection. DogQuest selected **Books & Reference** category (contains "Reference" and "Encyclopedia" tags) over Lifestyle (lacks pet-specific subtags) after validating the official taxonomy.
+
+**Messaging strategy:** "Gamified Discovery" balances the learning pillar (dog breed reference, educational utility) with engagement pillar (collection mechanics, leveling, gamification). Selected short description (67 chars): "Discover every dog breed. Snap a photo. Level up your knowledge." This 7-step submission workflow (app name → category → contact → screenshots → descriptions → APK → testing track → review) is blocked on account verification (24-48 hr window, started 2026-05-10, expected complete 2026-05-12).
+
+**Anti-pattern:** Never assume preset category names support the tags you need. Always validate against the official taxonomy before committing to a category.
+
+Source: 2026-05-11 Play Console setup session; category taxonomy validation against 336-category official taxonomy; store listing messaging refinement across 16+ permutations; account verification timeline (jesseg.8899@gmail.com, developer "DogQuest", package `com.hound.app`).
+
 ## Source-Level Verification > Runtime Verification (when source is deterministic)
 
 When verifying brand-string surfaces (notification channel IDs, log tags, share text, contact emails) for a rebrand, reading the source code via Read + targeted grep is sufficient — the runtime can only display strings the source declares. On-device verification adds belt-and-suspenders but is finicky:
@@ -646,6 +656,229 @@ Source: Deploy checklist verification session, 2026-05-09.
 - IIFE pattern is now the project standard for inline variable scoping in ConsumerWidget builds. Don't introduce `Builder` unless you specifically need a new BuildContext.
 
 Source: Breed Group Exams implementation session, 2026-05-10.
+
+## Camera Platform Channel Blocking (2026-05-10)
+
+### Compressed Insight
+
+- **`.timeout()` is a no-op when the native side blocks synchronously.** The `camera` package's `setFocusPoint`/`setExposurePoint` on Sony XQ-CT54 (Android 14) blocks the platform channel's `MethodChannel.invokeMethod` at the native JNI level. Dart's event loop never resumes — the Future is never created — so `.timeout()` on a non-existent Future does nothing. Symptom: entire app freezes (not just UI jank). This is fundamentally different from a slow async call that eventually resolves. Diagnosis: if the freeze survives a `.timeout()` wrapper, the native side is blocking pre-Future.
+
+- **Disable the feature, don't wrapper it.** Three iterations of timeout-wrapper variations all produced the same freeze. The correct closed-beta fix is to not call `setFocusPoint` at all. Autofocus via `FocusMode.auto` (set once during init) is the fallback — it works because the HAL's autofocus loop runs on a separate native thread that doesn't block the platform channel.
+
+- **Privacy policy sync is a Play Store review blocker.** The hosted HTML and in-app Dart screen must be semantically identical. Section 6a ("Contribute to Science" opt-in data sharing) was in the Dart screen but missing from the HTML. Play Store reviewers check both — discrepancies can trigger a rejection. Pattern: after any privacy policy change in either location, diff the two files and reconcile.
+
+### Actionability
+
+- When a platform channel call freezes the entire isolate (not just produces jank), skip timeout iterations entirely — go straight to "disable the call" or "use a separate isolate" as the fix strategy. Timeout wrappers are only useful for slow-but-async native calls.
+- After any privacy-related change in `lib/screens/privacy_policy_screen.dart` or `docs/privacy_policy.html`, diff the two and ensure section-level parity. Add this to the deploy checklist.
+- The camera fix is scoped to Sony XQ-CT54 (the only test device). Other devices may support tap-to-focus fine. A runtime capability check (`camera.getMaxZoomLevel()` completes? → HAL responsive → safe to call focus methods) could re-enable the feature selectively post-beta.
+
+Source: Closed beta push session, 2026-05-10.
+
+---
+
+## Git Commit Workflow for Large Working Trees (2026-05-10)
+
+### Compressed Insight
+
+- **361 uncommitted files → 5 logical commits is the right granularity.** Bucketed by logical area: (1) app code from sprints 8-15, (2) new service/screen files, (3) beta listing assets, (4) ML archive reorganization, (5) remaining scripts/docs/tests. Each commit is independently revertable. Avoid single mega-commit; avoid per-file commits (unusable history noise at 361 files).
+- **Skip aviquest/ for beta scope.** ~114 aviquest files in the working tree are unrelated to the dogquest closed beta. Committing them adds review burden and risk with zero beta value. They can land in a separate "chore: aviquest housekeeping" commit later.
+- **LFS warning at 82 MB is advisory, not blocking.** GitHub allows files up to 100 MB without LFS. The 82.66 MB `quarantine_v2.tar.gz` pushed successfully. Consider LFS if the ML archive grows or if clone time becomes a problem.
+
+### Actionability
+
+- For future large working-tree commit sessions: triage by area first (`git status --short | Select-Object -First 30` repeated with path filters), draft 4-6 logical commits, skip unrelated sibling projects.
+- PowerShell pipeline for file counting: `(git status --short | Select-String "dogquest/").Count` gives dogquest-only uncommitted count.
+
+Source: Closed beta push commit session, 2026-05-10.
+
+---
+
+## Supabase Management API — Key Retrieval While Project Is Paused (2026-05-10)
+
+### Compressed Insight
+
+**Supabase free-tier projects pause after ~7 days inactivity; API keys are still retrievable while paused.** The dashboard "API Settings" page shows an indefinite spinner when a project is paused — this is NOT a Supabase outage. Three paths to get keys without waiting for resume:
+
+1. **Management API** (fastest if you have a personal access token):
+   ```
+   GET https://api.supabase.com/v1/projects/{ref}/api-keys
+   Authorization: Bearer <personal-access-token>
+   ```
+   The personal access token is readable from the dashboard browser session via DevTools: `localStorage['supabase.dashboard.auth.token'].access_token` in the Console tab.
+
+2. **Resume first** (~5 min): click "Resume project" in the dashboard, wait for ready state, then copy keys from API Settings normally.
+
+3. **Keys are also in GitHub Actions secrets** if they were previously set there — check repo Settings → Secrets.
+
+Supabase `ref` is the 20-char alphanumeric prefix of the project URL (e.g. `hdcpymjnrbelaawhncep` from `https://hdcpymjnrbelaawhncep.supabase.co`).
+
+### Actionability
+
+- When a Supabase API settings page shows a spinner without resolving, first check if the project is paused (look for "Resume project" banner in the dashboard sidebar or project list page).
+- For closed beta: add a daily ping cron (`curl $SUPABASE_URL/rest/v1/?apikey=$SUPABASE_ANON_KEY`) via GitHub Actions to prevent pausing. Without it, the project will pause again within 7 days of inactivity.
+
+Source: Sprint 17, 2026-05-10.
+
+---
+
+## React Form Native Input Value Setter (2026-05-10)
+
+### Compressed Insight
+
+**React overrides `HTMLInputElement.prototype.value` setter — direct `.value = 'X'` assignment doesn't trigger React's virtual DOM reconciliation.** This means the submit button stays disabled even after the field appears filled. The fix requires using the native setter stored before React overwrote it:
+
+```javascript
+const el = document.querySelector('input[name="value"]');
+const nativeSetter = Object.getOwnPropertyDescriptor(
+  window.HTMLInputElement.prototype, 'value'
+).set;
+nativeSetter.call(el, 'the-actual-value');
+el.dispatchEvent(new Event('input', { bubbles: true }));
+```
+
+The `dispatchEvent` triggers React's synthetic event system, which then picks up the value and re-renders (enabling the submit button, etc.).
+
+This was required to set GitHub Actions secrets via the browser because the Secrets UI is a React form. Additionally, if the first click hits the wrong submit button (e.g. "Submit feedback" widget vs "Add secret"), use `.closest('form').querySelector('[type="submit"]')` to target the correct one.
+
+### Actionability
+
+- Any time browser automation via JavaScript fails to trigger a form's expected behavior after setting `.value`, reach for the native property descriptor pattern above.
+- Always identify the correct submit button by walking up to the parent `<form>` element — page-level "feedback" or "help" widgets can intercept generic button selectors.
+
+Source: GitHub Actions secrets injection, 2026-05-10. Also logged in Failure_Patterns.md as `react-form-native-input-value-setter-required`.
+
+---
+
+---
+
+## Supabase Publishable Key vs JWT Anon Key (2026-05-10)
+
+### Compressed Insight
+
+**Supabase has TWO key formats: `sb_publishable_*` (dashboard "publishable" label) and `eyJ...` (JWT anon key).** Both are valid but serve different contexts. The publishable key is a wrapper that the Supabase client SDK resolves internally. The JWT form is the actual API key used in headers. For `--dart-define` injection in CI (GitHub Actions secrets), use the JWT form (`eyJ...`). For `.env.local` local dev, either works since the Flutter SDK handles both. Don't confuse them — they're functionally equivalent but look very different.
+
+### Actionability
+
+- When setting GitHub Actions secrets for Supabase, always use the JWT anon key (starts with `eyJ`).
+- When troubleshooting "invalid API key" errors, check which format is being passed and whether the SDK version supports the publishable wrapper.
+
+Source: Sprint 18, 2026-05-10.
+
+---
+
+## Supabase Free-Tier Email Rate Limit Is Project-Wide (2026-05-10)
+
+### Compressed Insight
+
+**Supabase free-tier email rate limit is 2 emails/hour PER PROJECT, not per email address.** Creating a new account with a different email does NOT bypass the limit. The counter resets hourly. The only way to increase the limit is configuring custom SMTP in Supabase dashboard (Auth → SMTP Settings). Attempting to change the rate limit number in the dashboard without custom SMTP configured produces an error.
+
+### Actionability
+
+- For auth flow testing: disable email confirmation entirely (Auth → Sign In → "Confirm email" OFF) during development. Re-enable with custom SMTP for beta/production.
+- Budget 2 signup tests per hour on free tier. If testing auth flows frequently, configure a free SMTP provider (Resend, Postmark free tier) first.
+- The rate limit error message doesn't mention "project-wide" — it just says "rate limit exceeded," which misleads into thinking a different email will work.
+
+Source: Sprint 18, 2026-05-10.
+
+---
+
+## BackendSyncService Stub Fallback Pattern (2026-05-10)
+
+### Compressed Insight
+
+**When a backend service is fully stubbed (returns null), UI screens must fall back to the auth session for basic user data.** In DogQuest, `BackendSyncService.fetchProfile()` is a complete stub — every call returns null. Any screen that displays username or email (Settings, Profile) will show "Unknown" unless it falls back to `supabaseAuthServiceProvider.currentUser`. The fallback pattern:
+
+```dart
+String? username = _profile?['username'] as String?;
+String? email = _profile?['email'] as String?;
+if ((username == null || email == null) && !isOffline) {
+  final user = ref.read(supabaseAuthServiceProvider).currentUser;
+  username ??= user?.userMetadata?['username'] as String?;
+  email ??= user?.email;
+}
+```
+
+This is a temporary pattern — once the backend profile API is implemented, the stub will be replaced and the fallback becomes redundant (but harmless).
+
+### Actionability
+
+- When wiring up new screens that display user data, check whether `BackendSyncService` actually returns data. If it's still stubbed, add the Supabase session fallback.
+- Username availability depends on whether the signup flow stores it in `userMetadata`. Check `RegisterScreen`'s `signUp()` call for `data: {'username': ...}`.
+
+Source: Sprint 18, 2026-05-10.
+
+---
+
+## Marketing Screenshots: kDebugMode-Gated Seed + adb Beats integration_test (2026-05-11)
+
+### Compressed Insight
+
+**For one-time marketing screenshot capture in a Flutter app with heavy Riverpod overrides and complex Hive state, a kDebugMode-gated `seedScreenshotState(WidgetRef ref)` function + interactive `adb shell screencap` PowerShell script beats `integration_test` by ~10× setup time.** The integration_test path requires: adding `integration_test` to dev_deps, writing `test_driver/integration_test.dart` that exfiltrates PNG bytes via `onScreenshot`, then overriding every provider that throws `UnimplementedError` until injected (`kennelServiceProvider`, `playerProvider`, etc.), plus seeding Hive boxes per test. The seed-script path: write to `Hive.box('dogquest_player_stats')` directly with the keys `PlayerNotifier._load()` reads, call `ref.read(playerProvider.notifier).reload()`, then `adb shell screencap /sdcard/file.png && adb pull`. Wire access via `if (kDebugMode)` block in Settings.
+
+### Actionability
+
+- For ANY one-time marketing capture in a Flutter app, default to seed-script + manual adb capture.
+- Reserve `integration_test` for recurring golden-image regression where the cost of override plumbing amortizes across many runs.
+- The recurrence-frequency filter ("regenerated repeatedly OR once?") is more useful than the resemblance filter ("this looks like a screenshot test").
+- Seed functions should be gated by `kDebugMode` (from `flutter/foundation.dart`) so they tree-shake from release. Wire access via a dev section in Settings, also gated by `kDebugMode`.
+- Riverpod state notifiers backed by Hive can be reloaded via `notifier.reload()` after Hive writes — no app restart needed.
+
+Source: Sprint 17 (Screenshot pipeline), 2026-05-11.
+
+---
+
+## Marketing Claim Audits: Grep pubspec.yaml + main.dart Before Asserting "No X" (2026-05-11)
+
+### Compressed Insight
+
+**Any marketing claim about absence of behaviors ("no tracking," "no ads," "no accounts," "no cloud") must be audited against the actual implementation before the copy ships.** The bias toward unverified claims is highest during sustained marketing-copy writing — the audit step gets deferred to post-review, but by then the wrong claim is already in the draft and momentum carries it forward. For Hound, an initial Play Store draft contained "No tracking. No data sale." — caught only by a self-driven drift sweep that grepped `pubspec.yaml` and found `firebase_analytics`, `firebase_crashlytics`, `sentry_flutter` all active. `FirebaseAnalytics.instance` is initialized at `main.dart:627`. The claim was false and would have risked rejection under Play's Misleading Claims policy.
+
+### Actionability
+
+- Build the audit INTO the copy-writing loop, not as a separate post-pass. For each "no X" claim, grep relevant SDK names in `pubspec.yaml` and initialization sites in `main.dart` immediately.
+- If a claim is partially true (e.g., "no ads" while `google_mobile_ads` is in pubspec but using Google test units), either remove the dep or rephrase to "no ads served" / "anonymous diagnostics only."
+- Disclose with specificity, not vagueness. "Anonymous diagnostics with opt-out at Settings → Data & Privacy" is more defensible than "limited tracking."
+- Use existing app affordances as the disclosure path. Hound has `DataConsentService` — reference it in marketing copy rather than promising a new opt-out flow.
+- Play Store's Misleading Claims and Deceptive Behavior policies penalize false absence claims; the upside of bold phrasing is not worth the downside.
+
+Source: Sprint 17 (Screenshot pipeline), 2026-05-11.
+
+---
+
+## Flutter Dev Widgets Beat Figma Mocks for Marketing Screenshots (2026-05-11)
+
+### Compressed Insight
+
+**When marketing needs a UI state that isn't shipped (a planned feature, an aspirational design, a branded modal where the production app uses an OS-native equivalent), building it as a kDebugMode-gated Flutter widget in `lib/dev/` beats mocking in Figma.** Reasons: (a) visual consistency — the mock uses the actual design tokens (`bgDeep`, `accent`, etc.) and shared widgets (`NetworkDogImage`, animation patterns), so it doesn't look like a different app; (b) repeatability — the mock can be regenerated forever from the same Dart file, vs. having to recreate manually in a design tool every time; (c) capture pipeline reuse — the mock goes through the same `adb screencap` pipeline as real screens, no Figma export/import step; (d) no MCP/web-tool dependency. Tradeoff: visual iteration requires a Dart edit instead of a drag, and the mock needs to be guarded so it never ships in release.
+
+### Actionability
+
+- For any planned-but-unshipped UI state needed for marketing or design review, prefer a `lib/dev/<mock_screen_N>.dart` Flutter widget over a Figma mock.
+- Gate access behind `if (kDebugMode)` in Settings → Developer (or another dev menu) so the mock never appears in release builds.
+- Use real network images (e.g. Wikimedia thumbs already known-good from `assets/dogs.json`) for backgrounds — placeholder gradients always look like placeholders.
+- Capture mocks through the same `adb shell screencap` pipeline as production screens.
+- Reserve Figma for: greenfield design exploration where Dart doesn't exist yet, asset production (icons, illustrations), and stakeholder review where the audience isn't a Flutter developer.
+
+Source: Sprint 17 (Screenshot pipeline), 2026-05-11.
+
+---
+
+## Subagent Audit Verification: Construction Sites for "This IS the X Widget" (2026-05-11)
+
+### Compressed Insight
+
+**Symmetric to the existing pattern that subagent zero-ref orphan claims must be verified with both CamelCase + snake_case grep — subagent positive-identity claims ("this widget IS used as X") must be verified with a construction-site grep before any edit.** The existing pattern caught false-positive orphan deletions; the symmetric pattern catches false-positive "this is the X" edits. Both failure modes have the same shape: an agent names a file/class/symbol with insufficient evidence, the parent agent trusts the name, and acts on it. For Hound's screenshot pipeline, an Explore subagent named `lib/widgets/identification_result_card.dart` as "the breed result/profile card." A `grep -E "IdentificationResultCard\(" lib/` returned zero non-declaration matches — the widget is dead code. Real card is `DogFoundDialog` (1459 lines, different file).
+
+### Actionability
+
+- Before editing any widget identified by a subagent as "the X widget" or "the screen rendering Y," grep `WidgetName\(` and `const WidgetName\(` across `lib/` and `test/`. Zero non-declaration matches = dead code, audit wrong.
+- Treat subagent audit names as hypotheses, not facts. The verification cost is one grep; the cost of editing the wrong widget is wasted time + potential confusion downstream.
+- Patterns symmetric to existing failure modes deserve symmetric defenses. If "zero refs needs alt-casing check" is in the playbook, "positive ID needs construction-site check" should be too.
+
+Source: Sprint 17 (Screenshot pipeline), 2026-05-11.
+
+---
 
 ## Related Notes
 

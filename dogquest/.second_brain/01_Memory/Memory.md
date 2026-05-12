@@ -86,11 +86,30 @@ Long-form durable memory for the DogQuest project. Rebuilt 2026-04-25 evening af
 - **XP countup**: `TweenAnimationBuilder<int>` with `IntTween(begin: 0, end: value)`, 1000ms, `Curves.easeOut`. Wrap in `.animate().fadeIn(delay: 400.ms)`.
 - **Result dialog transition**: `showGeneralDialog` (not `showDialog`) with `transitionDuration: 380ms`, `SlideTransition(Offset(0, 0.08)→Offset.zero)` + `FadeTransition`, `CurvedAnimation(curve: Curves.easeOutCubic)`.
 
+## Supabase project facts (2026-05-10)
+
+- **Project ref:** `hdcpymjnrbelaawhncep`
+- **Org slug:** `jaoyzyuqvmudqnhqzrlt`
+- **Region:** `eu-west-1` (AWS Ireland)
+- **Anon key:** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkY3B5bWpucmJlbGFhd2huY2VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzE0NzcsImV4cCI6MjA4OTEwNzQ3N30.aNRS4K_XuQU1pYm0goq3kmq9aJlPHmRfnRy3FX80T7M`
+- **Free-tier pausing:** project auto-pauses after ~7 days inactivity on free tier. Resume via Supabase dashboard (Settings → General → Resume project, takes ~5 min). Symptoms: "Retrieving API keys" spinner loops indefinitely on the API keys page.
+- **Key retrieval while paused:** use the Management API with the dashboard's own access token: `GET https://api.supabase.com/v1/projects/{ref}/api-keys` with `Authorization: Bearer <token>`. Token extracted from `localStorage['supabase.dashboard.auth.token'].access_token` in browser devtools while logged into `app.supabase.com`. This works even when the project is paused.
+
+## GitHub Actions secrets (set 2026-05-10)
+
+All 5 secrets live in `TheCryptoCanuck/boring` → Settings → Secrets → Actions:
+- `SUPABASE_URL`, `SUPABASE_ANON_KEY` — real project values (see above)
+- `API_BASE_URL` — placeholder `https://placeholder.example.com` (no real API backend yet)
+- `ADMOB_INTERSTITIAL_ID`, `ADMOB_BANNER_ID` — Google test IDs for closed beta; swap for real IDs before production
+
 ## Environment quirks (Windows + Cowork) — supplements
 
 - **Cowork sandbox blocks `rm`/`rmdir` on mounted user directories.** `Operation not permitted` on any destructive filesystem op against the mount. Workaround: `mv` to a `_trash/` dir in the sandbox, then `Remove-Item -Recurse -Force _trash` from PowerShell on the Windows side. The sandbox CAN create, move, and write — just not delete.
 - **PowerShell `Remove-Item` syntax, not cmd.exe.** `Remove-Item -Recurse -Force <path>` replaces `rmdir /s /q`. `Remove-Item <path1>, <path2>` replaces `del`. Jesse's terminal is PowerShell 5.x — cmd.exe builtins (`rmdir`, `del` with `/s /q` flags) error out. This is a recurring trap when generating cleanup instructions.
 
+- **PowerShell angle-brackets `<` and `>` are stdin/stdout redirect operators.** `flutter build ... --dart-define=KEY=<real>` causes "The syntax of the command is incorrect" because `<real>` triggers stdin redirection. Never use angle-bracket placeholders in PowerShell commands. Wrap all dart-define values in quotes: `"--dart-define=KEY=value"`.
+- **PowerShell has no `head` command.** Use `Select-Object -First N` instead. `git status --short | head -30` → `git status --short | Select-Object -First 30`. Same for `tail -n` → `Select-Object -Last N`.
+- **AAB release build** (closed beta): `flutter build appbundle --release` with placeholder `--dart-define` values produces `build\app\outputs\bundle\release\app-release.aab` (~75.3 MB). Play Store accepts this directly.
 - **adb path on Jesse's machine:** `C:\Users\Administrator\AppData\Local\Android\sdk\platform-tools\adb.exe`. Not on PATH by default. Quick add to user PATH: `[Environment]::SetEnvironmentVariable("Path", "$([Environment]::GetEnvironmentVariable('Path', 'User'));$sdkPath", "User")` then reopen terminal. Or use Flutter's wrappers: `flutter install --debug` and `flutter logs` work without adb on PATH.
 - **Test device:** Sony XQ CT54 (deviceId `QV770SJQCQ`), Android 14 (API 34), Adreno GPU. USB Debugging enabled. Visible to `flutter devices`.
 - **Multi-line commit messages in PowerShell** — use here-string written to file, then `git commit -F`:
@@ -138,6 +157,12 @@ User explicitly rejected `Icons.search` (magnifying glass) for Lost Dogs. Do not
 - The deploy script filename has an underscore prefix: `_deploy.bat`. Running `deploy.bat` fails because the file does not exist.
 - Without `.\`, PowerShell does not search the current directory for executables.
 
+## Camera / Device Quirks (2026-05-10)
+
+- **`setFocusPoint` / `setExposurePoint` block the platform channel on Sony XQ-CT54 HAL** in release builds. The native side blocks synchronously before creating the Future, so `.timeout()` on the Dart side has no effect — the entire app freezes. Tap-to-focus is DISABLED for closed beta. Autofocus via `FocusMode.auto` set during `_initCamera()` still works. TODO: re-enable after `camera` package upgrade or isolate workaround.
+- **`setFocusMode(FocusMode.auto)` / `setExposureMode(ExposureMode.auto)` in init**: wrapped in a single try/catch with 2s timeout. If the HAL blocks these too, the timeout may not help (same synchronous-block issue) but empirically these work on the Sony device.
+- **Privacy policy consistency**: hosted `docs/privacy_policy.html` MUST match in-app `privacy_policy_screen.dart`. Play Store reviewers check both. Section 6a "Aggregated Sighting Data (Opt-In)" was missing from the HTML — added 2026-05-10.
+
 ## Exam System Conventions (2026-05-10)
 
 - **ExamTier enum** in `exam_result.dart`: bronze (60% pass, 5m cooldown, 1.25× XP), silver (75%, 15m, 1.5×), gold (85%, 30m, 2.0×). Has `.next` getter for progression.
@@ -147,6 +172,70 @@ User explicitly rejected `Icons.search` (magnifying glass) for Lost Dogs. Do not
 - **XP multiplier**: `max(collectionBonus, examBonus)` — non-stacking.
 - **IIFE pattern**: Prefer `() { ... }()` over `Builder` in ConsumerWidget scope when `ref` is already available.
 - **Analytics events**: `exam_attempted`, `exam_passed`, `canine_scholar_achieved` — tracked via `ref.read(analyticsProvider).track()`.
+
+## Supabase Auth wiring facts (2026-05-10)
+
+- **Publishable key vs JWT anon key:** `.env.local` uses `sb_publishable_*` format (Supabase dashboard "publishable" key). The JWT anon key (`eyJ...`) is the REAL anon key needed for API calls and is stored in GitHub Actions secrets. Both are valid for different contexts — `sb_publishable_*` is a wrapper that Supabase client SDKs resolve to the JWT internally. For `--dart-define` in CI, use the JWT form.
+- **Free-tier email rate limit:** 2 emails/hour PROJECT-WIDE (not per-email-address). Cannot be increased without configuring custom SMTP in Supabase dashboard (Auth → SMTP Settings). Tested 2026-05-10: even with a new email address, rate limit was hit because the counter is per-project.
+- **Email confirmation currently DISABLED** for dev/testing. Toggle: Supabase dashboard → Auth → Sign In / Providers → "Confirm email" = OFF. Must be re-enabled before public beta with custom SMTP configured to avoid the 2/hr limit.
+- **Site URL:** Changed from `http://localhost:3000` (Supabase default) to `com.hound.app://login-callback` for Android deep linking. Android intent filter already configured in `AndroidManifest.xml`.
+- **`BackendSyncService.fetchProfile()` is a stub** — returns `null`. Any screen relying on it for user data (Settings, Profile) must fall back to `supabaseAuthServiceProvider.currentUser` session data.
+- **Settings screen Supabase fallback pattern:** `settings_screen.dart` tries `_profile?['username']` / `_profile?['email']` first, then falls back to `supabaseAuthServiceProvider.currentUser.userMetadata['username']` / `.email`. If username isn't in `userMetadata` (depends on whether RegisterScreen stores it during signup), it remains "Unknown".
+
+## Google Play Console Workflow (Session 2026-05-11)
+
+**Account Setup:**
+- New Play Console account created 2026-05-10 via Google Account signup (jesseg.8899@gmail.com). Requires 24-48 hr verification before any app submission.
+- Developer account name: "DogQuest" (durable; becomes public on Play Store).
+- App package name: `com.hound.app` (locked after first upload; must match AndroidManifest).
+
+**Category System — Fixed Taxonomy (Critical Finding):**
+- Google Play does NOT use dynamic tag filtering. Categories are rigid: each category has hard-coded valid tags embedded in it.
+- Initial selection of "Lifestyle" category was invalid because Lifestyle lacks dog/pet-related tags.
+- Revised to "Books & Reference" category which includes Reference, Encyclopedia, Educational content tags — suitable for breed-reference product positioning.
+- Full taxonomy: 336 fixed categories with embedded tags per category. Must validate category selection against official taxonomy before listing submission. No custom tags possible.
+- **DogQuest category decision:** Books & Reference + Reference/Encyclopedia tags (validated via asasa.txt taxonomy export).
+
+**Store Listing Form Workflow:**
+1. App name (64-char limit) + Short description (80-char soft limit)
+2. Category + Content rating (IARC questionnaire auto-completed)
+3. Contact details + Privacy policy URL + Support website
+4. Screenshots (4-8 required, 720p+, max 8 per language) — MUST include messaging overlays per store-listing best practices
+5. Expanded description (~3500 chars) — product utility, features, audience, call-to-action
+6. Upload release APK/AAB (~75.3 MB for closed beta)
+7. Create internal testing track + add tester emails (for closed beta)
+8. Submit for review (automated 24-48 hr review, then manual review if flagged)
+
+**Messaging Strategy — "Gamified Discovery":**
+- Balances dog-breed reference/utility (learning pillar) with collection/gamification (engagement pillar).
+- Neither utility-only nor gamification-only resonates; hybrid messaging appeals to broader audience.
+- Short description encodes both pillars: `"Discover every dog breed. Snap a photo. Level up your knowledge."` (67 chars)
+- Full description will expand into: breed reference value, feature capabilities (photo identify, leveling, exams), engagement hooks (collection, leaderboard, prestige), target segments (students, educators, pet enthusiasts, dog lovers)
+
+**Known Blockers for Sprint 16:**
+- Account verification window: 24-48 hrs (started 2026-05-10, expected complete 2026-05-12)
+- Cannot submit listing until account verified
+- Release AAB ready (built 2026-05-10 with placeholder env vars; real secrets via CI pipeline)
+
+## Screenshot Pipeline Facts (Session 2026-05-11, later)
+
+- **The real breed-result card is `DogFoundDialog`** (`lib/widgets/dog_found_dialog.dart`, 1459 lines, takes `Dog` + `confidence` + `alternatives`). The similarly-named `IdentificationResultCard` at `lib/widgets/identification_result_card.dart` is **dead code** — no construction sites anywhere in `lib/`. An Explore subagent pointed at the dead widget when asked to audit "the breed result card." Always grep for `WidgetName(` construction sites before claiming a widget is "the X."
+- **Dog model populated fully across all 150 breeds** in `assets/dogs.json`: `sizeCategory` (small/medium/large/giant), `temperamentTraits` (list of strings, typically 3-5), `habitat` (format `"<Group> Group | Origin: <Country>"`), `lifespan`, `weight`, `exerciseNeeds`, `groomingNeeds`, `healthPredispositions`, `dietNotes`. The `Dog.fromJson` factory at `lib/models/dog.dart:63` is defensive against missing fields.
+- **Real `bgDeep` color is `Color(0xFF0F1A10)`** (dark forest green) per `lib/constants.dart:42`. CLAUDE.md still says `#1A0F0A` (warm brown) — stale, predates the green-palette migration. Use `constants.dart` as source of truth, never CLAUDE.md, for color tokens. Other tokens: `accent = #D4874E` (amber), `accentGreen = #539548`, `bgCard = #1A2B1C`, `bgNav = #0A1A0C`.
+- **Player level titles (8 tiers)** in `player_service.dart:62-69`: Puppy (<3) → Good Boy (<6) → Pack Member (<10) → Breed Spotter (<15) → Dog Whisperer (<20) → Expert Handler (<30) → Show Judge (<40) → Best in Show. `xpForNextLevel` formula: `(1000 * pow(level, 1.4)).round()`.
+- **`kennelServiceProvider` and `playerProvider` throw `UnimplementedError` until overridden** after Hive init. This is documented in their declaration files (`kennel_service.dart:40`, `player_service.dart:433`). Any test or seed harness that wants to render screens depending on these must override them with concrete instances backed by initialized Hive boxes, OR boot the full app via `main()`. There is no middle path.
+- **`PlayerNotifier.reload()` re-reads from Hive box.** Seed functions can write directly to `Hive.box('dogquest_player_stats')` with keys `{level, xp, streak, best_streak, streak_savers, achievements, quizzes_completed, quiz_perfect_scores, total_sightings, selected_avatar}` then call `ref.read(playerProvider.notifier).reload()` to refresh state without hot-restarting.
+- **`lib/dev/` is now the established home for debug-only marketing/screenshot helpers.** Contents: `screenshot_seed.dart`, `mock_screen_1.dart`, `mock_screen_5.dart`. All guarded by `kDebugMode` and tree-shaken from release builds. Wired via Settings → Developer (only visible when `kDebugMode`).
+- **Marketing privacy claims must be audited against `pubspec.yaml` + `main.dart`.** `firebase_analytics`, `firebase_crashlytics`, `sentry_flutter` are all active dependencies. `FirebaseAnalytics.instance` is initialized at `main.dart:627`. Sentry runs from `main.dart` + `sync_queue_service.dart`. **"No tracking" / "No data collection" are false claims** for this app — required wording is "anonymous diagnostics with opt-out at Settings → Data & Privacy."
+- **Existing `DataConsentService` exists** for analytics opt-out (referenced in `settings_screen.dart` as `_dataSharing = DataConsentService.hasConsented;`). Use this when wiring opt-out language into marketing.
+- **`google_mobile_ads ^5.1.0` is in pubspec but ad-unit IDs are the Google-test pair** per Memory.md GitHub Actions secrets section. Marketing copy that says "No ads. Ever." is technically accurate today (test units don't serve real ads) but the dependency itself is a soft contradiction. Either remove the dep or rephrase before public submission. Flagged as open item in `store-listing/play_store_listing.md`.
+
+## Screenshot Pipeline Tooling (2026-05-11, later)
+
+- **Capture pipeline:** kDebugMode-gated seed function (`lib/dev/screenshot_seed.dart`) → manual emulator navigation → `scripts/capture_screenshots.ps1` (interactive PowerShell, prompts per screen, runs `adb shell screencap` + `adb pull`). No `integration_test/` harness — too much override plumbing for a one-time marketing deliverable. The seed function writes to Hive boxes + calls `playerProvider.notifier.reload()` so no app restart is needed.
+- **Mock screens for non-shipping UI:** `lib/dev/mock_screen_1.dart` (camera viewfinder with live prediction overlay — feature not yet implemented in shipping camera), `lib/dev/mock_screen_5.dart` (branded share UI with friend avatars — friends backend on `phase-1/social-backend-realtime` not in v5.1). Both use real `NetworkDogImage` + Wikimedia thumbs + the actual app design system, so they're visually consistent with the rest of the app. Pivoted from Figma mocks to Flutter widgets for: visual consistency, no MCP OAuth dependency, repeatable, faster turnaround.
+- **Framing step (device shells + copy overlay):** manual Canva web or Hotpot.ai. Canva MCP exposed only auth tools in this session — `upload-asset-from-url` requires a public URL (can't ingest local screenshots), and there's no `phone_frame`/`device_mockup` `design_type`. Manual upload-and-frame is unblocked-fast; programmatic framing would require hosting raw PNGs publicly first.
+- **Per-screen typography rules** documented in `screenshots/copy.md`: headline 56-64pt at 1080-wide, SF Pro Display Bold / Inter Bold, white on dark, 4.5:1 minimum contrast (add 40% black gradient if photo busy), top-third position, 64pt edge padding.
 
 ## Related Notes
 

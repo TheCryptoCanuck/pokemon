@@ -142,7 +142,7 @@ Use this file to prevent repeated mistakes.
 - Trigger: Writing `.ps1` content via the Write tool that contains em-dash, en-dash, smart quotes, ellipsis, or other Unicode punctuation. The Write tool's UTF-8 output is correct; PowerShell's default ANSI input pipeline is what breaks.
 - Fix: Use ASCII-only punctuation in `.ps1` files. Replace `—` with `--` or `,`, replace `'`/`'` with `'`, replace `…` with `...`. Or save the .ps1 with a UTF-8 BOM (the BOM tells PowerShell to read as UTF-8). Cheapest: ASCII-only.
 - Score: 0.85
-- Last seen: 2026-04-25 (verify_release_build.ps1 errored on em-dash in "skipping signature inspection" comment block)
+- Last seen: 2026-05-10 (build_debug.ps1 em-dash in comments caused parse error; rewrote entire file ASCII-only via Write tool)
 
 ### powershell-brace-expansion-on-stash-syntax (Score 0.7, NEW 2026-04-25 evening)
 
@@ -294,6 +294,94 @@ Use this file to prevent repeated mistakes.
 - Note: The `git commit -m "$(cat <<'EOF'...EOF)"` Bash heredoc pattern in Claude Code's commit instructions does NOT apply to PowerShell. On Windows with PowerShell, always use the `-F tempfile` path.
 - Score: 0.8
 - Last seen: 2026-05-10 (Sprint 14 onboarding funnel commits).
+
+### camera-platform-channel-timeout-ineffective-on-synchronous-native-block (Score 0.85, NEW 2026-05-10)
+
+- Failure: Added `.timeout(Duration(milliseconds: 500))` to `setFocusPoint()`/`setExposurePoint()` calls expecting that if the HAL blocked, the timeout would fire and allow the app to continue. The entire app still froze on tap-to-focus. Root cause: the native Android HAL implementation of `setFocusPoint` on Sony XQ-CT54 blocks the platform channel synchronously — execution never returns to Dart to create the Future, so `.timeout()` never gets a chance to evaluate. The Dart event loop is blocked at the `MethodChannel.invokeMethod` level.
+- Trigger: Any `camera` package platform channel call that freezes the entire app (not just produces UI jank). Especially `setFocusPoint`, `setExposurePoint` on devices with aggressive HAL implementations. Also possible on `setFocusMode`/`setExposureMode` for init.
+- Fix: When a platform channel call blocks synchronously (symptom: entire isolate freezes, not just dropped frames), `.timeout()` is a no-op — the Future is never created. The only fixes are: (a) don't call the method at all (disable the feature), (b) call from a separate isolate (not possible for camera package which requires the main isolate), or (c) upgrade the package to a version that handles the HAL differently. For closed beta: disable tap-to-focus, rely on HAL autofocus mode set during init.
+- Score: 0.85
+- Last seen: 2026-05-10 (identify_screen.dart — setFocusPoint blocks on Sony XQ-CT54, 3 rounds of fixes before landing on "disable entirely")
+
+### powershell-no-head-command (Score 0.5, NEW 2026-05-10)
+
+- Failure: Suggested `git status --short | head -30` to Jesse in PowerShell. `head` is a Unix command; PowerShell doesn't have it. Error: `The term 'head' is not recognized as the name of a cmdlet`.
+- Trigger: Generating Unix pipeline commands for a PowerShell user. Especially `head`, `tail`, `wc`, `grep` used in shell snippets.
+- Fix: Use PowerShell equivalents: `| Select-Object -First N` (head), `| Select-Object -Last N` (tail), `| Measure-Object -Line` (wc -l), `| Select-String "pattern"` (grep). Memory.md already documents `&&` not working; extend awareness to ALL Unix commands.
+- Score: 0.5
+- Last seen: 2026-05-10 (git status pipeline in commit prep instructions)
+
+### powershell-angle-brackets-as-redirection (Score 0.8, NEW 2026-05-10)
+
+- Failure: Generated a `flutter build appbundle --release` command with `<real>` as placeholder values inside `--dart-define=KEY=<real>`. PowerShell interprets `<` as stdin redirection and `>` as stdout redirection before passing args to the child process. The command errors with "The syntax of the command is incorrect" or redirects stdin from a file named `real` (which doesn't exist). User saw the error and had to ask for a corrected command.
+- Trigger: Writing any PowerShell command that contains `<placeholder>` or `<value>` notation inside argument strings. Common when generating "fill in your value here" instructions.
+- Fix: Never use angle-bracket placeholders in PowerShell command examples. Use descriptive variable names (`YOUR_VALUE_HERE`), env var references (`$env:MY_VAR`), or actual values if known. If placeholder syntax is necessary, use `[YOUR_VALUE]` (square brackets are not redirect operators in PowerShell).
+- Score: 0.8
+- Last seen: 2026-05-10 (flutter build appbundle release command with dart-defines)
+
+### react-form-native-input-value-setter-required (Score 0.75, NEW 2026-05-10)
+
+- Failure: Injected GitHub secret form field values via `element.value = 'X'; element.dispatchEvent(new Event('input', {bubbles: true}))`. The DOM value was set and the event fired, but React's virtual DOM never reconciled — the form submitted with an empty value. Root cause: React overrides `HTMLInputElement.prototype.value`'s setter with its own property descriptor. Setting `.value` directly bypasses React's descriptor and doesn't trigger React's event system.
+- Trigger: Programmatically setting `input.value` in any React-controlled form via direct property assignment + synthetic event dispatch. Applies to GitHub, any React SPA form, Supabase dashboard, etc.
+- Fix: Use the native setter to bypass React's override: `Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(element, 'value'); element.dispatchEvent(new Event('input', {bubbles: true}))`. This triggers React's reconciliation correctly. The native setter getter is retrievable even after React overrides the instance property because it operates on the prototype.
+- Score: 0.75
+- Last seen: 2026-05-10 (GitHub Actions secrets form — name + secret fields required native setter to register with React)
+
+### supabase-free-tier-pauses-on-inactivity (Score 0.7, NEW 2026-05-10)
+
+- Failure: Supabase project `hdcpymjnrbelaawhncep` went into a paused state after ~7 days without an API call. The Supabase dashboard API keys page showed "Retrieving API keys" indefinitely with no error. Attempting to use the anon key from the app would have returned 503 or connection refused. The pause happened silently — no email warning was received.
+- Trigger: Free-tier Supabase projects auto-pause after ~7 days of inactivity. Pausing is silent from the client's perspective; the keys page spinner is the UI symptom.
+- Fix: (1) Resume via Supabase dashboard Settings → General → "Resume project" button. Takes ~5 min for the project to spin up. (2) While paused, keys can still be retrieved via the Management API (`GET api.supabase.com/v1/projects/{ref}/api-keys` with dashboard's localStorage access token) — doesn't require the project to be running. (3) To prevent future pausing: make periodic API calls (even unauthenticated pings) via a scheduled task, or upgrade to Supabase Pro (no pausing).
+- Score: 0.7
+- Last seen: 2026-05-10 (paused 2026-05-05, resumed 2026-05-10; keys retrieved via Management API while paused)
+
+### bash-sandbox-edits-dont-sync-to-windows (Score 0.85, NEW 2026-05-10)
+
+- Failure: Used `sed` commands in the Cowork bash sandbox to fix encoding issues in `build_debug.ps1` (replacing em-dashes with `--`). The `sed` operations completed successfully in bash, but the changes never appeared on the Windows filesystem. Jesse re-ran the script and got the same parse error. The bash sandbox mount allows reads to propagate (eventually) but writes via `sed`/`echo`/shell redirection do NOT reliably sync back to the Windows side. Two rounds of sed fixes were wasted before switching to the Write tool.
+- Trigger: Using bash shell commands (`sed`, `echo >`, `cat >`, `tee`) to modify files that the user will execute on Windows. Distinct from the read-desync pattern (`cowork-bash-vs-read-tool-filesystem-desync`) — this is about WRITES not syncing, not reads being stale.
+- Fix: For any file the user needs to execute or read on Windows, use the Write/Edit tools (which operate on Windows paths directly), NOT bash shell file-modification commands. Bash sandbox is read-from-Windows, not write-to-Windows. Use bash only for computation, not for file modification when the target is the user's Windows filesystem.
+- Score: 0.85
+- Last seen: 2026-05-10 (build_debug.ps1 — two sed passes completed in bash, zero changes visible to PowerShell; rewrote via Write tool, immediately worked)
+
+### fix-before-diagnose-wastes-user-money (Score 0.95, NEW 2026-05-10)
+
+- Failure: When a user reports a symptom ("app stuck on splash"), immediately editing code to fix a GUESSED root cause without first confirming the actual cause. Wasted the user's paid time with: (a) an unverified edit to main.dart, (b) incomplete investigation of Supabase.instance.client usages, (c) confident-sounding output that was actually ungrounded speculation. The real cause was trivially diagnosable (missing dart-defines = silent crash, not a hang) but wasn't checked because I anchored on a recent failure pattern (Supabase pausing) instead of the simplest explanation.
+- Trigger: User reports a runtime symptom. The temptation is to immediately write a fix based on pattern-matching against recent memory. This skips the diagnostic step entirely. Compounds when context is running low and there's pressure to "produce output."
+- Fix: BEFORE any edit: (1) state the hypothesis explicitly, (2) identify what evidence would confirm or falsify it, (3) gather that evidence (ask user what command they ran, read the relevant code path, check build logs). Only edit AFTER the root cause is confirmed. If you can't confirm, say "I don't know yet" and ask. A correct diagnosis in 2 minutes is worth more than a wrong fix in 30 seconds.
+- Score: 0.95
+- Last seen: 2026-05-10 (Sprint 19 splash hang — jumped to Supabase timeout edit without confirming build command or checking that _assertSupabaseEnv throws before Supabase.initialize is even reached)
+
+### category-selection-cannot-rely-on-preset-names (Score 0.95, NEW 2026-05-11)
+
+- Failure: When selecting a product category (e.g. Google Play Store category for app listing), assuming that preset category names like "Lifestyle" or "Shopping" will automatically support relevant subtags (pet tags, shopping tags). Investigation revealed Google Play uses a FIXED category taxonomy where each category has hard-coded valid tags. "Lifestyle" does not include dog/pet/animal-related tags. "Books & Reference" includes Reference, Encyclopedia, Educational content tags — suitable for breed-reference product positioning.
+- Trigger: Store listing task with multi-tag requirements (breed reference + gamification). Intuitive category picks ("Lifestyle" for pets, "Shopping" for commerce) fail validation because the category system is not dynamic tag-filtering but rigid category-with-embedded-tags. No custom tags possible.
+- Fix: Before selecting a category, validate available tags against the official taxonomy. Don't assume preset category names; inspect the actual tag list for that category in the platform's documentation or category tool. For Google Play: full 336-category taxonomy with embedded tags per category was confirmed via `asasa.txt` reference export.
+- Score: 0.95
+- Last seen: 2026-05-11 (Play Console store listing setup — Lifestyle category selected → validation failure → revised to Books & Reference with confirmed Reference/Encyclopedia tags)
+
+### subagent-dead-code-positive-id (Score 0.8, NEW 2026-05-11)
+
+- Failure: Trusted an Explore subagent's audit naming `lib/widgets/identification_result_card.dart` as "the breed result/profile card" without verifying any construction sites. The widget is declared but instantiated nowhere in `lib/`. Dead code. Real result card is `DogFoundDialog` in a different file. Caught before editing — 5 min wasted reading dead-code internals. Symmetric to the existing pattern `subagent-narrow-regex-false-positive-orphan` (zero-ref false positives), but in the opposite direction: false positive "this widget IS used."
+- Trigger: Subagent audits that name a widget/class as "the X" by class name alone, without specifying construction-site evidence. Especially when the audit returns multiple plausible candidates and picks one without justification.
+- Fix: Before editing any widget identified by a subagent as "the X widget," verify with construction-site grep: `grep -E "WidgetName\(|const WidgetName\(" lib/ test/`. Zero non-declaration matches = dead code, audit wrong. Pattern: positive-identity claims by subagents need the same skepticism as orphan claims — both require active-callers verification.
+- Score: 0.8
+- Last seen: 2026-05-11 (screenshot pipeline session — audit pointed at IdentificationResultCard; real card was DogFoundDialog)
+
+### marketing-claim-without-deps-audit (Score 0.9, NEW 2026-05-11)
+
+- Failure: Wrote "No tracking. No data sale. No dark patterns." in the Play Store listing draft. Caught only by a self-driven drift sweep after the listing was written. `pubspec.yaml` has `firebase_analytics`, `firebase_crashlytics`, `sentry_flutter` — all active. `FirebaseAnalytics.instance` initialized at `main.dart:627`. The marketing claim was false. Submitting it to Play Store would have risked rejection under the Misleading Claims policy. Rewrote to disclose anonymous diagnostics + opt-out path.
+- Trigger: Writing marketing copy about app behavior or data practices in a sustained flow. The bias toward unverified claims is highest when the writing pace is fast. Especially: "no X" claims (no tracking, no ads, no accounts) where the cost of being wrong is a policy violation, not just embarrassment.
+- Fix: For any marketing claim about app behavior, audit BEFORE the copy ships. Specifically: claims about absence of behaviors (no tracking, no analytics, no ads, no accounts) must be verified by grepping `pubspec.yaml` + `main.dart` for the relevant SDK initializations. The audit belongs INSIDE the copy-writing loop, not as a separate after-pass — by the time review happens, the wrong claim is already in the draft and momentum carries it forward.
+- Score: 0.9
+- Last seen: 2026-05-11 (Play Store listing draft — caught "No tracking" claim before submit)
+
+### integration-test-overscoped-for-one-time-deliverable (Score 0.7, NEW 2026-05-11)
+
+- Failure: Initial plan for Play Store screenshot capture defaulted to `integration_test` harness — the "right" tool for Flutter golden-image regression. Started building it: add `integration_test` to dev_deps, write `test_driver/integration_test.dart` that exfiltrates PNG bytes via `onScreenshot`, override 5+ Riverpod providers (`kennelServiceProvider`, `playerProvider`, `comboProvider`, `flashChallengeProvider`, `analyticsProvider`) each of which throws `UnimplementedError` until injected, seed Hive boxes per test. Estimated 3+ hours of test plumbing for a one-time launch asset. Pivoted mid-flight to: kDebugMode-gated seed function + interactive `adb screencap` PowerShell script. Same output, ~10× faster, no override boilerplate. Reverted the integration_test dependency add before committing.
+- Trigger: Defaulting to canonical testing/automation tools for tasks that look like "capture this UI state." `integration_test` IS correct for recurring golden-image regression on shipped UI; it's overscoped for one-time marketing capture where the state needs to be carefully posed once and never re-run.
+- Fix: Apply the "regenerated repeatedly OR once?" filter early in planning. For "capture this state for a launch asset," seed-script + manual capture is the right shape. For "verify this widget renders correctly across builds," integration_test or widget tests. The recurrence frequency determines the tool, not the surface-level resemblance to "I need a screenshot."
+- Score: 0.7
+- Last seen: 2026-05-11 (screenshot pipeline session — pivoted from integration_test plan after starting plumbing)
 
 ## Related Notes
 

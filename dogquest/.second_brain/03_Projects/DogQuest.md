@@ -174,6 +174,15 @@ Post-beta queue (driven by feedback):
 - `train_model_v6.py`, `continue_training_v6.py`, `export_tflite.py`
 - `assets/dog_model.tflite` (v6 deployed)
 - `lib/services/tflite_identification_service.dart`
+- `lib/widgets/dog_found_dialog.dart` — real breed result card (1459 lines, takes `Dog` + confidence). NOT `identification_result_card.dart` (dead code).
+- `lib/dev/screenshot_seed.dart` — kDebugMode-gated seed function for marketing screenshots
+- `lib/dev/mock_screen_1.dart` — branded camera-with-live-prediction mock (not shipped on real camera)
+- `lib/dev/mock_screen_5.dart` — branded share UI mock with friend avatars (not shipped; production uses OS-native share)
+- `scripts/capture_screenshots.ps1` — interactive `adb screencap` automation per device label
+- `screenshots/README.md` — full screenshot capture pipeline doc
+- `screenshots/copy.md` — final marketing copy per screen + typography rules
+- `screenshots/brand_review.md` — pre-submit brand + a11y audit
+- `store-listing/play_store_listing.md` — Play Console paste-ready listing
 - `docs/session_2026-04-25/dogquest_session_final.md`
 - [[Active_Tasks]]
 - [[Decisions]]
