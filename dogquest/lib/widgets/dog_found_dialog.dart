@@ -88,15 +88,6 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
       dog.rarity == Rarity.rare || dog.rarity == Rarity.legendary;
 
   void _v1Emit(String event, [Map<String, dynamic>? extra]) {
-    if (widget.source == 'mock') {
-      // Demo mode — emit with sentinel so dashboards can filter without gaps.
-      _analytics.track(event, {
-        'source': 'mock',
-        'picked_index': -2,
-        ...?extra,
-      });
-      return;
-    }
     _analytics.track(event, {
       'top1_breed': widget.dog.name,
       'top1_confidence': widget.confidence,
@@ -470,7 +461,12 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.white70),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
+
+                    // ── Key characteristics chips (size / origin / temperament) ──
+                    if (!isUnknown)
+                      _keyCharacteristicsRow().animate().fadeIn(delay: 250.ms),
+                    if (!isUnknown) const SizedBox(height: 10),
 
                     // XP display -- bigger for special dogs; counts up from 0
                     TweenAnimationBuilder<int>(
@@ -634,9 +630,10 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
 
                     const SizedBox(height: 16),
 
-                    // Guest save CTA disabled — account nudge moving to Me tab.
-                    // See _GuestSaveCta class below.
-                    const SizedBox.shrink(),
+                    // Guest save CTA — nudge offline users to create an account
+                    if (Hive.box('dogquest_player_stats')
+                        .get('offline_mode', defaultValue: false) as bool)
+                      _GuestSaveCta(breedName: widget.dog.name),
 
                     const SizedBox(height: 16),
 
@@ -790,6 +787,80 @@ class _DogFoundDialogState extends ConsumerState<DogFoundDialog> {
           ),
         ),
       ],
+    );
+  }
+
+  /// Returns a wrap row of key-characteristic chips for the breed:
+  /// physical size, origin (parsed from `habitat`), and the primary
+  /// temperament trait. Falls back gracefully when fields are empty
+  /// or `habitat` doesn't follow the expected "Group | Origin: X" format.
+  Widget _keyCharacteristicsRow() {
+    final chips = <Widget>[];
+
+    final size = dog.sizeCategory.trim();
+    if (size.isNotEmpty) {
+      chips.add(_charChip(
+        Icons.straighten_rounded,
+        size[0].toUpperCase() + size.substring(1),
+      ));
+    }
+
+    // Habitat format: "Sporting Group | Origin: Canada"
+    final habitatParts = dog.habitat.split('|');
+    for (final part in habitatParts) {
+      final trimmed = part.trim();
+      if (trimmed.toLowerCase().startsWith('origin:')) {
+        final origin = trimmed.substring(7).trim();
+        if (origin.isNotEmpty) {
+          chips.add(_charChip(Icons.public_rounded, origin));
+        }
+        break;
+      }
+    }
+
+    if (dog.temperamentTraits.isNotEmpty) {
+      chips.add(_charChip(
+        Icons.favorite_border_rounded,
+        dog.temperamentTraits.first,
+      ));
+    }
+
+    if (chips.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 8,
+        runSpacing: 6,
+        children: chips,
+      ),
+    );
+  }
+
+  Widget _charChip(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: Colors.white70, size: 14),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
